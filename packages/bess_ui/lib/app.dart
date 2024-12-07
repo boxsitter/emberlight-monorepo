@@ -26,7 +26,8 @@ class App extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => const FirstScreen()),
         GetPage(name: '/second-screen', page: () => const SecondScreen()),
-        GetPage(name: '/second-screen/:userId', page: () => const SecondScreen()),
+        GetPage(
+            name: '/second-screen/:userId', page: () => const SecondScreen()),
       ],
       // home: const FirstScreen(),
     );
@@ -70,8 +71,8 @@ class FirstScreen extends StatelessWidget {
             SizedBox(
               width: 200,
               child: ElevatedButton(
-                  onPressed: () => Get.to(() => const SecondScreen()),
-                  child: const Text('GetX Navigation'),
+                onPressed: () => Get.to(() => const SecondScreen()),
+                child: const Text('GetX Navigation'),
               ),
             ),
 
@@ -156,25 +157,16 @@ class SecondScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Second Screen'),
-        centerTitle: true,
-      ),
-
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(Get.arguments ?? ''),
-
-            Text('Device = ${Get.parameters['device'] ?? ''}'),
-            Text('ID = ${Get.parameters['id'] ?? ''}'),
-            Text('Name = ${Get.parameters['name'] ?? ''}'),
-          ]
-        )
-      )
-    );
+        appBar: AppBar(
+          title: const Text('Second Screen'),
+          centerTitle: true,
+        ),
+        body: Center(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(Get.arguments ?? ''),
+          Text('Device = ${Get.parameters['device'] ?? ''}'),
+          Text('ID = ${Get.parameters['id'] ?? ''}'),
+          Text('Name = ${Get.parameters['name'] ?? ''}'),
+        ])));
   }
 }
-
-
