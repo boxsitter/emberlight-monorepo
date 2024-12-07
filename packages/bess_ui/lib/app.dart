@@ -56,13 +56,13 @@ class FirstScreen extends StatelessWidget {
             SizedBox(
               width: 200,
               child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const SecondScreen(),
-                      ),
-                    );
-                  },
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SecondScreen(),
+                    ),
+                  );
+                },
                 child: const Text('Default Navigation'),
               ),
             ),
