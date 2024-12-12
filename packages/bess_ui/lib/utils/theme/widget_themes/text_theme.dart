@@ -10,80 +10,80 @@ class BessieTextTheme {
     headlineLarge: const TextStyle().copyWith(
         fontSize: 24.0,
         fontWeight: FontWeight.bold,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     headlineMedium: const TextStyle().copyWith(
         fontSize: 18.0,
         fontWeight: FontWeight.bold,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     headlineSmall: const TextStyle().copyWith(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     titleLarge: const TextStyle().copyWith(
         fontSize: 16.0,
         fontWeight: FontWeight.w600,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     titleMedium: const TextStyle().copyWith(
         fontSize: 16.0,
         fontWeight: FontWeight.w600,
-        color: ConstColors.textSecondary),
+        color: BessColors.textSecondary),
     titleSmall: const TextStyle().copyWith(
         fontSize: 16.0,
         fontWeight: FontWeight.w400,
-        color: ConstColors.textSecondary),
+        color: BessColors.textSecondary),
     bodyLarge: const TextStyle().copyWith(
         fontSize: 14.0,
         fontWeight: FontWeight.w600,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     bodyMedium: const TextStyle().copyWith(
         fontSize: 14.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     bodySmall: const TextStyle().copyWith(
         fontSize: 14.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.textSecondary),
+        color: BessColors.textSecondary),
     labelLarge: const TextStyle().copyWith(
         fontSize: 12.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.textPrimary),
+        color: BessColors.textPrimary),
     labelMedium: const TextStyle().copyWith(
         fontSize: 12.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.textSecondary),
+        color: BessColors.textSecondary),
   );
 
   /// Customizable Dark Text Theme
   static TextTheme darkTextTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(
-        fontSize: 24.0, fontWeight: FontWeight.bold, color: ConstColors.light),
+        fontSize: 24.0, fontWeight: FontWeight.bold, color: BessColors.light),
     headlineMedium: const TextStyle().copyWith(
-        fontSize: 18.0, fontWeight: FontWeight.bold, color: ConstColors.light),
+        fontSize: 18.0, fontWeight: FontWeight.bold, color: BessColors.light),
     headlineSmall: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w600, color: ConstColors.light),
+        fontSize: 16.0, fontWeight: FontWeight.w600, color: BessColors.light),
     titleLarge: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.bold, color: ConstColors.light),
+        fontSize: 16.0, fontWeight: FontWeight.bold, color: BessColors.light),
     titleMedium: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w600, color: ConstColors.light),
+        fontSize: 16.0, fontWeight: FontWeight.w600, color: BessColors.light),
     titleSmall: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w400, color: ConstColors.light),
+        fontSize: 16.0, fontWeight: FontWeight.w400, color: BessColors.light),
     bodyLarge: const TextStyle().copyWith(
-        fontSize: 14.0, fontWeight: FontWeight.w600, color: ConstColors.light),
+        fontSize: 14.0, fontWeight: FontWeight.w600, color: BessColors.light),
     bodyMedium: const TextStyle().copyWith(
         fontSize: 14.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.light),
+        color: BessColors.light),
     bodySmall: const TextStyle().copyWith(
         fontSize: 14.0,
         fontWeight: FontWeight.w400,
-        color: ConstColors.light.withOpacity(0.5)),
+        color: BessColors.light.withOpacity(0.5)),
     labelLarge: const TextStyle().copyWith(
         fontSize: 12.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.light),
+        color: BessColors.light),
     labelMedium: const TextStyle().copyWith(
         fontSize: 12.0,
         fontWeight: FontWeight.normal,
-        color: ConstColors.light.withOpacity(0.5)),
+        color: BessColors.light.withOpacity(0.5)),
   );
 }

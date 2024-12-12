@@ -7,78 +7,78 @@ class BessieTextFormFieldTheme {
 
   static InputDecorationTheme lightInputDecorationTheme = InputDecorationTheme(
     errorMaxLines: 3,
-    prefixIconColor: ConstColors.darkGrey,
-    suffixIconColor: ConstColors.darkGrey,
+    prefixIconColor: BessColors.darkGrey,
+    suffixIconColor: BessColors.darkGrey,
     // constraints: const BoxConstraints.expand(height: TSizes.inputFieldHeight),
     labelStyle: const TextStyle().copyWith(
-        fontSize: ConstSizes.fontSizeMd,
-        color: ConstColors.textPrimary,
+        fontSize: BessSizes.fontSizeMd,
+        color: BessColors.textPrimary,
         fontFamily: 'Urbanist'),
     hintStyle: const TextStyle().copyWith(
-        fontSize: ConstSizes.fontSizeSm,
-        color: ConstColors.textSecondary,
+        fontSize: BessSizes.fontSizeSm,
+        color: BessColors.textSecondary,
         fontFamily: 'Urbanist'),
     errorStyle: const TextStyle()
         .copyWith(fontStyle: FontStyle.normal, fontFamily: 'Urbanist'),
     floatingLabelStyle: const TextStyle()
-        .copyWith(color: ConstColors.textSecondary, fontFamily: 'Urbanist'),
+        .copyWith(color: BessColors.textSecondary, fontFamily: 'Urbanist'),
     border: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.borderPrimary),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.borderPrimary),
     ),
     enabledBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.borderPrimary),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.borderPrimary),
     ),
     focusedBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
       borderSide:
-          const BorderSide(width: 1, color: ConstColors.borderSecondary),
+          const BorderSide(width: 1, color: BessColors.borderSecondary),
     ),
     errorBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.error),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.error),
     ),
     focusedErrorBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 2, color: ConstColors.error),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 2, color: BessColors.error),
     ),
   );
 
   static InputDecorationTheme darkInputDecorationTheme = InputDecorationTheme(
     errorMaxLines: 2,
-    prefixIconColor: ConstColors.darkGrey,
-    suffixIconColor: ConstColors.darkGrey,
+    prefixIconColor: BessColors.darkGrey,
+    suffixIconColor: BessColors.darkGrey,
     // constraints: const BoxConstraints.expand(height: TSizes.inputFieldHeight),
     labelStyle: const TextStyle().copyWith(
-        fontSize: ConstSizes.fontSizeMd,
-        color: ConstColors.white,
+        fontSize: BessSizes.fontSizeMd,
+        color: BessColors.white,
         fontFamily: 'Urbanist'),
     hintStyle: const TextStyle().copyWith(
-        fontSize: ConstSizes.fontSizeSm,
-        color: ConstColors.white,
+        fontSize: BessSizes.fontSizeSm,
+        color: BessColors.white,
         fontFamily: 'Urbanist'),
     floatingLabelStyle: const TextStyle().copyWith(
-        color: ConstColors.white.withOpacity(0.8), fontFamily: 'Urbanist'),
+        color: BessColors.white.withOpacity(0.8), fontFamily: 'Urbanist'),
     border: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.darkGrey),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.darkGrey),
     ),
     enabledBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.darkGrey),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.darkGrey),
     ),
     focusedBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.white),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.white),
     ),
     errorBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: ConstColors.error),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: BessColors.error),
     ),
     focusedErrorBorder: const OutlineInputBorder().copyWith(
-      borderRadius: BorderRadius.circular(ConstSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 2, color: ConstColors.error),
+      borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 2, color: BessColors.error),
     ),
   );
 }

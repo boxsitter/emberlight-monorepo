@@ -12,8 +12,8 @@ class TCircularLoader extends StatelessWidget {
   ///   - backgroundColor: The background color of the circular loader.
   const TCircularLoader({
     super.key,
-    this.foregroundColor = ConstColors.white,
-    this.backgroundColor = ConstColors.primary,
+    this.foregroundColor = BessColors.white,
+    this.backgroundColor = BessColors.primary,
   });
 
   final Color? foregroundColor;
@@ -22,7 +22,7 @@ class TCircularLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(ConstSizes.lg),
+      padding: const EdgeInsets.all(BessSizes.lg),
       decoration: BoxDecoration(
           color: backgroundColor,
           shape: BoxShape.circle), // Circular background

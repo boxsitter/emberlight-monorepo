@@ -9,17 +9,17 @@ class BessieCheckboxTheme {
   /// Customizable Light Text Theme
   static CheckboxThemeData lightCheckboxTheme = CheckboxThemeData(
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ConstSizes.xs)),
+        borderRadius: BorderRadius.circular(BessSizes.xs)),
     checkColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return ConstColors.white;
+        return BessColors.white;
       } else {
-        return ConstColors.black;
+        return BessColors.black;
       }
     }),
     fillColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return ConstColors.primary;
+        return BessColors.primary;
       } else {
         return Colors.transparent;
       }
@@ -29,17 +29,17 @@ class BessieCheckboxTheme {
   /// Customizable Dark Text Theme
   static CheckboxThemeData darkCheckboxTheme = CheckboxThemeData(
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ConstSizes.xs)),
+        borderRadius: BorderRadius.circular(BessSizes.xs)),
     checkColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return ConstColors.white;
+        return BessColors.white;
       } else {
-        return ConstColors.black;
+        return BessColors.black;
       }
     }),
     fillColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return ConstColors.primary;
+        return BessColors.primary;
       } else {
         return Colors.transparent;
       }

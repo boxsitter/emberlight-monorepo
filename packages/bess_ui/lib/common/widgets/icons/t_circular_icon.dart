@@ -16,7 +16,7 @@ class TCircularIcon extends StatelessWidget {
     required this.icon,
     this.width,
     this.height,
-    this.size = ConstSizes.lg,
+    this.size = BessSizes.lg,
     this.onPressed,
     this.color,
     this.backgroundColor,
@@ -37,8 +37,8 @@ class TCircularIcon extends StatelessWidget {
         color: backgroundColor != null
             ? backgroundColor!
             : THelperFunctions.isDarkMode(context)
-                ? ConstColors.black.withOpacity(0.9)
-                : ConstColors.white.withOpacity(0.9),
+                ? BessColors.black.withOpacity(0.9)
+                : BessColors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(100),
       ),
       child: IconButton(

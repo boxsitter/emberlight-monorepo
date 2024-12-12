@@ -12,28 +12,28 @@ class BessieAppBarTheme {
     backgroundColor: Colors.white,
     surfaceTintColor: Colors.white,
     iconTheme:
-        IconThemeData(color: ConstColors.iconPrimary, size: ConstSizes.iconMd),
+        IconThemeData(color: BessColors.iconPrimary, size: BessSizes.iconMd),
     actionsIconTheme:
-        IconThemeData(color: ConstColors.iconPrimary, size: ConstSizes.iconMd),
+        IconThemeData(color: BessColors.iconPrimary, size: BessSizes.iconMd),
     titleTextStyle: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w600,
-        color: ConstColors.black,
+        color: BessColors.black,
         fontFamily: 'Urbanist'),
   );
   static const darkAppBarTheme = AppBarTheme(
     elevation: 0,
     centerTitle: false,
     scrolledUnderElevation: 0,
-    backgroundColor: ConstColors.dark,
-    surfaceTintColor: ConstColors.dark,
-    iconTheme: IconThemeData(color: ConstColors.black, size: ConstSizes.iconMd),
+    backgroundColor: BessColors.dark,
+    surfaceTintColor: BessColors.dark,
+    iconTheme: IconThemeData(color: BessColors.black, size: BessSizes.iconMd),
     actionsIconTheme:
-        IconThemeData(color: ConstColors.white, size: ConstSizes.iconMd),
+        IconThemeData(color: BessColors.white, size: BessSizes.iconMd),
     titleTextStyle: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w600,
-        color: ConstColors.white,
+        color: BessColors.white,
         fontFamily: 'Urbanist'),
   );
 }

@@ -5,19 +5,19 @@ class BessieChipTheme {
   BessieChipTheme._();
 
   static ChipThemeData lightChipTheme = ChipThemeData(
-    checkmarkColor: ConstColors.white,
-    selectedColor: ConstColors.primary,
-    disabledColor: ConstColors.grey.withOpacity(0.4),
+    checkmarkColor: BessColors.white,
+    selectedColor: BessColors.primary,
+    disabledColor: BessColors.grey.withOpacity(0.4),
     padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
     labelStyle:
-        const TextStyle(color: ConstColors.black, fontFamily: 'Urbanist'),
+        const TextStyle(color: BessColors.black, fontFamily: 'Urbanist'),
   );
 
   static ChipThemeData darkChipTheme = const ChipThemeData(
-    checkmarkColor: ConstColors.white,
-    selectedColor: ConstColors.primary,
-    disabledColor: ConstColors.darkerGrey,
+    checkmarkColor: BessColors.white,
+    selectedColor: BessColors.primary,
+    disabledColor: BessColors.darkerGrey,
     padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-    labelStyle: TextStyle(color: ConstColors.white, fontFamily: 'Urbanist'),
+    labelStyle: TextStyle(color: BessColors.white, fontFamily: 'Urbanist'),
   );
 }

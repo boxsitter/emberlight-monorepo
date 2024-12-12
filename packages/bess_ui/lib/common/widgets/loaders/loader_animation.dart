@@ -12,7 +12,7 @@ class TLoaderAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Lottie.asset(ConstImages.defaultLoaderAnimation,
+        child: Lottie.asset(BessImages.defaultLoaderAnimation,
             height: 200, width: 200));
   }
 }

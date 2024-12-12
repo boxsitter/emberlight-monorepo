@@ -11,15 +11,15 @@ class BessieOutlinedButtonTheme {
   static final lightOutlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       elevation: 0,
-      foregroundColor: ConstColors.dark,
-      side: const BorderSide(color: ConstColors.borderPrimary),
+      foregroundColor: BessColors.dark,
+      side: const BorderSide(color: BessColors.borderPrimary),
       padding: const EdgeInsets.symmetric(
-          vertical: ConstSizes.buttonHeight, horizontal: 20),
+          vertical: BessSizes.buttonHeight, horizontal: 20),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ConstSizes.buttonRadius)),
+          borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
       textStyle: const TextStyle(
           fontSize: 16,
-          color: ConstColors.black,
+          color: BessColors.black,
           fontWeight: FontWeight.w600,
           fontFamily: 'Urbanist'),
     ),
@@ -28,15 +28,15 @@ class BessieOutlinedButtonTheme {
   /* -- Dark Theme -- */
   static final darkOutlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      foregroundColor: ConstColors.light,
-      side: const BorderSide(color: ConstColors.borderPrimary),
+      foregroundColor: BessColors.light,
+      side: const BorderSide(color: BessColors.borderPrimary),
       padding: const EdgeInsets.symmetric(
-          vertical: ConstSizes.buttonHeight, horizontal: 20),
+          vertical: BessSizes.buttonHeight, horizontal: 20),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ConstSizes.buttonRadius)),
+          borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
       textStyle: const TextStyle(
           fontSize: 16,
-          color: ConstColors.textWhite,
+          color: BessColors.textWhite,
           fontWeight: FontWeight.w600,
           fontFamily: 'Urbanist'),
     ),

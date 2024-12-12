@@ -17,7 +17,7 @@ class TPaginatedDataTable extends StatelessWidget {
     this.tableHeight = 760,
     this.onPageChanged,
     this.sortColumnIndex,
-    this.dataRowHeight = ConstSizes.xl * 2,
+    this.dataRowHeight = BessSizes.xl * 2,
     this.sortAscending = true,
     this.minWidth = 1000,
   });
@@ -76,24 +76,24 @@ class TPaginatedDataTable extends StatelessWidget {
           sortColumnIndex: sortColumnIndex,
           headingTextStyle: Theme.of(context).textTheme.titleMedium,
           headingRowColor: WidgetStateProperty.resolveWith(
-              (states) => ConstColors.primaryBackground),
+              (states) => BessColors.primaryBackground),
           empty: TAnimationLoaderWidget(
-              animation: ConstImages.packageAnimation,
+              animation: BessImages.packageAnimation,
               text: 'Nothing Found',
               height: 200,
               width: 200),
           headingRowDecoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(ConstSizes.borderRadiusMd),
-              topRight: Radius.circular(ConstSizes.borderRadiusMd),
+              topLeft: Radius.circular(BessSizes.borderRadiusMd),
+              topRight: Radius.circular(BessSizes.borderRadiusMd),
             ),
           ),
           sortArrowBuilder: (bool ascending, bool sorted) {
             if (sorted) {
               return Icon(ascending ? Iconsax.arrow_up_3 : Iconsax.arrow_down,
-                  size: ConstSizes.iconSm);
+                  size: BessSizes.iconSm);
             } else {
-              return const Icon(Iconsax.arrow_3, size: ConstSizes.iconSm);
+              return const Icon(Iconsax.arrow_3, size: BessSizes.iconSm);
             }
           },
         ),

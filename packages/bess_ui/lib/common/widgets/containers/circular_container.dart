@@ -24,8 +24,8 @@ class TCircularContainer extends StatelessWidget {
     this.height = 400,
     this.radius = 400,
     this.showBorder = false,
-    this.backgroundColor = ConstColors.white,
-    this.borderColor = ConstColors.borderPrimary,
+    this.backgroundColor = BessColors.white,
+    this.borderColor = BessColors.borderPrimary,
   });
 
   final Widget? child;

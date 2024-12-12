@@ -43,26 +43,26 @@ class TAnimationLoaderWidget extends StatelessWidget {
           Lottie.asset(animation,
               height: height ?? MediaQuery.of(context).size.height * 0.5,
               width: width), // Display Lottie animation
-          const SizedBox(height: ConstSizes.defaultSpace),
+          const SizedBox(height: BessSizes.defaultSpace),
           Text(
             text,
             style: style ?? Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: ConstSizes.defaultSpace),
+          const SizedBox(height: BessSizes.defaultSpace),
           showAction
               ? SizedBox(
                   width: 250,
                   child: OutlinedButton(
                     onPressed: onActionPressed,
                     style: OutlinedButton.styleFrom(
-                        backgroundColor: ConstColors.dark),
+                        backgroundColor: BessColors.dark),
                     child: Text(
                       actionText!,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium!
-                          .apply(color: ConstColors.light),
+                          .apply(color: BessColors.light),
                     ),
                   ),
                 )

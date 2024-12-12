@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../../common/styles/shadows.dart';
 
 /// A container widget with rounded corners and customizable properties.
-class TRoundedContainer extends StatelessWidget {
+class BessRoundedContainer extends StatelessWidget {
   /// Create a rounded container with customizable properties.
   ///
   /// Parameters:
@@ -16,7 +17,7 @@ class TRoundedContainer extends StatelessWidget {
   ///   - backgroundColor: The background color of the container.
   ///   - borderColor: The color of the container's border.
   ///   - showBorder: A flag to determine if the container should have a border.
-  const TRoundedContainer({
+  const BessRoundedContainer({
     super.key,
     this.child,
     this.width,
@@ -24,10 +25,10 @@ class TRoundedContainer extends StatelessWidget {
     this.margin,
     this.showShadow = true,
     this.showBorder = false,
-    this.padding = const EdgeInsets.all(ConstSizes.md),
-    this.borderColor = ConstColors.borderPrimary,
-    this.radius = ConstSizes.cardRadiusLg,
-    this.backgroundColor = ConstColors.white,
+    this.padding = const EdgeInsets.all(BessSizes.md),
+    this.borderColor = BessColors.borderPrimary,
+    this.radius = BessSizes.cardRadiusLg,
+    this.backgroundColor = BessColors.white,
     this.onTap,
   });
 
@@ -58,15 +59,10 @@ class TRoundedContainer extends StatelessWidget {
           border: showBorder ? Border.all(color: borderColor) : null,
           boxShadow: [
             if (showShadow)
-              BoxShadow(
-                color: ConstColors.grey.withOpacity(0.1),
-                spreadRadius: 5,
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
+              BessShadowStyle.defaultBoxShadow
           ],
         ),
-        child: child,
+      child: child
       ),
     );
   }

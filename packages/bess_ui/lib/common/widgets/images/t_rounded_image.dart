@@ -19,11 +19,11 @@ class TRoundedImage extends StatelessWidget {
     this.overlayColor,
     required this.imageType,
     this.backgroundColor,
-    this.padding = ConstSizes.sm,
+    this.padding = BessSizes.sm,
     this.margin,
     this.fit = BoxFit.contain,
     this.applyImageRadius = true,
-    this.borderRadius = ConstSizes.md,
+    this.borderRadius = BessSizes.md,
   });
 
   final bool applyImageRadius;

@@ -35,18 +35,18 @@ class TDataTable extends StatelessWidget {
         horizontalMargin: 12,
         // Set the color of the heading row
         headingRowColor:
-            WidgetStateProperty.resolveWith((states) => ConstColors.primary),
+            WidgetStateProperty.resolveWith((states) => BessColors.primary),
         // Set the decoration for the data table
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius:
-              BorderRadius.all(Radius.circular(ConstSizes.borderRadiusMd)),
+              BorderRadius.all(Radius.circular(BessSizes.borderRadiusMd)),
         ),
         // Set the decoration for the heading row of the data table
         headingRowDecoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(ConstSizes.borderRadiusMd),
-              topRight: Radius.circular(ConstSizes.borderRadiusMd)),
+              topLeft: Radius.circular(BessSizes.borderRadiusMd),
+              topRight: Radius.circular(BessSizes.borderRadiusMd)),
         ),
       ),
     );

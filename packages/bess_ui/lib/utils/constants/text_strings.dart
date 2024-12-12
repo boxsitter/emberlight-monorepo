@@ -1,5 +1,5 @@
 /// This class contains all the App Text in String formats.
-class ConstTexts {
+class BessTexts {
   // -- Admin Default Credentials
   static const String adminEmail = "leyton.houck@gmail.com";
   static const String adminPassword = "Shadowpico-1";

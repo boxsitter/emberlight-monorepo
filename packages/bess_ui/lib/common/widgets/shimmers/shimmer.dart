@@ -26,7 +26,7 @@ class TShimmerEffect extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: color ?? (dark ? ConstColors.darkerGrey : ConstColors.white),
+          color: color ?? (dark ? BessColors.darkerGrey : BessColors.white),
           borderRadius: BorderRadius.circular(radius),
         ),
       ),
