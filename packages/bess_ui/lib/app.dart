@@ -1,10 +1,10 @@
-import 'package:bessie/common/widgets/responsive/responsive_design.dart';
+import 'package:bessie/common/widgets/layouts/templates/site_layout.dart';
 import 'package:bessie/routes/app_routes.dart';
 import 'package:bessie/routes/routes.dart';
+import 'package:bessie/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-//import 'utils/constants/colors.dart';
 import 'common/widgets/containers/rounded_container.dart';
 import 'utils/constants/text_strings.dart';
 import 'utils/device/web_material_scroll.dart';
@@ -35,14 +35,7 @@ class ResponsiveDesignScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SingleChildScrollView(
-        child: Padding (
-          padding: EdgeInsets.all(30),
-          child: BessResponsiveWidget(desktop: Desktop(), tablet: Tablet(), mobile: Mobile()),
-        ),
-      ),
-    );
+    return const BessSiteTemplate(desktop: Desktop(), mobile: Mobile());
   }
 }
 
@@ -64,12 +57,11 @@ class Desktop extends StatelessWidget {
               flex: 2,
               child: BessRoundedContainer(
                 height: 450,
-                showShadow: false,
-                backgroundColor: Colors.red.withAlpha(127),
+                backgroundColor: Colors.red.withValues(alpha: 0.5),
                 child: const Center(child: Text('Widget 1')),
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: BessSizes.md),
             Expanded(
               flex: 2,
               child: Column(
@@ -77,27 +69,24 @@ class Desktop extends StatelessWidget {
                 children: [
                   BessRoundedContainer(
                     height: 215,
-                    showShadow: false,
-                    backgroundColor: Colors.orange.withAlpha(127),
+                    backgroundColor: Colors.orange.withValues(alpha: 0.5),
                     child: const Center(child: Text('Widget 2')),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: BessSizes.md),
                   Row(
                     children: [
                       Expanded(
                         child: BessRoundedContainer(
                           height: 215,
-                          showShadow: false,
-                          backgroundColor: Colors.amber.withAlpha(127),
+                          backgroundColor: Colors.amber.withValues(alpha: 0.5),
                           child: const Center(child: Text('Widget 3')),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: BessSizes.md),
                       Expanded(
                         child: BessRoundedContainer(
                           height: 215,
-                          showShadow: false,
-                          backgroundColor: Colors.green.withAlpha(127),
+                          backgroundColor: Colors.green.withValues(alpha: 0.5),
                           child: const Center(child: Text('Widget 4')),
                         ),
                       ),
@@ -108,7 +97,7 @@ class Desktop extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 20), // Space between rows
+        const SizedBox(height: BessSizes.md), // Space between rows
 
         // SECOND ROW
         Row(
@@ -117,17 +106,15 @@ class Desktop extends StatelessWidget {
               flex: 2,
               child: BessRoundedContainer(
                 height: 220,
-                showShadow: true,
-                backgroundColor: Colors.blue.withAlpha(51),
+                backgroundColor: Colors.blue.withValues(alpha: 0.5),
                 child: const Center(child: Text('Widget 5')),
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: BessSizes.md),
             Expanded(
               child: BessRoundedContainer(
                 height: 220,
-                showShadow: true,
-                backgroundColor: Colors.purple.withAlpha(51),
+                backgroundColor: Colors.purple.withValues(alpha: 0.5),
                 child: const Center(child: Text('Widget 6')),
               ),
             ),
@@ -155,13 +142,12 @@ class Tablet extends StatelessWidget {
               flex: 2,
               child: BessRoundedContainer(
                 height: 450,
-                showShadow: false,
                 backgroundColor: Colors.red.withValues(alpha: 0.5),
                 child: const Center(child: Text('Widget 1')),
               ),
             ),
 
-            const SizedBox(width: 20),
+            const SizedBox(width: BessSizes.md),
 
             Expanded(
               flex: 2,
@@ -170,7 +156,6 @@ class Tablet extends StatelessWidget {
                 children: [
                   BessRoundedContainer(
                     height: 215,
-                    showShadow: false,
                     backgroundColor: Colors.orange.withValues(alpha: 0.5),
                     child: const Center(child: Text('Widget 2')),
                   ),
@@ -180,16 +165,14 @@ class Tablet extends StatelessWidget {
                       Expanded(
                         child: BessRoundedContainer(
                           height: 215,
-                          showShadow: false,
                           backgroundColor: Colors.amber.withValues(alpha: 0.5),
                           child: const Center(child: Text('Widget 3')),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: BessSizes.md),
                       Expanded(
                         child: BessRoundedContainer(
                           height: 215,
-                          showShadow: false,
                           backgroundColor: Colors.green.withValues(alpha: 0.5),
                           child: const Center(child: Text('Widget 4')),
                         ),
@@ -210,15 +193,13 @@ class Tablet extends StatelessWidget {
             BessRoundedContainer(
               height: 220,
               width: double.infinity,
-              showShadow: true,
               backgroundColor: Colors.blue.withValues(alpha: 0.2),
               child: const Center(child: Text('Widget 5')),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: BessSizes.md),
             BessRoundedContainer(
                 height: 220,
                 width: double.infinity,
-                showShadow: true,
                 backgroundColor: Colors.purple.withValues(alpha: 0.2),
                 child: const Center(child: Text('Widget 6')),
             ),
@@ -243,42 +224,36 @@ class Mobile extends StatelessWidget {
         children: [
               BessRoundedContainer(
               height: 200,
-              showShadow: false,
               backgroundColor: Colors.red.withValues(alpha: 0.5),
               child: const Center(child: Text('Widget 1')),
             ),
       
             BessRoundedContainer(
               height: 200,
-              showShadow: false,
               backgroundColor: Colors.orange.withValues(alpha: 0.5),
               child: const Center(child: Text('Widget 2')),
             ),
       
             BessRoundedContainer(
               height: 200,
-              showShadow: false,
               backgroundColor: Colors.amber.withValues(alpha: 0.5),
               child: const Center(child: Text('Widget 3')),
             ),
       
             BessRoundedContainer(
               height: 200,
-              showShadow: false,
               backgroundColor: Colors.green.withValues(alpha: 0.5),
               child: const Center(child: Text('Widget 4')),
             ),
             
             BessRoundedContainer(
               height: 200,
-              showShadow: false,
               backgroundColor: Colors.blue.withValues(alpha: 0.5),
               child: const Center(child: Text('Widget 5')),
             ),
             
             BessRoundedContainer(
               height: 200,
-              showShadow: false,
               backgroundColor: Colors.purple.withValues(alpha: 0.5),
               child: const Center(child: Text('Widget 6')),
             ),

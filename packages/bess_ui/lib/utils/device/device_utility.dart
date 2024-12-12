@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import '../constants/sizes.dart';
 
-class TDeviceUtils {
+class BessDeviceUtils {
   static void hideKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
   }
