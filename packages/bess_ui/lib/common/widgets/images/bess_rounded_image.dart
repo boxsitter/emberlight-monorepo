@@ -1,26 +1,34 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/sizes.dart';
 import '../shimmers/shimmer.dart';
 
-class TCircularImage extends StatelessWidget {
-  const TCircularImage({
+class BessRoundedImage extends StatelessWidget {
+  const BessRoundedImage({
     super.key,
+    this.image,
+    this.file,
+    this.border,
     this.width = 56,
     this.height = 56,
-    this.overlayColor,
     this.memoryImage,
+    this.overlayColor,
+    required this.imageType,
     this.backgroundColor,
-    this.image,
-    this.imageType = ImageType.asset,
-    this.fit = BoxFit.cover,
     this.padding = BessSizes.sm,
-    this.file,
+    this.margin,
+    this.fit = BoxFit.contain,
+    this.applyImageRadius = true,
+    this.borderRadius = BessSizes.md,
   });
 
+  final bool applyImageRadius;
+  final BoxBorder? border;
+  final double borderRadius;
   final BoxFit? fit;
   final String? image;
   final File? file;
@@ -29,20 +37,19 @@ class TCircularImage extends StatelessWidget {
   final Color? backgroundColor;
   final Uint8List? memoryImage;
   final double width, height, padding;
+  final double? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: width,
       height: height,
+      margin: margin != null ? EdgeInsets.all(margin!) : null,
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
-        color: backgroundColor ??
-            (Theme.of(context).brightness == Brightness.dark
-                ? Colors.black
-                : Colors.white),
-        borderRadius: BorderRadius.circular(width >= height ? width : height),
-      ),
+          border: border,
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(borderRadius)),
       child: _buildImageWidget(),
     );
   }
@@ -67,7 +74,9 @@ class TCircularImage extends StatelessWidget {
 
     // Apply ClipRRect directly to the image widget
     return ClipRRect(
-      borderRadius: BorderRadius.circular(width >= height ? width : height),
+      borderRadius: applyImageRadius
+          ? BorderRadius.circular(borderRadius)
+          : BorderRadius.zero,
       child: imageWidget,
     );
   }
@@ -82,7 +91,7 @@ class TCircularImage extends StatelessWidget {
         imageUrl: image!,
         errorWidget: (context, url, error) => const Icon(Icons.error),
         progressIndicatorBuilder: (context, url, downloadProgress) =>
-            const TShimmerEffect(width: 55, height: 55),
+            TShimmerEffect(width: width, height: height),
       );
     } else {
       // Return an empty container if no image is provided

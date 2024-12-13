@@ -1,11 +1,16 @@
+import 'package:bessie/common/widgets/images/bess_rounded_image.dart';
 import 'package:bessie/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../utils/constants/colors.dart';
+import '../../../../utils/constants/enums.dart';
+import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 
 class BessHeader extends StatelessWidget implements PreferredSizeWidget{
-  const BessHeader({super.key});
+  const BessHeader({super.key, this.scaffoldKey});
+
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,37 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget{
       ),
       padding: const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: BessSizes.sm),
       child: AppBar(
-        leading: !BessDeviceUtils.isDesktopScreen(context) ? IconButton(onPressed: (){}, icon: const Icon(Iconsax.menu)) : null,
+
+        // Mobile menu button
+        leading: !BessDeviceUtils.isDesktopScreen(context) ? IconButton(onPressed: () => scaffoldKey?.currentState?.openDrawer(), icon: const Icon(Iconsax.menu)) : null,
+        
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const BessRoundedImage(
+                width: 40,
+                padding: 2,
+                height: 40,
+                imageType: ImageType.asset,
+                image: BessImages.user
+              ),
+
+              const SizedBox(width: BessSizes.sm),
+
+              // Name and role
+              if (!BessDeviceUtils.isMobileScreen(context))
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Ice Pop', style: Theme.of(context).textTheme.titleLarge),
+                    Text('Village Leader', style: Theme.of(context).textTheme.labelMedium),
+                  ],
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

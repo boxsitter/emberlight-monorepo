@@ -5,6 +5,12 @@ class BessRoutes {
   static const secondScreenWithUID = '/second-screen/:userId';
   static const responsiveDesignExample = '/responsive-design/';
 
+  static List sideMenuItems = [
+    firstScreen,
+    secondScreen,
+    responsiveDesignExample
+  ];
+
   static const login = '/login';
   static const forgetPassword  = '/forgetPassword';
   static const dashboard = '/dashboard';

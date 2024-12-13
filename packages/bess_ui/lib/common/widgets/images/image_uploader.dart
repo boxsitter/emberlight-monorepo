@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../../common/widgets/icons/t_circular_icon.dart';
-import '../../../../../../common/widgets/images/t_circular_image.dart';
+import '../../../../../../common/widgets/images/bess_circular_image.dart';
 import '../../../../../../utils/constants/colors.dart';
 import '../../../../../../utils/constants/enums.dart';
 import '../../../../../../utils/constants/sizes.dart';
-import 't_rounded_image.dart';
+import 'bess_rounded_image.dart';
 
 /// Widget for uploading images with optional editing functionality
 class TImageUploader extends StatelessWidget {
@@ -70,7 +70,7 @@ class TImageUploader extends StatelessWidget {
       children: [
         // Display the image in either circular or rounded shape
         circular
-            ? TCircularImage(
+            ? BessCircularImage(
                 image: image,
                 width: width,
                 height: height,
@@ -78,7 +78,7 @@ class TImageUploader extends StatelessWidget {
                 memoryImage: memoryImage,
                 backgroundColor: BessColors.primaryBackground,
               )
-            : TRoundedImage(
+            : BessRoundedImage(
                 image: image,
                 width: width,
                 height: height,
