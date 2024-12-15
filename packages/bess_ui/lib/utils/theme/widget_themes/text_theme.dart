@@ -44,7 +44,7 @@ class BessieTextTheme {
         fontWeight: FontWeight.normal,
         color: BessColors.textSecondary),
     labelLarge: const TextStyle().copyWith(
-        fontSize: 12.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.normal,
         color: BessColors.textPrimary),
     labelMedium: const TextStyle().copyWith(
@@ -78,7 +78,7 @@ class BessieTextTheme {
         fontWeight: FontWeight.w400,
         color: BessColors.light.withOpacity(0.5)),
     labelLarge: const TextStyle().copyWith(
-        fontSize: 12.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.normal,
         color: BessColors.light),
     labelMedium: const TextStyle().copyWith(

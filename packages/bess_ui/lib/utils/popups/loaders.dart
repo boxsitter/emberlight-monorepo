@@ -22,7 +22,7 @@ class TLoaders {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
-            color: THelperFunctions.isDarkMode(Get.context!)
+            color: BessHelperFunctions.isDarkMode(Get.context!)
                 ? BessColors.darkerGrey.withOpacity(0.9)
                 : BessColors.grey.withOpacity(0.9),
           ),

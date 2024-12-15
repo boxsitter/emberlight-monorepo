@@ -31,7 +31,7 @@ class TAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    final dark = BessHelperFunctions.isDarkMode(context);
     return AppBar(
       automaticallyImplyLeading: false,
       leading: showBackArrow

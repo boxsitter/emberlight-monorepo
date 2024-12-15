@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../utils/constants/sizes.dart';
 
 class DesktopLayout extends StatelessWidget {
-  DesktopLayout({super.key, this.body});
+  const DesktopLayout({super.key, this.body});
 
   final Widget? body;
 

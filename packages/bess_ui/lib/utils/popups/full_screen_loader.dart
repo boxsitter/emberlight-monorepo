@@ -22,7 +22,7 @@ class TFullScreenLoader {
       builder: (_) => PopScope(
         canPop: false, // Disable popping with the back button
         child: Container(
-          color: THelperFunctions.isDarkMode(Get.context!)
+          color: BessHelperFunctions.isDarkMode(Get.context!)
               ? BessColors.dark
               : BessColors.white,
           width: double.infinity,

@@ -20,7 +20,7 @@ class BessSiteTemplate extends StatelessWidget {
 
   /// Flag to determine whether to use layout
   final bool useLayout;
-
+    
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../constants/enums.dart';
 
-class THelperFunctions {
+class BessHelperFunctions {
   static DateTime getStartOfWeek(DateTime date) {
     final int daysUntilMonday = date.weekday - 1;
     final DateTime startOfWeek = date.subtract(Duration(days: daysUntilMonday));

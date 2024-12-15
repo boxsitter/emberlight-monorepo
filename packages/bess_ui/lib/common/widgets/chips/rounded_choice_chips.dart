@@ -30,26 +30,26 @@ class TChoiceChip extends StatelessWidget {
       data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
       child: ChoiceChip(
         // Use this function to get Colors as a Chip
-        avatar: THelperFunctions.getColor(text) != null
+        avatar: BessHelperFunctions.getColor(text) != null
             ? TCircularContainer(
                 width: 50,
                 height: 50,
-                backgroundColor: THelperFunctions.getColor(text)!)
+                backgroundColor: BessHelperFunctions.getColor(text)!)
             : null,
         selected: selected,
         onSelected: onSelected,
-        backgroundColor: THelperFunctions.getColor(text),
+        backgroundColor: BessHelperFunctions.getColor(text),
         labelStyle: TextStyle(color: selected ? BessColors.white : null),
-        shape: THelperFunctions.getColor(text) != null
+        shape: BessHelperFunctions.getColor(text) != null
             ? const CircleBorder()
             : null,
-        label: THelperFunctions.getColor(text) == null
+        label: BessHelperFunctions.getColor(text) == null
             ? Text(text)
             : const SizedBox(),
-        padding: THelperFunctions.getColor(text) != null
+        padding: BessHelperFunctions.getColor(text) != null
             ? const EdgeInsets.all(0)
             : null,
-        labelPadding: THelperFunctions.getColor(text) != null
+        labelPadding: BessHelperFunctions.getColor(text) != null
             ? const EdgeInsets.all(0)
             : null,
       ),

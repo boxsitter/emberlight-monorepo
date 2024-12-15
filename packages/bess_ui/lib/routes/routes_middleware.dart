@@ -8,6 +8,6 @@ class ConstRouteMiddleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     print('MIDDLEWARE CALLED');
     const isAuthenticated = true;
-    return isAuthenticated ? null : const RouteSettings(name: BessRoutes.firstScreen);
+    return isAuthenticated ? null : const RouteSettings(name: BessRoutes.home);
   }
 }

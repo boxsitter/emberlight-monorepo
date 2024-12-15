@@ -36,7 +36,7 @@ class TCircularIcon extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor != null
             ? backgroundColor!
-            : THelperFunctions.isDarkMode(context)
+            : BessHelperFunctions.isDarkMode(context)
                 ? BessColors.black.withOpacity(0.9)
                 : BessColors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(100),
