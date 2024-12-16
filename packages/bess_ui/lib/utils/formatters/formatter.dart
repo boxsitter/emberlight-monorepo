@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-class TFormatter {
+class BessFormatter {
   static String formatDate(DateTime? date) {
     date ??= DateTime.now();
     final onlyDate = DateFormat('dd/MM/yyyy').format(date);

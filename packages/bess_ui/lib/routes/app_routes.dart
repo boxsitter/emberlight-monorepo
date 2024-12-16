@@ -4,7 +4,9 @@
 
 import 'package:bessie/features.authentication/screens/forgot_password/forgot_password.dart';
 import 'package:bessie/features.authentication/screens/reset_password/reset_password.dart';
+import 'package:bessie/pages/console/console.dart';
 import 'package:bessie/routes/routes.dart';
+import 'package:bessie/routes/routes_middleware.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import '../Pages/home.dart';
 import '../Pages/responsive_design.dart';
@@ -12,15 +14,12 @@ import '../features.authentication/screens/login/login.dart';
 
 class BessAppRoute {
   static final List<GetPage> pages = [
-    GetPage(name: BessRoutes.home, page: () => const HomeScreen()),
+    GetPage(name: BessRoutes.home, page: () => const HomeScreen(), middlewares: [BessRouteMiddleware()]),
     GetPage(name: BessRoutes.responsiveDesignExample, page: () => const ResponsiveDesignScreen()),
+    GetPage(name: BessRoutes.console, page: () => const ConsoleScreen()),
 
     GetPage(name: BessRoutes.login, page: () => const LoginScreen()),
     GetPage(name: BessRoutes.forgotPassword, page: () => const ForgotPasswordScreen()),
     GetPage(name: BessRoutes.resetPassword, page: () => const ResetPasswordScreen()),
-
-    //
-    // GetPage(name: BessRoutes.sessionManager, page: () => const SessionManagerScreen()),
-    // GetPage(name: BessRoutes.sessionRoster, page: () => const SessionRosterScreen()),
   ];
 }

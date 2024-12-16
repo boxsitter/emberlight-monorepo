@@ -4,7 +4,9 @@
 -- */
 
 /// Switch of Custom Brand-Text-Size Widget
-enum AppRole { admin, user }
+enum AppRole { superuser, orgAdmin, branchDirector, branchAdmin, user }
+
+enum BranchRole { director, AD, VL, counselor } // should be changed to be camp specific
 
 enum TransactionType { buy, sell }
 

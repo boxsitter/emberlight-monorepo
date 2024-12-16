@@ -23,11 +23,10 @@ class App extends StatelessWidget {
       darkTheme: BessieAppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
-      //initialRoute: BessRoutes.login,
       initialRoute: BessRoutes.responsiveDesignExample,
       unknownRoute: GetPage(name: '/page-not-found', page: () => const Scaffold(body: Center(child: Text('Woah there partner, that page doesn\'t exist!')))),
       navigatorObservers: [RouteObservers()],
-      defaultTransition: Transition.noTransition,
+      //defaultTransition: Transition.noTransition,
 
       getPages: BessAppRoute.pages,
     );

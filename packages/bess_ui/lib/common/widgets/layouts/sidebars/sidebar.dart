@@ -27,7 +27,7 @@ class BessSidebar extends StatelessWidget {
               const BessCircularImage(width: 100, height: 100, image: BessImages.lightAppLogo, backgroundColor: Colors.transparent,),
               const SizedBox(height: BessSizes.spaceBtwSections),
               Padding(
-                padding: EdgeInsets.all(BessSizes.md),
+                padding: const EdgeInsets.all(BessSizes.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -35,8 +35,8 @@ class BessSidebar extends StatelessWidget {
                     Text('MENU', style: Theme.of(context).textTheme.bodySmall!.apply(letterSpacingDelta: 1.2),),
 
                     // Menu Items
+                    const BessMenuItem(route: BessRoutes.console, icon: Iconsax.code, itemName: 'Console'),
                     const BessMenuItem(route: BessRoutes.home, icon: Iconsax.home, itemName: 'Home'),
-                    const BessMenuItem(route: BessRoutes.secondScreen, icon: Iconsax.image, itemName: 'Media'),
                     const BessMenuItem(route: BessRoutes.responsiveDesignExample, icon: Iconsax.picture_frame, itemName: 'Widgets'),
                   ],
                 ),
