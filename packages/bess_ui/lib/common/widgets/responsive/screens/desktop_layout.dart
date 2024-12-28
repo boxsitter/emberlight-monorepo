@@ -1,7 +1,8 @@
 import 'package:bessie/common/widgets/layouts/headers/header.dart';
 import 'package:bessie/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:flutter/material.dart';
-import '../../../../utils/constants/sizes.dart';
+
+import '../../../utils/constants/sizes.dart';
 
 class DesktopLayout extends StatelessWidget {
   const DesktopLayout({super.key, this.body});

@@ -1,13 +1,14 @@
 import 'package:bessie/common/widgets/images/bess_rounded_image.dart';
-import 'package:bessie/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../../../utils/constants/colors.dart';
-import '../../../../utils/constants/enums.dart';
-import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/constants/sizes.dart';
 
-class BessHeader extends StatelessWidget implements PreferredSizeWidget{
+import '../../../utils/constants/colors.dart';
+import '../../../utils/constants/enums.dart';
+import '../../../utils/constants/image_strings.dart';
+import '../../../utils/constants/sizes.dart';
+import '../../../utils/device/device_utility.dart';
+
+class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   const BessHeader({super.key, this.scaffoldKey});
 
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -16,26 +17,28 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget{
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: BessColors.white,
-        border: Border(bottom: BorderSide(color: BessColors.grey, width: 1))
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: BessSizes.sm),
+          color: BessColors.white,
+          border: Border(bottom: BorderSide(color: BessColors.grey, width: 1))),
+      padding: const EdgeInsets.symmetric(
+          horizontal: BessSizes.md, vertical: BessSizes.sm),
       child: AppBar(
-
         // Mobile menu button
-        leading: !BessDeviceUtils.isDesktopScreen(context) ? IconButton(onPressed: () => scaffoldKey?.currentState?.openDrawer(), icon: const Icon(Iconsax.menu)) : null,
-        
+        leading: !BessDeviceUtils.isDesktopScreen(context)
+            ? IconButton(
+                onPressed: () => scaffoldKey?.currentState?.openDrawer(),
+                icon: const Icon(Iconsax.menu))
+            : null,
+
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const BessRoundedImage(
-                width: 40,
-                padding: 2,
-                height: 40,
-                imageType: ImageType.asset,
-                image: BessImages.user
-              ),
+                  width: 40,
+                  padding: 2,
+                  height: 40,
+                  imageType: ImageType.asset,
+                  image: BessImages.user),
 
               const SizedBox(width: BessSizes.sm),
 
@@ -45,8 +48,10 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget{
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Ice Pop', style: Theme.of(context).textTheme.titleLarge),
-                    Text('Village Leader', style: Theme.of(context).textTheme.labelMedium),
+                    Text('Ice Pop',
+                        style: Theme.of(context).textTheme.titleLarge),
+                    Text('Village Leader',
+                        style: Theme.of(context).textTheme.labelMedium),
                   ],
                 ),
             ],
@@ -55,8 +60,9 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget{
       ),
     );
   }
-  
+
   @override
   // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(BessDeviceUtils.getAppBarHeight() + 15);
+  Size get preferredSize =>
+      Size.fromHeight(BessDeviceUtils.getAppBarHeight() + 15);
 }

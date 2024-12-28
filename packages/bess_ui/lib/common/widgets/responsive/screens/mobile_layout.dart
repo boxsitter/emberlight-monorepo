@@ -1,6 +1,7 @@
 import 'package:bessie/common/widgets/layouts/sidebars/sidebar.dart';
-import 'package:bessie/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+
+import '../../../utils/constants/sizes.dart';
 import '../../layouts/headers/header.dart';
 
 class MobileLayout extends StatelessWidget {
@@ -13,13 +14,12 @@ class MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      drawer: const BessSidebar(),
-      appBar: BessHeader(scaffoldKey: scaffoldKey),
-      body: Padding(
-        padding: const EdgeInsets.all(BessSizes.lg),
-        child: body ?? const SizedBox(),
-      )
-    );
+        key: scaffoldKey,
+        drawer: const BessSidebar(),
+        appBar: BessHeader(scaffoldKey: scaffoldKey),
+        body: Padding(
+          padding: const EdgeInsets.all(BessSizes.lg),
+          child: body ?? const SizedBox(),
+        ));
   }
 }

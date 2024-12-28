@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/constants/colors.dart';
+import '../utils/constants/colors.dart';
 
 class BessShadowStyle {
   static final defaultBoxShadow = BoxShadow(

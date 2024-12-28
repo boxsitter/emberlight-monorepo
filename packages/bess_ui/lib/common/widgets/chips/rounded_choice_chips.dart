@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../utils/constants/colors.dart';
-import '../../../utils/helpers/helper_functions.dart';
+import '../../utils/constants/colors.dart';
+import '../../utils/helpers/helper_functions.dart';
 import '../containers/circular_container.dart';
 
 /// A customized choice chip that can act like a radio button.

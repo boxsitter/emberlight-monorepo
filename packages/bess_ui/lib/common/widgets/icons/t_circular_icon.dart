@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../utils/constants/colors.dart';
-import '../../../utils/constants/sizes.dart';
-import '../../../utils/helpers/helper_functions.dart';
+import '../../utils/constants/colors.dart';
+import '../../utils/constants/sizes.dart';
+import '../../utils/helpers/helper_functions.dart';
 
 class TCircularIcon extends StatelessWidget {
   /// A custom Circular Icon widget with a background color.
@@ -37,8 +37,8 @@ class TCircularIcon extends StatelessWidget {
         color: backgroundColor != null
             ? backgroundColor!
             : BessHelperFunctions.isDarkMode(context)
-                ? BessColors.black.withOpacity(0.9)
-                : BessColors.white.withOpacity(0.9),
+                ? BessColors.black.withValues(alpha: 0.9)
+                : BessColors.white.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(100),
       ),
       child: IconButton(

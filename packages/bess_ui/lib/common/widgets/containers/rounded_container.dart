@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../../utils/constants/colors.dart';
-import '../../../../utils/constants/sizes.dart';
+
 import '../../../../common/styles/shadows.dart';
+import '../../utils/constants/colors.dart';
+import '../../utils/constants/sizes.dart';
 
 /// A container widget with rounded corners and customizable properties.
 class BessRoundedContainer extends StatelessWidget {
@@ -49,21 +50,17 @@ class BessRoundedContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: width,
-        height: height,
-        padding: padding,
-        margin: margin,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(radius),
-          border: showBorder ? Border.all(color: borderColor) : null,
-          boxShadow: [
-            if (showShadow)
-              BessShadowStyle.defaultBoxShadow
-          ],
-        ),
-      child: child
-      ),
+          width: width,
+          height: height,
+          padding: padding,
+          margin: margin,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(radius),
+            border: showBorder ? Border.all(color: borderColor) : null,
+            boxShadow: [if (showShadow) BessShadowStyle.defaultBoxShadow],
+          ),
+          child: child),
     );
   }
 }

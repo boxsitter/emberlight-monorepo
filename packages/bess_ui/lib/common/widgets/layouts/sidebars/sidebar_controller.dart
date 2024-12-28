@@ -1,6 +1,7 @@
-import 'package:bessie/routes/routes.dart';
-import 'package:bessie/utils/device/device_utility.dart';
 import 'package:get/get.dart';
+
+import '../../../routes/routes.dart';
+import '../../../utils/device/device_utility.dart';
 
 class SidebarController extends GetxController {
   final activeItem = BessRoutes.responsiveDesignExample.obs;
@@ -9,17 +10,21 @@ class SidebarController extends GetxController {
   void changeActiveItem(String route) => activeItem.value = route;
 
   void changeHoverItem(String route) {
-    if(!isActive(route)) hoverItem.value = route;
+    if (!isActive(route)) hoverItem.value = route;
   }
 
   bool isActive(String route) => activeItem.value == route;
+
   bool isHovering(String route) => hoverItem.value == route;
 
-  void menuOnTap(String route){
-    if(!isActive(route)){
+  void menuOnTap(String route) {
+    if (!isActive(route)) {
       changeActiveItem(route);
 
-      if(BessDeviceUtils.isMobileScreen(Get.context!) || BessDeviceUtils.isTabletScreen(Get.context!)) Get.back();
+      if (BessDeviceUtils.isMobileScreen(Get.context!) ||
+          BessDeviceUtils.isTabletScreen(Get.context!)) {
+        Get.back();
+      }
 
       Get.toNamed(route);
     }
