@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 import '../constants/enums.dart';
 
@@ -136,5 +137,10 @@ class BessHelperFunctions {
       wrappedList.add(Row(children: rowChildren));
     }
     return wrappedList;
+  }
+
+  static String getBessId(String idTitle) {
+    var uuid = const Uuid();
+    return '$idTitle-${uuid.v4()}';
   }
 }

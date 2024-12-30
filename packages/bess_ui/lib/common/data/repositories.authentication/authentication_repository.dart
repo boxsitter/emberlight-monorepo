@@ -20,10 +20,10 @@ class AuthenticationRepository extends GetxController {
   // Get IsAuthenticated User
   bool get isAuthenticated => _auth.currentUser != null;
 
-  @override
-  void onReady() {
-    _auth.setPersistence(Persistence.LOCAL);
-  }
+  // @override
+  // void onReady() {
+  //   _auth.setPersistence(Persistence.LOCAL);
+  // }
 
   // Function to determine that relevant screen and redirect accordingly
   void screenRedirect() async {

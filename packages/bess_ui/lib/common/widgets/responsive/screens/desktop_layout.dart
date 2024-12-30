@@ -22,9 +22,11 @@ class DesktopLayout extends StatelessWidget {
                 //HEADER
                 const BessHeader(),
                 // BODY
-                Padding(
-                  padding: const EdgeInsets.all(BessSizes.lg),
-                  child: body ?? const SizedBox(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(BessSizes.lg),
+                    child: body ?? const SizedBox(),
+                  ),
                 )
               ],
             ),
