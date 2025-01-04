@@ -141,6 +141,9 @@ class BessHelperFunctions {
 
   static String getBessId(String idTitle) {
     var uuid = const Uuid();
-    return '$idTitle-${uuid.v4()}';
+    return '$idTitle-${uuid.v4()}'
+        .replaceAll(' ', '-')
+        .replaceAll(RegExp(r'[^\w-]'), '')
+        .toLowerCase();
   }
 }

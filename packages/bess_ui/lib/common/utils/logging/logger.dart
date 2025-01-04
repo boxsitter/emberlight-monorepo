@@ -1,25 +1,26 @@
-// import 'package:logger/logger.dart';
+// import 'dart:async';
 //
-// class TLoggerHelper {
-//   static final Logger _logger = Logger(
-//     printer: PrettyPrinter(),
-//     // Customize the log levels based on your needs
-//     level: Level.debug,
-//   );
+// import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 //
-//   static void debug(String message) {
-//     _logger.d(message);
+// class LoggingService extends GetxService {
+//   final _logStreamController = StreamController<String>.broadcast();
+//
+//   void log(String message) {
+//     final adjustedText = message.replaceAll('\n', '\r\n ');
+//     _logStreamController.add('\r\n\x1B[96m $adjustedText\x1B[0m');
 //   }
 //
-//   static void info(String message) {
-//     _logger.i(message);
+//   void error(String message) {
+//     final adjustedText = message.replaceAll('\n', '\r\n ');
+//     _logStreamController.add('\r\n\x1B[91m $adjustedText\x1B[0m');
 //   }
 //
-//   static void warning(String message) {
-//     _logger.w(message);
-//   }
+//   Stream<String> get logStream => _logStreamController.stream;
 //
-//   static void error(String message, [dynamic error]) {
-//     _logger.e(message, error: error,  stackTrace: StackTrace.current);
+//   @override
+//   void onClose() {
+//     _logStreamController.close(); // Clean up resources
+//     super.onClose();
 //   }
 // }
+

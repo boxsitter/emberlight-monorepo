@@ -1,19 +1,44 @@
-import 'package:bessie/features/session_roster/controllers/session_roster_controller.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 
-import '../../../common/data/models/camper.dart';
-import '../../../common/data/models/local_data.dart';
-import 'feature-commands/session_roster_commands.dart';
+import '../../../common/data/abstract/command.dart';
+import '../../../common/data/abstract/command_set.dart';
+import 'feature_commands/session_roster_commands.dart';
 
 class ConsoleController extends GetxController {
+  static final ConsoleController _instance = ConsoleController._internal();
+
   final List<String> history = [];
   int historyIndex = -1;
   String _prompt = 'home❯ ';
   String inputBuffer = '';
-  SessionRosterCommands commands = SessionRosterCommands();
+
+  final Map<String, Command> globalCommands = <String, Command>{};
+  final Map<String, CommandSet> features = <String, CommandSet>{};
+  CommandSet? currentFeatureCommands;
 
   late final Terminal terminal;
+
+  factory ConsoleController() {
+    return _instance;
+  }
+
+  ConsoleController._internal()
+  {
+    initializeGlobalCommands();
+    initializeFeatures();
+  }
+
+  void initializeGlobalCommands() {
+    globalCommands['clear'] = Clear();
+    globalCommands['ls'] = Ls();
+    globalCommands['cd'] = Cd();
+    globalCommands['help'] = Help();
+  }
+
+  void initializeFeatures() {
+    features['sessionRoster'] = SessionRosterCommands();
+  }
 
   @override
   void onInit() {
@@ -109,41 +134,13 @@ class ConsoleController extends GetxController {
     terminal.write('\r\n\x1B[96m $adjustedText\x1B[0m');
   }
 
-  set prompt(String value) {
-    _prompt = value;
+  void error(String text) {
+    final adjustedText = text.replaceAll('\n', '\r\n ');
+    terminal.write('\r\n\x1B[91m $adjustedText\x1B[0m');
   }
 
-  void runCommand(String input) {
-    if (history.isEmpty || history.last != input) {
-      history.add(input); // Add only if it’s not identical to the last command
-    }
-    historyIndex = history.length;
-
-    // Parse the input string
-    final parts = input.split(' ');
-    if (parts.isEmpty) return;
-
-    final baseCommand = parts.first;
-    final arguments = <String>[];
-    final flags = <String, String?>{};
-
-    // Process arguments and flags
-    parseCommand(parts, flags, arguments);
-
-    // Execute the command
-    switch (baseCommand) {
-      case 'cl' || 'clear':
-        terminal.write('\x1B[2J\x1B[H');
-        break;
-      case 'echo':
-        final echoOutput = parts.sublist(1).join(' ');
-        log(echoOutput);
-        break;
-      case 'setprompt':
-        _prompt = '${arguments[0]}❯ ';
-      default:
-        commands.runCommand(baseCommand, arguments, flags);
-    }
+  set prompt(String value) {
+    _prompt = '$value❯ ';
   }
 
   void parseCommand(List<String> parts, Map<String, String?> flags, List<String> arguments) {
@@ -166,6 +163,118 @@ class ConsoleController extends GetxController {
       } else {
         // Positional argument
         arguments.add(part);
+      }
+    }
+  }
+
+  void runCommand(String input) {
+    if (history.isEmpty || history.last != input) {
+      history.add(input); // Add only if it’s not identical to the last command
+    }
+    historyIndex = history.length;
+
+    // Parse the input string
+    final parts = input.split(' ');
+    if (parts.isEmpty) return;
+
+    final baseCommand = parts.first;
+    final arguments = <String>[];
+    final flags = <String, String?>{};
+
+    // Process arguments and flags
+    parseCommand(parts, flags, arguments);
+
+    // Execute the command
+    if(globalCommands.containsKey(baseCommand)) {
+      globalCommands[baseCommand]?.runCommand(this, arguments, flags);
+    } else if (currentFeatureCommands != null){
+      currentFeatureCommands?.runCommand(baseCommand, arguments, flags);
+    } else {
+      error('Command not found, type "help" to view a list of commands');
+    }
+  }
+}
+
+class Clear extends Command {
+  Clear() : super(
+      maxArgs: 0,
+      minArgs: 0,
+      possibleFlag: false,
+      argTypes: [],
+      commandName: 'clear',
+      usage: 'Usage: clear'
+  );
+
+  @override
+  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
+    controller.terminal.write('\x1B[2J\x1B[H');
+  }
+}
+
+class Ls extends Command {
+  Ls() : super(
+      maxArgs: 0,
+      minArgs: 0,
+      possibleFlag: false,
+      argTypes: [],
+      commandName: 'ls',
+      usage: 'Usage: ls'
+  );
+
+  @override
+  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
+    String output = '';
+    for (CommandSet feature in controller.features.values) {
+      output += '${feature.featureName} ';
+    }
+    controller.log(output);
+  }
+}
+
+class Cd extends Command {
+  Cd() : super(
+      maxArgs: 1,
+      minArgs: 1,
+      possibleFlag: false,
+      argTypes: ['String'],
+      commandName: 'cd',
+      usage: 'Usage: cd <Feature>'
+  );
+
+  @override
+  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
+    if(controller.features.containsKey(arguments[0])) {
+      controller.currentFeatureCommands = controller.features[arguments[0]];
+      controller.prompt = (arguments[0]);
+    } else {
+      controller.error('${arguments[0]} is not a valid feature, type "ls" to see a list of features');
+    }
+  }
+}
+
+class Help extends Command {
+  Help() : super(
+      maxArgs: 0,
+      minArgs: 0,
+      possibleFlag: false,
+      argTypes: ['String'],
+      commandName: 'help',
+      usage: 'Usage: help'
+  );
+
+  @override
+  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
+    controller.log('----  global commands ----');
+    for(Command command in controller.globalCommands.values) {
+      controller.log(command.commandName);
+      controller.log('${command.usage}\n');
+    }
+
+    if(controller.currentFeatureCommands != null) {
+      controller.log('----  ${controller.currentFeatureCommands.featureName} commands ----');
+      for(Command command in controller.currentFeatureCommands.commands.values) {
+        controller.log(command.commandName);
+        controller.log('${command.usage}\n');
       }
     }
   }
