@@ -1,25 +1,19 @@
 import 'dart:io';
 
-import 'package:bessie/features/console/controller/console_controller.dart';
+import 'package:bessie/common/utils/model_utils/session_roster_utils.dart';
+import 'package:bessie/common/utils/model_utils/session_utils.dart';
 import 'package:csv/csv.dart';
 import 'package:get/get.dart';
 
 import '../../../common/data/models/cabin.dart';
 import '../../../common/data/models/camper.dart';
 import '../../../common/data/models/local_data.dart';
-import '../../../common/data/models/roster.dart';
+import '../../console/controller/console_controller.dart';
 
 class SessionRosterController extends GetxController {
   final LocalData localData = Get.find<LocalData>();
-  late final Roster sessionRoster;
 
-  SessionRosterController() {
-    if (localData.session != null){
-      sessionRoster = localData.session!.sessionRoster;
-    } else {
-      // TODO: Error handling!
-    }
-  }
+
 
   void createCamper({
     String firstName = '',
@@ -32,10 +26,11 @@ class SessionRosterController extends GetxController {
     // need to fetch cabin by name from the active cabins for the selected session
     Cabin? cabin;
     if (cabinName.isNotEmpty) {
-      cabin = localData.session?.getCabinByName(cabinName);
+      cabin = SessionUtils.getCabinByNameFromSession(localData.session!, cabinName);
     }
     if (cabin == null) {
       ConsoleController().error('Cabin $cabinName not found');
+      return;
     }
     // TODO: Error checking here, validate stuff
     Camper camperToAdd = Camper(
@@ -45,13 +40,13 @@ class SessionRosterController extends GetxController {
       gender: gender,
       age: age,
     );
-    sessionRoster.addCamper(camperToAdd);
-    cabin?.addCamper(camperToAdd);
-    ConsoleController().log('${camperToAdd.bessToString()}\n created and added to session: ${localData.session?.name}');
+    localData.session!.sessionRoster.campers[camperToAdd.id] = camperToAdd;
+    SessionRosterUtils.addCamperToCabin(cabin, camperToAdd);
+    ConsoleController().log('${camperToAdd.bessToString()}\n created and added to session: ${localData.session!.name}');
   }
 
   void logSessionRoster() {
-    ConsoleController().log(sessionRoster.bessToString());
+    ConsoleController().log(localData.session!.sessionRoster.bessToString());
   }
 
   void importFromCsv(File csvFile) async {
@@ -111,6 +106,7 @@ class SessionRosterController extends GetxController {
       }
 
       ConsoleController().log('CSV Import completed successfully.\n');
+      ConsoleController().writePrompt();
 
     } catch (e) {
       ConsoleController().error('Error importing CSV: $e');

@@ -20,14 +20,4 @@ class Organization extends BessObject{
     throw UnimplementedError();
   }
 
-  /// Add a branch to the map
-  void addBranch(Branch branch) {
-    branches[branch.id] = branch;
-  }
-
-  /// Retrieve a branch by id
-  Branch? getBranchById(String id) {
-    return branches[id];
-  }
-
 }

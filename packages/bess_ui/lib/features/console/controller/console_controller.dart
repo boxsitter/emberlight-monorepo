@@ -71,10 +71,11 @@ class ConsoleController extends GetxController {
     );
 
     // Display the initial prompt
-    _writePrompt();
+    writePrompt();
+    _handleInput('cd sessionRoster\r'); //TODO: Remove this
   }
 
-  void _writePrompt() {
+  void writePrompt() {
     terminal.write('\r');
     terminal.write('\x1B[1;32m$_prompt\x1B[0m'); // Green prompt
   }
@@ -89,7 +90,7 @@ class ConsoleController extends GetxController {
             terminal.write('\n');
           }
           inputBuffer = '';
-          _writePrompt();
+          writePrompt();
           break;
         case '\b': // Backspace key
         case '\u007F': // Handle Delete key (sends '\u007F' on some systems)

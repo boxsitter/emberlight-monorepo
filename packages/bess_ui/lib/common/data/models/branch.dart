@@ -18,14 +18,4 @@ class Branch extends BessObject{
     // TODO: implement toJson
     throw UnimplementedError();
   }
-
-  /// Add a Season to the map
-  void addSeason(Season season) {
-    seasons[season.id] = season;
-  }
-
-  /// Retrieve a season by id
-  Season? getSeasonById(String id) {
-    return seasons[id];
-  }
 }

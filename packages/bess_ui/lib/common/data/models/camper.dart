@@ -44,12 +44,4 @@ class Camper extends BessObject {
     return '$idField $nameField, $ageField, $cabinField';
   }
 
-  void addToCabin(Cabin cabin) {
-    cabin.addCamper(this);
-  }
-
-  void removeFromCabin(Cabin cabin) {
-    cabin.removeCamper(this);
-  }
-
 }

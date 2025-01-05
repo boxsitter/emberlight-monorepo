@@ -19,7 +19,7 @@ class DesktopLayout extends StatelessWidget {
             flex: 6,
             child: Column(
               children: [
-                //HEADER
+                // HEADER
                 const BessHeader(),
                 // BODY
                 Expanded(

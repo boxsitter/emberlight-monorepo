@@ -41,6 +41,8 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   uuid: ^3.0.7
   csv: ^5.0.0
+  window_manager: ^0.2.7
+  synchronized: ^3.0.0
 
   # Web Specific
   web: ^0.5.1

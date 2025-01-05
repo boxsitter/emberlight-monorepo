@@ -19,13 +19,4 @@ class Season extends BessObject{
     throw UnimplementedError();
   }
 
-  /// Add a session to the map
-  void addSession(Session session) {
-    sessions[session.id] = session;
-  }
-
-  /// Retrieve a session by id
-  Session? getSessionById(String id) {
-    return sessions[id];
-  }
 }

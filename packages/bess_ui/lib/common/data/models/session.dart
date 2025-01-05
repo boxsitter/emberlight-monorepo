@@ -1,14 +1,16 @@
 import 'package:bessie/common/data/abstract/bess_object.dart';
 import 'package:bessie/common/data/models/roster.dart';
+import 'package:bessie/common/data/models/schedule/schedule.dart';
 
 import 'cabin.dart';
 
 class Session extends BessObject{
   String name;
-  Roster sessionRoster;
+  Roster sessionRoster = Roster(title: 'Session Master');
   final Map<String, Cabin> cabins;
+  Schedule schedule = Schedule();
 
-  Session({required this.name}) : sessionRoster = Roster(title: 'Session Master'), cabins = {}, super('Session-$name');
+  Session({required this.name}) : cabins = {}, super('Session-$name');
 
   @override
   String bessToString() {
@@ -20,15 +22,6 @@ class Session extends BessObject{
   Map<String, dynamic> toJson() {
     // TODO: implement toJson
     throw UnimplementedError();
-  }
-
-  Cabin? getCabinByName(String cabinName) {
-    for (Cabin cabin in cabins.values) {
-      if (cabin.name.toLowerCase() == cabinName.toLowerCase()) {
-        return cabin;
-      }
-    }
-    return null;
   }
 
 }

@@ -9,10 +9,7 @@ abstract class BessObject {
   final String idTitle;
 
   // Default constructor that sets id
-  BessObject(this.idTitle)
-      : id = BessHelperFunctions.getBessId(idTitle),
-        createdAt = DateTime.now(),
-        updatedAt = DateTime.now();
+  BessObject(this.idTitle) : id = BessHelperFunctions.getBessId(idTitle), createdAt = DateTime.now(), updatedAt = DateTime.now();
 
   void updateUpdatedAt() {
     updatedAt = DateTime.now();
