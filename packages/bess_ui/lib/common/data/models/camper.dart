@@ -1,5 +1,8 @@
+import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
+
 import '../abstract/bess_object.dart';
 import 'cabin.dart';
+import 'camper_preference.dart';
 
 class Camper extends BessObject {
   String firstName;
@@ -8,6 +11,11 @@ class Camper extends BessObject {
   String gender;
   int age;
   Cabin? cabin;
+
+  // contains all AssignableActivityBlock's for the camper's session and their preferences for each
+  Map<AssignableActivityBlock, CamperPreference> activityPreferences = {};
+  // true when this camper has indicated their preference for every activity in the session
+  bool readyForActivityAssignment = false;
 
   Camper({
     this.firstName = '',

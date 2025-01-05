@@ -1,6 +1,7 @@
-import 'package:bessie/common/utils/model_utils/schedule_utils.dart';
+import 'package:bessie/common/data/models/camper_preference.dart';
 import 'package:get/get.dart';
 
+import '../../../common/data/models/camper.dart';
 import '../../../common/data/models/local_data.dart';
 import '../../../common/data/models/schedule/activity.dart';
 import '../../../common/data/models/schedule/assignable_activity_block.dart';
@@ -14,12 +15,76 @@ class ScheduleController extends GetxController {
   }
 
   void initializeSessionForTesting() {
-    AssignableActivityBlock testChoiceActivity = AssignableActivityBlock(name: 'Test Choice Activity');
-    _getSchedule().blocks[testChoiceActivity.id] = testChoiceActivity;
+    AssignableActivityBlock testBlock = createAssignableActivityBlock('Test Choice Activity');
 
-    ScheduleUtils.addActivityToBlock(testChoiceActivity, Activity(name: 'Gaga Ball', capacity: 6,));
-    ScheduleUtils.addActivityToBlock(testChoiceActivity, Activity(name: 'Boating', capacity: 8,));
-    ScheduleUtils.addActivityToBlock(testChoiceActivity, Activity(name: 'OLS', capacity: 8,));
-    ScheduleUtils.addActivityToBlock(testChoiceActivity, Activity(name: 'Arts and Crafts', capacity: 8,));
+    createActivity(
+        name: 'Gaga Ball',
+        capacity: 6,
+        assignableActivityBlock: testBlock,
+    );
+
+    createActivity(
+      name: 'Boating',
+      capacity: 8,
+      assignableActivityBlock: testBlock,
+    );
+
+    createActivity(
+      name: 'OLS',
+      capacity: 8,
+      assignableActivityBlock: testBlock,
+    );
+
+    createActivity(
+      name: 'Arts and Crafts',
+      capacity: 8,
+      assignableActivityBlock: testBlock,
+    );
+  }
+
+  AssignableActivityBlock createAssignableActivityBlock(String name) {
+    // creates the block and adds it to the schedule
+    AssignableActivityBlock blockToCreate = AssignableActivityBlock(name: 'Test Choice Activity');
+    _getSchedule().blocks[blockToCreate.id] = blockToCreate;
+
+    // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
+    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+      camper.activityPreferences[blockToCreate] = CamperPreference(camper: camper, block: blockToCreate);
+    }
+    return blockToCreate;
+  }
+
+  void deleteAssignableActivityBlock(AssignableActivityBlock blockToDelete) {
+    _getSchedule().blocks.remove(blockToDelete.id);
+
+    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+      camper.activityPreferences.remove(blockToDelete);
+    }
+  }
+
+  void createActivity({
+    required String name,
+    required int capacity,
+    required AssignableActivityBlock assignableActivityBlock,
+  }) {
+    Activity activityToAdd = Activity(
+      name: name,
+      capacity: capacity,
+      assignableActivityBlock: assignableActivityBlock,
+    );
+
+    assignableActivityBlock.activities[activityToAdd.id] = activityToAdd;
+
+    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+      camper.activityPreferences[assignableActivityBlock]!.preferences[activityToAdd] = null;
+    }
+  }
+
+  void removeActivityFromBlock(AssignableActivityBlock block, Activity activityToRemove) {
+    block.activities.remove(activityToRemove.id);
+
+    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+      camper.activityPreferences[block]!.preferences.remove(activityToRemove);
+    }
   }
 }

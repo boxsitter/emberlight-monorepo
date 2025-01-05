@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:bessie/common/data/abstract/schedule_block.dart';
+import 'package:bessie/common/data/models/camper_preference.dart';
+import 'package:bessie/common/data/models/schedule/activity.dart';
+import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
 import 'package:bessie/common/utils/model_utils/session_roster_utils.dart';
 import 'package:bessie/common/utils/model_utils/session_utils.dart';
 import 'package:csv/csv.dart';
@@ -12,8 +16,6 @@ import '../../console/controller/console_controller.dart';
 
 class SessionRosterController extends GetxController {
   final LocalData localData = Get.find<LocalData>();
-
-
 
   void createCamper({
     String firstName = '',
@@ -42,6 +44,19 @@ class SessionRosterController extends GetxController {
     );
     localData.session!.sessionRoster.campers[camperToAdd.id] = camperToAdd;
     SessionRosterUtils.addCamperToCabin(cabin, camperToAdd);
+
+    if(localData.session!.schedule.blocks.isNotEmpty) {
+      for (ScheduleBlock block in localData.session!.schedule.blocks.values) {
+        if (block is AssignableActivityBlock) {
+          AssignableActivityBlock assignableActivityBlock = block;
+          camperToAdd.activityPreferences[block] = CamperPreference(camper: camperToAdd, block: block);
+          for (Activity activity in assignableActivityBlock.activities.values) {
+            camperToAdd.activityPreferences[assignableActivityBlock]!.preferences[activity] = null;
+          }
+        }
+      }
+    }
+
     ConsoleController().log('${camperToAdd.bessToString()}\n created and added to session: ${localData.session!.name}');
   }
 
