@@ -8,6 +8,9 @@ class Roster extends BessObject {
 
   Roster({required this.title}) : campers = {}, super('Roster-$title-');
 
+  int get size => campers.length;
+  Iterable<Camper> get values => campers.values;
+
   @override
   String bessToString() {
     // Calculate maximum widths for each field

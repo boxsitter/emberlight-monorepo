@@ -6,7 +6,7 @@ import '../../data/models/camper.dart';
 
 class SessionRosterUtils {
   static void addCamperToCabin(Cabin cabin, Camper camperToAdd) {
-    if((cabin.roster.campers.length + 1) > cabin.capacity) {
+    if((cabin.size + 1) > cabin.capacity) {
       //TODO: Over capacity conflict
       ConsoleController().error('${cabin.name} is already at capacity');
     } else if (camperToAdd.cabin == null) {

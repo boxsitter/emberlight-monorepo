@@ -13,7 +13,7 @@ class Activity extends BessObject {
     required this.name,
     required this.capacity,
     required this.assignableActivityBlock,
-  }) : roster = Roster(title: ''), super('activity-$name');
+  }) : roster = Roster(title: '$name Roster'), super('activity-$name');
 
   @override
   String bessToString() {

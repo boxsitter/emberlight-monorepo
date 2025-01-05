@@ -5,7 +5,7 @@ import 'activity.dart';
 class AssignableActivityBlock extends ScheduleBlock {
   Map<String, Activity> activities;
 
-  AssignableActivityBlock({required String name}) : activities = {}, super('assignableactivityblock-$name', name: name);
+  AssignableActivityBlock({required String name}) : activities = {}, super('assignableactivityblock$name', name: name);
 
   @override
   String bessToString() {

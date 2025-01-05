@@ -5,7 +5,7 @@ import '../../abstract/bess_object.dart';
 class Schedule extends BessObject {
   Map<String, ScheduleBlock> blocks; //TODO: replace with a list of days
 
-  Schedule() : blocks = {}, super('schedule-');
+  Schedule() : blocks = {}, super('schedule');
 
 
 

@@ -45,6 +45,7 @@ class SessionRosterController extends GetxController {
     localData.session!.sessionRoster.campers[camperToAdd.id] = camperToAdd;
     SessionRosterUtils.addCamperToCabin(cabin, camperToAdd);
 
+    // initializes the camper preference objects for new campers added when a schedule already contains assignable activities
     if(localData.session!.schedule.blocks.isNotEmpty) {
       for (ScheduleBlock block in localData.session!.schedule.blocks.values) {
         if (block is AssignableActivityBlock) {

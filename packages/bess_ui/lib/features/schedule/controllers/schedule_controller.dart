@@ -48,7 +48,7 @@ class ScheduleController extends GetxController {
     _getSchedule().blocks[blockToCreate.id] = blockToCreate;
 
     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
-    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+    for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences[blockToCreate] = CamperPreference(camper: camper, block: blockToCreate);
     }
     return blockToCreate;
@@ -57,7 +57,7 @@ class ScheduleController extends GetxController {
   void deleteAssignableActivityBlock(AssignableActivityBlock blockToDelete) {
     _getSchedule().blocks.remove(blockToDelete.id);
 
-    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+    for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences.remove(blockToDelete);
     }
   }
@@ -75,7 +75,7 @@ class ScheduleController extends GetxController {
 
     assignableActivityBlock.activities[activityToAdd.id] = activityToAdd;
 
-    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+    for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences[assignableActivityBlock]!.preferences[activityToAdd] = null;
     }
   }
@@ -83,7 +83,7 @@ class ScheduleController extends GetxController {
   void removeActivityFromBlock(AssignableActivityBlock block, Activity activityToRemove) {
     block.activities.remove(activityToRemove.id);
 
-    for (Camper camper in localData.session!.sessionRoster.campers.values) {
+    for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences[block]!.preferences.remove(activityToRemove);
     }
   }

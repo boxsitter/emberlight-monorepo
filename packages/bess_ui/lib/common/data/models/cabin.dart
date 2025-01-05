@@ -1,5 +1,4 @@
 import 'package:bessie/common/data/models/roster.dart';
-import 'package:bessie/features/console/controller/console_controller.dart';
 
 import '../abstract/bess_object.dart';
 import 'camper.dart';
@@ -8,6 +7,9 @@ class Cabin extends BessObject {
   String name;
   int capacity;
   Roster roster;
+
+  int get size => roster.size;
+  Iterable<Camper> get campers => roster.values;
 
   Cabin({
     required this.name,
