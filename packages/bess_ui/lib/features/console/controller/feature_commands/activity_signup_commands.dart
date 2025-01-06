@@ -30,5 +30,4 @@ class RankRandom extends Command {
   void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
     controller.rankRandom();
   }
-
 }

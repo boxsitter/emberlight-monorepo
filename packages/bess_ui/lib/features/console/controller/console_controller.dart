@@ -1,4 +1,5 @@
 import 'package:bessie/features/console/controller/feature_commands/activity_signup_commands.dart';
+import 'package:bessie/features/console/controller/feature_commands/schedule_commands.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 
@@ -37,7 +38,8 @@ class ConsoleController extends GetxController {
   void initializeFeatures() {
     features.addAll({
       SessionRosterCommands(), 
-      ActivitySignupCommands()
+      ActivitySignupCommands(),
+      ScheduleCommands(),
     });
   }
 
@@ -138,6 +140,11 @@ class ConsoleController extends GetxController {
   void error(String text) {
     final adjustedText = text.replaceAll('\n', '\r\n ');
     terminal.write('\r\n\x1B[91m $adjustedText\x1B[0m');
+  }
+
+  void success(String text) {
+    final adjustedText = text.replaceAll('\n', '\r\n ');
+    terminal.write('\r\n\x1B[92m $adjustedText\x1B[0m');
   }
 
   set prompt(String value) {

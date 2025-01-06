@@ -38,11 +38,11 @@ class ActivitySignupController extends GetxController {
     }
     // set the new ranking
     preference.preferences[activity] = value;
-    ConsoleController().log('${preference.camper.name} ranked ${activity.name} in ${preference.block.name} a $value');
+    ConsoleController().log('${preference.camper.fullName} ranked ${activity.name} in ${preference.block.name} a $value');
     // updates completed for the preference if all activities have a ranking set
     if (preference.seenValues.length == preference.preferences.length) {
       preference.completed = true;
-      ConsoleController().log('${preference.camper.name} has ranked all activities in ${preference.block.name}');
+      ConsoleController().success('${preference.camper.fullName} has ranked all activities in ${preference.block.name}');
     }
   }
 

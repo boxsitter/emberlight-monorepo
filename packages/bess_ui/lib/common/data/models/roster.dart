@@ -8,7 +8,7 @@ class Roster extends BessObject {
 
   Roster({required this.title}) : campers = {}, super('Roster-$title-');
 
-  int get size => campers.length;
+  int get length => campers.length;
   Iterable<Camper> get values => campers.values;
 
   @override
@@ -39,7 +39,7 @@ class Roster extends BessObject {
     }).join('\n');
 
     // Combine header, column headers, and camper rows
-    return 'Roster Size: ${campers.length}\nCampers:\n$headerRow\n$camperStrings';
+    return '$title\nRoster Size: ${campers.length}\nCampers:\n$headerRow\n$camperStrings';
   }
 
   @override

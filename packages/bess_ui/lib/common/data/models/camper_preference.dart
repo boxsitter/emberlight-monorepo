@@ -9,7 +9,7 @@ class CamperPreference extends BessObject {
   final Camper camper;
   final AssignableActivityBlock block;
   final Map<Activity, int?> preferences = {};
-  final seenValues = <int>{};
+  final Set<int> seenValues = <int>{};
   // true when the camper has indicated their preference for every activity in the block
   bool completed = false;
 

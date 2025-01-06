@@ -8,7 +8,7 @@ class Cabin extends BessObject {
   int capacity;
   Roster roster;
 
-  int get size => roster.size;
+  int get length => roster.length;
   Iterable<Camper> get campers => roster.values;
 
   Cabin({

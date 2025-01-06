@@ -1,3 +1,4 @@
+import 'package:bessie/common/data/models/schedule/activity.dart';
 import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
 
 import '../abstract/bess_object.dart';
@@ -14,6 +15,8 @@ class Camper extends BessObject {
 
   // contains all AssignableActivityBlock's for the camper's session and their preferences for each
   Map<AssignableActivityBlock, CamperPreference> activityPreferences = {};
+  // set of the activities a camper is assigned to for each activity block
+  Map<AssignableActivityBlock, Activity?> activities = {};
 
   Camper({
     this.firstName = '',
