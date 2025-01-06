@@ -10,9 +10,7 @@ import '../../../common/data/models/schedule/schedule.dart';
 class ScheduleController extends GetxController {
   final LocalData localData = Get.find<LocalData>();
 
-  Schedule _getSchedule() {
-    return localData.session!.schedule;
-  }
+  Schedule get schedule => localData.session!.schedule;
 
   void initializeSessionForTesting() {
     AssignableActivityBlock testBlock = createAssignableActivityBlock('Test Choice Activity');
@@ -45,7 +43,7 @@ class ScheduleController extends GetxController {
   AssignableActivityBlock createAssignableActivityBlock(String name) {
     // creates the block and adds it to the schedule
     AssignableActivityBlock blockToCreate = AssignableActivityBlock(name: 'Test Choice Activity');
-    _getSchedule().blocks[blockToCreate.id] = blockToCreate;
+    schedule.blocks[blockToCreate.id] = blockToCreate;
 
     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
     for (Camper camper in localData.session!.sessionRoster.values) {
@@ -55,7 +53,7 @@ class ScheduleController extends GetxController {
   }
 
   void deleteAssignableActivityBlock(AssignableActivityBlock blockToDelete) {
-    _getSchedule().blocks.remove(blockToDelete.id);
+    schedule.blocks.remove(blockToDelete.id);
 
     for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences.remove(blockToDelete);
@@ -70,7 +68,7 @@ class ScheduleController extends GetxController {
     Activity activityToAdd = Activity(
       name: name,
       capacity: capacity,
-      assignableActivityBlock: assignableActivityBlock,
+      block: assignableActivityBlock,
     );
 
     assignableActivityBlock.activities[activityToAdd.id] = activityToAdd;
@@ -86,5 +84,11 @@ class ScheduleController extends GetxController {
     for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences[block]!.preferences.remove(activityToRemove);
     }
+  }
+
+  // assigns every camper that has completed their preferences for that block
+  // warns for every camper who hasn't, they won't be assigned
+  void assignCampersForBlock(AssignableActivityBlock block) {
+
   }
 }

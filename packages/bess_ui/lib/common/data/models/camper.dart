@@ -14,8 +14,6 @@ class Camper extends BessObject {
 
   // contains all AssignableActivityBlock's for the camper's session and their preferences for each
   Map<AssignableActivityBlock, CamperPreference> activityPreferences = {};
-  // true when this camper has indicated their preference for every activity in the session
-  bool readyForActivityAssignment = false;
 
   Camper({
     this.firstName = '',

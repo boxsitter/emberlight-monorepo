@@ -9,13 +9,13 @@ import '../../../session_roster/controllers/session_roster_controller.dart';
 class SessionRosterCommands extends CommandSet{
   SessionRosterCommands() : super(
     controller: Get.find<SessionRosterController>(),
-    featureName: 'sessionRoster',
+    featureName: 'sessionroster',
   );
 
   @override
   void initializeCommands() {
     super.commands['createcamper'] = Createcamper();
-    super.commands['content'] = Content();
+    super.commands['roster'] = Roster();
     super.commands['importcsv'] = ImportCsv();
   }
 }
@@ -40,14 +40,14 @@ class Createcamper extends Command {
   }
 }
 
-class Content extends Command {
-  Content() : super(
+class Roster extends Command {
+  Roster() : super(
       maxArgs: 0,
       minArgs: 0,
       possibleFlag: false,
       argTypes: [],
-      commandName: 'content',
-      usage: 'Usage: content'
+      commandName: 'roster',
+      usage: 'Usage: roster'
   );
 
   @override

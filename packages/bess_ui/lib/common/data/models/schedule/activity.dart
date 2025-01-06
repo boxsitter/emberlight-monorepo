@@ -7,12 +7,12 @@ class Activity extends BessObject {
   final String name;
   final int capacity;
   Roster roster;
-  final AssignableActivityBlock assignableActivityBlock;
+  final AssignableActivityBlock block;
 
   Activity({
     required this.name,
     required this.capacity,
-    required this.assignableActivityBlock,
+    required this.block,
   }) : roster = Roster(title: '$name Roster'), super('activity-$name');
 
   @override

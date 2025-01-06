@@ -6,13 +6,14 @@ import 'camper.dart';
 
 // Represents a camper's preference for each activity in a given AssignableActivityBlock
 class CamperPreference extends BessObject {
-  Camper camper;
-  AssignableActivityBlock block;
-  Map<Activity, int?> preferences = {};
+  final Camper camper;
+  final AssignableActivityBlock block;
+  final Map<Activity, int?> preferences = {};
+  final seenValues = <int>{};
   // true when the camper has indicated their preference for every activity in the block
   bool completed = false;
 
-  CamperPreference({required this.camper, required this.block}) : super('CamperPreference-');
+  CamperPreference({required this.camper, required this.block}) : super('CamperPreference-${camper.lastName}-${camper.firstName}');
 
   @override
   String bessToString() {

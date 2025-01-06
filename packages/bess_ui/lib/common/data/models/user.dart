@@ -31,9 +31,6 @@ class User extends BessObject {
   @override
   String get formattedDate => BessFormatter.formatDate(createdAt);
 
-  @override
-  String get formattedUpdatedAtDate => BessFormatter.formatDate(updatedAt);
-
   /// Static function to create an empty user model
   static User empty() => User(email: '');
 
@@ -49,7 +46,6 @@ class User extends BessObject {
       'role': role.name.toString(),
       'branchRole': branchRole.name.toString(),
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 

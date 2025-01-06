@@ -14,7 +14,7 @@ abstract class Command {
     required this.possibleFlag,
     required this.argTypes,
     required this.commandName,
-    required this.usage,
+    this.usage = '',
   });
 
   // Validate arguments

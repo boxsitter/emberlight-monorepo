@@ -15,11 +15,12 @@ abstract class CommandSet {
 
   void initializeCommands();
 
-  void runCommand(String baseCommand, List<String> arguments, Map<String, String?> flags) {
+  bool runCommand(String baseCommand, List<String> arguments, Map<String, String?> flags) {
     if(commands.containsKey(baseCommand)) {
       commands[baseCommand]?.execute(controller, arguments, flags);
+      return true;
     } else {
-      ConsoleController().error('Command not found, type "help" to view a list of commands');
+      return false;
     }
   }
 }

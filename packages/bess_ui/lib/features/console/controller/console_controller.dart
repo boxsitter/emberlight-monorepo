@@ -1,3 +1,4 @@
+import 'package:bessie/features/console/controller/feature_commands/activity_signup_commands.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 
@@ -14,8 +15,7 @@ class ConsoleController extends GetxController {
   String inputBuffer = '';
 
   final Map<String, Command> globalCommands = <String, Command>{};
-  final Map<String, CommandSet> features = <String, CommandSet>{};
-  CommandSet? currentFeatureCommands;
+  final List<CommandSet> features = [];
 
   late final Terminal terminal;
 
@@ -31,13 +31,14 @@ class ConsoleController extends GetxController {
 
   void initializeGlobalCommands() {
     globalCommands['clear'] = Clear();
-    globalCommands['ls'] = Ls();
-    globalCommands['cd'] = Cd();
     globalCommands['help'] = Help();
   }
 
   void initializeFeatures() {
-    features['sessionRoster'] = SessionRosterCommands();
+    features.addAll({
+      SessionRosterCommands(), 
+      ActivitySignupCommands()
+    });
   }
 
   @override
@@ -72,7 +73,6 @@ class ConsoleController extends GetxController {
 
     // Display the initial prompt
     writePrompt();
-    _handleInput('cd sessionRoster\r'); //TODO: Remove this
   }
 
   void writePrompt() {
@@ -188,9 +188,12 @@ class ConsoleController extends GetxController {
     // Execute the command
     if(globalCommands.containsKey(baseCommand)) {
       globalCommands[baseCommand]?.runCommand(this, arguments, flags);
-    } else if (currentFeatureCommands != null){
-      currentFeatureCommands?.runCommand(baseCommand, arguments, flags);
     } else {
+      for (CommandSet feature in features) {
+        if(feature.runCommand(baseCommand, arguments, flags)) {
+          return;
+        }
+      }
       error('Command not found, type "help" to view a list of commands');
     }
   }
@@ -212,47 +215,6 @@ class Clear extends Command {
   }
 }
 
-class Ls extends Command {
-  Ls() : super(
-      maxArgs: 0,
-      minArgs: 0,
-      possibleFlag: false,
-      argTypes: [],
-      commandName: 'ls',
-      usage: 'Usage: ls'
-  );
-
-  @override
-  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
-    String output = '';
-    for (CommandSet feature in controller.features.values) {
-      output += '${feature.featureName} ';
-    }
-    controller.log(output);
-  }
-}
-
-class Cd extends Command {
-  Cd() : super(
-      maxArgs: 1,
-      minArgs: 1,
-      possibleFlag: false,
-      argTypes: ['String'],
-      commandName: 'cd',
-      usage: 'Usage: cd <Feature>'
-  );
-
-  @override
-  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
-    if(controller.features.containsKey(arguments[0])) {
-      controller.currentFeatureCommands = controller.features[arguments[0]];
-      controller.prompt = (arguments[0]);
-    } else {
-      controller.error('${arguments[0]} is not a valid feature, type "ls" to see a list of features');
-    }
-  }
-}
-
 class Help extends Command {
   Help() : super(
       maxArgs: 0,
@@ -265,18 +227,18 @@ class Help extends Command {
 
   @override
   void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
-    controller.log('----  global commands ----');
+    controller.log('----  commands ----');
     for(Command command in controller.globalCommands.values) {
       controller.log(command.commandName);
       controller.log('${command.usage}\n');
     }
 
-    if(controller.currentFeatureCommands != null) {
-      controller.log('----  ${controller.currentFeatureCommands.featureName} commands ----');
-      for(Command command in controller.currentFeatureCommands.commands.values) {
+    for (CommandSet feature in controller.features) {
+      for (Command command in feature.commands.values) {
         controller.log(command.commandName);
         controller.log('${command.usage}\n');
       }
     }
   }
 }
+
