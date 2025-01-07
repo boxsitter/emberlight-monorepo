@@ -6,7 +6,10 @@ class Roster extends BessObject {
   String title;
   final Map<String, Camper> campers;
 
-  Roster({required this.title}) : campers = {}, super('Roster-$title-');
+  Roster({
+    required BessObject dataParent,
+    required this.title,
+  }) : campers = {}, super('Roster-$title-', dataParent);
 
   int get length => campers.length;
   Iterable<Camper> get values => campers.values;

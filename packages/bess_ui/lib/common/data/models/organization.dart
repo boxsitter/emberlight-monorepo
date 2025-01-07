@@ -6,7 +6,10 @@ class Organization extends BessObject{
   String name;
   Map<String, Branch> branches;
 
-  Organization({required this.name}) : branches = {}, super('Organization-$name');
+  Organization({
+    required BessObject dataParent,
+    required this.name
+  }) : branches = {}, super('Organization-$name', dataParent);
 
   @override
   String bessToString() {

@@ -6,11 +6,20 @@ import 'cabin.dart';
 
 class Session extends BessObject{
   String name;
-  Roster sessionRoster = Roster(title: 'Session Master');
-  final Map<String, Cabin> cabins;
-  Schedule schedule = Schedule();
+  late final Roster sessionRoster;
+  final Map<String, Cabin> cabins = {};
+  late final Schedule schedule;
 
-  Session({required this.name}) : cabins = {}, super('Session-$name');
+  Session({
+    required BessObject dataParent,
+    required this.name,
+  }) : super('Session-$name', dataParent) {
+    sessionRoster = Roster(
+      dataParent: this,
+      title: 'Session Master Roster'
+    );
+    schedule = Schedule(dataParent: this);
+  }
 
   @override
   String bessToString() {

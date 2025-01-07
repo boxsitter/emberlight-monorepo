@@ -32,12 +32,14 @@ class ActivitySignupController extends GetxController {
       for(var entry in preference.preferences.entries) {
         if (entry.value == value) {
           preference.preferences[entry.key] = null;
+          preference.updateTimestamp();
           break;
         }
       }
     }
     // set the new ranking
     preference.preferences[activity] = value;
+    preference.updateTimestamp();
     ConsoleController().log('${preference.camper.fullName} ranked ${activity.name} in ${preference.block.name} a $value');
     // updates completed for the preference if all activities have a ranking set
     if (preference.seenValues.length == preference.preferences.length) {
@@ -47,7 +49,6 @@ class ActivitySignupController extends GetxController {
   }
 
   void clearPreference(CamperPreference preference) {
-    setRanking(preference: preference, activity: Activity(name: 'test', capacity: 10, block: AssignableActivityBlock(name: 'test')), value: 10);
     preference.preferences.forEach((key, value) {
       preference.preferences[key] = null;
     });
@@ -57,6 +58,7 @@ class ActivitySignupController extends GetxController {
 
     // mark as incomplete
     preference.completed = false;
+    preference.updateTimestamp();
   }
 
   // assigns all campers a random preference for each activity

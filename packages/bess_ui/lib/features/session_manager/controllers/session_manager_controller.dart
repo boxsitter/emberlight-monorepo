@@ -21,7 +21,8 @@ class SessionManagerController extends GetxController {
     required String name,
     required int capacity,
   }) {
-    Cabin cabinToAdd = Cabin(name: name, capacity: capacity);
+    Cabin cabinToAdd = Cabin(dataParent: localData.session!, name: name, capacity: capacity);
     localData.session!.cabins[cabinToAdd.id] = cabinToAdd;
+    localData.session!.updateTimestamp();
   }
 }

@@ -4,17 +4,23 @@ import '../abstract/bess_object.dart';
 import 'camper.dart';
 
 class Cabin extends BessObject {
-  String name;
-  int capacity;
-  Roster roster;
+  final String name;
+  final int capacity;
+  late final Roster roster;
 
   int get length => roster.length;
   Iterable<Camper> get campers => roster.values;
 
   Cabin({
+    required BessObject dataParent,
     required this.name,
     required this.capacity,
-  }) : roster = Roster(title: name), super('Cabin-$name');
+  }) : super('Cabin-$name', dataParent) {
+      roster = Roster(
+          dataParent: this,
+          title: name
+      );
+  }
 
   @override
   String bessToString() {

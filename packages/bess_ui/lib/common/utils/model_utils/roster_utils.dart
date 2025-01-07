@@ -13,9 +13,11 @@ class RosterUtils {
 
   static void addCamperToRoster(Roster roster, Camper camperToAdd) {
     roster.campers[camperToAdd.id] = camperToAdd;
+    roster.updateTimestamp();
   }
 
   static void removeCamperFromRoster(Roster roster, Camper camperToRemove) {
     roster.campers.remove(camperToRemove.id);
+    roster.updateTimestamp();
   }
 }

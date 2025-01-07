@@ -6,14 +6,20 @@ import 'assignable_activity_block.dart';
 class Activity extends BessObject {
   final String name;
   final int capacity;
-  Roster roster;
+  late final Roster roster;
   final AssignableActivityBlock block;
 
   Activity({
+    required BessObject dataParent,
     required this.name,
     required this.capacity,
     required this.block,
-  }) : roster = Roster(title: '$name Roster'), super('activity-$name');
+  }) : super('activity-$name', dataParent) {
+    roster = Roster(
+      dataParent: this,
+      title: '$name Roster',
+    );
+  }
 
   @override
   String bessToString() {

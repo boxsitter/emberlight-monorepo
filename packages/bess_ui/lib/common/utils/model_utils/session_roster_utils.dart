@@ -12,6 +12,7 @@ class SessionRosterUtils {
     } else if (camperToAdd.cabin == null) {
       RosterUtils.addCamperToRoster(cabin.roster, camperToAdd);
       camperToAdd.cabin = cabin;
+      camperToAdd.updateTimestamp();
     } else {
       removeCamperFromCabin(camperToAdd.cabin!, camperToAdd);
       addCamperToCabin(cabin, camperToAdd);
@@ -21,5 +22,6 @@ class SessionRosterUtils {
   static void removeCamperFromCabin(Cabin cabin, Camper camperToRemove) {
     RosterUtils.removeCamperFromRoster(cabin.roster, camperToRemove);
     camperToRemove.cabin = null;
+    camperToRemove.updateTimestamp();
   }
 }

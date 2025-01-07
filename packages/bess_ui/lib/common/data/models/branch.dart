@@ -3,9 +3,12 @@ import 'package:bessie/common/data/models/season.dart';
 
 class Branch extends BessObject{
   String name;
-  Map<String, Season> seasons;
+  Map<String, Season> seasons = {};
 
-  Branch({required this.name}) : seasons = {}, super('Branch-$name');
+  Branch({
+    required BessObject dataParent,
+    required this.name
+  }) : super('Branch-$name', dataParent);
 
   @override
   String bessToString() {

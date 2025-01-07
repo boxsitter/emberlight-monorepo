@@ -27,7 +27,6 @@ class ConsoleController extends GetxController {
   ConsoleController._internal()
   {
     initializeGlobalCommands();
-    initializeFeatures();
   }
 
   void initializeGlobalCommands() {

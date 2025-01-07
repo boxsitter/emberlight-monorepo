@@ -13,7 +13,11 @@ class CamperPreference extends BessObject {
   // true when the camper has indicated their preference for every activity in the block
   bool completed = false;
 
-  CamperPreference({required this.camper, required this.block}) : super('CamperPreference-${camper.lastName}-${camper.firstName}');
+  CamperPreference({
+    required BessObject dataParent,
+    required this.camper,
+    required this.block
+  }) : super('CamperPreference-${camper.lastName}-${camper.firstName}', dataParent);
 
   @override
   String bessToString() {

@@ -5,7 +5,10 @@ class Season extends BessObject{
   String name;
   Map<String, Session> sessions;
 
-  Season({required this.name}) : sessions = {}, super('Season-$name');
+  Season({
+    required BessObject dataParent,
+    required this.name,
+  }) : sessions = {}, super('Season-$name', dataParent);
 
   @override
   String bessToString() {

@@ -36,6 +36,7 @@ class SessionRosterController extends GetxController {
     }
     // TODO: Error checking here, validate stuff
     Camper camperToAdd = Camper(
+      dataParent: localData.session!.sessionRoster,
       firstName: firstName,
       lastName: lastName,
       preferredName: preferredName,
@@ -43,6 +44,7 @@ class SessionRosterController extends GetxController {
       age: age,
     );
     localData.session!.sessionRoster.campers[camperToAdd.id] = camperToAdd;
+    localData.session!.sessionRoster.updateTimestamp();
     SessionRosterUtils.addCamperToCabin(cabin, camperToAdd);
 
     // initializes the camper preference objects for new campers added when a schedule already contains assignable activities
@@ -50,9 +52,11 @@ class SessionRosterController extends GetxController {
       for (ScheduleBlock block in localData.session!.schedule.blocks.values) {
         if (block is AssignableActivityBlock) {
           AssignableActivityBlock assignableActivityBlock = block;
-          camperToAdd.activityPreferences[block] = CamperPreference(camper: camperToAdd, block: block);
+          camperToAdd.activityPreferences[block] = CamperPreference(dataParent: camperToAdd, camper: camperToAdd, block: block);
+          camperToAdd.updateTimestamp();
           for (Activity activity in assignableActivityBlock.activities.values) {
             camperToAdd.activityPreferences[assignableActivityBlock]!.preferences[activity] = null;
+            camperToAdd.activityPreferences[assignableActivityBlock]!.updateTimestamp();
           }
         }
       }

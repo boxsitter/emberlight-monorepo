@@ -3,7 +3,6 @@ import 'package:bessie/common/data/models/camper_preference.dart';
 import 'package:bessie/common/utils/model_utils/roster_utils.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../../common/data/models/camper.dart';
 import '../../../common/data/models/local_data.dart';
@@ -47,23 +46,27 @@ class ScheduleController extends GetxController {
 
   AssignableActivityBlock createAssignableActivityBlock(String name) {
     // creates the block and adds it to the schedule
-    AssignableActivityBlock blockToCreate = AssignableActivityBlock(name: 'Test Choice Activity');
+    AssignableActivityBlock blockToCreate = AssignableActivityBlock(dataParent: schedule, name: 'Test Choice Activity');
     schedule.blocks[blockToCreate.id] = blockToCreate;
+    schedule.updateTimestamp();
 
     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
     for (Camper camper in localData.session!.sessionRoster.values) {
-      camper.activityPreferences[blockToCreate] = CamperPreference(camper: camper, block: blockToCreate);
+      camper.activityPreferences[blockToCreate] = CamperPreference(dataParent: camper, camper: camper, block: blockToCreate);
       camper.activities[blockToCreate] = null;
+      camper.updateTimestamp();
     }
     return blockToCreate;
   }
 
   void deleteAssignableActivityBlock(AssignableActivityBlock blockToDelete) {
     schedule.blocks.remove(blockToDelete.id);
+    schedule.updateTimestamp();
 
     for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences.remove(blockToDelete);
       camper.activities.remove(blockToDelete);
+      camper.updateTimestamp();
     }
   }
 
@@ -73,23 +76,28 @@ class ScheduleController extends GetxController {
     required AssignableActivityBlock assignableActivityBlock,
   }) {
     Activity activityToAdd = Activity(
+      dataParent: assignableActivityBlock,
       name: name,
       capacity: capacity,
       block: assignableActivityBlock,
     );
 
     assignableActivityBlock.activities[activityToAdd.id] = activityToAdd;
+    assignableActivityBlock.updateTimestamp();
 
     for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences[assignableActivityBlock]!.preferences[activityToAdd] = null;
+      camper.updateTimestamp();
     }
   }
 
   void removeActivityFromBlock(AssignableActivityBlock block, Activity activityToRemove) {
     block.activities.remove(activityToRemove.id);
+    block.updateTimestamp();
 
     for (Camper camper in localData.session!.sessionRoster.values) {
       camper.activityPreferences[block]!.preferences.remove(activityToRemove);
+      camper.updateTimestamp();
     }
   }
 
@@ -98,7 +106,7 @@ class ScheduleController extends GetxController {
   // assigns every camper that has completed their preferences for that block
   // warns for every camper who hasn't, they won't be assigned
   void assignCampersForBlock() {
-    AssignableActivityBlock block = schedule.blocks.values.toList()[0] as AssignableActivityBlock; // TODO: Remove hardcoded bullshit
+    AssignableActivityBlock block = schedule.blocks.values.toList()[0] as AssignableActivityBlock; // TODO: Remove hardcoded stuff
     List<Camper> randomizedRoster = campers.values.toList()..shuffle();
 
     for (Camper camper in randomizedRoster) {
@@ -148,6 +156,7 @@ class ScheduleController extends GetxController {
     }
     RosterUtils.addCamperToRoster(activity.roster, camper);
     camper.activities[activity.block] = activity;
+    camper.updateTimestamp();
     ConsoleController().success('${camper.fullName} successfully assigned to ${activity.name}');
     return true;
   }
@@ -155,6 +164,7 @@ class ScheduleController extends GetxController {
   void removeCamperFromActivity(Camper camper, Activity activity) {
     RosterUtils.removeCamperFromRoster(activity.roster, camper);
     camper.activities[activity.block] = null;
+    camper.updateTimestamp();
     ConsoleController().log('${camper.fullName} removed from ${activity.name}');
   }
 
