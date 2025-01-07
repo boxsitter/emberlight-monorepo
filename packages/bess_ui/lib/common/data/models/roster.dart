@@ -50,5 +50,4 @@ class Roster extends BessObject {
     // TODO: implement toJson
     throw UnimplementedError();
   }
-
 }

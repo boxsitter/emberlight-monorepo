@@ -1,6 +1,5 @@
 import 'package:bessie/common/data/abstract/schedule_block.dart';
 import 'package:bessie/common/data/models/camper_preference.dart';
-import 'package:bessie/common/utils/model_utils/roster_utils.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +8,7 @@ import '../../../common/data/models/local_data.dart';
 import '../../../common/data/models/schedule/activity.dart';
 import '../../../common/data/models/schedule/assignable_activity_block.dart';
 import '../../../common/data/models/schedule/schedule.dart';
+import '../../../common/utils/feature_utils/roster_utils.dart';
 
 class ScheduleController extends GetxController {
   final LocalData localData = Get.find<LocalData>();
@@ -147,7 +147,7 @@ class ScheduleController extends GetxController {
   // if the camper is in another activity, they are removed from it and added to
   bool assignCamperToActivity(Camper camper, Activity activity) {
     if (activity.roster.length + 1 > activity.capacity) {
-      ConsoleController().error('Adding ${camper.fullName} to ${activity.name} would place it over capacity. Current count: ${activity.roster.length}, Capacity: ${activity.capacity}');
+      ConsoleController().error('Adding ${camper.fullName} to ${activity.name} would put it over capacity. Current count: ${activity.roster.length}, Capacity: ${activity.capacity}');
       return false;
     }
     if (camper.activities[activity.block] != null) {

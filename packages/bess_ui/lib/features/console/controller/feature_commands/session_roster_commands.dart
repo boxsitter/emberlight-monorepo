@@ -15,8 +15,9 @@ class SessionRosterCommands extends CommandSet{
   @override
   void initializeCommands() {
     super.commands['createcamper'] = Createcamper();
-    super.commands['roster'] = Roster();
+    super.commands['roster'] = DisplayRoster();
     super.commands['importcsv'] = ImportCsv();
+    super.commands['exportroster'] = ExportRoster();
   }
 }
 
@@ -40,8 +41,8 @@ class Createcamper extends Command {
   }
 }
 
-class Roster extends Command {
-  Roster() : super(
+class DisplayRoster extends Command {
+  DisplayRoster() : super(
       maxArgs: 0,
       minArgs: 0,
       possibleFlag: false,
@@ -69,5 +70,21 @@ class ImportCsv extends Command {
   @override
   void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
     controller.importFromCsv(File('C:\\Users\\Leyto\\User Projects\\bessie\\lib\\common\\data\\test_files\\dummy_roster.csv')); // TODO: Fix hardcoding
+  }
+}
+
+class ExportRoster extends Command {
+  ExportRoster() : super(
+      maxArgs: 0,
+      minArgs: 0,
+      possibleFlag: false,
+      argTypes: [],
+      commandName: 'exportroster',
+      usage: 'Usage: exportroster'
+  );
+
+  @override
+  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
+    controller.exportPdf();
   }
 }

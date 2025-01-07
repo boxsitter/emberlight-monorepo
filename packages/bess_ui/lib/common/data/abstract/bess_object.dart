@@ -1,5 +1,4 @@
 import 'package:bessie/common/utils/helpers/helper_functions.dart';
-import 'package:bessie/features/console/controller/console_controller.dart';
 
 import '../../utils/formatters/formatter.dart';
 
@@ -16,11 +15,7 @@ abstract class BessObject {
   BessObject(this.idTitle, this.dataParent) :
     id = BessHelperFunctions.getBessId(idTitle),
     createdAt = DateTime.now(),
-    updatedAt = DateTime.now() {
-      if(!id.contains('localdata')) {
-        ConsoleController().log('[$id] created, timestamp updated to: $formattedUpdatedAt');
-      }
-    }
+    updatedAt = DateTime.now();
 
   // Concrete implementation
   String get formattedCreatedAt => BessFormatter.formatDate(createdAt);
@@ -45,13 +40,11 @@ abstract class BessObject {
 
   void updateTimestamp() {
     if (isUpdating) {
-      ConsoleController().error('[$id] Redundant timestamp update attempted');
       return;
     }
 
     isUpdating = true;
     updatedAt = DateTime.now();
-    ConsoleController().log('[$id] timestamp updated to: $formattedUpdatedAt');
     dataParent?.updateTimestamp();
 
     Future.delayed(const Duration(milliseconds: 50), () {

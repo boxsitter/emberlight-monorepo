@@ -35,7 +35,7 @@ class ResetPasswordWidget extends StatelessWidget {
         const SizedBox(height: BessSizes.spaceBtwItems),
 
         // Title & Subtitle
-        Text(BessTexts.changeYourPasswordTitle + ' ' + email,
+        Text('${BessTexts.changeYourPasswordTitle} $email',
             style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center),
         const SizedBox(height: BessSizes.spaceBtwItems),

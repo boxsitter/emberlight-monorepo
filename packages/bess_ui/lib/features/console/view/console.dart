@@ -1,7 +1,6 @@
 import 'package:bessie/features/console/view/themes/console_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:xterm/core.dart';
 import 'package:xterm/ui.dart';
 
 import '../../../common/widgets/layouts/templates/site_layout.dart';

@@ -1,4 +1,4 @@
-import 'package:bessie/common/utils/model_utils/roster_utils.dart';
+import 'package:bessie/common/utils/feature_utils/roster_utils.dart';
 
 import '../../../features/console/controller/console_controller.dart';
 import '../../data/models/cabin.dart';

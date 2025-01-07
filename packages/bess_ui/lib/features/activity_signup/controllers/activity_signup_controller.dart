@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:bessie/common/data/models/camper_preference.dart';
 import 'package:bessie/common/data/models/schedule/activity.dart';
-import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 
