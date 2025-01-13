@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
@@ -73,6 +75,53 @@ class PdfUtils {
     return pdf;
   }
 
+  static pw.Document assignableActivityBlockToPdf(AssignableActivityBlock block) {
+    final pdf = pw.Document();
+
+    // Iterate through each activity in the block
+    for (final activity in block.activities.values) {
+      final pdf = pw.Document();
+
+      for (final activity in block.activities.values) {
+        // Generate a PDF for each roster
+        final rosterPdf = rosterToPdf(activity.roster);
+
+        // Save the roster PDF as bytes
+        final rosterBytes = rosterPdf.save();
+
+        // Add the roster PDF content to the main document
+        pdf.addPage(
+          pw.Page(
+            build: (context) =>
+                pw.FullPage(
+                  ignoreMargins: true,
+                  child: pw.Image(pw.MemoryImage(rosterBytes as Uint8List)),
+                ),
+          ),
+        );
+
+        // Add a dashed separator if it's not the last activity
+        if (activity != block.activities.values.last) {
+          pdf.addPage(
+            pw.Page(
+              build: (context) =>
+                  pw.Center(
+                    child: pw.Container(
+                      margin: const pw.EdgeInsets.symmetric(vertical: 10),
+                      child: pw.Text(
+                        '------------------------------------------------------------',
+                        style: const pw.TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ),
+            ),
+          );
+        }
+      }
+    }
+    return pdf;
+  }
+
   // Calculate dynamic column widths based on longest content
   static Map<int, pw.TableColumnWidth> calculateDynamicColumnWidths(Roster roster) {
     // Headers as keys and longest values as placeholders
@@ -119,4 +168,5 @@ class PdfUtils {
       ConsoleController().error('Error saving PDF: $e');
     }
   }
+
 }
