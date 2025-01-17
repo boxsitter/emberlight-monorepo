@@ -44,9 +44,7 @@ dependencies:
   window_manager: ^0.2.7
   synchronized: ^3.0.0
   pdf: ^3.11.1
-  printing: ^5.10.0
-  path_provider: ^2.0.11
-  file_picker: ^5.5.0
+  file_picker: ^5.0.0
 
   # Web Specific
   web: ^0.5.1

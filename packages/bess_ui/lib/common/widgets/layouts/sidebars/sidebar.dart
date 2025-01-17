@@ -27,12 +27,12 @@ class BessSidebar extends StatelessWidget {
           child: Column(
             children: [
               // Image
-              const BessCircularImage(
-                width: 100,
-                height: 100,
-                image: BessImages.lightAppLogo,
-                backgroundColor: Colors.transparent,
-              ),
+              // const BessCircularImage(
+              //   width: 100,
+              //   height: 100,
+              //   image: BessImages.lightAppLogo,
+              //   backgroundColor: Colors.transparent,
+              // ),
               const SizedBox(height: BessSizes.spaceBtwSections),
               Padding(
                 padding: const EdgeInsets.all(BessSizes.md),

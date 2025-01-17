@@ -14,8 +14,6 @@ class BessPdfStyles {
   // Padding for table cells
   static const pw.EdgeInsets cellPadding = pw.EdgeInsets.all(2.5); // Define cellPadding here
 
-
-
   // TODO: make pdfs a feature and extract this to a widgets folder
   static pw.Widget paddedText(String text, pw.TextStyle style) {
     return pw.Padding(
