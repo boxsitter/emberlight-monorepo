@@ -14,6 +14,7 @@ class ScheduleCommands extends CommandSet{
   void initializeCommands() {
     super.commands['simpleassign'] = SimpleAssign();
     super.commands['activityrosters'] = ActivityRosters();
+    super.commands['exportactivities'] = ExportActivities();
   }
 
 }
@@ -45,5 +46,20 @@ class ActivityRosters extends Command {
   @override
   void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
     controller.logAllRosters();
+  }
+}
+
+class ExportActivities extends Command {
+  ExportActivities() : super(
+    maxArgs: 0,
+    minArgs: 0,
+    possibleFlag: false,
+    argTypes: [],
+    commandName: 'exportactivities',
+  );
+
+  @override
+  void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
+    controller.exportActivities();
   }
 }
