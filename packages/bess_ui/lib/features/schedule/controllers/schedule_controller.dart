@@ -11,7 +11,7 @@ import '../../../common/data/models/schedule/assignable_activity_block.dart';
 import '../../../common/data/models/schedule/schedule.dart';
 import '../../../common/utils/feature_utils/pdf_utils.dart';
 import '../../../common/utils/feature_utils/roster_utils.dart';
- c 
+
 class ScheduleController extends GetxController {
   final LocalData localData = Get.find<LocalData>();
 

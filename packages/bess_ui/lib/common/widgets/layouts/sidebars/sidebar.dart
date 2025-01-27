@@ -26,13 +26,12 @@ class BessSidebar extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Image
-              // const BessCircularImage(
-              //   width: 100,
-              //   height: 100,
-              //   image: BessImages.lightAppLogo,
-              //   backgroundColor: Colors.transparent,
-              // ),
+              const BessCircularImage(
+                width: 100,
+                height: 100,
+                image: BessImages.lightAppLogo,
+                backgroundColor: Colors.transparent,
+              ),
               const SizedBox(height: BessSizes.spaceBtwSections),
               Padding(
                 padding: const EdgeInsets.all(BessSizes.md),
@@ -61,6 +60,10 @@ class BessSidebar extends StatelessWidget {
                         route: BessRoutes.responsiveDesignExample,
                         icon: Iconsax.picture_frame,
                         itemName: 'Widgets'),
+                    const BessMenuItem(
+                        route: BessRoutes.sessionRoster,
+                        icon: Iconsax.note_21,
+                        itemName: 'Session Roster'),
                   ],
                 ),
               )
