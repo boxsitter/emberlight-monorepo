@@ -31,6 +31,7 @@ class BessRoundedContainer extends StatelessWidget {
     this.radius = BessSizes.cardRadiusLg,
     this.backgroundColor = BessColors.white,
     this.onTap,
+    this.borderThickness = BessSizes.borderThicknessSm,
   });
 
   final Widget? child;
@@ -44,6 +45,7 @@ class BessRoundedContainer extends StatelessWidget {
   final EdgeInsets padding;
   final Color backgroundColor;
   final void Function()? onTap;
+  final double borderThickness;
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +54,14 @@ class BessRoundedContainer extends StatelessWidget {
       child: Container(
           width: width,
           height: height,
-          padding: padding,
           margin: margin,
+          padding: padding,
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
+
             color: backgroundColor,
             borderRadius: BorderRadius.circular(radius),
-            border: showBorder ? Border.all(color: borderColor) : null,
+            border: showBorder ? Border.all(color: borderColor, width: borderThickness) : null,
             boxShadow: [if (showShadow) BessShadowStyle.defaultBoxShadow],
           ),
           child: child),

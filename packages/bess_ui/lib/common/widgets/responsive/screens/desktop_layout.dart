@@ -14,7 +14,7 @@ class DesktopLayout extends StatelessWidget {
     return Scaffold(
       body: Row(
         children: [
-          const Expanded(child: BessSidebar()),
+          const BessSidebar(),
           Expanded(
             flex: 6,
             child: Column(
@@ -23,9 +23,12 @@ class DesktopLayout extends StatelessWidget {
                 const BessHeader(),
                 // BODY
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(BessSizes.lg),
-                    child: body ?? const SizedBox(),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(BessSizes.lg),
+                      child: body ?? const SizedBox(),
+                    ),
                   ),
                 )
               ],

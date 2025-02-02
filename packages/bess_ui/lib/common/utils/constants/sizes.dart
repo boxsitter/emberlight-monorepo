@@ -35,10 +35,10 @@ class BessSizes {
   static const double spaceBtwSections = 32.0;
   static const double spaceBtwMenuItems = 4.0;
 
-  // Border radius
-  static const double borderRadiusSm = 4.0;
-  static const double borderRadiusMd = 8.0;
-  static const double borderRadiusLg = 12.0;
+  // Border thickness
+  static const double borderThicknessSm = 1.0;
+  static const double borderThicknessMd = 2.0;
+  static const double borderThicknessLg = 4.0;
 
   // Divider height
   static const double dividerHeight = 1.0;

@@ -15,6 +15,7 @@ class BessSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: 300,
       shape: BessDeviceUtils.isDesktopScreen(context)
           ? const BeveledRectangleBorder()
           : null,
