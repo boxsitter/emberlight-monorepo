@@ -3,8 +3,8 @@ import 'package:bessie/features/console/controller/feature_commands/schedule_com
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 
-import '../../../common/data/abstract/command.dart';
-import '../../../common/data/abstract/command_set.dart';
+import '../../../data/abstract/command.dart';
+import '../../../data/abstract/command_set.dart';
 import 'feature_commands/session_roster_commands.dart';
 
 class ConsoleController extends GetxController {

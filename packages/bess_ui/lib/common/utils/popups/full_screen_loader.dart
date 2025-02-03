@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../widgets/loaders/animation_loader.dart';
 import '../../widgets/loaders/circular_loader.dart';
-import '../constants/colors.dart';
+import '../../constants/colors.dart';
 import '../helpers/helper_functions.dart';
 
 /// A utility class for managing a full-screen loading dialog.

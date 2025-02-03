@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../common/utils/constants/image_strings.dart';
-import '../../../../../common/utils/constants/sizes.dart';
-import '../../../../../common/utils/constants/text_strings.dart';
+import '../../../../../common/constants//image_strings.dart';
+import '../../../../../common/constants//sizes.dart';
+import '../../../../../common/constants//text_strings.dart';
 
 class BessLoginHeader extends StatelessWidget {
   const BessLoginHeader({

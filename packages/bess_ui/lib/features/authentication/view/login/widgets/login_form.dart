@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../common/routes/routes.dart';
-import '../../../../../common/utils/constants/sizes.dart';
-import '../../../../../common/utils/constants/text_strings.dart';
+import '../../../../../common/constants//sizes.dart';
+import '../../../../../common/constants//text_strings.dart';
 
 class BessLoginForm extends StatelessWidget {
   const BessLoginForm({

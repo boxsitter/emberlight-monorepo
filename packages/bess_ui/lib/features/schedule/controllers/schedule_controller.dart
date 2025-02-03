@@ -1,16 +1,16 @@
-import 'package:bessie/common/data/abstract/schedule_block.dart';
-import 'package:bessie/common/data/models/camper_preference.dart';
+import 'package:bessie/data/abstract/schedule_block.dart';
+import 'package:bessie/data/models/camper_preference.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../../common/data/models/camper.dart';
-import '../../../common/data/models/local_data.dart';
-import '../../../common/data/models/schedule/activity.dart';
-import '../../../common/data/models/schedule/assignable_activity_block.dart';
-import '../../../common/data/models/schedule/schedule.dart';
-import '../../../common/utils/feature_utils/pdf_utils.dart';
-import '../../../common/utils/feature_utils/roster_utils.dart';
+import '../../../data/models/camper.dart';
+import '../../../data/models/local_data.dart';
+import '../../../data/models/schedule/activity.dart';
+import '../../../data/models/schedule/assignable_activity_block.dart';
+import '../../../data/models/schedule/schedule.dart';
+import '../../../common/feature_utils/pdf_utils.dart';
+import '../../../common/feature_utils/roster_utils.dart';
 
 class ScheduleController extends GetxController {
   final LocalData localData = Get.find<LocalData>();
@@ -186,6 +186,6 @@ class ScheduleController extends GetxController {
     pw.Document pdf = PdfUtils.assignableActivityBlockToPdf(schedule.blocks.values.first as AssignableActivityBlock);
     String formattedSessionName = localData.session!.name.replaceAll(' ', '_').toLowerCase();
     String formattedTimestamp = (schedule.blocks.values.first as AssignableActivityBlock).formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();
-    PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_${formattedTimestamp}.pdf');
+    PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_$formattedTimestamp.pdf');
   }
 }

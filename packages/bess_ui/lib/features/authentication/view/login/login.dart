@@ -3,7 +3,7 @@ import 'package:bessie/features/authentication/view/login/widgets/login_form.dar
 import 'package:bessie/features/authentication/view/login/widgets/login_header.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../common/utils/constants/sizes.dart';
+import '../../../../common/constants//sizes.dart';
 import '../../../../common/widgets/layouts/templates/site_layout.dart';
 
 class LoginScreen extends StatelessWidget {

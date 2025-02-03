@@ -1,15 +1,14 @@
-import 'package:bessie/common/data/abstract/bess_object.dart';
+import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:bessie/data/models/session.dart';
 
-import 'branch.dart';
-
-class Organization extends BessObject{
+class Season extends BessObject{
   String name;
-  Map<String, Branch> branches;
+  Map<String, Session> sessions;
 
-  Organization({
+  Season({
     required BessObject dataParent,
-    required this.name
-  }) : branches = {}, super('Organization-$name', dataParent);
+    required this.name,
+  }) : sessions = {}, super('Season-$name', dataParent);
 
   @override
   String bessToString() {

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 
-import '../../../../common/data/abstract/command.dart';
-import '../../../../common/data/abstract/command_set.dart';
+import '../../../../data/abstract/command.dart';
+import '../../../../data/abstract/command_set.dart';
 import '../../../session_roster/controllers/session_roster_controller.dart';
 
 class SessionRosterCommands extends CommandSet{
@@ -69,7 +69,7 @@ class ImportCsv extends Command {
 
   @override
   void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
-    controller.importFromCsv(File('C:\\Users\\Leyto\\User Projects\\bessie\\lib\\common\\data\\test_files\\dummy_roster.csv')); // TODO: Fix hardcoding
+    controller.importFromCsv(File('C:\\Users\\Leyto\\User Projects\\bessie\\lib\\data\\test_files\\dummy_roster.csv')); // TODO: Fix hardcoding
   }
 }
 

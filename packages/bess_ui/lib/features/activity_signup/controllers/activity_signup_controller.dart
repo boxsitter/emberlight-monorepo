@@ -1,12 +1,11 @@
 import 'dart:math';
-
-import 'package:bessie/common/data/models/camper_preference.dart';
-import 'package:bessie/common/data/models/schedule/activity.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 
-import '../../../common/data/models/camper.dart';
-import '../../../common/data/models/local_data.dart';
+import '../../../data/models/camper.dart';
+import '../../../data/models/camper_preference.dart';
+import '../../../data/models/local_data.dart';
+import '../../../data/models/schedule/activity.dart';
 
 class ActivitySignupController extends GetxController {
   final LocalData localData = Get.find<LocalData>();

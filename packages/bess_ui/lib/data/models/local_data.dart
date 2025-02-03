@@ -1,4 +1,4 @@
-import 'package:bessie/common/data/abstract/bess_object.dart';
+import 'package:bessie/data/abstract/bess_object.dart';
 
 import 'branch.dart';
 import 'organization.dart';

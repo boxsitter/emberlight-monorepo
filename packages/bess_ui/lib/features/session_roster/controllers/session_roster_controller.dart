@@ -1,21 +1,20 @@
 import 'dart:io';
 
-import 'package:bessie/common/data/abstract/schedule_block.dart';
-import 'package:bessie/common/data/models/camper_preference.dart';
-import 'package:bessie/common/data/models/schedule/activity.dart';
-import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
-import 'package:bessie/common/utils/feature_utils/pdf_utils.dart';
+import 'package:bessie/data/abstract/schedule_block.dart';
+import 'package:bessie/data/models/camper_preference.dart';
+import 'package:bessie/data/models/schedule/activity.dart';
+import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
+import 'package:bessie/common/feature_utils/pdf_utils.dart';
 import 'package:csv/csv.dart';
 import 'package:get/get.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../../common/data/models/cabin.dart';
-import '../../../common/data/models/camper.dart';
-import '../../../common/data/models/local_data.dart';
-import '../../../common/data/models/roster.dart';
-import '../../../common/utils/feature_utils/session_roster_utils.dart';
-import '../../../common/utils/feature_utils/session_utils.dart';
+import '../../../data/models/cabin.dart';
+import '../../../data/models/camper.dart';
+import '../../../data/models/local_data.dart';
+import '../../../data/models/roster.dart';
+import '../../../common/feature_utils/session_roster_utils.dart';
+import '../../../common/feature_utils/session_utils.dart';
 import '../../console/controller/console_controller.dart';
 
 class SessionRosterController extends GetxController {
@@ -143,6 +142,6 @@ class SessionRosterController extends GetxController {
     pw.Document pdf = PdfUtils.rosterToPdf(roster);
     String formattedSessionName = localData.session!.name.replaceAll(' ', '_').toLowerCase();
     String formattedTimestamp = roster.formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();
-    PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_${formattedTimestamp}.pdf');
+    PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_$formattedTimestamp.pdf');
   }
 }

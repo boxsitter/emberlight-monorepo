@@ -1,7 +1,7 @@
 import 'package:bessie/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:flutter/material.dart';
 
-import '../../../utils/constants/sizes.dart';
+import '../../../constants//sizes.dart';
 import '../../layouts/headers/header.dart';
 
 class MobileLayout extends StatelessWidget {

@@ -1,5 +1,5 @@
-import '../../data/models/cabin.dart';
-import '../../data/models/session.dart';
+import '../../../../data/models/cabin.dart';
+import '../../../../data/models/session.dart';
 
 class SessionUtils {
   static Cabin? getCabinByNameFromSession(Session session, String cabinName) {

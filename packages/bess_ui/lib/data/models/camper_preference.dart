@@ -1,6 +1,6 @@
-import 'package:bessie/common/data/abstract/bess_object.dart';
-import 'package:bessie/common/data/models/schedule/activity.dart';
-import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
+import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:bessie/data/models/schedule/activity.dart';
+import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
 
 import 'camper.dart';
 

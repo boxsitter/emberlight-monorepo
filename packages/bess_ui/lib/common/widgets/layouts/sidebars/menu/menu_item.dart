@@ -2,8 +2,8 @@ import 'package:bessie/common/widgets/layouts/sidebars/sidebar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../utils/constants/colors.dart';
-import '../../../../utils/constants/sizes.dart';
+import '../../../../constants//colors.dart';
+import '../../../../constants//sizes.dart';
 
 class BessMenuItem extends StatelessWidget {
   const BessMenuItem({

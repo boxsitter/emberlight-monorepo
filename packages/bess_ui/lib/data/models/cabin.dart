@@ -1,24 +1,25 @@
-import 'package:bessie/common/data/abstract/bess_object.dart';
+import 'package:bessie/data/models/roster.dart';
 
-import '../roster.dart';
-import 'assignable_activity_block.dart';
+import '../abstract/bess_object.dart';
+import 'camper.dart';
 
-class Activity extends BessObject {
+class Cabin extends BessObject {
   final String name;
   final int capacity;
   late final Roster roster;
-  final AssignableActivityBlock block;
 
-  Activity({
+  int get length => roster.length;
+  Iterable<Camper> get campers => roster.values;
+
+  Cabin({
     required BessObject dataParent,
     required this.name,
     required this.capacity,
-    required this.block,
-  }) : super('activity-$name', dataParent) {
-    roster = Roster(
-      dataParent: this,
-      title: '$name Roster',
-    );
+  }) : super('Cabin-$name', dataParent) {
+      roster = Roster(
+          dataParent: this,
+          title: name
+      );
   }
 
   @override

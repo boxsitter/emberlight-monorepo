@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/constants/sizes.dart';
+import '../constants//sizes.dart';
 
 class BessSpacingStyle {
   static const EdgeInsetsGeometry paddingWithAppBarHeight = EdgeInsets.only(

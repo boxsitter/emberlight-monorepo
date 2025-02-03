@@ -1,8 +1,8 @@
 import 'package:bessie/features/schedule/controllers/schedule_controller.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/data/abstract/command.dart';
-import '../../../../common/data/abstract/command_set.dart';
+import '../../../../data/abstract/command.dart';
+import '../../../../data/abstract/command_set.dart';
 
 class ScheduleCommands extends CommandSet{
   ScheduleCommands() : super(

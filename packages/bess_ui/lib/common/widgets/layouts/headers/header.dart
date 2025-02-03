@@ -2,10 +2,10 @@ import 'package:bessie/common/widgets/images/bess_rounded_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../utils/constants/colors.dart';
-import '../../../utils/constants/enums.dart';
-import '../../../utils/constants/image_strings.dart';
-import '../../../utils/constants/sizes.dart';
+import '../../../constants//colors.dart';
+import '../../../constants//enums.dart';
+import '../../../constants//image_strings.dart';
+import '../../../constants//sizes.dart';
 import '../../../utils/device/device_utility.dart';
 
 class BessHeader extends StatelessWidget implements PreferredSizeWidget {

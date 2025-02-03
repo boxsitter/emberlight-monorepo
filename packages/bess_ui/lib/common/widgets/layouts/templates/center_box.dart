@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../styles/spacing_styles.dart';
-import '../../../utils/constants/colors.dart';
-import '../../../utils/constants/sizes.dart';
+import '../../../constants//colors.dart';
+import '../../../constants//sizes.dart';
 import '../../../utils/helpers/helper_functions.dart';
 
 class BessCenterBox extends StatelessWidget {

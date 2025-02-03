@@ -1,5 +1,5 @@
-import '../../data/models/camper.dart';
-import '../../data/models/roster.dart';
+import '../../../../data/models/camper.dart';
+import '../../../../data/models/roster.dart';
 
 class RosterUtils {
   static Camper? getCamperByNameFromRoster(Roster roster, String fullName) {

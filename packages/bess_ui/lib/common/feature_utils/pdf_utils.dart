@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:bessie/common/data/models/schedule/assignable_activity_block.dart';
+import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
 import 'package:bessie/features/console/controller/console_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../data/models/camper.dart';
-import '../../data/models/roster.dart';
-import '../../styles/pdf_styles.dart';
+import '../../../../data/models/camper.dart';
+import '../../../../data/models/roster.dart';
+import '../styles/pdf_styles.dart';
 
 class PdfUtils {
   static pw.TableRow camperToPaddedTableRow(Camper camper) {
@@ -138,16 +138,21 @@ class PdfUtils {
     final longestItems = List<String>.from(headers);
 
     for (final camper in roster.values) {
-      if (camper.lastName.length > longestItems[0].length)
+      if (camper.lastName.length > longestItems[0].length) {
         longestItems[0] = camper.lastName;
-      if (camper.name.length > longestItems[1].length)
+      }
+      if (camper.name.length > longestItems[1].length) {
         longestItems[1] = camper.name;
-      if (camper.age.toString().length > longestItems[2].length)
+      }
+      if (camper.age.toString().length > longestItems[2].length) {
         longestItems[2] = camper.age.toString();
-      if (camper.gender.length > longestItems[3].length)
+      }
+      if (camper.gender.length > longestItems[3].length) {
         longestItems[3] = camper.gender;
-      if ((camper.cabin?.name ?? '').length > longestItems[4].length)
+      }
+      if ((camper.cabin?.name ?? '').length > longestItems[4].length) {
         longestItems[4] = camper.cabin?.name ?? '';
+      }
     }
 
     // Dynamically calculate column widths based on content length

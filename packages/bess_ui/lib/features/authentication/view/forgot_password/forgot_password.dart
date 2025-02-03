@@ -1,7 +1,7 @@
 import 'package:bessie/features/authentication/view/forgot_password/widgets/header_and_form.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../common/utils/constants/sizes.dart';
+import '../../../../common/constants//sizes.dart';
 import '../../../../common/widgets/layouts/templates/center_box.dart';
 import '../../../../common/widgets/layouts/templates/site_layout.dart';
 

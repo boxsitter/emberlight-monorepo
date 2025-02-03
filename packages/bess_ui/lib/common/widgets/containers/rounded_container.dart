@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../common/styles/shadows.dart';
-import '../../utils/constants/colors.dart';
-import '../../utils/constants/sizes.dart';
+import '../../constants//colors.dart';
+import '../../constants//sizes.dart';
 
 /// A container widget with rounded corners and customizable properties.
 class BessRoundedContainer extends StatelessWidget {

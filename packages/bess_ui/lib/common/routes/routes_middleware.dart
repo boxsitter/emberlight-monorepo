@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../data/repositories.authentication/authentication_repository.dart';
+import '../../data/repositories.authentication/authentication_repository.dart';
 import 'routes.dart';
 
 class BessRouteMiddleware extends GetMiddleware {

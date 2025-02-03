@@ -1,6 +1,6 @@
 import 'package:bessie/common/utils/helpers/helper_functions.dart';
 
-import '../../utils/formatters/formatter.dart';
+import '../../common/utils/formatters/formatter.dart';
 
 abstract class BessObject {
   final String id;

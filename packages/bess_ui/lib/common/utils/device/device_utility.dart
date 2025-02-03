@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../constants/sizes.dart';
+import '../../constants/sizes.dart';
 
 class BessDeviceUtils {
   static void hideKeyboard(BuildContext context) {

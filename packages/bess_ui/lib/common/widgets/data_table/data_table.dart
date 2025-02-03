@@ -1,4 +1,4 @@
-import 'package:bessie/common/utils/constants/colors.dart';
+import 'package:bessie/common/constants//colors.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';

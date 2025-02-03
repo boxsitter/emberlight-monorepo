@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'common/routes/app_routes.dart';
 import 'common/routes/route_observer.dart';
 import 'common/routes/routes.dart';
-import 'common/utils/constants/text_strings.dart';
+import 'common/constants//text_strings.dart';
 import 'common/utils/device/web_material_scroll.dart';
 import 'common/utils/theme/theme.dart';
 

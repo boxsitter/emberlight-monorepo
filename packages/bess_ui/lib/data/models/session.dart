@@ -1,6 +1,6 @@
-import 'package:bessie/common/data/abstract/bess_object.dart';
-import 'package:bessie/common/data/models/roster.dart';
-import 'package:bessie/common/data/models/schedule/schedule.dart';
+import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:bessie/data/models/roster.dart';
+import 'package:bessie/data/models/schedule/schedule.dart';
 
 import 'cabin.dart';
 

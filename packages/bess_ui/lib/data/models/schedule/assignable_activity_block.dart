@@ -1,4 +1,4 @@
-import 'package:bessie/common/data/abstract/schedule_block.dart';
+import 'package:bessie/data/abstract/schedule_block.dart';
 
 import '../../abstract/bess_object.dart';
 import 'activity.dart';

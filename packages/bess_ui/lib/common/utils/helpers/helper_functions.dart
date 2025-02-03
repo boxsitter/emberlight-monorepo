@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
-import '../constants/enums.dart';
+import '../../constants/enums.dart';
 
 class BessHelperFunctions {
   static DateTime getStartOfWeek(DateTime date) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../common/utils/constants/sizes.dart';
+import '../../common/constants//sizes.dart';
 import '../../common/widgets/containers/rounded_container.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 

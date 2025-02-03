@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../utils/constants/sizes.dart';
+import '../../constants//sizes.dart';
 
 class BessResponsiveWidget extends StatefulWidget {
   const BessResponsiveWidget(

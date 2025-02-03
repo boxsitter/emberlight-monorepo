@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../routes/routes.dart';
-import '../../../utils/constants/colors.dart';
-import '../../../utils/constants/image_strings.dart';
-import '../../../utils/constants/sizes.dart';
+import '../../../constants//colors.dart';
+import '../../../constants//image_strings.dart';
+import '../../../constants//sizes.dart';
 import '../../../utils/device/device_utility.dart';
 import 'menu/menu_item.dart';
 
