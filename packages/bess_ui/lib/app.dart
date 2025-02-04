@@ -17,7 +17,7 @@ class App extends StatelessWidget {
       title: BessTexts.appName,
       themeMode: ThemeMode.light,
       theme: BessieAppTheme.lightTheme,
-      darkTheme: BessieAppTheme.darkTheme,
+      //darkTheme: BessieAppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
       initialRoute: BessRoutes.responsiveDesignExample,

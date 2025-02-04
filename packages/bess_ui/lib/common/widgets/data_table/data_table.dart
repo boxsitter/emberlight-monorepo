@@ -24,7 +24,8 @@ class _BessDataTableState extends State<BessDataTable> {
       showShadow: true,
       showBorder: true,
       borderThickness: 2,
-      backgroundColor: BessColors.primaryBackground,
+      backgroundColor: BessColors.core,
+      borderColor: BessColors.element1,
       padding: EdgeInsets.zero,
       child: DataTable2(
         columnSpacing: 0,
@@ -33,14 +34,14 @@ class _BessDataTableState extends State<BessDataTable> {
         dividerThickness: 0,
         dataRowHeight: 35,
         headingRowHeight: 50,
-        border: const TableBorder(
+        border: TableBorder(
           horizontalInside: BorderSide(
-            color: BessColors.borderPrimary,
+            color: BessColors.element1,
             width: 1,
           ),
         ),
-        headingRowDecoration: const BoxDecoration(
-          color: BessColors.borderPrimary,
+        headingRowDecoration: BoxDecoration(
+          color: BessColors.element1,
         ),
         columns:  widget.columns.map((col) {
           return DataColumn2(

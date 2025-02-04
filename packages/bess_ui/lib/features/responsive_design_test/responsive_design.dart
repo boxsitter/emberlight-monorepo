@@ -1,3 +1,4 @@
+import 'package:bessie/common/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants//sizes.dart';
@@ -36,7 +37,7 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                 flex: 2,
                 child: BessRoundedContainer(
                   height: 450,
-                  backgroundColor: Colors.red.withValues(alpha: 0.5),
+                  backgroundColor: BessColors.red,
                   child: const Center(child: Text('Widget 1')),
                 ),
               ),
@@ -48,7 +49,7 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                   children: [
                     BessRoundedContainer(
                       height: 215,
-                      backgroundColor: Colors.orange.withValues(alpha: 0.5),
+                      backgroundColor: BessColors.peach,
                       child: const Center(child: Text('Widget 2')),
                     ),
                     const SizedBox(height: BessSizes.md),
@@ -57,7 +58,7 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                         Expanded(
                           child: BessRoundedContainer(
                             height: 215,
-                            backgroundColor: Colors.amber.withValues(alpha: 0.5),
+                            backgroundColor: BessColors.rosewater,
                             child: const Center(child: Text('Widget 3')),
                           ),
                         ),
@@ -65,7 +66,7 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                         Expanded(
                           child: BessRoundedContainer(
                             height: 215,
-                            backgroundColor: Colors.green.withValues(alpha: 0.5),
+                            backgroundColor: BessColors.green,
                             child: const Center(child: Text('Widget 4')),
                           ),
                         ),
@@ -85,7 +86,7 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                 flex: 2,
                 child: BessRoundedContainer(
                   height: 220,
-                  backgroundColor: Colors.blue.withValues(alpha: 0.5),
+                  backgroundColor: BessColors.blue,
                   child: const Center(child: Text('Widget 5')),
                 ),
               ),
@@ -93,7 +94,7 @@ class ResponsiveDesignDesktop extends StatelessWidget {
               Expanded(
                 child: BessRoundedContainer(
                   height: 220,
-                  backgroundColor: Colors.purple.withValues(alpha: 0.5),
+                  backgroundColor: BessColors.mauve,
                   child: const Center(child: Text('Widget 6')),
                 ),
               ),

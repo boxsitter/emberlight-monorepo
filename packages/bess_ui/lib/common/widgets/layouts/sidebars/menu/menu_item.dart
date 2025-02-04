@@ -49,12 +49,12 @@ class BessMenuItem extends StatelessWidget {
                         bottom: BessSizes.md,
                         right: BessSizes.md),
                     child: menuController.isActive(route)
-                        ? Icon(icon, size: 22, color: BessColors.white)
+                        ? Icon(icon, size: 22, color: BessColors.low)
                         : Icon(icon,
                             size: 22,
                             color: menuController.isHovering(route)
-                                ? BessColors.white
-                                : BessColors.darkGrey),
+                                ? BessColors.low
+                                : BessColors.semiHigh),
                   ),
 
                   // Text
@@ -65,14 +65,14 @@ class BessMenuItem extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .apply(color: BessColors.white)))
+                                .apply(color: BessColors.low)))
                   else
                     Flexible(
                         child: Text(itemName,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .apply(color: BessColors.darkGrey))),
+                                .apply(color: BessColors.semiHigh))),
                 ],
               )),
         ),

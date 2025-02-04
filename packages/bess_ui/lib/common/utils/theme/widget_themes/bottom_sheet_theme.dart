@@ -5,18 +5,10 @@ import '../../../constants/colors.dart';
 class BessieBottomSheetTheme {
   BessieBottomSheetTheme._();
 
-  static BottomSheetThemeData lightBottomSheetTheme = BottomSheetThemeData(
+  static BottomSheetThemeData bottomSheetTheme = BottomSheetThemeData(
     showDragHandle: true,
-    backgroundColor: BessColors.white,
-    modalBackgroundColor: BessColors.white,
-    constraints: const BoxConstraints(minWidth: double.infinity),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-  );
-
-  static BottomSheetThemeData darkBottomSheetTheme = BottomSheetThemeData(
-    showDragHandle: true,
-    backgroundColor: BessColors.black,
-    modalBackgroundColor: BessColors.black,
+    backgroundColor: BessColors.low,
+    modalBackgroundColor: BessColors.low,
     constraints: const BoxConstraints(minWidth: double.infinity),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
   );

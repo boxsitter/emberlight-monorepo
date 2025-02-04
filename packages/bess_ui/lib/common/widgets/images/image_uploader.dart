@@ -76,7 +76,7 @@ class TImageUploader extends StatelessWidget {
                 height: height,
                 imageType: imageType,
                 memoryImage: memoryImage,
-                backgroundColor: BessColors.primaryBackground,
+                backgroundColor: BessColors.background,
               )
             : BessRoundedImage(
                 image: image,
@@ -84,7 +84,7 @@ class TImageUploader extends StatelessWidget {
                 height: height,
                 imageType: imageType,
                 memoryImage: memoryImage,
-                backgroundColor: BessColors.primaryBackground,
+                backgroundColor: BessColors.background,
               ),
         // Display the edit icon button on top of the image
         Positioned(

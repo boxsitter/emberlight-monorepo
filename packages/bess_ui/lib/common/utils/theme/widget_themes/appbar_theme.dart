@@ -6,35 +6,20 @@ import '../../../constants/sizes.dart';
 class BessieAppBarTheme {
   BessieAppBarTheme._();
 
-  static const lightAppBarTheme = AppBarTheme(
+  static var appBarTheme = AppBarTheme(
     elevation: 0,
     centerTitle: false,
     scrolledUnderElevation: 0,
-    backgroundColor: Colors.white,
-    surfaceTintColor: Colors.white,
+    backgroundColor: BessColors.core,
+    surfaceTintColor: BessColors.core,
     iconTheme:
-        IconThemeData(color: BessColors.iconPrimary, size: BessSizes.iconMd),
+        IconThemeData(color: BessColors.icon, size: BessSizes.iconMd),
     actionsIconTheme:
-        IconThemeData(color: BessColors.iconPrimary, size: BessSizes.iconMd),
+        IconThemeData(color: BessColors.icon, size: BessSizes.iconMd),
     titleTextStyle: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w600,
-        color: BessColors.black,
-        fontFamily: 'Urbanist'),
-  );
-  static const darkAppBarTheme = AppBarTheme(
-    elevation: 0,
-    centerTitle: false,
-    scrolledUnderElevation: 0,
-    backgroundColor: BessColors.dark,
-    surfaceTintColor: BessColors.dark,
-    iconTheme: IconThemeData(color: BessColors.black, size: BessSizes.iconMd),
-    actionsIconTheme:
-        IconThemeData(color: BessColors.white, size: BessSizes.iconMd),
-    titleTextStyle: TextStyle(
-        fontSize: 18.0,
-        fontWeight: FontWeight.w600,
-        color: BessColors.white,
-        fontFamily: 'Urbanist'),
+        color: BessColors.high,
+        fontFamily: 'Inter'),
   );
 }

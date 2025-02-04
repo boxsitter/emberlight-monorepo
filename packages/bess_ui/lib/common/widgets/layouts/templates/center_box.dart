@@ -24,8 +24,8 @@ class BessCenterBox extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(BessSizes.cardRadiusLg),
               color: BessHelperFunctions.isDarkMode(context)
-                  ? BessColors.black
-                  : BessColors.white,
+                  ? BessColors.high
+                  : BessColors.low,
             ),
             child: child,
           ),

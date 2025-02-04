@@ -8,42 +8,22 @@ class BessieElevatedButtonTheme {
   BessieElevatedButtonTheme._(); //To avoid creating instances
 
   /* -- Light Theme -- */
-  static final lightElevatedButtonTheme = ElevatedButtonThemeData(
+  static final elevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       elevation: 0,
-      foregroundColor: BessColors.light,
+      foregroundColor: BessColors.element1,
       backgroundColor: BessColors.primary,
-      disabledForegroundColor: BessColors.darkGrey,
-      disabledBackgroundColor: BessColors.buttonDisabled,
-      side: const BorderSide(color: BessColors.primary),
+      disabledForegroundColor: BessColors.semiHigh,
+      disabledBackgroundColor: BessColors.disabled,
+      side: BorderSide(color: BessColors.primary),
       padding: const EdgeInsets.symmetric(vertical: BessSizes.buttonHeight),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
           fontSize: 16,
-          color: BessColors.textWhite,
+          color: BessColors.textInverted,
           fontWeight: FontWeight.w500,
-          fontFamily: 'Urbanist'),
-    ),
-  );
-
-  /* -- Dark Theme -- */
-  static final darkElevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      elevation: 0,
-      foregroundColor: BessColors.light,
-      backgroundColor: BessColors.primary,
-      disabledForegroundColor: BessColors.darkGrey,
-      disabledBackgroundColor: BessColors.darkerGrey,
-      side: const BorderSide(color: BessColors.primary),
-      padding: const EdgeInsets.symmetric(vertical: BessSizes.buttonHeight),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
-      textStyle: const TextStyle(
-          fontSize: 16,
-          color: BessColors.textWhite,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Urbanist'),
+          fontFamily: 'Inter'),
     ),
   );
 }

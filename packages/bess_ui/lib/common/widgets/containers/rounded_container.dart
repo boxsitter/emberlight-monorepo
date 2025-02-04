@@ -27,9 +27,9 @@ class BessRoundedContainer extends StatelessWidget {
     this.showShadow = true,
     this.showBorder = false,
     this.padding = const EdgeInsets.all(BessSizes.md),
-    this.borderColor = BessColors.borderPrimary,
+    this.borderColor,
     this.radius = BessSizes.cardRadiusLg,
-    this.backgroundColor = BessColors.white,
+    this.backgroundColor,
     this.onTap,
     this.borderThickness = BessSizes.borderThicknessSm,
   });
@@ -40,10 +40,10 @@ class BessRoundedContainer extends StatelessWidget {
   final double? height;
   final bool showBorder;
   final bool showShadow;
-  final Color borderColor;
+  final Color? borderColor;
   final EdgeInsets? margin;
   final EdgeInsets padding;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final void Function()? onTap;
   final double borderThickness;
 
@@ -59,9 +59,9 @@ class BessRoundedContainer extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
 
-            color: backgroundColor,
+            color: backgroundColor ?? BessColors.element1,
             borderRadius: BorderRadius.circular(radius),
-            border: showBorder ? Border.all(color: borderColor, width: borderThickness) : null,
+            border: showBorder ? Border.all(color: borderColor ?? BessColors.borderPrimary, width: borderThickness) : null,
             boxShadow: [if (showShadow) BessShadowStyle.defaultBoxShadow],
           ),
           child: child),

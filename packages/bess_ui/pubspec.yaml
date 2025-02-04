@@ -71,6 +71,7 @@ dependencies:
   # Random Shit
   xterm: ^4.0.0
   data_table_2: ^2.5.12
+  http: any # dart fix says I need this
 
 
 dev_dependencies:
@@ -93,20 +94,20 @@ flutter:
 
   #--------------- LOCAL FONTS ------------------#
   fonts:
-    - family: Urbanist
+    - family: Inter
       fonts:
-        - asset: assets/fonts/urbanist/Urbanist-Light.ttf
+        - asset: assets/fonts/inter/Inter_18pt-Light.ttf
           weight: 300
-        - asset: assets/fonts/urbanist/Urbanist-Regular.ttf
+        - asset: assets/fonts/inter/Inter_24pt-Regular.ttf
           weight: 400
-        - asset: assets/fonts/urbanist/Urbanist-Italic.ttf
+        - asset: assets/fonts/inter/Inter_24pt-Italic.ttf
           style: italic
-        - asset: assets/fonts/urbanist/Urbanist-Medium.ttf
+        - asset: assets/fonts/inter/Inter_28pt-Medium.ttf
           weight: 500
-        - asset: assets/fonts/urbanist/Urbanist-MediumItalic.ttf
+        - asset: assets/fonts/inter/Inter_28pt-MediumItalic.ttf
           weight: 500
           style: italic
-        - asset: assets/fonts/urbanist/Urbanist-SemiBold.ttf
+        - asset: assets/fonts/inter/Inter_24pt-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/urbanist/Urbanist-Bold.ttf
-          weight: 800
+        - asset: assets/fonts/inter/Inter_24pt-Black.ttf
+          weight: 900

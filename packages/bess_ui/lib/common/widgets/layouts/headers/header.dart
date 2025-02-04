@@ -16,9 +16,9 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-          color: BessColors.white,
-          border: Border(bottom: BorderSide(color: BessColors.grey, width: 1))),
+      decoration: BoxDecoration(
+          color: BessColors.core,
+          border: Border(bottom: BorderSide(color: BessColors.semiLow, width: 1))),
       padding: const EdgeInsets.symmetric(
           horizontal: BessSizes.md, vertical: BessSizes.sm),
       child: AppBar(

@@ -20,9 +20,9 @@ class BessSidebar extends StatelessWidget {
           ? const BeveledRectangleBorder()
           : null,
       child: Container(
-        decoration: const BoxDecoration(
-          color: BessColors.white,
-          border: Border(right: BorderSide(color: BessColors.grey, width: 1)),
+        decoration: BoxDecoration(
+          color: BessColors.core,
+          border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
         ),
         child: SingleChildScrollView(
           child: Column(

@@ -7,7 +7,7 @@ class BessieTextTheme {
   BessieTextTheme._(); // To avoid creating instances
 
   /// Customizable Light Text Theme
-  static TextTheme lightTextTheme = TextTheme(
+  static TextTheme textTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(
         fontSize: 24.0,
         fontWeight: FontWeight.bold,
@@ -52,35 +52,5 @@ class BessieTextTheme {
         fontSize: 12.0,
         fontWeight: FontWeight.normal,
         color: BessColors.textSecondary),
-  );
-
-  /// Customizable Dark Text Theme
-  static TextTheme darkTextTheme = TextTheme(
-    headlineLarge: const TextStyle().copyWith(
-        fontSize: 24.0, fontWeight: FontWeight.bold, color: BessColors.light),
-    headlineMedium: const TextStyle().copyWith(
-        fontSize: 18.0, fontWeight: FontWeight.bold, color: BessColors.light),
-    headlineSmall: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w600, color: BessColors.light),
-    titleLarge: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.bold, color: BessColors.light),
-    titleMedium: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w600, color: BessColors.light),
-    titleSmall: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w400, color: BessColors.light),
-    bodyLarge: const TextStyle().copyWith(
-        fontSize: 14.0, fontWeight: FontWeight.w600, color: BessColors.light),
-    bodyMedium: const TextStyle().copyWith(
-        fontSize: 14.0, fontWeight: FontWeight.normal, color: BessColors.light),
-    bodySmall: const TextStyle().copyWith(
-        fontSize: 14.0,
-        fontWeight: FontWeight.w400,
-        color: BessColors.light.withValues(alpha: 0.5)),
-    labelLarge: const TextStyle().copyWith(
-        fontSize: 14.0, fontWeight: FontWeight.normal, color: BessColors.light),
-    labelMedium: const TextStyle().copyWith(
-        fontSize: 12.0,
-        fontWeight: FontWeight.normal,
-        color: BessColors.light.withValues(alpha: 0.5)),
   );
 }

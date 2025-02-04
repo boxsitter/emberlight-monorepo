@@ -39,7 +39,7 @@ class TChoiceChip extends StatelessWidget {
         selected: selected,
         onSelected: onSelected,
         backgroundColor: BessHelperFunctions.getColor(text),
-        labelStyle: TextStyle(color: selected ? BessColors.white : null),
+        labelStyle: TextStyle(color: selected ? BessColors.low : null),
         shape: BessHelperFunctions.getColor(text) != null
             ? const CircleBorder()
             : null,

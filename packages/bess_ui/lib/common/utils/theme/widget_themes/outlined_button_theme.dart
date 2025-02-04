@@ -8,37 +8,20 @@ class BessieOutlinedButtonTheme {
   BessieOutlinedButtonTheme._(); //To avoid creating instances
 
   /* -- Light Theme -- */
-  static final lightOutlinedButtonTheme = OutlinedButtonThemeData(
+  static final outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       elevation: 0,
-      foregroundColor: BessColors.dark,
-      side: const BorderSide(color: BessColors.borderPrimary),
+      foregroundColor: BessColors.high,
+      side: BorderSide(color: BessColors.borderPrimary),
       padding: const EdgeInsets.symmetric(
           vertical: BessSizes.buttonHeight, horizontal: 20),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
           fontSize: 16,
-          color: BessColors.black,
+          color: BessColors.textPrimary,
           fontWeight: FontWeight.w600,
-          fontFamily: 'Urbanist'),
-    ),
-  );
-
-  /* -- Dark Theme -- */
-  static final darkOutlinedButtonTheme = OutlinedButtonThemeData(
-    style: OutlinedButton.styleFrom(
-      foregroundColor: BessColors.light,
-      side: const BorderSide(color: BessColors.borderPrimary),
-      padding: const EdgeInsets.symmetric(
-          vertical: BessSizes.buttonHeight, horizontal: 20),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
-      textStyle: const TextStyle(
-          fontSize: 16,
-          color: BessColors.textWhite,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Urbanist'),
+          fontFamily: 'Inter'),
     ),
   );
 }

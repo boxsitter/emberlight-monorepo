@@ -1,49 +1,72 @@
+import 'package:bessie/common/constants/catppuccin_base.dart';
+import 'package:bessie/common/constants/temp_user_settings.dart';
 import 'package:flutter/material.dart';
 
 class BessColors {
-  // App theme colors
-  static const Color primary = Color(0xFF4b68ff);
-  static const Color secondary = Color(0xFFFFE24B);
-  static const Color accent = Color(0xFFb0c7ff);
+  static Flavor flavor = TempUserSettings.theme;
 
-  // Icon colors
-  static const Color iconPrimary = Color(0xFF8D8D8D);
+  // Primary theme colors
+  static Color primary = flavor.blue;
+  static Color secondary = flavor.mauve;
+  static Color accent = flavor.lavender;
 
   // Text colors
-  static const Color textPrimary = Color(0xFF272727);
-  static const Color textSecondary = Color(0xFF656565);
-  static const Color textWhite = Colors.white;
+  static Color textPrimary = flavor.text;
+  static Color textSecondary = flavor.subtext0;
+  static Color textSubtle = flavor.overlay1;
+  static Color textLink = flavor.blue;
+  static Color textInverted = flavor.crust;
 
   // Background colors
-  static const Color light = Color(0xFFF6F6F6);
-  static const Color dark = Color(0xFF272727);
-  static const Color primaryBackground = Color(0xFFF5F5F5);
+  static Color background = flavor.crust;
+  static Color core = flavor.base;
 
-  // Background Container colors
-  static const Color lightContainer = Color(0xFFF6F6F6);
-  static Color darkContainer = BessColors.white.withValues(alpha: 0.1);
+  // Element colors
+  static Color element1 = flavor.surface0;
+  static Color element2 = flavor.surface1;
+  static Color element3 = flavor.surface2;
+  static Color icon = flavor.overlay2;
+  static Color disabled = flavor.overlay2;
 
-  // Button colors
-  static const Color buttonPrimary = Color(0xFF4b68ff);
-  static const Color buttonSecondary = Color(0xFF6C757D);
-  static const Color buttonDisabled = Color(0xFFC4C4C4);
+  // Overlay colors
+  static Color overlay1 = flavor.overlay0;
+  static Color overlay2 = flavor.overlay1;
+  static Color overlay3 = flavor.overlay2;
 
-  // Border colors
-  static const Color borderPrimary = Color(0xFFD9D9D9);
-  static const Color borderSecondary = Color(0xFF313131);
+  // Misc colors
+  static Color borderPrimary = flavor.surface0;
+  static Color borderSecondary = flavor.text;
+  static Color shadow = const Color(0xFFCCD0DA).withValues(alpha: 0.0); // Latte surface0
 
   // Error and validation colors
-  static const Color error = Color(0xFFD32F2F);
-  static const Color success = Color(0xFF388E3C);
-  static const Color warning = Color(0xFFF57C00);
-  static const Color info = Color(0xFF1976D2);
+  static Color success = flavor.green;
+  static Color warning = flavor.yellow;
+  static Color error = flavor.red;
+  static Color info = flavor.blue;
 
-  // Neutral Shades
-  static const Color black = Color(0xFF232323);
-  static const Color darkerGrey = Color(0xFF4F4F4F);
-  static const Color darkGrey = Color(0xFF939393);
-  static const Color grey = Color(0xFFD9D9D9);
-  static const Color softGrey = Color(0xFFF4F4F4);
-  static const Color lightGrey = Color(0xFFF9F9F9);
-  static const Color white = Color(0xFFFFFFFF);
+  // Colors
+  static Color rosewater = flavor.rosewater;
+  static Color flamingo = flavor.flamingo;
+  static Color pink = flavor.pink;
+  static Color mauve = flavor.mauve;
+  static Color red = flavor.red;
+  static Color maroon = flavor.maroon;
+  static Color peach = flavor.peach;
+  static Color yellow = flavor.yellow;
+  static Color green = flavor.green;
+  static Color teal = flavor.teal;
+  static Color sky = flavor.sky;
+  static Color sapphire = flavor.sapphire;
+  static Color blue = flavor.blue;
+  static Color lavender = flavor.lavender;
+
+  // Shades
+  // Ordered from background to foreground
+  // Low is light on light themes and dark on dark themes
+  // High is dark on light themes and light on dark themes
+  static Color low = flavor.crust;
+  static Color semiLow = flavor.surface1;
+  static Color middle = flavor.overlay0;
+  static Color semiHigh = flavor.subtext0;
+  static Color high = flavor.text;
 }

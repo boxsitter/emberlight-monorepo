@@ -25,8 +25,8 @@ class TCircularContainer extends StatelessWidget {
     this.height = 400,
     this.radius = 400,
     this.showBorder = false,
-    this.backgroundColor = BessColors.white,
-    this.borderColor = BessColors.borderPrimary,
+    this.backgroundColor,
+    this.borderColor,
   });
 
   final Widget? child;
@@ -34,8 +34,8 @@ class TCircularContainer extends StatelessWidget {
   final double radius;
   final double? height;
   final bool showBorder;
-  final Color borderColor;
-  final Color backgroundColor;
+  final Color? borderColor;
+  final Color? backgroundColor ;
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
 
@@ -47,9 +47,9 @@ class TCircularContainer extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: backgroundColor ?? BessColors.low,
         borderRadius: BorderRadius.circular(radius),
-        border: showBorder ? Border.all(color: borderColor) : null,
+        border: showBorder ? Border.all(color: borderColor ?? BessColors.borderPrimary) : null,
       ),
       child: child,
     );

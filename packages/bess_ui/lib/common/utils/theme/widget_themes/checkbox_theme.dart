@@ -8,34 +8,14 @@ class BessieCheckboxTheme {
   BessieCheckboxTheme._(); // To avoid creating instances
 
   /// Customizable Light Text Theme
-  static CheckboxThemeData lightCheckboxTheme = CheckboxThemeData(
+  static CheckboxThemeData checkboxTheme = CheckboxThemeData(
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(BessSizes.xs)),
     checkColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return BessColors.white;
+        return BessColors.low;
       } else {
-        return BessColors.black;
-      }
-    }),
-    fillColor: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return BessColors.primary;
-      } else {
-        return Colors.transparent;
-      }
-    }),
-  );
-
-  /// Customizable Dark Text Theme
-  static CheckboxThemeData darkCheckboxTheme = CheckboxThemeData(
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(BessSizes.xs)),
-    checkColor: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return BessColors.white;
-      } else {
-        return BessColors.black;
+        return BessColors.high;
       }
     }),
     fillColor: WidgetStateProperty.resolveWith((states) {
