@@ -1,4 +1,5 @@
 import 'package:bessie/common/constants//colors.dart';
+import 'package:bessie/common/styles/text_styles.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,10 @@ class _BessDataTableState extends State<BessDataTable> {
         horizontalMargin: 12,
         minWidth: 0,
         dividerThickness: 0,
-        dataRowHeight: 35,
+        dataRowHeight: 60,
         headingRowHeight: 50,
+        headingTextStyle: BessTextStyles.label,
+        dataTextStyle: BessTextStyles.standard,
         border: TableBorder(
           horizontalInside: BorderSide(
             color: BessColors.element1,
@@ -47,7 +50,6 @@ class _BessDataTableState extends State<BessDataTable> {
           return DataColumn2(
             label: Text(
               col,
-              style: const TextStyle(fontWeight: FontWeight.normal),
             ),
           );
         }).toList(),

@@ -37,8 +37,11 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                 flex: 2,
                 child: BessRoundedContainer(
                   height: 450,
-                  backgroundColor: BessColors.red,
-                  child: const Center(child: Text('Widget 1')),
+                  backgroundColor: BessColors.red.withAlpha(150),
+                  child: Center(child: Text(
+                      'Widget 1',
+                      style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.textInverted)),
+                  ),
                 ),
               ),
               const SizedBox(width: BessSizes.md),
@@ -49,8 +52,11 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                   children: [
                     BessRoundedContainer(
                       height: 215,
-                      backgroundColor: BessColors.peach,
-                      child: const Center(child: Text('Widget 2')),
+                      backgroundColor: BessColors.peach.withAlpha(150),
+                      child: Center(child: Text(
+                        'Widget 2',
+                        style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.textInverted)),
+                      ),
                     ),
                     const SizedBox(height: BessSizes.md),
                     Row(
@@ -58,16 +64,22 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                         Expanded(
                           child: BessRoundedContainer(
                             height: 215,
-                            backgroundColor: BessColors.rosewater,
-                            child: const Center(child: Text('Widget 3')),
+                            backgroundColor: BessColors.rosewater.withAlpha(150),
+                            child: Center(child: Text(
+                                'Widget 3',
+                                style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.textInverted)),
+                            ),
                           ),
                         ),
                         const SizedBox(width: BessSizes.md),
                         Expanded(
                           child: BessRoundedContainer(
                             height: 215,
-                            backgroundColor: BessColors.green,
-                            child: const Center(child: Text('Widget 4')),
+                            backgroundColor: BessColors.green.withAlpha(150),
+                            child: Center(child: Text(
+                                'Widget 4',
+                                style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.textInverted)),
+                            ),
                           ),
                         ),
                       ],
@@ -86,16 +98,22 @@ class ResponsiveDesignDesktop extends StatelessWidget {
                 flex: 2,
                 child: BessRoundedContainer(
                   height: 220,
-                  backgroundColor: BessColors.blue,
-                  child: const Center(child: Text('Widget 5')),
+                  backgroundColor: BessColors.blue.withAlpha(150),
+                  child: Center(child: Text(
+                      'Widget 5',
+                      style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.textInverted)),
+                  ),
                 ),
               ),
               const SizedBox(width: BessSizes.md),
               Expanded(
                 child: BessRoundedContainer(
                   height: 220,
-                  backgroundColor: BessColors.mauve,
-                  child: const Center(child: Text('Widget 6')),
+                  backgroundColor: BessColors.mauve.withAlpha(150),
+                  child: Center(child: Text(
+                      'Widget 6',
+                      style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.textInverted)),
+                  ),
                 ),
               ),
             ],

@@ -18,7 +18,7 @@ class BessColors {
   static Color textInverted = flavor.crust;
 
   // Background colors
-  static Color background = flavor.crust;
+  static Color background = flavor.mantle;
   static Color core = flavor.base;
 
   // Element colors

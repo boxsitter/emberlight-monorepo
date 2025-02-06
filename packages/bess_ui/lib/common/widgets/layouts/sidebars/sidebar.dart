@@ -1,3 +1,4 @@
+import 'package:bessie/common/styles/text_styles.dart';
 import 'package:bessie/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -42,10 +43,7 @@ class BessSidebar extends StatelessWidget {
                   children: [
                     Text(
                       'MENU',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .apply(letterSpacingDelta: 1.2),
+                      style: BessTextStyles.lightHeader,
                     ),
 
                     // Menu Items

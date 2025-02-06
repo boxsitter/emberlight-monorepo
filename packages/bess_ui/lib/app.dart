@@ -5,8 +5,8 @@ import 'common/routes/app_routes.dart';
 import 'common/routes/route_observer.dart';
 import 'common/routes/routes.dart';
 import 'common/constants//text_strings.dart';
+import 'common/theme/theme.dart';
 import 'common/utils/device/web_material_scroll.dart';
-import 'common/utils/theme/theme.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -16,7 +16,7 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: BessTexts.appName,
       themeMode: ThemeMode.light,
-      theme: BessieAppTheme.lightTheme,
+      theme: BessieAppTheme.theme,
       //darkTheme: BessieAppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
