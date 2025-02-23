@@ -1,4 +1,4 @@
-import 'package:bessie/features/authentication/view/forgot_password/widgets/header_and_form.dart';
+import 'package:bessie/pages/authentication/view/forgot_password/widgets/header_and_form.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants//sizes.dart';

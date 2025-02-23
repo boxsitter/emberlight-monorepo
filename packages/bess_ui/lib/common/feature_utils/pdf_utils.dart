@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
-import 'package:bessie/features/console/controller/console_controller.dart';
+import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;

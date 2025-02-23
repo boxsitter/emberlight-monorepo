@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 
 import '../../../../data/abstract/command.dart';
 import '../../../../data/abstract/command_set.dart';
-import '../../../session_roster/controllers/session_roster_controller.dart';
+import '../../../../common/services/session_roster_service.dart';
 
 class SessionRosterCommands extends CommandSet{
   SessionRosterCommands() : super(
-    controller: Get.find<SessionRosterController>(),
+    controller: Get.find<SessionRosterService>(),
     featureName: 'sessionroster',
   );
 

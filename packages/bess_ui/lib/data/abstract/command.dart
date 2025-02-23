@@ -1,4 +1,4 @@
-import '../../../features/console/controller/console_controller.dart';
+import '../../../pages/console/controller/console_controller.dart';
 
 abstract class Command {
   final int maxArgs;

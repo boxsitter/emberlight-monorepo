@@ -4,15 +4,15 @@
 
 import 'package:bessie/common/routes/routes.dart';
 import 'package:bessie/common/routes/routes_middleware.dart';
-import 'package:bessie/features/session_roster/session_roster.dart';
+import 'package:bessie/pages/session_roster/session_roster.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
-import '../../features/authentication/view/forgot_password/forgot_password.dart';
-import '../../features/authentication/view/login/login.dart';
-import '../../features/authentication/view/reset_password/reset_password.dart';
-import '../../features/console/view/console.dart';
-import '../../features/home/home.dart';
-import '../../features/responsive_design_test/responsive_design.dart';
+import '../../pages/authentication/view/forgot_password/forgot_password.dart';
+import '../../pages/authentication/view/login/login.dart';
+import '../../pages/authentication/view/reset_password/reset_password.dart';
+import '../../pages/console/view/console.dart';
+import '../../pages/home/home.dart';
+import '../../pages/responsive_design_test/responsive_design.dart';
 
 class BessAppRoute {
   static final List<GetPage> pages = [

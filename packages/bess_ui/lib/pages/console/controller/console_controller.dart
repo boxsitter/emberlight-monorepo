@@ -1,5 +1,5 @@
-import 'package:bessie/features/console/controller/feature_commands/activity_signup_commands.dart';
-import 'package:bessie/features/console/controller/feature_commands/schedule_commands.dart';
+import 'package:bessie/pages/console/controller/feature_commands/activity_signup_commands.dart';
+import 'package:bessie/pages/console/controller/feature_commands/schedule_commands.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 

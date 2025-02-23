@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 
-import '../../../data/models/cabin.dart';
-import '../../../data/models/local_data.dart';
+import '../../data/models/cabin.dart';
+import '../../data/models/local_data.dart';
 
-class SessionManagerController extends GetxController {
+class SessionManagerService extends GetxService {
   final LocalData localData = Get.find<LocalData>();
 
   void initializeSessionForTesting() {

@@ -1,6 +1,6 @@
 import 'package:bessie/common/feature_utils/roster_utils.dart';
 
-import '../../../features/console/controller/console_controller.dart';
+import '../../../pages/console/controller/console_controller.dart';
 import '../../../../data/models/cabin.dart';
 import '../../../../data/models/camper.dart';
 

@@ -1,18 +1,18 @@
 import 'package:bessie/data/abstract/schedule_block.dart';
 import 'package:bessie/data/models/camper_preference.dart';
-import 'package:bessie/features/console/controller/console_controller.dart';
+import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../../data/models/camper.dart';
-import '../../../data/models/local_data.dart';
-import '../../../data/models/schedule/activity.dart';
-import '../../../data/models/schedule/assignable_activity_block.dart';
-import '../../../data/models/schedule/schedule.dart';
-import '../../../common/feature_utils/pdf_utils.dart';
-import '../../../common/feature_utils/roster_utils.dart';
+import '../../data/models/camper.dart';
+import '../../data/models/local_data.dart';
+import '../../data/models/schedule/activity.dart';
+import '../../data/models/schedule/assignable_activity_block.dart';
+import '../../data/models/schedule/schedule.dart';
+import '../feature_utils/pdf_utils.dart';
+import '../feature_utils/roster_utils.dart';
 
-class ScheduleController extends GetxController {
+class ScheduleService extends GetxService {
   final LocalData localData = Get.find<LocalData>();
 
   Schedule get schedule => localData.session!.schedule;

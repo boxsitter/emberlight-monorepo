@@ -1,13 +1,13 @@
 import 'dart:math';
-import 'package:bessie/features/console/controller/console_controller.dart';
+import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 
-import '../../../data/models/camper.dart';
-import '../../../data/models/camper_preference.dart';
-import '../../../data/models/local_data.dart';
-import '../../../data/models/schedule/activity.dart';
+import '../../data/models/camper.dart';
+import '../../data/models/camper_preference.dart';
+import '../../data/models/local_data.dart';
+import '../../data/models/schedule/activity.dart';
 
-class ActivitySignupController extends GetxController {
+class ActivitySignupService extends GetxService {
   final LocalData localData = Get.find<LocalData>();
 
   Map<String, Camper> get campers => localData.session!.sessionRoster.campers;

@@ -1,4 +1,4 @@
-import 'package:bessie/features/schedule/controllers/schedule_controller.dart';
+import 'package:bessie/common/services/schedule_service.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/abstract/command.dart';
@@ -6,7 +6,7 @@ import '../../../../data/abstract/command_set.dart';
 
 class ScheduleCommands extends CommandSet{
   ScheduleCommands() : super(
-    controller: Get.find<ScheduleController>(),
+    controller: Get.find<ScheduleService>(),
     featureName: 'activitysignup',
   );
 

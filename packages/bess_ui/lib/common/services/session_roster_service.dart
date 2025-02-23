@@ -9,15 +9,15 @@ import 'package:csv/csv.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../../data/models/cabin.dart';
-import '../../../data/models/camper.dart';
-import '../../../data/models/local_data.dart';
-import '../../../data/models/roster.dart';
-import '../../../common/feature_utils/session_roster_utils.dart';
-import '../../../common/feature_utils/session_utils.dart';
-import '../../console/controller/console_controller.dart';
+import '../../data/models/cabin.dart';
+import '../../data/models/camper.dart';
+import '../../data/models/local_data.dart';
+import '../../data/models/roster.dart';
+import '../feature_utils/session_roster_utils.dart';
+import '../feature_utils/session_utils.dart';
+import '../../pages/console/controller/console_controller.dart';
 
-class SessionRosterController extends GetxController {
+class SessionRosterService extends GetxService {
   final LocalData localData = Get.find<LocalData>();
 
   Roster get roster => localData.session!.sessionRoster;

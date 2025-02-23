@@ -2,11 +2,11 @@ import 'package:get/get.dart';
 
 import '../../../../data/abstract/command.dart';
 import '../../../../data/abstract/command_set.dart';
-import '../../../activity_signup/controllers/activity_signup_controller.dart';
+import '../../../../common/services/activity_signup_service.dart';
 
 class ActivitySignupCommands extends CommandSet{
   ActivitySignupCommands() : super(
-    controller: Get.find<ActivitySignupController>(),
+    controller: Get.find<ActivitySignupService>(),
     featureName: 'activitysignup',
   );
 
