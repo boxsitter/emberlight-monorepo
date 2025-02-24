@@ -2,5 +2,5 @@ import 'catppuccin_base.dart';
 
 class TempUserSettings {
   // App theme
-  static Flavor theme = catppuccin.macchiato;
+  static Flavor theme = catppuccin.latte;
 }

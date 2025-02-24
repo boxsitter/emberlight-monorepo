@@ -36,7 +36,7 @@ class BessColors {
   // Misc colors
   static Color borderPrimary = flavor.surface0;
   static Color borderSecondary = flavor.text;
-  static Color shadow = const Color(0xFFCCD0DA).withValues(alpha: 0.0); // Latte surface0
+  static Color shadow = const Color(0xFFCCD0DA).withValues(alpha: 0.9);
 
   // Error and validation colors
   static Color success = flavor.green;

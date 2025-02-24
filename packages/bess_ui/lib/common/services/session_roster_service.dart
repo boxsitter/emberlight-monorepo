@@ -4,10 +4,8 @@ import 'package:bessie/data/abstract/schedule_block.dart';
 import 'package:bessie/data/models/camper_preference.dart';
 import 'package:bessie/data/models/schedule/activity.dart';
 import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
-import 'package:bessie/common/feature_utils/pdf_utils.dart';
 import 'package:csv/csv.dart';
 import 'package:get/get.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 import '../../data/models/cabin.dart';
 import '../../data/models/camper.dart';
@@ -68,10 +66,6 @@ class SessionRosterService extends GetxService {
     }
 
     ConsoleController().log('${camperToAdd.bessToString()}\n created and added to session: ${localData.session!.name}');
-  }
-
-  void logSessionRoster() {
-    ConsoleController().log(roster.bessToString());
   }
 
   void importFromCsv(File csvFile) async {
@@ -136,12 +130,5 @@ class SessionRosterService extends GetxService {
     } catch (e) {
       ConsoleController().error('Error importing CSV: $e');
     }
-  }
-
-  void exportPdf() {
-    pw.Document pdf = PdfUtils.rosterToPdf(roster);
-    String formattedSessionName = localData.session!.name.replaceAll(' ', '_').toLowerCase();
-    String formattedTimestamp = roster.formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();
-    PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_$formattedTimestamp.pdf');
   }
 }

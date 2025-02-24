@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../constants//colors.dart';
 
 class BessShadowStyle {
-  static final defaultBoxShadow = BoxShadow(
-    color: BessColors.shadow,
+  static final defaultBoxShadow = const BoxShadow(
+    color: Colors.black,
     spreadRadius: 0,
-    blurRadius: 5,
-    offset: const Offset(5, 5),
+    blurRadius: 0,
+    offset: Offset(4, 4),
   );
 }
