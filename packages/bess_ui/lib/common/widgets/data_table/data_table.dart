@@ -4,20 +4,17 @@ import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-import '../../../data/models/roster.dart';
-import '../../services/roster_service.dart';
 import 'controllers/data_table_controller.dart';
 
 class BessDataTable extends StatefulWidget {
-  final Roster roster;
   final List<String> columns;
+  final DataTableController controller;
 
   const BessDataTable({
     super.key,
-    required this.roster,
     required this.columns,
+    required this.controller,
   });
 
   @override
@@ -30,10 +27,7 @@ class _BessDataTableState extends State<BessDataTable> {
   @override
   void initState() {
     super.initState();
-    final rosterService = Get.find<RosterService>();
 
-    // ensure each table has a unique controller instance
-    controller = Get.put(DataTableController(rosterService, widget.roster), tag: widget.roster.title);
   }
 
   @override

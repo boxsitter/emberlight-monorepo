@@ -23,6 +23,6 @@ class SessionRosterDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BessDataTable(columns: columns, roster: localData.session!.sessionRoster);
+    return BessDataTable(columns: columns, roster: localData.session!.sessionRoster, controller: Get.put,);
   }
 }
