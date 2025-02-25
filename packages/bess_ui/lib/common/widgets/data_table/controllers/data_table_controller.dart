@@ -6,26 +6,32 @@ import '../../../../data/models/roster.dart';
 
 class DataTableController extends GetxController {
   final Roster roster;
-
-  late RxMap<String, Camper> campers;
+  var campers = <String, Camper>{}.obs;
 
   DataTableController(this.roster);
 
   @override
   void onInit() {
     super.onInit();
-    campers = RosterUtils.getCampers(roster);
+    campers.assignAll(roster.campers);
   }
 
   void addCamper(Camper camperToAdd) {
     RosterUtils.addCamperToRoster(roster, camperToAdd);
+    campers[camperToAdd.id] = camperToAdd;
+    campers.refresh();
   }
 
   void removeCamper(String camperId) {
     RosterUtils.removeCamperById(roster, camperId);
+    campers.remove(camperId);
+    campers.refresh();
   }
 
   void updateCamper(Camper camper) {
     RosterUtils.updateCamper(roster, camper);
+    campers[camper.id] = camper;
+    campers.refresh();
   }
 }
+

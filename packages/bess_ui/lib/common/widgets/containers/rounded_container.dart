@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../common/styles/shadows.dart';
 import '../../constants//colors.dart';
 import '../../constants//sizes.dart';
 

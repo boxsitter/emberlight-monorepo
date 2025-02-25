@@ -1,3 +1,4 @@
+import 'package:bessie/common/widgets/data_table/controllers/data_table_controller.dart';
 import 'package:bessie/common/widgets/data_table/data_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,6 @@ class SessionRosterDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BessDataTable(columns: columns, roster: localData.session!.sessionRoster, controller: Get.put,);
+    return BessDataTable(columns: columns, controller: Get.put(DataTableController(localData.session!.sessionRoster), tag: "MasterRosterPageTable"));
   }
 }

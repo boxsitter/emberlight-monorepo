@@ -89,7 +89,7 @@ class PdfUtils {
     final pdf = pw.Document();
 
     // Iterate through each activity in the block
-    for (final activity in block.activities.values) {
+    for (int i = 0; i < block.activities.length; i++) {
       final pdf = pw.Document();
 
       for (final activity in block.activities.values) {

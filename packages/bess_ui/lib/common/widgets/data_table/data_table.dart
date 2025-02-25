@@ -27,12 +27,13 @@ class _BessDataTableState extends State<BessDataTable> {
   @override
   void initState() {
     super.initState();
-
+    controller = widget.controller;
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      print("Updating UI with campers: ${controller.campers.values}");
       List<Map<String, dynamic>> data = controller.campers.values.map((camper) {
         return {
           "Name": camper.fullName,
