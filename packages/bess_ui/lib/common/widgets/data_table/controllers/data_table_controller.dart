@@ -15,23 +15,5 @@ class DataTableController extends GetxController {
     super.onInit();
     campers.assignAll(roster.campers);
   }
-
-  void addCamper(Camper camperToAdd) {
-    RosterUtils.addCamperToRoster(roster, camperToAdd);
-    campers[camperToAdd.id] = camperToAdd;
-    campers.refresh();
-  }
-
-  void removeCamper(String camperId) {
-    RosterUtils.removeCamperById(roster, camperId);
-    campers.remove(camperId);
-    campers.refresh();
-  }
-
-  void updateCamper(Camper camper) {
-    RosterUtils.updateCamper(roster, camper);
-    campers[camper.id] = camper;
-    campers.refresh();
-  }
 }
 

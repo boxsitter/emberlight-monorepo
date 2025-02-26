@@ -22,6 +22,7 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: BessSizes.md, vertical: BessSizes.sm),
       child: AppBar(
+        backgroundColor: Colors.transparent,
         // Mobile menu button
         leading: !BessDeviceUtils.isDesktopScreen(context)
             ? IconButton(

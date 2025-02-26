@@ -2,6 +2,7 @@ import 'package:bessie/common/widgets/data_table/controllers/data_table_controll
 import 'package:bessie/common/widgets/data_table/data_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../common/widgets/layouts/templates/site_layout.dart';
 import '../../data/models/local_data.dart';

@@ -32,7 +32,7 @@ class SessionRosterService extends GetxService {
     Cabin? cabin;
     if (cabinName.isNotEmpty) {
       cabin = SessionUtils.getCabinByNameFromSession(localData.session!, cabinName);
-    }
+    } 
     if (cabin == null) {
       ConsoleController().error('Cabin $cabinName not found');
       return;

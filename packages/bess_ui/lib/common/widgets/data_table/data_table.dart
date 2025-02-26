@@ -1,4 +1,5 @@
 import 'package:bessie/common/constants//colors.dart';
+import 'package:bessie/common/services/session_roster_service.dart';
 import 'package:bessie/common/styles/text_styles.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -7,7 +8,7 @@ import 'package:get/get.dart';
 
 import 'controllers/data_table_controller.dart';
 
-class BessDataTable extends StatefulWidget {
+class BessDataTable extends StatelessWidget {
   final List<String> columns;
   final DataTableController controller;
 
@@ -18,22 +19,8 @@ class BessDataTable extends StatefulWidget {
   });
 
   @override
-  State<BessDataTable> createState() => _BessDataTableState();
-}
-
-class _BessDataTableState extends State<BessDataTable> {
-  late DataTableController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = widget.controller;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Obx(() {
-      print("Updating UI with campers: ${controller.campers.values}");
       List<Map<String, dynamic>> data = controller.campers.values.map((camper) {
         return {
           "Name": camper.fullName,
@@ -69,16 +56,12 @@ class _BessDataTableState extends State<BessDataTable> {
           headingRowDecoration: BoxDecoration(
             color: BessColors.element1,
           ),
-          columns: widget.columns.map((col) {
-            return DataColumn2(
-              label: Text(
-                col,
-              ),
-            );
-          }).toList(),
+          columns: columns.map((col) => DataColumn2(
+            label: Text(col),
+          )).toList(),
           rows: data.map((row) {
             return DataRow2(
-              cells: widget.columns.map((col) {
+              cells: columns.map((col) {
                 return DataCell(
                   Text(row[col]?.toString() ?? ""),
                   onTap: () {
