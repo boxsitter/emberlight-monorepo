@@ -4,7 +4,7 @@ import '../../../routes/routes.dart';
 import '../../../utils/device/device_utility.dart';
 
 class SidebarController extends GetxController {
-  final activeItem = BessRoutes.responsiveDesignExample.obs;
+  final activeItem = BessRoutes.home.obs;
   final hoverItem = ''.obs;
 
   void changeActiveItem(String route) => activeItem.value = route;

@@ -1,4 +1,3 @@
-import 'package:bessie/common/feature_utils/roster_utils.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/models/camper.dart';

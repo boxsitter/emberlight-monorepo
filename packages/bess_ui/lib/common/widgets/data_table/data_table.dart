@@ -1,5 +1,4 @@
 import 'package:bessie/common/constants//colors.dart';
-import 'package:bessie/common/services/session_roster_service.dart';
 import 'package:bessie/common/styles/text_styles.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:data_table_2/data_table_2.dart';

@@ -25,6 +25,31 @@ class SessionRosterDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BessDataTable(columns: columns, controller: Get.put(DataTableController(localData.session!.sessionRoster), tag: "MasterRosterPageTable"));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Button with a margin
+        Container(
+          margin: const EdgeInsets.only(bottom: 16.0), // Adjust the margin as needed
+          child: ShadButton.secondary(
+            enabled: true,
+
+            child: const Text('Primary'),
+            onPressed: () {},
+          )
+        ),
+
+        // Data Table
+        Expanded(
+          child: BessDataTable(
+            columns: columns,
+            controller: Get.put(
+              DataTableController(localData.session!.sessionRoster),
+              tag: "MasterRosterPageTable"
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

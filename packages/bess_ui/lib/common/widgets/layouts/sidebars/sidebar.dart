@@ -1,5 +1,6 @@
 import 'package:bessie/common/styles/text_styles.dart';
 import 'package:bessie/common/widgets/images/bess_circular_image.dart';
+import 'package:bessie/common/widgets/text/light_header.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -25,44 +26,40 @@ class BessSidebar extends StatelessWidget {
           color: BessColors.core,
           border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
         ),
-        child: SingleChildScrollView(
+        child: const SingleChildScrollView(
           child: Column(
             children: [
-              const BessCircularImage(
+              BessCircularImage(
                 width: 100,
                 height: 100,
                 image: BessImages.lightAppLogo,
                 backgroundColor: Colors.transparent,
               ),
-              const SizedBox(height: BessSizes.spaceBtwSections),
+              SizedBox(height: BessSizes.spaceBtwItems),
               Padding(
-                padding: const EdgeInsets.all(BessSizes.md),
+                padding: EdgeInsets.all(BessSizes.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'MENU',
-                      style: BessTextStyles.lightHeader,
-                    ),
-
+                    LightHeader(text: 'MENU'),
                     // Menu Items
-                    const BessMenuItem(
-                        route: BessRoutes.console,
-                        icon: Iconsax.code,
-                        itemName: 'Console'),
-                    const BessMenuItem(
+                    BessMenuItem(
                         route: BessRoutes.home,
                         icon: Iconsax.home,
                         itemName: 'Home'),
-                    const BessMenuItem(
-                        route: BessRoutes.responsiveDesignExample,
-                        icon: Iconsax.picture_frame,
-                        itemName: 'Widgets'),
-                    const BessMenuItem(
+                    BessMenuItem(
                         route: BessRoutes.sessionRoster,
                         icon: Iconsax.note_21,
                         itemName: 'Session Roster'),
+                    BessMenuItem(
+                        route: BessRoutes.console,
+                        icon: Iconsax.code,
+                        itemName: 'Console'),
+                    BessMenuItem(
+                        route: BessRoutes.responsiveDesignExample,
+                        icon: Iconsax.picture_frame,
+                        itemName: 'Widgets'),
                   ],
                 ),
               )

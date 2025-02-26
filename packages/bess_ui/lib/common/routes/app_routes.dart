@@ -3,7 +3,6 @@
 // middleware. Uncommented routes can be easily added to extend functionality.
 
 import 'package:bessie/common/routes/routes.dart';
-import 'package:bessie/common/routes/routes_middleware.dart';
 import 'package:bessie/pages/session_roster/session_roster.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
@@ -16,7 +15,7 @@ import '../../pages/responsive_design_test/responsive_design.dart';
 
 class BessAppRoute {
   static final List<GetPage> pages = [
-    GetPage(name: BessRoutes.home, page: () => const HomeScreen(), middlewares: [BessRouteMiddleware()]),
+    GetPage(name: BessRoutes.home, page: () => const HomeScreen()),
     GetPage(name: BessRoutes.responsiveDesignExample, page: () => const ResponsiveDesignScreen()),
     GetPage(name: BessRoutes.console, page: () => const ConsoleScreen()),
     GetPage(name: BessRoutes.sessionRoster, page: () => const SessionRoster()),
