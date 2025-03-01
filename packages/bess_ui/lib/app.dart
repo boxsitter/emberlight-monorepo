@@ -32,7 +32,7 @@ class App extends StatelessWidget {
           //darkTheme: BessieAppTheme.darkTheme,
           debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
-          initialRoute: BessRoutes.responsiveDesignExample,
+          initialRoute: BessRoutes.home,
           unknownRoute: GetPage(
             name: '/page-not-found',
             page: () => const Scaffold(

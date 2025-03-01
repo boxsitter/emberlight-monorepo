@@ -34,35 +34,36 @@ class BessSidebar extends StatelessWidget {
                 image: BessImages.lightAppLogo,
                 backgroundColor: Colors.transparent,
               ),
-              const SizedBox(height: BessSizes.spaceBtwSections),
+              const SizedBox(height: BessSizes.spaceBtwItems),
               Padding(
                 padding: const EdgeInsets.all(BessSizes.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'MENU',
-                      style: BessTextStyles.lightHeader,
-                    ),
-
+                  Text(
+                    'MENU',
+                    style: BessTextStyles.lightHeader,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                  ),
                     // Menu Items
-                    const BessMenuItem(
-                        route: BessRoutes.console,
-                        icon: Iconsax.code,
-                        itemName: 'Console'),
                     const BessMenuItem(
                         route: BessRoutes.home,
                         icon: Iconsax.home,
                         itemName: 'Home'),
                     const BessMenuItem(
-                        route: BessRoutes.responsiveDesignExample,
-                        icon: Iconsax.picture_frame,
-                        itemName: 'Widgets'),
-                    const BessMenuItem(
                         route: BessRoutes.sessionRoster,
                         icon: Iconsax.note_21,
                         itemName: 'Session Roster'),
+                    const BessMenuItem(
+                        route: BessRoutes.console,
+                        icon: Iconsax.code,
+                        itemName: 'Console'),
+                    const BessMenuItem(
+                        route: BessRoutes.responsiveDesignExample,
+                        icon: Iconsax.picture_frame,
+                        itemName: 'Widgets'),
                   ],
                 ),
               )

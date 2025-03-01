@@ -1,5 +1,9 @@
+import 'package:bessie/common/constants/sizes.dart';
+import 'package:bessie/pages/home/widgets/home_screen_nav_card.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
+import '../../common/styles/text_styles.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,20 +22,43 @@ class HomeScreenDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Home Screen'));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Welcome To Bessie!',
+          style: BessTextStyles.lightTitle,
+          overflow: TextOverflow.clip,
+          maxLines: 1,
+        ),
+
+        const SizedBox(height: BessSizes.spaceBtwItems),
+
+        const Row(
+          children: [
+            Expanded(
+              child: HomeScreenNavCard(
+                  title: 'Session Roster',
+                  icon: Iconsax.note_21,
+                  description: 'View and manage the master roster of all participants assigned to the selected session'
+              ),
+            ),
+
+            SizedBox(width: BessSizes.md),
+
+            Expanded(
+              child: HomeScreenNavCard(
+                  title: 'Console',
+                  icon: Iconsax.code,
+                  description: 'Developer terminal with tools for testing and debugging'
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
-
-// class HomeScreenTablet extends StatelessWidget {
-//   const HomeScreenTablet({
-//     super.key,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//   }
-// }
 
 // class HomeScreenMobile extends StatelessWidget {
 //   const HomeScreenMobile({

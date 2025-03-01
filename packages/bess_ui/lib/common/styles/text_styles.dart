@@ -30,4 +30,10 @@ class BessTextStyles {
       fontSize: 14,
       letterSpacing: 2.0
   );
+
+  static final TextStyle lightTitle = BessieTextTheme.textTheme.labelMedium!.copyWith(
+      color: BessColors.textSubtle,
+      fontSize: 36,
+      letterSpacing: 2.0
+  );
 }
