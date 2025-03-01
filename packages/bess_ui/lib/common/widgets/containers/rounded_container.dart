@@ -54,17 +54,19 @@ class BessRoundedContainer extends StatelessWidget {
         elevation: showShadow ? 5.0 : 0.0,
         borderRadius: BorderRadius.circular(radius),
         child: Container(
-            width: width,
-            height: height,
-            margin: margin,
-            padding: padding,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: backgroundColor ?? BessColors.element1,
-              borderRadius: BorderRadius.circular(radius),
-              border: showBorder ? Border.all(color: borderColor ?? BessColors.borderPrimary, width: borderThickness) : null,
-            ),
-            child: child),
+          width: width,
+          height: height,
+          margin: margin,
+          padding: padding,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? BessColors.element1,
+            borderRadius: BorderRadius.circular(radius),
+            border: showBorder ? Border.all(color: borderColor ?? BessColors.borderPrimary, width: borderThickness) : null,
+          ),
+          child: ClipRect(
+              child: child
+          ),
+        ),
       ),
     );
   }

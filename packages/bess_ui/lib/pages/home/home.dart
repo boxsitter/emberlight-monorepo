@@ -1,9 +1,9 @@
 import 'package:bessie/common/constants/sizes.dart';
-import 'package:bessie/common/widgets/text/light_title.dart';
 import 'package:bessie/pages/home/widgets/home_screen_nav_card.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../common/styles/text_styles.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,14 +22,19 @@ class HomeScreenDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        LightTitle(text: "Welcome To Bessie"),
+        Text(
+          'Welcome To Bessie!',
+          style: BessTextStyles.lightTitle,
+          overflow: TextOverflow.clip,
+          maxLines: 1,
+        ),
 
-        SizedBox(height: BessSizes.spaceBtwItems),
+        const SizedBox(height: BessSizes.spaceBtwItems),
 
-        Row(
+        const Row(
           children: [
             Expanded(
               child: HomeScreenNavCard(

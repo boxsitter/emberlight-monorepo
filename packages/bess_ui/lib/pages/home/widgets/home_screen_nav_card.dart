@@ -1,10 +1,8 @@
-
-
 import 'package:bessie/common/constants/sizes.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/common/widgets/text/light_header.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+
+import '../../../common/styles/text_styles.dart';
 
 class HomeScreenNavCard extends StatelessWidget {
   const HomeScreenNavCard({
@@ -28,23 +26,27 @@ class HomeScreenNavCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ClipRect(
-                child: Icon(
-                  icon,
-                  size: BessSizes.iconMd,
-                ),
+              Icon(
+                icon,
+                size: BessSizes.iconMd,
               ),
               const SizedBox(width: 8,),
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: LightHeader(text: title),
+                  child: Text(
+                    title,
+                    style: BessTextStyles.lightHeader,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-
+      
           Text(
             description,
             maxLines: 3,
