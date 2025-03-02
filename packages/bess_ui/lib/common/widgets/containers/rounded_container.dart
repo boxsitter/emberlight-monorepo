@@ -31,6 +31,7 @@ class BessRoundedContainer extends StatelessWidget {
     this.backgroundColor,
     this.onTap,
     this.borderThickness = BessSizes.borderThicknessSm,
+    this.clipContent = false,
   });
 
   final Widget? child;
@@ -45,6 +46,7 @@ class BessRoundedContainer extends StatelessWidget {
   final Color? backgroundColor;
   final void Function()? onTap;
   final double borderThickness;
+  final bool clipContent;
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +60,19 @@ class BessRoundedContainer extends StatelessWidget {
           height: height,
           margin: margin,
           padding: padding,
-          decoration: BoxDecoration(
-            color: backgroundColor ?? BessColors.element1,
+          clipBehavior: clipContent ? Clip.antiAlias : Clip.none,
+          foregroundDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius),
-            border: showBorder ? Border.all(color: borderColor ?? BessColors.borderPrimary, width: borderThickness) : null,
+
+            border: showBorder ? Border.all(
+                color: borderColor ?? BessColors.borderPrimary,
+                width: borderThickness,
+                strokeAlign: BorderSide.strokeAlignInside,
+            ) : null,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(radius),
+            color: backgroundColor ?? BessColors.element1,
           ),
           child: ClipRect(
               child: child

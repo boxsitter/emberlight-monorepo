@@ -34,9 +34,8 @@ class BessSidebar extends StatelessWidget {
                 image: BessImages.lightAppLogo,
                 backgroundColor: Colors.transparent,
               ),
-              const SizedBox(height: BessSizes.spaceBtwItems),
               Padding(
-                padding: const EdgeInsets.all(BessSizes.md),
+                padding: const EdgeInsets.only(bottom: BessSizes.md, left: BessSizes.md, right: BessSizes.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,

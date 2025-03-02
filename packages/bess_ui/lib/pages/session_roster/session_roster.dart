@@ -1,10 +1,10 @@
-import 'package:bessie/common/widgets/data_table/controllers/data_table_controller.dart';
-import 'package:bessie/common/widgets/data_table/data_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../common/widgets/layouts/templates/site_layout.dart';
+import '../../common/widgets/roster_table/controllers/roster_table_controller.dart';
+import '../../common/widgets/roster_table/roster_table.dart';
 import '../../data/models/local_data.dart';
 
 class SessionRoster extends StatelessWidget {
@@ -25,31 +25,15 @@ class SessionRosterDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Button with a margin
-        Container(
-          margin: const EdgeInsets.only(bottom: 16.0), // Adjust the margin as needed
-          child: ShadButton.secondary(
-            enabled: true,
-
-            child: const Text('Primary'),
-            onPressed: () {},
-          )
+    return Expanded(
+      child: BessRosterTable(
+        tableTitle: 'Session Master Roster',
+        columns: columns,
+        controller: Get.put(
+            RosterTableController(localData.session!.sessionRoster),
+            tag: "MasterRosterPageTable"
         ),
-
-        // Data Table
-        Expanded(
-          child: BessDataTable(
-            columns: columns,
-            controller: Get.put(
-              DataTableController(localData.session!.sessionRoster),
-              tag: "MasterRosterPageTable"
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

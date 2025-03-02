@@ -92,7 +92,7 @@ class TImageUploader extends StatelessWidget {
           left: left,
           right: right,
           bottom: bottom,
-          child: TCircularIcon(
+          child: BessCircularIcon(
             icon: icon,
             size: BessSizes.md,
             color: Colors.white,

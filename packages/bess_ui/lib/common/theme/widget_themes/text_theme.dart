@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 
 /// Custom Class for Light & Dark Text Themes
-class BessieTextTheme {
-  BessieTextTheme._(); // To avoid creating instances
+class BessTextTheme {
+  BessTextTheme._(); // To avoid creating instances
 
   static TextTheme textTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(

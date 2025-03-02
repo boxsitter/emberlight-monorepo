@@ -37,7 +37,7 @@ class BessSizes {
 
   // Border thickness
   static const double borderThicknessSm = 1.0;
-  static const double borderThicknessMd = 2.0;
+  static const double borderThicknessMd = 3.0;
   static const double borderThicknessLg = 4.0;
 
   // Divider height

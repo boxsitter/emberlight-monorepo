@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 import '../../../../data/models/camper.dart';
 import '../../../../data/models/roster.dart';
 
-class DataTableController extends GetxController {
+class RosterTableController extends GetxController {
   final Roster roster;
   var campers = <String, Camper>{}.obs;
 
-  DataTableController(this.roster);
+  RosterTableController(this.roster);
 
   @override
   void onInit() {

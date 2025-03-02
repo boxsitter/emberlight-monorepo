@@ -20,7 +20,7 @@ class BessieAppTheme {
     disabledColor: BessColors.disabled,
     brightness: Brightness.light,
     primaryColor: BessColors.primary,
-    textTheme: BessieTextTheme.textTheme,
+    textTheme: BessTextTheme.textTheme,
     chipTheme: BessieChipTheme.chipTheme,
     appBarTheme: BessieAppBarTheme.appBarTheme,
     checkboxTheme: BessieCheckboxTheme.checkboxTheme,
