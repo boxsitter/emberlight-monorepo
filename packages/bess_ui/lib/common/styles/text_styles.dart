@@ -1,55 +1,81 @@
-import 'package:bessie/common/theme/widget_themes/text_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
 
 class BessTextStyles {
-  static final TextStyle standard = BessTextTheme.textTheme.bodyMedium!.apply(
-      color: BessColors.textPrimary
+  static final TextStyle standard = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14.0,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w400,
   );
 
-  static final TextStyle standardInverted = BessTextTheme.textTheme.bodyMedium!.apply(
-      color: BessColors.textInverted
+  static final TextStyle standardInverted = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14.0,
+    color: BessColors.textInverted,
+    fontWeight: FontWeight.w400,
   );
 
-  static final TextStyle standardLink = BessTextTheme.textTheme.bodyMedium!.apply(
+  static final TextStyle standardLink = TextStyle(
+      fontFamily: 'Inter',
+      fontSize: 14.0,
       color: BessColors.textLink,
+      fontWeight: FontWeight.w400,
       decoration: TextDecoration.underline
   );
 
-  static final TextStyle label = BessTextTheme.textTheme.labelMedium!.apply(
-      color: BessColors.textSecondary
+  static final TextStyle label = TextStyle(
+      fontFamily: 'Inter',
+      fontSize: 12.0,
+      color: BessColors.textSecondary,
+      fontWeight: FontWeight.w300,
   );
 
-  static final TextStyle subtle = BessTextTheme.textTheme.labelMedium!.apply(
-      color: BessColors.textSubtle
+  static final TextStyle subtle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12.0,
+    color: BessColors.textSubtle,
+    fontWeight: FontWeight.w300,
   );
 
-  static final TextStyle lightHeader = BessTextTheme.textTheme.labelMedium!.copyWith(
-      color: BessColors.textSubtle,
-      fontSize: 14,
-      letterSpacing: 2.0
+  static final TextStyle lightHeader = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: BessColors.textSubtle,
+    fontWeight: FontWeight.w300,
+    letterSpacing: 2.0,
   );
 
-  static final TextStyle boldHeader = BessTextTheme.textTheme.labelMedium!.copyWith(
-      color: BessColors.textPrimary,
-      fontSize: 14,
-      letterSpacing: 2.0
+  static final TextStyle darkHeader = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w300,
+    letterSpacing: 2.0,
   );
 
-  static final TextStyle lightTitle = BessTextTheme.textTheme.labelMedium!.copyWith(
-      color: BessColors.textSubtle,
-      fontSize: 36,
-      letterSpacing: 2.0
+  static final TextStyle lightTitle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 36,
+    color: BessColors.textSubtle,
+    fontWeight: FontWeight.w300,
+    letterSpacing: 2.0,
   );
 
-  static final TextStyle tableHeader = BessTextTheme.textTheme.headlineSmall!.copyWith(
-      fontWeight: FontWeight.w600,
+  static final TextStyle tableHeader = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 18.0,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 1.0,
   );
 
-  static final TextStyle columnHeader = BessTextTheme.textTheme.labelMedium!.copyWith(
-      color: BessColors.textSubtle,
-      fontSize: 12,
-      fontWeight: FontWeight.w600,
+  static final TextStyle columnHeader = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    color: BessColors.textSubtle,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 2.0,
   );
 }
