@@ -23,7 +23,7 @@ class BessRoundedContainer extends StatelessWidget {
     this.width,
     this.height,
     this.margin,
-    this.showShadow = true,
+    this.showShadow = false,
     this.showBorder = false,
     this.padding = const EdgeInsets.all(BessSizes.md),
     this.borderColor,

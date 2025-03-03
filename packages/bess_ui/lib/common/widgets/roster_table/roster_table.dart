@@ -23,14 +23,14 @@ class BessRosterTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      List<Map<String, dynamic>> data = controller.campers.values.map((camper) {
-        return {
-          "Name": camper.fullName,
-          "Preferred Name": camper.preferredName,
-          "Gender": camper.gender,
-          "Age": camper.age,
-          "Cabin": camper.cabin?.name ?? "None",
-        };
+      List<List<String>> data = controller.campers.values.map((camper) {
+        return [
+          camper.fullName,
+          camper.preferredName,
+          camper.gender,
+          camper.age.toString(), // converting int to String
+          camper.cabin?.name ?? "None",
+        ];
       }).toList();
 
       return BessRoundedContainer(
@@ -45,8 +45,19 @@ class BessRosterTable extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             TableHeader(tableTitle: tableTitle),
-            // Data table without the default header row.
-            BessTable(columns: columns),
+
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SizedBox(
+                    width: columns.length * 250,
+                    child: BessTable(columns: columns, data: data, columnWidth: 250),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       );
