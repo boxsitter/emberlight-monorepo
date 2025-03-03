@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:bessie/common/constants/colors.dart';
 import 'package:bessie/common/constants/sizes.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';

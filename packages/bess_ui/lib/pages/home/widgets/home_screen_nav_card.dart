@@ -30,7 +30,7 @@ class HomeScreenNavCard extends StatelessWidget {
                 icon,
                 size: BessSizes.iconMd,
               ),
-              const SizedBox(width: 8,),
+              const SizedBox(width: 8),
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,

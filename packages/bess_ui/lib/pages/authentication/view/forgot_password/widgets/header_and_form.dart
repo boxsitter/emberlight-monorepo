@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../../../common/routes/routes.dart';
 import '../../../../../common/constants//sizes.dart';
@@ -18,7 +18,7 @@ class BessHeaderAndForm extends StatelessWidget {
       children: [
         /// Header
         IconButton(
-            onPressed: () => Get.back(), icon: const Icon(Iconsax.arrow_left)),
+            onPressed: () => Get.back(), icon: const Icon(LucideIcons.arrowLeft)),
         const SizedBox(height: BessSizes.spaceBtwItems),
         Text(BessTexts.forgotPasswordTitle,
             style: Theme.of(context).textTheme.headlineMedium),
@@ -31,7 +31,7 @@ class BessHeaderAndForm extends StatelessWidget {
         Form(
           child: TextFormField(
             decoration: const InputDecoration(
-                labelText: BessTexts.email, prefixIcon: Icon(Iconsax.sms)),
+                labelText: BessTexts.email, prefixIcon: Icon(LucideIcons.messageCircleMore)),
           ),
         ),
         const SizedBox(height: BessSizes.spaceBtwItems * 2),

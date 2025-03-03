@@ -55,6 +55,7 @@ class BessRoundedContainer extends StatelessWidget {
       child: Material(
         elevation: showShadow ? 5.0 : 0.0,
         borderRadius: BorderRadius.circular(radius),
+        color: Colors.transparent,
         child: Container(
           width: width,
           height: height,

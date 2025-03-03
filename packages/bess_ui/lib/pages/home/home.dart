@@ -1,7 +1,7 @@
 import 'package:bessie/common/constants/sizes.dart';
 import 'package:bessie/pages/home/widgets/home_screen_nav_card.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../common/styles/text_styles.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
@@ -39,7 +39,7 @@ class HomeScreenDesktop extends StatelessWidget {
             Expanded(
               child: HomeScreenNavCard(
                   title: 'Session Roster',
-                  icon: Iconsax.note_21,
+                  icon: LucideIcons.layoutPanelLeft,
                   description: 'View and manage the master roster of all participants assigned to the selected session'
               ),
             ),
@@ -49,7 +49,7 @@ class HomeScreenDesktop extends StatelessWidget {
             Expanded(
               child: HomeScreenNavCard(
                   title: 'Console',
-                  icon: Iconsax.code,
+                  icon: LucideIcons.squareTerminal,
                   description: 'Developer terminal with tools for testing and debugging'
               ),
             ),

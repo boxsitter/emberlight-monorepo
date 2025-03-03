@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../common/widgets/layouts/templates/site_layout.dart';
 import '../../common/widgets/roster_table/controllers/roster_table_controller.dart';
@@ -25,14 +24,12 @@ class SessionRosterDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: BessRosterTable(
-        tableTitle: 'Session Master Roster',
-        columns: columns,
-        controller: Get.put(
-            RosterTableController(localData.session!.sessionRoster),
-            tag: "MasterRosterPageTable"
-        ),
+    return BessRosterTable(
+      tableTitle: 'Session Master Roster',
+      columns: columns,
+      controller: Get.put(
+          RosterTableController(localData.session!.sessionRoster),
+          tag: "MasterRosterPageTable"
       ),
     );
   }

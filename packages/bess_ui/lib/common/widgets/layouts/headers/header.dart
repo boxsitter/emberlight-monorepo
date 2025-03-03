@@ -1,6 +1,6 @@
 import 'package:bessie/common/widgets/images/bess_rounded_image.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../constants//colors.dart';
 import '../../../constants//enums.dart';
@@ -27,7 +27,7 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
         leading: !BessDeviceUtils.isDesktopScreen(context)
             ? IconButton(
                 onPressed: () => scaffoldKey?.currentState?.openDrawer(),
-                icon: const Icon(Iconsax.menu))
+                icon: const Icon(LucideIcons.menu))
             : null,
 
         actions: [
@@ -65,5 +65,5 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   // TODO: implement preferredSize
   Size get preferredSize =>
-      Size.fromHeight(BessDeviceUtils.getAppBarHeight() + 15);
+      Size.fromHeight(BessDeviceUtils.getAppBarHeight() + 17);
 }

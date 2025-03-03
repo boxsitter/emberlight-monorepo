@@ -1,9 +1,9 @@
 import 'package:bessie/common/constants/catppuccin_base.dart';
-import 'package:bessie/common/constants/temp_user_settings.dart';
+import 'package:bessie/app_config.dart';
 import 'package:flutter/material.dart';
 
 class BessColors {
-  static Flavor flavor = TempUserSettings.theme;
+  static Flavor flavor = AppConfig.theme;
 
   // Primary theme colors
   static Color primary = flavor.blue;
@@ -20,6 +20,7 @@ class BessColors {
   // Background colors
   static Color background = flavor.mantle;
   static Color core = flavor.base;
+  static Color crust = flavor.crust;
 
   // Element colors
   static Color element1 = flavor.surface0;

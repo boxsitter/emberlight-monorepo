@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../constants//colors.dart';
 
@@ -40,17 +40,17 @@ class TTableActionButtons extends StatelessWidget {
         if (view)
           IconButton(
             onPressed: onViewPressed,
-            icon: Icon(Iconsax.eye, color: BessColors.semiHigh),
+            icon: Icon(LucideIcons.eye, color: BessColors.semiHigh),
           ),
         if (edit)
           IconButton(
             onPressed: onEditPressed,
-            icon: Icon(Iconsax.pen_add, color: BessColors.primary),
+            icon: Icon(LucideIcons.pencil, color: BessColors.primary),
           ),
         if (delete)
           IconButton(
             onPressed: onDeletePressed,
-            icon: Icon(Iconsax.trash, color: BessColors.error),
+            icon: Icon(LucideIcons.trash2, color: BessColors.error),
           ),
       ],
     );

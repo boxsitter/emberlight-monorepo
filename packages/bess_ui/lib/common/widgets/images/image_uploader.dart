@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../../../../common/widgets/icons/t_circular_icon.dart';
 import '../../../../../../common/widgets/images/bess_circular_image.dart';
@@ -21,7 +21,7 @@ class TImageUploader extends StatelessWidget {
     this.height = 100,
     required this.imageType,
     this.circular = false,
-    this.icon = Iconsax.edit_2,
+    this.icon = LucideIcons.pencil,
     this.top,
     this.bottom = 0,
     this.right,

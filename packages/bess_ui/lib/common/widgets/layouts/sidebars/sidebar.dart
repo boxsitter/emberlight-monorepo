@@ -1,7 +1,7 @@
 import 'package:bessie/common/styles/text_styles.dart';
 import 'package:bessie/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../routes/routes.dart';
 import '../../../constants//colors.dart';
@@ -49,19 +49,19 @@ class BessSidebar extends StatelessWidget {
                     // Menu Items
                     const BessMenuItem(
                         route: BessRoutes.home,
-                        icon: Iconsax.home,
+                        icon: LucideIcons.house,
                         itemName: 'Home'),
                     const BessMenuItem(
                         route: BessRoutes.sessionRoster,
-                        icon: Iconsax.note_21,
+                        icon: LucideIcons.bookUser,
                         itemName: 'Session Roster'),
                     const BessMenuItem(
                         route: BessRoutes.console,
-                        icon: Iconsax.code,
+                        icon: LucideIcons.squareTerminal,
                         itemName: 'Console'),
                     const BessMenuItem(
                         route: BessRoutes.responsiveDesignExample,
-                        icon: Iconsax.picture_frame,
+                        icon: LucideIcons.layoutPanelLeft,
                         itemName: 'Widgets'),
                   ],
                 ),

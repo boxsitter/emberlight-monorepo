@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/sizes.dart';
 import '../../../styles/text_styles.dart';
-import '../../icons/t_circular_icon.dart';
 
 class ColumnHeader extends StatelessWidget {
   const ColumnHeader({
@@ -26,9 +24,13 @@ class ColumnHeader extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              columnLabel,
-              style: BessTextStyles.columnHeader,
+            Expanded(
+              child: Text(
+                columnLabel,
+                style: BessTextStyles.columnHeader,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),

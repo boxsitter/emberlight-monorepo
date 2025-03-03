@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../../../common/routes/routes.dart';
 import '../../../../../common/constants//sizes.dart';
@@ -22,7 +22,7 @@ class BessLoginForm extends StatelessWidget {
               /// Email
               TextFormField(
                 decoration: const InputDecoration(
-                  prefixIcon: Icon(Iconsax.sms),
+                  prefixIcon: Icon(LucideIcons.messageCircleMore),
                   labelText: BessTexts.email,
                 ),
               ),
@@ -32,10 +32,10 @@ class BessLoginForm extends StatelessWidget {
               /// Password
               TextFormField(
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Iconsax.password_check),
+                  prefixIcon: const Icon(LucideIcons.lock),
                   labelText: BessTexts.password,
                   suffixIcon: IconButton(
-                      onPressed: () {}, icon: const Icon(Iconsax.eye_slash)),
+                      onPressed: () {}, icon: const Icon(LucideIcons.eyeOff)),
                 ),
               ),
               const SizedBox(height: BessSizes.spaceBtwInputFields / 2),

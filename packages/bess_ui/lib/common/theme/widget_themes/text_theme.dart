@@ -63,6 +63,7 @@ class BessTextTheme {
       color: BessColors.textPrimary,
       letterSpacing: 1.0,
       fontFamily: 'Inter',
+
     ),
     bodySmall: const TextStyle().copyWith(
       fontSize: 14.0,
