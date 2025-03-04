@@ -43,7 +43,7 @@ class TableHeader extends StatelessWidget {
               width: 80,
               height: 80,
               backgroundColor: BessColors.primary,
-              child: Text('Count: 30'),
+              child: const Text('Count: 30'),
             ),
 
             const Spacer(),

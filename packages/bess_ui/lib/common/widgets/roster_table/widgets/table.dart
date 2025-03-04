@@ -1,4 +1,3 @@
-import 'package:bessie/common/utils/device/web_material_scroll.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
