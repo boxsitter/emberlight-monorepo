@@ -17,7 +17,7 @@ class TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70,
+      height: 76,
       decoration: BoxDecoration(
         color: BessColors.core,
         border: Border(
@@ -25,25 +25,28 @@ class TableHeader extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.only(
-            left: BessSizes.lg,
-            right: BessSizes.md,
-            top: BessSizes.md,
-            bottom: BessSizes.md),
+          left: BessSizes.lg,
+          right: BessSizes.md,
+          top: BessSizes.md,
+          bottom: BessSizes.md,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              tableTitle,
-              style: BessTextStyles.tableHeader,
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tableTitle,
+                  style: BessTextStyles.tableHeader,
+                ),
 
-            const SizedBox(width: 100),
-
-            BessRoundedContainer(
-              width: 80,
-              height: 80,
-              backgroundColor: BessColors.primary,
-              child: const Text('Count: 30'),
+                Text(
+                  '50 Campers',
+                  style: BessTextStyles.subtle,
+                ),
+              ],
             ),
 
             const Spacer(),
