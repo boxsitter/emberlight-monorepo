@@ -6,6 +6,7 @@ import '../../../../data/models/roster.dart';
 class RosterTableController extends GetxController {
   final Roster roster;
   var campers = <String, Camper>{}.obs;
+  var count = 0.obs;
 
   RosterTableController(this.roster);
 
@@ -13,6 +14,11 @@ class RosterTableController extends GetxController {
   void onInit() {
     super.onInit();
     campers.assignAll(roster.campers);
+    count.value = campers.length;
+    // Listen for changes on myMap and update count in real time
+    ever(campers, (_) {
+      count.value = campers.length;
+    });
   }
 }
 

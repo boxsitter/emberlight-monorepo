@@ -44,7 +44,7 @@ class BessRosterTable extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TableHeader(tableTitle: tableTitle),
+            TableHeader(tableTitle: tableTitle, controller: controller),
 
             Expanded(
               child: Align(

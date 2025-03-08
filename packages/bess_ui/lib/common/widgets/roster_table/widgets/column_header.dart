@@ -21,7 +21,6 @@ class ColumnHeader extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         color: BessColors.background,
-        border: Border.symmetric(vertical: BorderSide(color: BessColors.borderPrimary, width: 1)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: BessSizes.md),
       child: Align(

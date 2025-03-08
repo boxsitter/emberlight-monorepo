@@ -15,9 +15,10 @@ class ActionButtonRow extends StatelessWidget {
     return BessRoundedContainer(
       showShadow: false,
       padding: EdgeInsets.zero,
-      height: 46,
+      height: 36,
       radius: 100,
       backgroundColor: BessColors.background,
+
       child: Row(
         children: [
           TableActionButton(

@@ -22,7 +22,6 @@ class StringCell extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: BessColors.core,
-          border: Border.symmetric(vertical: BorderSide(color: BessColors.borderPrimary, width: 1)),
         ),
         padding: const EdgeInsets.symmetric(horizontal: BessSizes.md),
         child: Align(

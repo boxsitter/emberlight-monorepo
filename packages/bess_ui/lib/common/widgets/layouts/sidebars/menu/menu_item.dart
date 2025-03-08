@@ -53,8 +53,8 @@ class BessMenuItem extends StatelessWidget {
                         : Icon(icon,
                             size: 22,
                             color: menuController.isHovering(route)
-                                ? BessColors.low
-                                : BessColors.semiHigh),
+                                ? BessColors.textInverted
+                                : BessColors.textPrimary),
                   ),
 
                   // Text

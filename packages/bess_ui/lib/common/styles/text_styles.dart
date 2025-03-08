@@ -39,6 +39,13 @@ class BessTextStyles {
     fontWeight: FontWeight.w300,
   );
 
+  static final TextStyle secondarySmall = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 11.0,
+    color: BessColors.textSecondary,
+    fontWeight: FontWeight.w600,
+  );
+
   static final TextStyle lightHeader = TextStyle(
     fontFamily: 'Inter',
     fontSize: 14,

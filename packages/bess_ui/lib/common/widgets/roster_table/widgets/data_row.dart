@@ -16,7 +16,7 @@ class BessDataRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BessColors.borderPrimary, width: 2))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BessColors.crust, width: 2))),
       child: Row (
         mainAxisAlignment: MainAxisAlignment.start,
         children: data.map((String cellContent) => StringCell(content: cellContent, width: cellWidth,)).toList(),
