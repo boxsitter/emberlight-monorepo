@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 import '../../common/widgets/roster_table/controllers/roster_table_controller.dart';
 import '../../common/widgets/roster_table/roster_table.dart';
-import '../../data/models/local_data.dart';
+import '../../data/models/delete_this_old_localdata.dart';
 
 class SessionRoster extends StatelessWidget {
   const SessionRoster({super.key});

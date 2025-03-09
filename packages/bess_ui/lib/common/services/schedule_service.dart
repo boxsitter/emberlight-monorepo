@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../../data/models/camper.dart';
-import '../../data/models/local_data.dart';
+import '../../data/models/delete_this_old_localdata.dart';
 import '../../data/models/schedule/activity.dart';
 import '../../data/models/schedule/assignable_activity_block.dart';
 import '../../data/models/schedule/schedule.dart';
@@ -48,13 +48,13 @@ class ScheduleService extends GetxService {
 
   AssignableActivityBlock createAssignableActivityBlock(String name) {
     // creates the block and adds it to the schedule
-    AssignableActivityBlock blockToCreate = AssignableActivityBlock(dataParent: schedule, name: 'Test Choice Activity');
+    AssignableActivityBlock blockToCreate = AssignableActivityBlock(name: 'Test Choice Activity');
     schedule.blocks[blockToCreate.id] = blockToCreate;
     schedule.updateTimestamp();
 
     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
     for (Camper camper in localData.session!.sessionRoster.values) {
-      camper.activityPreferences[blockToCreate] = CamperPreference(dataParent: camper, camper: camper, block: blockToCreate);
+      camper.activityPreferences[blockToCreate] = CamperPreference(camper: camper, block: blockToCreate);
       camper.activities[blockToCreate] = null;
       camper.updateTimestamp();
     }
@@ -78,7 +78,6 @@ class ScheduleService extends GetxService {
     required AssignableActivityBlock assignableActivityBlock,
   }) {
     Activity activityToAdd = Activity(
-      dataParent: assignableActivityBlock,
       name: name,
       capacity: capacity,
       block: assignableActivityBlock,

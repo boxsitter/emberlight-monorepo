@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../data/models/camper.dart';
 import '../../data/models/camper_preference.dart';
-import '../../data/models/local_data.dart';
+import '../../data/models/delete_this_old_localdata.dart';
 import '../../data/models/schedule/activity.dart';
 
 class ActivitySignupService extends GetxService {

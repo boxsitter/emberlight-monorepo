@@ -4,7 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../../../../data/models/camper.dart';
 import '../../../../data/models/roster.dart';
-import '../../data/models/session.dart';
+import '../../data/models/session_info.dart';
 import '../../pages/console/controller/console_controller.dart';
 
 class RosterUtils {
@@ -59,7 +59,7 @@ class RosterUtils {
     ConsoleController().log(roster.bessToString());
   }
 
-  static void exportPdf(Roster roster, Session currentSession) {
+  static void exportPdf(Roster roster, SessionInfo currentSession) {
     pw.Document pdf = PdfUtils.rosterToPdf(roster);
     String formattedSessionName = currentSession.name.replaceAll(' ', '_').toLowerCase();
     String formattedTimestamp = roster.formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();

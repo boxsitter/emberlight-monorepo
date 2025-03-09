@@ -14,10 +14,9 @@ class CamperPreference extends BessObject {
   bool completed = false;
 
   CamperPreference({
-    required BessObject dataParent,
     required this.camper,
     required this.block
-  }) : super('CamperPreference-${camper.lastName}-${camper.firstName}', dataParent);
+  }) : super(idTitle: 'CamperPreference-${camper.lastName}-${camper.firstName}');
 
   @override
   String bessToString() {

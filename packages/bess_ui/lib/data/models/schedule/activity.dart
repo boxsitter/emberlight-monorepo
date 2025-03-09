@@ -10,13 +10,11 @@ class Activity extends BessObject {
   final AssignableActivityBlock block;
 
   Activity({
-    required BessObject dataParent,
     required this.name,
     required this.capacity,
     required this.block,
-  }) : super('activity-$name', dataParent) {
+  }) : super(idTitle: 'activity-$name') {
     roster = Roster(
-      dataParent: this,
       title: '$name Roster',
     );
   }

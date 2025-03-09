@@ -4,21 +4,19 @@ import 'package:bessie/data/models/schedule/schedule.dart';
 
 import 'cabin.dart';
 
-class Session extends BessObject{
+class SessionInfo extends BessObject{
   String name;
   late final Roster sessionRoster;
   final Map<String, Cabin> cabins = {};
   late final Schedule schedule;
 
-  Session({
-    required BessObject dataParent,
+  SessionInfo({
     required this.name,
-  }) : super('Session-$name', dataParent) {
+  }) : super(idTitle: 'Session-$name') {
     sessionRoster = Roster(
-      dataParent: this,
       title: 'Session Master Roster'
     );
-    schedule = Schedule(dataParent: this);
+    schedule = Schedule();
   }
 
   @override

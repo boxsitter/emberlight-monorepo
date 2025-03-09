@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../data/models/cabin.dart';
-import '../../data/models/local_data.dart';
+import '../../data/models/delete_this_old_localdata.dart';
 
 class SessionManagerService extends GetxService {
   final LocalData localData = Get.find<LocalData>();
@@ -21,8 +21,11 @@ class SessionManagerService extends GetxService {
     required String name,
     required int capacity,
   }) {
-    Cabin cabinToAdd = Cabin(dataParent: localData.session!, name: name, capacity: capacity);
+    Cabin cabinToAdd = Cabin(name: name, capacity: capacity);
     localData.session!.cabins[cabinToAdd.id] = cabinToAdd;
     localData.session!.updateTimestamp();
   }
+
+  // TODO: CreateSession
+  // create a new Session collection in the right place in the database, initialize and attach a SessionInfo object to it, and give it an empty session roster and schedule.
 }

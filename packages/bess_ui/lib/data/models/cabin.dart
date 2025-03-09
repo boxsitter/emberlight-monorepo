@@ -12,26 +12,43 @@ class Cabin extends BessObject {
   Iterable<Camper> get campers => roster.values;
 
   Cabin({
-    required BessObject dataParent,
     required this.name,
     required this.capacity,
-  }) : super('Cabin-$name', dataParent) {
-      roster = Roster(
-          dataParent: this,
-          title: name
-      );
+  }) : super(idTitle: 'Cabin-$name') {
+    roster = Roster(title: name);
   }
 
   @override
   String bessToString() {
-    // TODO: implement bessToString
-    throw UnimplementedError();
+    return 'Cabin: $name, Capacity: $capacity\nRoster:\n${roster.bessToString()}';
   }
 
   @override
   Map<String, dynamic> toJson() {
-    // TODO: implement toJson
-    throw UnimplementedError();
+    final json = toJsonSuper();
+    json.addAll({
+      'name': name,
+      'capacity': capacity,
+      'roster': roster.toJson(),
+    });
+    return json;
+  }
+
+  factory Cabin.fromJson(Map<String, dynamic> json) {
+    final cabin = Cabin(
+      name: json['name'] as String,
+      capacity: json['capacity'] as int,
+    );
+
+    // use roster's fromJson method to reconstruct the cabin roster
+    if (json['roster'] != null) {
+      cabin.roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
+      // for each camper in the roster, assign this cabin.
+      for (var camper in cabin.roster.campers.values) {
+        camper.cabin = cabin;
+      }
+    }
+    return cabin;
   }
 
 }

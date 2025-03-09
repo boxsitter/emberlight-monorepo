@@ -1,5 +1,8 @@
 import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../../common/services/session_roster_service.dart';
 import 'camper.dart';
 
 class Roster extends BessObject {
@@ -7,15 +10,23 @@ class Roster extends BessObject {
   final Map<String, Camper> campers;
 
   Roster({
-    required BessObject dataParent,
     required this.title,
-  }) : campers = {}, super('Roster-$title-', dataParent);
+    super.id,
+    super.createdAt,
+    super.updatedAt,
+  }) : campers = {}, super(
+    idTitle: 'Roster-$title-',
+  );
 
   int get length => campers.length;
   Iterable<Camper> get values => campers.values;
 
   @override
   String bessToString() {
+    if (campers.isEmpty) {
+      return '$title\nRoster Size: ${campers.length}';
+    }
+
     // Calculate maximum widths for each field
     int maxIdWidth = campers.values.map((c) => c.toStringSuper().length).reduce((a, b) => a > b ? a : b);
     int maxNameWidth = campers.values.map((c) => c.fullName.length).reduce((a, b) => a > b ? a : b);
@@ -47,7 +58,33 @@ class Roster extends BessObject {
 
   @override
   Map<String, dynamic> toJson() {
-    // TODO: implement toJson
-    throw UnimplementedError();
+    final json = toJsonSuper();
+    json.addAll({
+      'title': title,
+      'campers': campers.keys.toList(),
+    });
+    return json;
+  }
+
+  factory Roster.fromJson(Map<String, dynamic> json) {
+    final roster = Roster(
+      title: json['title'] ?? '',
+      id: json['id'] as String,
+      createdAt: DateTime.tryParse(json['createdAt'] as String),
+      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
+    );
+
+    // Deserialize referenced campers using SessionRosterService.
+    final List<dynamic> camperIds = json['campers'] as List<dynamic>? ?? [];
+    // Get the SessionRosterService instance from GetX.
+    final sessionRosterService = Get.find<SessionRosterService>();
+
+    for (var camId in camperIds) {
+      // Fetch the camper from the master roster.
+      final Camper camper = sessionRosterService.fetchCamperById(camId as String);
+      roster.campers[camper.id] = camper;
+    }
+
+    return roster;
   }
 }

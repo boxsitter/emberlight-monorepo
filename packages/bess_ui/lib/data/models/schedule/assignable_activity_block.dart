@@ -1,15 +1,13 @@
 import 'package:bessie/data/abstract/schedule_block.dart';
 
-import '../../abstract/bess_object.dart';
 import 'activity.dart';
 
 class AssignableActivityBlock extends ScheduleBlock {
   Map<String, Activity> activities;
 
   AssignableActivityBlock({
-    required BessObject dataParent,
-    required String name,
-  }) : activities = {}, super('assignableactivityblock-$name', dataParent, name: name);
+    required super.name,
+  }) : activities = {}, super(idTitle: 'assignableactivityblock-$name');
 
   @override
   String bessToString() {

@@ -7,19 +7,21 @@ abstract class BessObject {
   final DateTime createdAt;
   DateTime updatedAt;
   final String idTitle;
-
-  final BessObject? dataParent; // the model this object is a child of in the Bessie Data Structure
   bool isUpdating = false;
 
-  // Default constructor that sets id
-  BessObject(this.idTitle, this.dataParent) :
-    id = BessHelperFunctions.getBessId(idTitle),
-    createdAt = DateTime.now(),
-    updatedAt = DateTime.now();
+  // Default constructor for new objects
+  BessObject({
+    required this.idTitle,
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : id = id ?? BessHelperFunctions.getBessId(idTitle),
+        createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
   // Concrete implementation
   String get formattedCreatedAt => BessFormatter.formatDate(createdAt);
-  String get formattedUpdatedAt => BessFormatter.formatDate(createdAt);
+  String get formattedUpdatedAt => BessFormatter.formatDate(updatedAt);
 
   // Abstract methods to enforce implementation in subclasses
   // Explicitly mark toString as abstract
@@ -30,6 +32,9 @@ abstract class BessObject {
   Map<String, dynamic> toJsonSuper() {
     return {
       'id': id,
+      'idTitle': idTitle,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -45,9 +50,8 @@ abstract class BessObject {
 
     isUpdating = true;
     updatedAt = DateTime.now();
-    dataParent?.updateTimestamp();
 
-    Future.delayed(const Duration(milliseconds: 50), () {
+    Future.delayed(const Duration(milliseconds: 30), () {
       isUpdating = false;
     });
   }

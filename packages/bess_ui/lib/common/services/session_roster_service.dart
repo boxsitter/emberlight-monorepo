@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 import '../../data/models/cabin.dart';
 import '../../data/models/camper.dart';
-import '../../data/models/local_data.dart';
+import '../../data/models/delete_this_old_localdata.dart';
 import '../../data/models/roster.dart';
 import '../feature_utils/session_roster_utils.dart';
 import '../feature_utils/session_utils.dart';
@@ -19,6 +19,14 @@ class SessionRosterService extends GetxService {
   final LocalData localData = Get.find<LocalData>();
 
   Roster get roster => localData.session!.sessionRoster;
+
+  Camper fetchCamperById(String id){
+    return Camper(
+      firstName: 'TEST'
+    );
+    // TODO: fetch camper from database
+    // returns null if no camper is found and throws an error
+  }
 
   void createCamper({
     String firstName = '',
@@ -39,7 +47,6 @@ class SessionRosterService extends GetxService {
     }
     // TODO: Error checking here, validate stuff
     Camper camperToAdd = Camper(
-      dataParent: roster,
       firstName: firstName,
       lastName: lastName,
       preferredName: preferredName,
@@ -55,7 +62,7 @@ class SessionRosterService extends GetxService {
       for (ScheduleBlock block in localData.session!.schedule.blocks.values) {
         if (block is AssignableActivityBlock) {
           AssignableActivityBlock assignableActivityBlock = block;
-          camperToAdd.activityPreferences[block] = CamperPreference(dataParent: camperToAdd, camper: camperToAdd, block: block);
+          camperToAdd.activityPreferences[block] = CamperPreference(camper: camperToAdd, block: block);
           camperToAdd.updateTimestamp();
           for (Activity activity in assignableActivityBlock.activities.values) {
             camperToAdd.activityPreferences[assignableActivityBlock]!.preferences[activity] = null;
