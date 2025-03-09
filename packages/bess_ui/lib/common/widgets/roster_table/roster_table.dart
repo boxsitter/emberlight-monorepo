@@ -1,7 +1,8 @@
 import 'package:bessie/common/constants/colors.dart';
 import 'package:bessie/common/constants/sizes.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/common/widgets/roster_table/widgets/table.dart';
+import 'package:bessie/common/widgets/roster_table/widgets/column_header.dart';
+import 'package:bessie/common/widgets/roster_table/widgets/data_row.dart';
 import 'package:bessie/common/widgets/roster_table/widgets/table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class BessRosterTable extends StatelessWidget {
   final List<String> columns;
   final RosterTableController controller;
   final String tableTitle;
+  static const double columnWidth = 250;
 
   const BessRosterTable({
     super.key,
@@ -53,7 +55,28 @@ class BessRosterTable extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: SizedBox(
                     width: columns.length * 250,
-                    child: BessTable(columns: columns, data: data, columnWidth: 250),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: columns.map((String column) => ColumnHeader(columnLabel: column, width: columnWidth)).toList(),
+                        ),
+
+                        Divider(
+                          height: 1,
+                          color: BessColors.borderPrimary,
+                        ),
+
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              return BessDataRow(data: data[index], cellWidth: columnWidth,);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
