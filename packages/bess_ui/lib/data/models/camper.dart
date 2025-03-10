@@ -2,7 +2,6 @@ import 'package:bessie/common/services/cabins_service.dart';
 import 'package:bessie/data/models/schedule/activity.dart';
 import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../abstract/bess_object.dart';
 import 'cabin.dart';

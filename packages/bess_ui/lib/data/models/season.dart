@@ -1,13 +1,12 @@
 import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:bessie/data/models/season_info.dart';
+import 'package:bessie/data/models/session.dart';
 
-class BranchInfo extends BessObject{
+class Season extends BessObject{
   String name;
-  Map<String, SeasonInfo> seasons = {};
 
-  BranchInfo({
-    required this.name
-  }) : super(idTitle: 'Branch-$name');
+  Season({
+    required this.name,
+  }) : super(idTitle: 'season-$name');
 
   @override
   String bessToString() {
@@ -20,4 +19,5 @@ class BranchInfo extends BessObject{
     // TODO: implement toJson
     throw UnimplementedError();
   }
+
 }

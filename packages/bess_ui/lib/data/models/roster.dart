@@ -1,6 +1,5 @@
 import 'package:bessie/data/abstract/bess_object.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../common/services/session_roster_service.dart';
 import 'camper.dart';

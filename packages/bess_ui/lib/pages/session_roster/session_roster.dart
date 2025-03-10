@@ -5,6 +5,7 @@ import '../../common/widgets/layouts/templates/site_layout.dart';
 import '../../common/widgets/roster_table/controllers/roster_table_controller.dart';
 import '../../common/widgets/roster_table/roster_table.dart';
 import '../../data/models/delete_this_old_localdata.dart';
+import '../../data/models/roster.dart';
 
 class SessionRoster extends StatelessWidget {
   const SessionRoster({super.key});
@@ -16,7 +17,6 @@ class SessionRoster extends StatelessWidget {
 }
 
 class SessionRosterDesktop extends StatelessWidget {
-  final LocalData localData = Get.find<LocalData>();
 
   SessionRosterDesktop({super.key});
   
@@ -28,7 +28,7 @@ class SessionRosterDesktop extends StatelessWidget {
       tableTitle: 'Session Master Roster',
       columns: columns,
       controller: Get.put(
-          RosterTableController(localData.session!.sessionRoster),
+          RosterTableController(Roster(title: 'DELETE THIS DUMMY ROSTER')),
           tag: "MasterRosterPageTable"
       ),
     );

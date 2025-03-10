@@ -1,31 +1,30 @@
-import 'package:get/get.dart';
-
-import '../../data/models/cabin.dart';
-import '../../data/models/delete_this_old_localdata.dart';
-
-class SessionManagerService extends GetxService {
-  final LocalData localData = Get.find<LocalData>();
-
-  void initializeSessionForTesting() {
-    addCabinToSession(name: "Henderson", capacity: 12);
-    addCabinToSession(name: "Leckenby", capacity: 12);
-    addCabinToSession(name: "Yarrow", capacity: 12);
-    addCabinToSession(name: "Freeman 1", capacity: 14);
-  }
-
-  // TODO: This code is temporary, fix it
-  // In the final version, this method should search through the branches cabin "templates" and activate that cabin for the current session
-  // Creation of cabins should be handled in the branch manager
-  // As of now, it creates the cabin and adds it
-  void addCabinToSession({
-    required String name,
-    required int capacity,
-  }) {
-    Cabin cabinToAdd = Cabin(name: name, capacity: capacity);
-    localData.session!.cabins[cabinToAdd.id] = cabinToAdd;
-    localData.session!.updateTimestamp();
-  }
-
-  // TODO: CreateSession
-  // create a new Session collection in the right place in the database, initialize and attach a SessionInfo object to it, and give it an empty session roster and schedule.
-}
+// import 'package:get/get.dart';
+//
+// import '../../data/models/cabin.dart';
+// import '../../data/models/delete_this_old_localdata.dart';
+//
+// class SessionManagerService extends GetxService {
+//
+//   void initializeSessionForTesting() {
+//     addCabinToSession(name: "Henderson", capacity: 12);
+//     addCabinToSession(name: "Leckenby", capacity: 12);
+//     addCabinToSession(name: "Yarrow", capacity: 12);
+//     addCabinToSession(name: "Freeman 1", capacity: 14);
+//   }
+//
+//   // TODO: This code is temporary, fix it
+//   // In the final version, this method should search through the branches cabin "templates" and activate that cabin for the current session
+//   // Creation of cabins should be handled in the branch manager
+//   // As of now, it creates the cabin and adds it
+//   void addCabinToSession({
+//     required String name,
+//     required int capacity,
+//   }) {
+//     Cabin cabinToAdd = Cabin(name: name, capacity: capacity);
+//     localData.session!.cabins[cabinToAdd.id] = cabinToAdd;
+//     localData.session!.updateTimestamp();
+//   }
+//
+//   // TODO: CreateSession
+//   // create a new Session collection in the right place in the database, initialize and attach a SessionInfo object to it, and give it an empty session roster and schedule.
+// }

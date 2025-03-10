@@ -36,9 +36,9 @@ class ConsoleController extends GetxController {
 
   void initializeFeatures() {
     features.addAll({
-      SessionRosterCommands(), 
-      ActivitySignupCommands(),
-      ScheduleCommands(),
+      SessionRosterCommands(),
+      // ActivitySignupCommands(),
+      // ScheduleCommands(),
     });
   }
 

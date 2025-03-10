@@ -1,8 +1,8 @@
 import '../../../../data/models/cabin.dart';
-import '../../../../data/models/session_info.dart';
+import '../../../../data/models/session.dart';
 
 class SessionUtils {
-  static Cabin? getCabinByNameFromSession(SessionInfo session, String cabinName) {
+  static Cabin? getCabinByNameFromSession(Session session, String cabinName) {
     for (Cabin cabin in session.cabins.values) {
       if (cabin.name.toLowerCase() == cabinName.toLowerCase()) {
         return cabin;

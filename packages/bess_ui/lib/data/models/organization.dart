@@ -1,14 +1,13 @@
 import 'package:bessie/data/abstract/bess_object.dart';
 
-import 'branch_info.dart';
+import 'branch.dart';
 
-class OrganizationInfo extends BessObject{
+class Organization extends BessObject{
   String name;
-  Map<String, BranchInfo> branches;
 
-  OrganizationInfo({
+  Organization({
     required this.name
-  }) : branches = {}, super(idTitle: 'Organization-$name');
+  }) : super(idTitle: 'organization-$name');
 
   @override
   String bessToString() {

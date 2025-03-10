@@ -33,7 +33,7 @@ class Createcamper extends Command {
 
   @override
   void runCommand(dynamic controller, List<String> arguments, Map<String, String?> flags) {
-    controller.createCamper(
+    controller.registerCamper(
       firstName: arguments[0],
       lastName: arguments [1],
       age: int.parse(arguments[2]),
