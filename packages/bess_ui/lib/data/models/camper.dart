@@ -61,12 +61,11 @@ class Camper extends BessObject {
     return json;
   }
 
-  factory Camper.fromJson(Map<String, dynamic> json) {
-    // handle id referenced fields
+  factory Camper.fromJson(Map<String, dynamic> json, {bool clone = false}) {
+    // Handle id-referenced fields.
     final String? cabinId = json['cabinId'] as String?;
     Cabin? resolvedCabin;
-
-    if(cabinId != null) {
+    if (cabinId != null) {
       resolvedCabin = Get.find<CabinsService>().fetchCabinById(cabinId);
     }
 
@@ -77,9 +76,9 @@ class Camper extends BessObject {
       gender: json['gender'] ?? '',
       age: json['age'] is int ? json['age'] : int.tryParse(json['age'].toString()) ?? 0,
       cabin: resolvedCabin,
-      id: json['id'] as String,
-      createdAt: DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
+      id: clone ? null : json['id'] as String,
+      createdAt: clone ? null : DateTime.tryParse(json['createdAt'] as String),
+      updatedAt: clone ? null : DateTime.tryParse(json['updatedAt'] as String),
     );
   }
 
