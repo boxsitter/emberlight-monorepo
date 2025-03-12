@@ -1,11 +1,15 @@
 import 'package:bessie/data/abstract/bess_object.dart';
 
 abstract class ScheduleBlock extends BessObject {
-  String name;
+  final String name;
 
   ScheduleBlock({
-    required super.idTitle,
     required this.name,
-  });
+    super.id,
+    super.createdAt,
+    super.updatedAt,
+  }) : super(
+    idTitle: 'scheduleBlock-$name',
+  );
 
 }

@@ -10,5 +10,7 @@ class ClientContextService extends GetxService {
     currentSession = newPath;
   }
 
-  void setDefaultContext()
+  void setDefaultContext() {
+    // TODO: implement setDefaultContext
+  }
 }
