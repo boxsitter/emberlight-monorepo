@@ -63,13 +63,15 @@ dependencies:
 
   # Firebase
   firebase_core: ^3.3.0
-#  firebase_auth: ^5.4.1
   cloud_firestore: ^5.2.1
+  firebase_crashlytics: ^4.3.4
+  firebase_analytics: ^11.4.4
 
   # Random Shit
   xterm: ^4.0.0
   data_table_2: ^2.5.12
   http: any # dart fix says I need this
+  sentry_flutter: ^8.14.0
 
 
 dev_dependencies:

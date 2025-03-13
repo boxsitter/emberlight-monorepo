@@ -63,7 +63,7 @@ class FirebaseRepository {
   /// [path] should be a collection path like 'Organizations/orgId/Branches/branchId/...'
   Stream<List<Map<String, dynamic>>> collectionStream(String path) {
     return _db.collection(path).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      return snapshot.docs.map((doc) => doc.data()).toList();
     });
   }
 
