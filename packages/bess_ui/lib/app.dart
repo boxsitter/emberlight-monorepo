@@ -40,7 +40,7 @@ class App extends StatelessWidget {
           getPages: BessAppRoute.pages,
           builder: (context, child) {
             // Wrap with ShadToaster to support shadcn‑ui toast notifications (if you use them)
-            return ShadToaster(child: child!);
+            return ShadToaster(key: UniqueKey(), child: child!);
           },
         );
       },
