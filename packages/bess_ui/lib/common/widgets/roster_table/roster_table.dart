@@ -7,6 +7,7 @@ import 'package:bessie/common/widgets/roster_table/widgets/table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../utils/helpers/bess_id_functions.dart';
 import 'controllers/roster_table_controller.dart';
 
 class BessRosterTable extends StatelessWidget {
@@ -31,7 +32,7 @@ class BessRosterTable extends StatelessWidget {
           camper.preferredName,
           camper.gender,
           camper.age.toString(), // converting int to String
-          camper.cabin?.name ?? "None",
+          BessIdFunctions.cabinNameFromId(camper.cabinId, 'none'),
         ];
       }).toList();
 

@@ -35,7 +35,7 @@ class Roster extends BessObject {
     String nameHeader = 'Name'.padRight(maxNameWidth + 3);
     String genderHeader = 'Gender'.padRight(10);
     String ageHeader = 'Age'.padRight(10);
-    String cabinHeader = 'Cabin'.padRight(10);
+    String cabinHeader = 'CabinId'.padRight(10);
 
     // Create the header row
     final headerRow = '$idHeader$nameHeader$genderHeader$ageHeader$cabinHeader';
@@ -46,7 +46,7 @@ class Roster extends BessObject {
       String nameField = camper.fullName.padRight(maxNameWidth + 3);
       String genderField = camper.gender.padRight(10);
       String ageField = '${camper.age}'.padRight(10);
-      String cabinField = (camper.cabin?.name ?? "none").padRight(10);
+      String cabinField = (camper.cabinId ?? "none").padRight(10);
 
       return '$idField$nameField$genderField$ageField$cabinField';
     }).join('\n');
@@ -65,25 +65,25 @@ class Roster extends BessObject {
     return json;
   }
 
-  factory Roster.fromJson(Map<String, dynamic> json) {
+  factory Roster.fromJson(Map<String, dynamic> json, [bool clone = false]) {
     final roster = Roster(
       title: json['title'] ?? '',
-      id: json['id'] as String,
-      createdAt: DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
     );
+
+    // Let BessObject handle id, createdAt, and updatedAt.
+    roster.overwriteBessObjectFromJson(json, clone);
 
     // Deserialize referenced campers using SessionRosterService.
     final List<dynamic> camperIds = json['campers'] as List<dynamic>? ?? [];
-    // Get the SessionRosterService instance from GetX.
     final sessionRosterService = Get.find<SessionRosterService>();
 
-    for (var camId in camperIds) {
+    for (var camperId in camperIds) {
       // Fetch the camper from the master roster.
-      final Camper camper = sessionRosterService.fetchCamperById(camId as String);
+      final Camper camper = sessionRosterService.fetchCamperById(camperId as String);
       roster.campers[camper.id] = camper;
     }
 
     return roster;
   }
+
 }

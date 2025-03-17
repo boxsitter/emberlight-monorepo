@@ -6,15 +6,12 @@ class Schedule extends BessObject {
   Map<String, ScheduleBlock> blocks;
 
   Schedule({
-    String? id,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    super.id,
+    super.createdAt,
+    super.updatedAt,
   })  : blocks = {},
         super(
         idTitle: 'schedule',
-        id: id,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       );
 
   @override
@@ -31,20 +28,15 @@ class Schedule extends BessObject {
     return json;
   }
 
-  factory Schedule.fromJson(Map<String, dynamic> json) {
-    final schedule = Schedule(
-      id: json['id'] as String,
-      createdAt: DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
-    );
+  factory Schedule.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+    final schedule = Schedule();
+    schedule.overwriteBessObjectFromJson(json, clone);
     if (json.containsKey('blocks')) {
       final blocksJson = json['blocks'] as Map<String, dynamic>;
       blocksJson.forEach((key, blockJson) {
-        // For now, we assume all blocks are AssignableActivityBlocks.
         schedule.blocks[key] = AssignableActivityBlock.fromJson(blockJson as Map<String, dynamic>);
       });
     }
     return schedule;
   }
-
 }

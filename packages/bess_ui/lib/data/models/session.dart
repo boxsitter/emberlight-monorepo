@@ -2,10 +2,9 @@ import 'package:bessie/data/abstract/bess_object.dart';
 import 'package:bessie/data/models/roster.dart';
 import 'package:bessie/data/models/schedule/schedule.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'cabin.dart';
 
-class Session extends BessObject{
+class Session extends BessObject {
   String name;
   DateTime startDate;
   DateTime endDate;
@@ -38,8 +37,8 @@ class Session extends BessObject{
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': Timestamp.fromDate(startDate),
+      'endDate': Timestamp.fromDate(endDate),
       'cabins': cabinsInUse,
       'roster': roster.toJson(),
       'schedule': schedule.toJson(),
@@ -47,15 +46,14 @@ class Session extends BessObject{
     return json;
   }
 
-  factory Session.fromJson(Map<String, dynamic> json) {
+  factory Session.fromJson(Map<String, dynamic> json, [bool clone = false]) {
     final session = Session(
       name: json['name'] as String,
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
-      id: json['id'] as String,
-      createdAt: DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
     );
+    session.overwriteBessObjectFromJson(json, clone);
+
     if (json.containsKey('cabins')) {
       final cabinsJson = json['cabins'] as List<dynamic>;
       session.cabinsInUse.addAll(cabinsJson.map((e) => e as String));
@@ -66,6 +64,7 @@ class Session extends BessObject{
     if (json.containsKey('schedule')) {
       session.schedule = Schedule.fromJson(json['schedule'] as Map<String, dynamic>);
     }
+
     return session;
   }
 }

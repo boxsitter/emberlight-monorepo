@@ -1,13 +1,60 @@
 import 'package:get/get.dart';
 
 import '../../data/models/cabin.dart';
+import '../../data/models/camper.dart';
+import '../../data/repositories/firebase_repository.dart';
+import '../feature_utils/roster_utils.dart';
+import 'client_context_service.dart';
 
 class CabinsService extends GetxService {
+  FirebaseRepository firebaseRepo = Get.find<FirebaseRepository>();
+  ClientContextService clientContextService = Get.find<ClientContextService>();
 
-  Cabin fetchCabinById(String id){
-    return Cabin(name: "TEST CABIN", capacity: 999);
-    // TODO: fetch cabin from database
-    // returns null if no cabin is found and throws an error
+  // TODO: Error for cabin not existing
+  Future<Cabin> getCabinById(String id) async {
+    final doc = await firebaseRepo.getDocument("./cabins/$id");
+    return Cabin.fromJson(doc!);
+  }
+
+  // TODO: This method should be replaced eventually
+  // TODO: You create cabin templates for the branch and ADD them to the session
+  void createCabinForSession(String name, int capacity) {
+    Cabin cabinToCreate = Cabin(
+      name: name,
+      capacity: capacity,
+    );
+    firebaseRepo.setDocument("./cabins/${cabinToCreate.id}", cabinToCreate.toJson());
+  }
+
+  void removeCabinFromSession(String cabinId) {
+    firebaseRepo.deleteDocument("./cabins/$cabinId");
+  }
+
+  Future<void> addCamperToCabin(String cabinId, Camper camperId) async {
+    Cabin cabin = await firebaseRepo.getObject("./cabins/$cabinId", Cabin.fromJson);
+    Camper camperToAdd = await firebaseRepo.getObject("./campers/$camperId", Camper.fromJson);
+    if((cabin.camperCount + 1) > cabin.capacity) {
+      //TODO: Over capacity conflict
+    } else if (camperToAdd.cabinId == null) {
+      RosterUtils.addCamperToRoster(cabin.roster, camperToAdd);
+      camperToAdd.cabinId = cabin.id;
+      camperToAdd.updateTimestamp();
+      firebaseRepo.updateDocument("./cabins/$cabinId", cabin.toJson());
+      firebaseRepo.updateDocument("./campers/$camperId", camperToAdd.toJson());
+    } else {
+      removeCamperFromCabin(cabinId, camperId);
+      addCamperToCabin(cabinId, camperId);
+    }
+  }
+
+  Future<void> removeCamperFromCabin(String cabinId, Camper camperId) async {
+    Cabin cabin = await firebaseRepo.getObject("./cabins/$cabinId", Cabin.fromJson);
+    Camper camperToRemove = await firebaseRepo.getObject("./campers/$camperId", Camper.fromJson);
+    RosterUtils.removeCamperFromRoster(cabin.roster, camperToRemove);
+    camperToRemove.cabinId = null;
+    camperToRemove.updateTimestamp();
+    firebaseRepo.updateDocument("./cabins/$cabinId", cabin.toJson());
+    firebaseRepo.updateDocument("./campers/$camperId", camperToRemove.toJson());
   }
 
 

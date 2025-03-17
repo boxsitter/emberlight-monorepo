@@ -27,13 +27,11 @@ class AssignableActivityBlock extends ScheduleBlock {
     return json;
   }
 
-  factory AssignableActivityBlock.fromJson(Map<String, dynamic> json) {
+  factory AssignableActivityBlock.fromJson(Map<String, dynamic> json, [bool clone = false]) {
     final block = AssignableActivityBlock(
       name: json['name'] as String,
-      id: json['id'] as String,
-      createdAt: DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
     );
+    block.overwriteBessObjectFromJson(json, clone);
     if (json.containsKey('activities')) {
       final activitiesJson = json['activities'] as Map<String, dynamic>;
       activitiesJson.forEach((key, activityJson) {
@@ -42,5 +40,6 @@ class AssignableActivityBlock extends ScheduleBlock {
     }
     return block;
   }
+
 
 }

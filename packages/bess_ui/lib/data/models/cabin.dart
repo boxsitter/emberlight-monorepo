@@ -8,7 +8,7 @@ class Cabin extends BessObject {
   final int capacity;
   late final Roster roster;
 
-  int get length => roster.length;
+  int get camperCount => roster.length;
   Iterable<Camper> get campers => roster.values;
 
   Cabin({
@@ -34,20 +34,24 @@ class Cabin extends BessObject {
     return json;
   }
 
-  factory Cabin.fromJson(Map<String, dynamic> json) {
+  factory Cabin.fromJson(Map<String, dynamic> json, [bool clone = false]) {
     final cabin = Cabin(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
     );
 
-    // use roster's fromJson method to reconstruct the cabin roster
+    // Let the superclass handle id, createdAt, and updatedAt.
+    cabin.overwriteBessObjectFromJson(json, clone);
+
+    // Use roster's fromJson method to reconstruct the cabin roster.
     if (json['roster'] != null) {
       cabin.roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
-      // for each camper in the roster, assign this cabin.
+      // For each camper in the roster, assign this cabin's id.
       for (var camper in cabin.roster.campers.values) {
-        camper.cabin = cabin;
+        camper.cabinId = cabin.id;
       }
     }
+
     return cabin;
   }
 

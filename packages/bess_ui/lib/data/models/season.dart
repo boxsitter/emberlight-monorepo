@@ -1,3 +1,4 @@
+import 'package:bessie/common/utils/helpers/helper_functions.dart';
 import 'package:bessie/data/abstract/bess_object.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -27,20 +28,19 @@ class Season extends BessObject {
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': Timestamp.fromDate(startDate),
+      'endDate': Timestamp.fromDate(endDate),
     });
     return json;
   }
 
-  factory Season.fromJson(Map<String, dynamic> json) {
-    return Season(
-      name: json['name'] as String,
+  factory Season.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+    final season = Season(
+      name: json['name'] ?? '',
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
-      id: json['id'] as String,
-      createdAt: (json['createdAt'] as Timestamp).toDate(),
-      updatedAt: (json['updatedAt'] as Timestamp).toDate(),
     );
+    season.overwriteBessObjectFromJson(json, clone);
+    return season;
   }
 }

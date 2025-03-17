@@ -13,7 +13,7 @@ class Camper extends BessObject {
   String lastName;
   String gender;
   int age;
-  Cabin? cabin;
+  String? cabinId;
 
   // contains all AssignableActivityBlock's for the camper's session and their preferences for each
   Map<AssignableActivityBlock, CamperPreference> activityPreferences = {};
@@ -26,7 +26,7 @@ class Camper extends BessObject {
     this.preferredName = '',
     this.gender = '',
     this.age = 0,
-    this.cabin,
+    this.cabinId,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -41,7 +41,7 @@ class Camper extends BessObject {
     String idField = toStringSuper();
     String nameField = fullName;
     String ageField = 'Age: $age';
-    String cabinField = 'Cabin: ${cabin?.name ?? "none"}';
+    String cabinField = 'CabinId: ${cabinId ?? "none"}';
 
     return '$idField $nameField, $ageField, $cabinField';
   }
@@ -55,31 +55,23 @@ class Camper extends BessObject {
       'preferredName': preferredName,
       'gender': gender,
       'age': age,
-      'cabinId': cabin?.id,
+      'cabinId': cabinId,
       // Note: activityPreferences and activities are handled separately.
     });
     return json;
   }
 
-  factory Camper.fromJson(Map<String, dynamic> json, {bool clone = false}) {
-    // Handle id-referenced fields.
-    final String? cabinId = json['cabinId'] as String?;
-    Cabin? resolvedCabin;
-    if (cabinId != null) {
-      resolvedCabin = Get.find<CabinsService>().fetchCabinById(cabinId);
-    }
-
-    return Camper(
+  factory Camper.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+    Camper camper = Camper(
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
       preferredName: json['preferredName'] ?? '',
       gender: json['gender'] ?? '',
       age: json['age'] is int ? json['age'] : int.tryParse(json['age'].toString()) ?? 0,
-      cabin: resolvedCabin,
-      id: clone ? null : json['id'] as String,
-      createdAt: clone ? null : DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: clone ? null : DateTime.tryParse(json['updatedAt'] as String),
+      cabinId: json['cabinId'],
     );
-  }
 
+    camper.overwriteBessObjectFromJson(json, clone);
+    return camper;
+  }
 }

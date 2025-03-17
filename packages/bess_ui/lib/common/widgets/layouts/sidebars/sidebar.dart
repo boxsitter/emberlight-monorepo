@@ -56,10 +56,6 @@ class BessSidebar extends StatelessWidget {
                         icon: LucideIcons.bookUser,
                         itemName: 'Session Roster'),
                     const BessMenuItem(
-                        route: BessRoutes.console,
-                        icon: LucideIcons.squareTerminal,
-                        itemName: 'Console'),
-                    const BessMenuItem(
                         route: BessRoutes.responsiveDesignExample,
                         icon: LucideIcons.layoutPanelLeft,
                         itemName: 'Widgets'),

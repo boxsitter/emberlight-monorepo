@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
 import 'package:bessie/data/models/schedule/assignable_activity_block.dart';
 import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:file_picker/file_picker.dart';
@@ -23,7 +24,7 @@ class PdfUtils {
         BessPdfStyles.paddedText(
             camper.gender, BessPdfStyles.tableCellTextStyle),
         BessPdfStyles.paddedText(
-            camper.cabin?.name ?? '', BessPdfStyles.tableCellTextStyle),
+            BessIdFunctions.cabinNameFromId(camper.cabinId, ''), BessPdfStyles.tableCellTextStyle),
       ],
     );
   }
@@ -150,8 +151,8 @@ class PdfUtils {
       if (camper.gender.length > longestItems[3].length) {
         longestItems[3] = camper.gender;
       }
-      if ((camper.cabin?.name ?? '').length > longestItems[4].length) {
-        longestItems[4] = camper.cabin?.name ?? '';
+      if ((BessIdFunctions.cabinNameFromId(camper.cabinId, '')).length > longestItems[4].length) {
+        longestItems[4] = BessIdFunctions.cabinNameFromId(camper.cabinId, '');
       }
     }
 

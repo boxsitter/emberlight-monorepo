@@ -13,17 +13,13 @@ class Activity extends BessObject {
     required this.name,
     required this.capacity,
     required this.block,
-    String? id,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    super.id,
+    super.createdAt,
+    super.updatedAt,
   }) : super(
     idTitle: 'activity-$name',
-    id: id,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
   ) {
-    // Initialize the roster with a title based on this activity.
-    roster = Roster(title: '$name Roster');
+    roster = Roster(title: 'activity-$name');
   }
 
   @override
@@ -44,15 +40,16 @@ class Activity extends BessObject {
     return json;
   }
 
-  factory Activity.fromJson(Map<String, dynamic> json) {
-    return Activity(
+  factory Activity.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+    Activity activity = Activity(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       block: AssignableActivityBlock.fromJson(json['block'] as Map<String, dynamic>),
-      id: json['id'] as String,
-      createdAt: DateTime.tryParse(json['createdAt'] as String),
-      updatedAt: DateTime.tryParse(json['updatedAt'] as String),
-    )..roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
+    );
+    activity.overwriteBessObjectFromJson(json, clone);
+    activity.roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
+    return activity;
   }
+
 
 }

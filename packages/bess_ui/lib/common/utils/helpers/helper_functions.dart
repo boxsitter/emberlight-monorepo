@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -139,11 +140,12 @@ class BessHelperFunctions {
     return wrappedList;
   }
 
-  static String getBessId(String idTitle) {
-    var uuid = const Uuid();
-    return '$idTitle-${uuid.v4()}'
-        .replaceAll(' ', '-')
-        .replaceAll(RegExp(r'[^\w-]'), '')
-        .toLowerCase();
+  static DateTime parseDate(dynamic value) {
+    if (value is Timestamp) {
+      return value.toDate();
+    } else if (value is String) {
+      return DateTime.parse(value);
+    }
+    throw Exception("Invalid date type: ${value.runtimeType}");
   }
 }
