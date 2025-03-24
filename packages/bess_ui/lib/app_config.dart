@@ -53,9 +53,9 @@ class HardcodedObjectConfigs {
   };
 
   Future<void> updateObjects() async {
-    await firebaseRepo.updateDocument('organizations/${ygsJson['id']}', ygsJson);
-    await firebaseRepo.updateDocument('organizations/${ygsJson['id']}/branches/${colmanJson['id']}', colmanJson,);
-    await firebaseRepo.updateDocument('organizations/${ygsJson['id']}/branches/${colmanJson['id']}/seasons/${seasonJson['id']}', seasonJson,);
-    await firebaseRepo.updateDocument('organizations/${ygsJson['id']}/branches/${colmanJson['id']}/seasons/${seasonJson['id']}/sessions/${sessionJson['id']}', sessionJson,);
+    await firebaseRepo.updateDocument(ygsJson);
+    await firebaseRepo.updateDocument(colmanJson,);
+    await firebaseRepo.updateDocument(seasonJson,);
+    await firebaseRepo.updateDocument(sessionJson,);
   }
 }

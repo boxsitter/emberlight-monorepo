@@ -1,12 +1,18 @@
 import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../common/constants/enums.dart';
 import '../../common/utils/formatters/formatter.dart';
 
 abstract class BessObject {
-  String id;
+  String id; // TODO: Add chld- and ref- prefixes to reference ids
   DateTime createdAt;
   DateTime updatedAt;
+  //String organizationId;
+  //String branchId;
+  //Role minRoleRead;
+  //Role minRoleWrite;
+
   final String idTitle;
   bool isUpdating = false;
 
@@ -24,6 +30,8 @@ abstract class BessObject {
 
   String bessToString();
   Map<String, dynamic> toJson();
+  //List<String> getSubObjectIds(); // return the ids of every BessObject that this object CONTAINS
+  //void replaceReferencesToId(String idToReplace, String newReferenceId); // any references to BessObjects should be checked. If matching idToReplace, replace with new reference
 
   Map<String, dynamic> toJsonSuper() {
     return {

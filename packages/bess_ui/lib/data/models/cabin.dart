@@ -6,21 +6,17 @@ import 'camper.dart';
 class Cabin extends BessObject {
   final String name;
   final int capacity;
-  late final Roster roster;
-
-  int get camperCount => roster.length;
-  Iterable<Camper> get campers => roster.values;
+  final Set<String> camperIds;
 
   Cabin({
     required this.name,
     required this.capacity,
-  }) : super(idTitle: 'Cabin-$name') {
-    roster = Roster(title: name);
-  }
+    this.camperIds = const {},
+  }) : super(idTitle: 'Cabin-$name');
 
   @override
   String bessToString() {
-    return 'Cabin: $name, Capacity: $capacity\nRoster:\n${roster.bessToString()}';
+    return 'Cabin: $name, Capacity: $capacity}';
   }
 
   @override
@@ -29,7 +25,7 @@ class Cabin extends BessObject {
     json.addAll({
       'name': name,
       'capacity': capacity,
-      'roster': roster.toJson(),
+      'camperIds': camperIds.toList(),
     });
     return json;
   }
@@ -38,20 +34,9 @@ class Cabin extends BessObject {
     final cabin = Cabin(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
+      camperIds: (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
-
-    // Let the superclass handle id, createdAt, and updatedAt.
     cabin.overwriteBessObjectFromJson(json, clone);
-
-    // Use roster's fromJson method to reconstruct the cabin roster.
-    if (json['roster'] != null) {
-      cabin.roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
-      // For each camper in the roster, assign this cabin's id.
-      for (var camper in cabin.roster.campers.values) {
-        camper.cabinId = cabin.id;
-      }
-    }
-
     return cabin;
   }
 

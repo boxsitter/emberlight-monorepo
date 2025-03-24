@@ -23,7 +23,7 @@ class CabinsService extends GetxService {
       name: name,
       capacity: capacity,
     );
-    firebaseRepo.setDocument("./cabins/${cabinToCreate.id}", cabinToCreate.toJson());
+    firebaseRepo.pushObject(cabinToCreate);
   }
 
   void removeCabinFromSession(String cabinId) {
@@ -39,8 +39,8 @@ class CabinsService extends GetxService {
       RosterUtils.addCamperToRoster(cabin.roster, camperToAdd);
       camperToAdd.cabinId = cabin.id;
       camperToAdd.updateTimestamp();
-      firebaseRepo.updateDocument("./cabins/$cabinId", cabin.toJson());
-      firebaseRepo.updateDocument("./campers/$camperId", camperToAdd.toJson());
+      firebaseRepo.pushObject(cabin);
+      firebaseRepo.pushObject(camperToAdd);
     } else {
       removeCamperFromCabin(cabinId, camperId);
       addCamperToCabin(cabinId, camperId);
@@ -53,8 +53,8 @@ class CabinsService extends GetxService {
     RosterUtils.removeCamperFromRoster(cabin.roster, camperToRemove);
     camperToRemove.cabinId = null;
     camperToRemove.updateTimestamp();
-    firebaseRepo.updateDocument("./cabins/$cabinId", cabin.toJson());
-    firebaseRepo.updateDocument("./campers/$camperId", camperToRemove.toJson());
+    firebaseRepo.pushObject(cabin);
+    firebaseRepo.pushObject(camperToRemove);
   }
 
 

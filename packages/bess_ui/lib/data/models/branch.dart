@@ -1,16 +1,16 @@
 import 'package:bessie/data/abstract/bess_object.dart';
 
 class Branch extends BessObject{
-  String name;
+  final String name;
+  final Set<String> seasons;
 
   Branch({
     required this.name,
+    this.seasons = const {},
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : super(
-        idTitle: 'branch-$name',
-      );
+  }) : super(idTitle: 'branch-$name',);
 
   @override
   String bessToString() {
@@ -22,6 +22,7 @@ class Branch extends BessObject{
     final json = toJsonSuper();
     json.addAll({
       'name': name,
+      'seasons': seasons.toList(),
     });
     return json;
   }
@@ -29,6 +30,7 @@ class Branch extends BessObject{
   factory Branch.fromJson(Map<String, dynamic> json, [bool clone = false]) {
     final branch = Branch(
       name: json['name'] as String,
+      seasons: (json['seasons'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     branch.overwriteBessObjectFromJson(json, clone);
     return branch;

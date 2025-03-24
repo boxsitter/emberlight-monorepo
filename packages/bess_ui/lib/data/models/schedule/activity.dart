@@ -6,25 +6,22 @@ import 'assignable_activity_block.dart';
 class Activity extends BessObject {
   final String name;
   final int capacity;
-  late Roster roster;
-  final AssignableActivityBlock block;
+  final Set<String> camperIds;
+  final String blockId;
 
   Activity({
     required this.name,
     required this.capacity,
-    required this.block,
+    required this.blockId,
+    this.camperIds = const {},
     super.id,
     super.createdAt,
     super.updatedAt,
-  }) : super(
-    idTitle: 'activity-$name',
-  ) {
-    roster = Roster(title: 'activity-$name');
-  }
+  }) : super(idTitle: 'activity-$name',);
 
   @override
   String bessToString() {
-    return 'Activity: $name, Capacity: $capacity, Block: ${block.name}';
+    return 'Activity: $name, Capacity: $capacity';
   }
 
   @override
@@ -33,9 +30,8 @@ class Activity extends BessObject {
     json.addAll({
       'name': name,
       'capacity': capacity,
-      // Inline the roster and block JSON.
-      'roster': roster.toJson(),
-      'block': block.toJson(),
+      'camperIds': camperIds.toList(),
+      'blockId': blockId,
     });
     return json;
   }
@@ -44,10 +40,10 @@ class Activity extends BessObject {
     Activity activity = Activity(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
-      block: AssignableActivityBlock.fromJson(json['block'] as Map<String, dynamic>),
+      camperIds: (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      blockId: json['blockId'] as String,
     );
     activity.overwriteBessObjectFromJson(json, clone);
-    activity.roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
     return activity;
   }
 

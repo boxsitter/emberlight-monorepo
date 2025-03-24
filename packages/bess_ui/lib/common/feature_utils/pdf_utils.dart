@@ -86,7 +86,7 @@ class PdfUtils {
   }
 
   static pw.Document assignableActivityBlockToPdf(
-      AssignableActivityBlock block) {
+      AssignedMultiActivityBlock block) {
     final pdf = pw.Document();
 
     // Iterate through each activity in the block

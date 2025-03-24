@@ -2,19 +2,20 @@ import 'package:bessie/data/abstract/schedule_block.dart';
 
 import 'activity.dart';
 
-class AssignableActivityBlock extends ScheduleBlock {
-  Map<String, Activity> activities;
+class AssignedMultiActivityBlock extends ScheduleBlock {
+  final Set<String> activities;
 
-  AssignableActivityBlock({
+  AssignedMultiActivityBlock({
+    this.activities = const {},
     required super.name,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : activities = {}, super();
+  })  : super();
 
   @override
   String bessToString() {
-    return 'AssignableActivityBlock: $name, Activities: ${activities.length}';
+    return 'AssignedMultiActivityBlock: $name, Activities: ${activities.length}';
   }
 
   @override
@@ -22,22 +23,17 @@ class AssignableActivityBlock extends ScheduleBlock {
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'activities': activities.map((key, activity) => MapEntry(key, activity.toJson())),
+      'activities': activities.toList(),
     });
     return json;
   }
 
-  factory AssignableActivityBlock.fromJson(Map<String, dynamic> json, [bool clone = false]) {
-    final block = AssignableActivityBlock(
+  factory AssignedMultiActivityBlock.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+    final block = AssignedMultiActivityBlock(
       name: json['name'] as String,
+      activities: (json['activities'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     block.overwriteBessObjectFromJson(json, clone);
-    if (json.containsKey('activities')) {
-      final activitiesJson = json['activities'] as Map<String, dynamic>;
-      activitiesJson.forEach((key, activityJson) {
-        block.activities[key] = Activity.fromJson(activityJson as Map<String, dynamic>);
-      });
-    }
     return block;
   }
 

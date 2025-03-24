@@ -1,16 +1,17 @@
-import 'package:bessie/common/utils/helpers/helper_functions.dart';
 import 'package:bessie/data/abstract/bess_object.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Season extends BessObject {
-  String name;
-  DateTime startDate;
-  DateTime endDate;
+  final String name;
+  final DateTime startDate;
+  final DateTime endDate;
+  final Set<String> sessions;
 
   Season({
     required this.name,
     required this.startDate,
     required this.endDate,
+    this.sessions = const {},
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -30,6 +31,7 @@ class Season extends BessObject {
       'name': name,
       'startDate': Timestamp.fromDate(startDate),
       'endDate': Timestamp.fromDate(endDate),
+      'sessions': sessions.toList(),
     });
     return json;
   }
@@ -39,6 +41,7 @@ class Season extends BessObject {
       name: json['name'] ?? '',
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
+      sessions: (json['sessions'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     season.overwriteBessObjectFromJson(json, clone);
     return season;

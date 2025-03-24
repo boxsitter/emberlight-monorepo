@@ -1,6 +1,7 @@
+import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
+import 'package:bessie/data/abstract/bess_object.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../common/services/path_service.dart';
 
@@ -8,18 +9,12 @@ class FirebaseRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   PathService pathService = Get.find<PathService>();
 
-  /// Helper method that replaces "./" with the workingDirectory from pathService.
-  String _resolvePath(String path) {
-    if (path.startsWith('./')) {
-      return path.replaceFirst('./', pathService.workingDirectory);
-    }
-    return path;
-  }
-
   /// Retrieves a document from the given [path].
   /// [path] should be a full path like 'Organizations/orgId/Branches/branchId/...'
-  Future<Map<String, dynamic>?> getDocument(String path) async {
-    final resolvedPath = _resolvePath(path);
+  Future<Map<String, dynamic>?> getDocument(String id) async {
+    String prefix = BessIdFunctions.getIdPrefix(id);
+    final resolvedPath = "$prefix/$id";
+
     try {
       DocumentSnapshot doc = await _db.doc(resolvedPath).get();
       if (doc.exists) {
@@ -32,86 +27,96 @@ class FirebaseRepository {
     }
   }
 
-  // Returns all document IDs in a collection
-  Future<List<String>> getDocumentIds(String collectionPath) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(collectionPath).get();
-    return snapshot.docs.map((doc) => doc.id).toList();
-  }
-
-  // Checks if a document exists in a collection
-  Future<bool> documentExists(String collectionPath, String docId) async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection(collectionPath).doc(docId).get();
-    return doc.exists;
-  }
-
-  // Returns an object from a document pointed to by path
+  // Returns an object from a document with id
   // TODO: Errors and crashes if the document doesn't exist, fix that
-  Future<T> getObject<T>(String path, T Function(Map<String, dynamic> json) fromJson,) async {
-    return fromJson((await getDocument(path))!);
+  Future<T> getObject<T>(String id, T Function(Map<String, dynamic> json) fromJson,) async {
+    return fromJson((await getDocument(id))!);
   }
 
-  Future<Map<String, T>> getCollectionAsObjects<T>(String path, T Function(Map<String, dynamic> json) fromJson,) async {
-    final resolvedPath = _resolvePath(path);
-    try {
-      QuerySnapshot snapshot = await _db.collection(resolvedPath).get();
-
-      Map<String, T> objectsMap = {};
-      for (var doc in snapshot.docs) {
-        objectsMap[doc.id] = fromJson(doc.data() as Map<String, dynamic>);
-      }
-      return objectsMap;
-    }
-    catch (e) {
-      print("Error retrieving collection at $resolvedPath: $e");
-      rethrow;
-    }
+  Future<List<T>> getObjects<T>(
+      List<String> ids,
+      Future<T> Function(String id) getObject,
+      ) async {
+    return Future.wait(ids.map((id) => getObject(id)));
   }
 
   /// Retrieves objects from a Firestore collection that are active now.
   /// Assumes each document has "startDate" and "endDate" fields.
-  Future<List<T>> getActiveObjects<T>(String path, T Function(Map<String, dynamic>) fromJson) async {
-    final resolvedPath = _resolvePath(path);
+  Future<List<String>> getActiveObjectIds(List<String> ids) async {
     final now = DateTime.now();
-    // Use the reusable method to get all objects.
-    final objectsMap = await getCollectionAsObjects<T>(resolvedPath, fromJson);
+    List<String> activeIds = [];
 
-    // Filter objects based on startDate and endDate.
-    return objectsMap.values.where((obj) {
-      final dynamic dynamicObj = obj;
-      final DateTime startDate = dynamicObj.startDate;
-      final DateTime endDate = dynamicObj.endDate;
-      return now.isAfter(startDate) && now.isBefore(endDate);
-    }).toList();
+    try {
+      // Fetch only sessions that are active now (efficient in Firestore)
+      QuerySnapshot querySnapshot = await _db
+          .collection("sessions")
+          .where("startDate", isLessThanOrEqualTo: now.toIso8601String())
+          .where("endDate", isGreaterThanOrEqualTo: now.toIso8601String())
+          .get();
+
+      // Filter out only the requested session IDs (efficient in memory)
+      Set<String> idSet = ids.toSet(); // Convert to a Set for fast lookup
+      activeIds = querySnapshot.docs
+          .where((doc) => idSet.contains(doc.id)) // Filter in memory
+          .map((doc) => doc.id)
+          .toList();
+    } catch (e) {
+      print("Error fetching active sessions: $e");
+    }
+
+    return activeIds;
   }
+
 
   /// Retrieves a single active object from a Firestore collection that is active now.
   /// Assumes each document has "startDate" and "endDate" fields. If more than one active object is found, throws an error.
-  Future<T?> getUniqueActiveObject<T>(String path, T Function(Map<String, dynamic>) fromJson,) async {
-    final resolvedPath = _resolvePath(path);
-    final activeObjects = await getActiveObjects<T>(resolvedPath, fromJson);
+  Future<String?> getFirstActiveObjectId(List<String> ids) async {
+    final now = DateTime.now();
+    Set<String> idSet = ids.toSet(); // Convert to a Set for fast lookup
 
-    if (activeObjects.length > 1) {
-      throw Exception("Error: More than one active object found in '$resolvedPath'. Overlapping is not allowed.");
+    try {
+      // Query Firestore for active sessions
+      QuerySnapshot querySnapshot = await _db
+          .collection("sessions")
+          .where("startDate", isLessThanOrEqualTo: now.toIso8601String())
+          .where("endDate", isGreaterThanOrEqualTo: now.toIso8601String())
+          .get();
+
+      // Find the first matching ID in the query results
+      for (var doc in querySnapshot.docs) {
+        if (idSet.contains(doc.id)) {
+          return doc.id; // Return immediately when the first match is found
+        }
+      }
+    } catch (e) {
+      print("Error fetching active sessions: $e");
     }
 
-    return activeObjects.isNotEmpty ? activeObjects.first : null;
+    return null; // No matching active session found
   }
 
-  /// Sets the document at [path] with the given [data].
-  /// If the document doesn't exist, it will be created.
-  Future<void> setDocument(String path, Map<String, dynamic> data) async {
-    final resolvedPath = _resolvePath(path);
+  Future<void> pushObject(BessObject object) async {
+    String prefix = BessIdFunctions.getIdPrefix(object.id);
+    final resolvedPath = "$prefix/${object.id}";
+
     try {
-      await _db.doc(resolvedPath).set(data);
+      await _db.doc(resolvedPath).set(object.toJson(), SetOptions(merge: true));
     } catch (e) {
-      print("Error setting document at $resolvedPath: $e");
+      print("Error pushing object at $resolvedPath: $e");
       rethrow;
     }
   }
 
   /// Updates the document at [path] with the given [data].
-  Future<void> updateDocument(String path, Map<String, dynamic> data) async {
-    final resolvedPath = _resolvePath(path);
+  Future<void> updateDocument(Map<String, dynamic> data) async {
+    // Ensure the 'id' field exists; otherwise, throw an error.
+    if (!data.containsKey('id') || data['id'] is! String) {
+    throw ArgumentError("Document must contain a valid 'id' field.");
+    }
+    String id = data['id'] as String;
+    String prefix = BessIdFunctions.getIdPrefix(id);
+    final resolvedPath = "$prefix/$id";
+
     try {
       await _db.doc(resolvedPath).update(data);
     } catch (e) {
@@ -121,8 +126,11 @@ class FirebaseRepository {
   }
 
   /// Deletes the document at the given [path].
-  Future<void> deleteDocument(String path) async {
-    final resolvedPath = _resolvePath(path);
+  Future<void> deleteDocument(String id) async {
+    // TODO: Call List<String> getSubObjectIds(); on the base object, run getSubObjectIds() in a loop on all ids in that list until the list stops growing, iterate through and delete all documents in that list
+    String prefix = BessIdFunctions.getIdPrefix(id);
+    final resolvedPath = "$prefix/$id";
+
     try {
       await _db.doc(resolvedPath).delete();
     } catch (e) {
@@ -133,8 +141,7 @@ class FirebaseRepository {
 
   /// Returns a stream that listens to real-time changes for the document at [path].
   Stream<Map<String, dynamic>?> documentStream(String path) {
-    final resolvedPath = _resolvePath(path);
-    return _db.doc(resolvedPath).snapshots().map((doc) {
+    return _db.doc(path).snapshots().map((doc) {
       if (doc.exists) {
         return doc.data() as Map<String, dynamic>;
       }
@@ -145,22 +152,8 @@ class FirebaseRepository {
   /// Returns a stream for a collection at [path].
   /// [path] should be a collection path like 'Organizations/orgId/Branches/branchId/...'
   Stream<List<Map<String, dynamic>>> collectionStream(String path) {
-    final resolvedPath = _resolvePath(path);
-    return _db.collection(resolvedPath).snapshots().map((snapshot) {
+    return _db.collection(path).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => doc.data()).toList();
     });
-  }
-
-  /// Caches all data in a given collection path by fetching it.
-  /// This will load the data into Firestore's local cache.
-  Future<void> cacheDataForPath(String path) async {
-    final resolvedPath = _resolvePath(path);
-    try {
-      // Assuming 'path' refers to a collection path.
-      QuerySnapshot snapshot = await _db.collection(resolvedPath).get();
-      print("Cached ${snapshot.docs.length} documents from $resolvedPath");
-    } catch (e) {
-      print("Error caching data for path $resolvedPath: $e");
-    }
   }
 }

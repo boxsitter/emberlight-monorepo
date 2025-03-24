@@ -3,16 +3,14 @@ import '../../abstract/schedule_block.dart';
 import 'assignable_activity_block.dart';
 
 class Schedule extends BessObject {
-  Map<String, ScheduleBlock> blocks;
+  final List<String> blocks;
 
   Schedule({
+    this.blocks = const [],
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : blocks = {},
-        super(
-        idTitle: 'schedule',
-      );
+  })  : super(idTitle: 'schedule',);
 
   @override
   String bessToString() {
@@ -23,20 +21,16 @@ class Schedule extends BessObject {
   Map<String, dynamic> toJson() {
     final json = toJsonSuper();
     json.addAll({
-      'blocks': blocks.map((key, block) => MapEntry(key, block.toJson())),
+      'blocks': blocks,
     });
     return json;
   }
 
   factory Schedule.fromJson(Map<String, dynamic> json, [bool clone = false]) {
-    final schedule = Schedule();
+    final schedule = Schedule(
+      blocks: (json['blocks'] as List?)?.cast<String>() ?? <String>[],
+    );
     schedule.overwriteBessObjectFromJson(json, clone);
-    if (json.containsKey('blocks')) {
-      final blocksJson = json['blocks'] as Map<String, dynamic>;
-      blocksJson.forEach((key, blockJson) {
-        schedule.blocks[key] = AssignableActivityBlock.fromJson(blockJson as Map<String, dynamic>);
-      });
-    }
     return schedule;
   }
 }

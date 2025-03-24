@@ -5,27 +5,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'cabin.dart';
 
 class Session extends BessObject {
-  String name;
-  DateTime startDate;
-  DateTime endDate;
-  final List<String> cabinsInUse;
-  late final Schedule schedule;
-  Roster roster;
+  final String name;
+  final DateTime startDate;
+  final DateTime endDate;
+  final Set<String> registeredCamperIds;
+  final Set<String> cabinsInUseIds;
+  late final String scheduleId;
 
   Session({
     required this.name,
     required this.startDate,
     required this.endDate,
+    this.registeredCamperIds = const {},
+    this.cabinsInUseIds = const {},
+    required this.scheduleId,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : cabinsInUse = [],
-        roster = Roster(title: 'Session Roster'),
-        super(
-        idTitle: 'session-$name',
-      ) {
-    schedule = Schedule();
-  }
+  })  : super(idTitle: 'session-$name',);
 
   @override
   String bessToString() {
@@ -39,9 +36,9 @@ class Session extends BessObject {
       'name': name,
       'startDate': Timestamp.fromDate(startDate),
       'endDate': Timestamp.fromDate(endDate),
-      'cabins': cabinsInUse,
-      'roster': roster.toJson(),
-      'schedule': schedule.toJson(),
+      'registeredCamperIds': registeredCamperIds.toList(),
+      'cabinsInUse': cabinsInUseIds.toList(),
+      'scheduleId': scheduleId,
     });
     return json;
   }
@@ -51,20 +48,11 @@ class Session extends BessObject {
       name: json['name'] as String,
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
+      registeredCamperIds: (json['registeredCamperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      cabinsInUseIds: (json['cabinsInUseIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      scheduleId: json['scheduleId'] as String,
     );
     session.overwriteBessObjectFromJson(json, clone);
-
-    if (json.containsKey('cabins')) {
-      final cabinsJson = json['cabins'] as List<dynamic>;
-      session.cabinsInUse.addAll(cabinsJson.map((e) => e as String));
-    }
-    if (json.containsKey('roster')) {
-      session.roster = Roster.fromJson(json['roster'] as Map<String, dynamic>);
-    }
-    if (json.containsKey('schedule')) {
-      session.schedule = Schedule.fromJson(json['schedule'] as Map<String, dynamic>);
-    }
-
     return session;
   }
 }

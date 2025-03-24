@@ -5,50 +5,20 @@
 // import 'package:pdf/widgets.dart' as pw;
 //
 // import '../../data/models/camper.dart';
-// import '../../data/models/delete_this_old_localdata.dart';
 // import '../../data/models/schedule/activity.dart';
 // import '../../data/models/schedule/assignable_activity_block.dart';
 // import '../../data/models/schedule/schedule.dart';
+// import '../../data/repositories/firebase_repository.dart';
 // import '../feature_utils/pdf_utils.dart';
 // import '../feature_utils/roster_utils.dart';
 //
 // class ScheduleService extends GetxService {
+//   FirebaseRepository firebaseRepo = Get.find<FirebaseRepository>();
 //
-//   Schedule get schedule => localData.session!.schedule;
-//   Map<String, Camper> get campers => localData.session!.sessionRoster.campers;
-//
-//   void initializeSessionForTesting() {
-//     AssignableActivityBlock testBlock = createAssignableActivityBlock('Test Choice Activity');
-//
-//     createActivity(
-//         name: 'Gaga Ball',
-//         capacity: 4,
-//         assignableActivityBlock: testBlock,
-//     );
-//
-//     createActivity(
-//       name: 'Boating',
-//       capacity: 6,
-//       assignableActivityBlock: testBlock,
-//     );
-//
-//     createActivity(
-//       name: 'OLS',
-//       capacity: 6,
-//       assignableActivityBlock: testBlock,
-//     );
-//
-//     createActivity(
-//       name: 'Arts and Crafts',
-//       capacity: 10,
-//       assignableActivityBlock: testBlock,
-//     );
-//   }
-//
-//   AssignableActivityBlock createAssignableActivityBlock(String name) {
+//   Future<AssignedMultiActivityBlock> createAssignedMultiActivityBlock(String name) async {
 //     // creates the block and adds it to the schedule
-//     AssignableActivityBlock blockToCreate = AssignableActivityBlock(name: 'Test Choice Activity');
-//     schedule.blocks[blockToCreate.id] = blockToCreate;
+//     AssignedMultiActivityBlock blockToCreate = AssignedMultiActivityBlock(name: name);
+//     Schedule schedule = await firebaseRepo.getObject('./', fromJson);
 //     schedule.updateTimestamp();
 //
 //     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
@@ -60,7 +30,7 @@
 //     return blockToCreate;
 //   }
 //
-//   void deleteAssignableActivityBlock(AssignableActivityBlock blockToDelete) {
+//   void deleteAssignableActivityBlock(AssignedMultiActivityBlock blockToDelete) {
 //     schedule.blocks.remove(blockToDelete.id);
 //     schedule.updateTimestamp();
 //
@@ -74,7 +44,7 @@
 //   void createActivity({
 //     required String name,
 //     required int capacity,
-//     required AssignableActivityBlock assignableActivityBlock,
+//     required AssignedMultiActivityBlock assignableActivityBlock,
 //   }) {
 //     Activity activityToAdd = Activity(
 //       name: name,
@@ -91,7 +61,7 @@
 //     }
 //   }
 //
-//   void removeActivityFromBlock(AssignableActivityBlock block, Activity activityToRemove) {
+//   void removeActivityFromBlock(AssignedMultiActivityBlock block, Activity activityToRemove) {
 //     block.activities.remove(activityToRemove.id);
 //     block.updateTimestamp();
 //
@@ -106,7 +76,7 @@
 //   // assigns every camper that has completed their preferences for that block
 //   // warns for every camper who hasn't, they won't be assigned
 //   void assignCampersForBlock() {
-//     AssignableActivityBlock block = schedule.blocks.values.toList()[0] as AssignableActivityBlock; // TODO: Remove hardcoded stuff
+//     AssignedMultiActivityBlock block = schedule.blocks.values.toList()[0] as AssignedMultiActivityBlock; // TODO: Remove hardcoded stuff
 //     List<Camper> randomizedRoster = campers.values.toList()..shuffle();
 //
 //     for (Camper camper in randomizedRoster) {
@@ -170,8 +140,8 @@
 //
 //   void logAllRosters() {
 //     for (ScheduleBlock scheduleBlock in schedule.blocks.values) {
-//       if(scheduleBlock is AssignableActivityBlock) {
-//         AssignableActivityBlock block = scheduleBlock;
+//       if(scheduleBlock is AssignedMultiActivityBlock) {
+//         AssignedMultiActivityBlock block = scheduleBlock;
 //         ConsoleController().log('Block: ${block.name}\n');
 //         for (Activity activity in block.activities.values) {
 //           ConsoleController().log('${activity.roster.bessToString()}\n');
@@ -181,9 +151,9 @@
 //   }
 //
 //   void exportActivities() {
-//     pw.Document pdf = PdfUtils.assignableActivityBlockToPdf(schedule.blocks.values.first as AssignableActivityBlock);
+//     pw.Document pdf = PdfUtils.assignableActivityBlockToPdf(schedule.blocks.values.first as AssignedMultiActivityBlock);
 //     String formattedSessionName = localData.session!.name.replaceAll(' ', '_').toLowerCase();
-//     String formattedTimestamp = (schedule.blocks.values.first as AssignableActivityBlock).formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();
+//     String formattedTimestamp = (schedule.blocks.values.first as AssignedMultiActivityBlock).formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();
 //     PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_$formattedTimestamp.pdf');
 //   }
 // }

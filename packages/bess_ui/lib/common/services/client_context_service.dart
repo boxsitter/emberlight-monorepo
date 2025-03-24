@@ -1,4 +1,5 @@
 import 'package:bessie/common/services/path_service.dart';
+import 'package:bessie/data/models/organization.dart';
 import 'package:bessie/data/repositories/firebase_repository.dart';
 import 'package:get/get.dart';
 
@@ -7,8 +8,12 @@ import '../../data/models/session.dart';
 import '../../data/user_houck_leyton.dart';
 
 class ClientContextService extends GetxService {
-  PathService pathService = Get.find<PathService>();
   FirebaseRepository firebaseRepo = Get.find<FirebaseRepository>();
+
+  String organizationId = '';
+  String branchId = '';
+  String seasonId = '';
+  String sessionId = '';
 
   @override
   void onInit() {
@@ -19,11 +24,12 @@ class ClientContextService extends GetxService {
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<bool> setDefaultContext() async {
-    // Base path for seasons.
-    String basePath = 'organizations/${User.organization}/branches/${User.branch}/seasons';
+    organizationId = User.organizationId;
+    branchId = User.branchId;
 
+    // TODO: need to get the list of seasons for the user's branch
     // Retrieve the unique active Season.
-    Season? currentSeason = await firebaseRepo.getUniqueActiveObject(basePath, Season.fromJson);
+    Season? currentSeason = await firebaseRepo.getFirstActiveObjectId(basePath, Season.fromJson);
     if (currentSeason == null) {
       return false;
     }
