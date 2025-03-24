@@ -29,12 +29,10 @@ class RosterUtils {
 
   static void addCamperToRoster(Roster roster, Camper camperToAdd) {
     roster.campers[camperToAdd.id] = camperToAdd;
-    roster.updateTimestamp();
   }
 
   static void removeCamperFromRoster(Roster roster, Camper camperToRemove) {
     roster.campers.remove(camperToRemove.id);
-    roster.updateTimestamp();
   }
 
   static RxMap<String, Camper> getCampers(Roster roster) {
@@ -43,7 +41,6 @@ class RosterUtils {
 
   static void removeCamper(Roster roster, String camperId) {
     roster.campers.remove(camperId);
-    roster.updateTimestamp();
   }
 
   // replaces the camper in roster with camper.id with camper
@@ -51,7 +48,6 @@ class RosterUtils {
   static void updateCamper(Roster roster, Camper camper) {
     if (roster.campers.containsKey(camper.id)) {
       roster.campers[camper.id] = camper;
-      roster.updateTimestamp();
     }
   }
 

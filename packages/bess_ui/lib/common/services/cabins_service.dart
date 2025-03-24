@@ -38,7 +38,6 @@ class CabinsService extends GetxService {
     } else if (camperToAdd.cabinId == null) {
       RosterUtils.addCamperToRoster(cabin.roster, camperToAdd);
       camperToAdd.cabinId = cabin.id;
-      camperToAdd.updateTimestamp();
       firebaseRepo.pushObject(cabin);
       firebaseRepo.pushObject(camperToAdd);
     } else {
@@ -52,7 +51,6 @@ class CabinsService extends GetxService {
     Camper camperToRemove = await firebaseRepo.getObject("./campers/$camperId", Camper.fromJson);
     RosterUtils.removeCamperFromRoster(cabin.roster, camperToRemove);
     camperToRemove.cabinId = null;
-    camperToRemove.updateTimestamp();
     firebaseRepo.pushObject(cabin);
     firebaseRepo.pushObject(camperToRemove);
   }

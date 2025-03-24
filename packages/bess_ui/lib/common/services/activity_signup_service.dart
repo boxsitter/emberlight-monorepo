@@ -28,14 +28,12 @@
 //       for(var entry in preference.preferences.entries) {
 //         if (entry.value == value) {
 //           preference.preferences[entry.key] = null;
-//           preference.updateTimestamp();
 //           break;
 //         }
 //       }
 //     }
 //     // set the new ranking
 //     preference.preferences[activity] = value;
-//     preference.updateTimestamp();
 //     ConsoleController().log('${preference.camper.fullName} ranked ${activity.name} in ${preference.block.name} a $value');
 //     // updates completed for the preference if all activities have a ranking set
 //     if (preference.seenValues.length == preference.preferences.length) {
@@ -54,7 +52,6 @@
 //
 //     // mark as incomplete
 //     preference.completed = false;
-//     preference.updateTimestamp();
 //   }
 //
 //   // assigns all campers a random preference for each activity

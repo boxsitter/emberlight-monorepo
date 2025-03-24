@@ -19,25 +19,21 @@
 //     // creates the block and adds it to the schedule
 //     AssignedMultiActivityBlock blockToCreate = AssignedMultiActivityBlock(name: name);
 //     Schedule schedule = await firebaseRepo.getObject('./', fromJson);
-//     schedule.updateTimestamp();
 //
 //     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
 //     for (Camper camper in localData.session!.sessionRoster.values) {
 //       camper.activityPreferences[blockToCreate] = CamperPreference(camper: camper, block: blockToCreate);
 //       camper.activities[blockToCreate] = null;
-//       camper.updateTimestamp();
 //     }
 //     return blockToCreate;
 //   }
 //
 //   void deleteAssignableActivityBlock(AssignedMultiActivityBlock blockToDelete) {
 //     schedule.blocks.remove(blockToDelete.id);
-//     schedule.updateTimestamp();
 //
 //     for (Camper camper in localData.session!.sessionRoster.values) {
 //       camper.activityPreferences.remove(blockToDelete);
 //       camper.activities.remove(blockToDelete);
-//       camper.updateTimestamp();
 //     }
 //   }
 //
@@ -53,21 +49,17 @@
 //     );
 //
 //     assignableActivityBlock.activities[activityToAdd.id] = activityToAdd;
-//     assignableActivityBlock.updateTimestamp();
 //
 //     for (Camper camper in localData.session!.sessionRoster.values) {
 //       camper.activityPreferences[assignableActivityBlock]!.preferences[activityToAdd] = null;
-//       camper.updateTimestamp();
 //     }
 //   }
 //
 //   void removeActivityFromBlock(AssignedMultiActivityBlock block, Activity activityToRemove) {
 //     block.activities.remove(activityToRemove.id);
-//     block.updateTimestamp();
 //
 //     for (Camper camper in localData.session!.sessionRoster.values) {
 //       camper.activityPreferences[block]!.preferences.remove(activityToRemove);
-//       camper.updateTimestamp();
 //     }
 //   }
 //
@@ -126,7 +118,6 @@
 //     }
 //     RosterUtils.addCamperToRoster(activity.roster, camper);
 //     camper.activities[activity.block] = activity;
-//     camper.updateTimestamp();
 //     ConsoleController().success('${camper.fullName} successfully assigned to ${activity.name}');
 //     return true;
 //   }
@@ -134,7 +125,6 @@
 //   void removeCamperFromActivity(Camper camper, Activity activity) {
 //     RosterUtils.removeCamperFromRoster(activity.roster, camper);
 //     camper.activities[activity.block] = null;
-//     camper.updateTimestamp();
 //     ConsoleController().log('${camper.fullName} removed from ${activity.name}');
 //   }
 //

@@ -1,159 +1,128 @@
 import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
 import 'package:bessie/data/abstract/bess_object.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-
-import '../../common/services/path_service.dart';
 
 class FirebaseRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  PathService pathService = Get.find<PathService>();
 
-  /// Retrieves a document from the given [path].
-  /// [path] should be a full path like 'Organizations/orgId/Branches/branchId/...'
+  /// Retrieves a Firestore document by [id], returning its data or `null`.
   Future<Map<String, dynamic>?> getDocument(String id) async {
-    String prefix = BessIdFunctions.getIdPrefix(id);
-    final resolvedPath = "$prefix/$id";
-
+    final resolvedPath = '${BessIdFunctions.getIdPrefix(id)}/$id';
     try {
-      DocumentSnapshot doc = await _db.doc(resolvedPath).get();
-      if (doc.exists) {
-        return doc.data() as Map<String, dynamic>;
-      }
-      return null;
+      final doc = await _db.doc(resolvedPath).get();
+      return doc.exists ? doc.data() : null;
     } catch (e) {
-      print("Error getting document at $resolvedPath: $e");
+      // TODO: replace with logging system and proper error throwing
+      print('Error fetching document at $resolvedPath: $e');
       rethrow;
     }
   }
 
-  // Returns an object from a document with id
-  // TODO: Errors and crashes if the document doesn't exist, fix that
+  /// Fetches a Firestore document by [id] and converts it to type [T].
+  /// Throws an exception if the document is not found.
   Future<T> getObject<T>(String id, T Function(Map<String, dynamic> json) fromJson,) async {
-    return fromJson((await getDocument(id))!);
+    final data = await getDocument(id);
+    if (data == null) {
+      // TODO: replace with custom error
+      throw StateError('No document found for ID: $id');
+    }
+    return fromJson(data);
   }
 
-  Future<List<T>> getObjects<T>(
-      List<String> ids,
-      Future<T> Function(String id) getObject,
-      ) async {
-    return Future.wait(ids.map((id) => getObject(id)));
-  }
 
-  /// Retrieves objects from a Firestore collection that are active now.
-  /// Assumes each document has "startDate" and "endDate" fields.
-  Future<List<String>> getActiveObjectIds(List<String> ids) async {
+  /// Returns a set of objects of type [T] by calling [getObject] on each [id].
+  Future<List<T>> getObjects<T>(Set<String> ids, Future<T> Function(String id) getObject,) =>
+      Future.wait(ids.map(getObject));
+
+  /// Returns the IDs from [ids] that reference "active" objects
+  /// Active objects have a 'startDate' and 'endDate' that contains the current system data & time
+  Future<Set<String>> getActiveObjectIds(List<String> ids) async {
     final now = DateTime.now();
-    List<String> activeIds = [];
-
     try {
-      // Fetch only sessions that are active now (efficient in Firestore)
-      QuerySnapshot querySnapshot = await _db
-          .collection("sessions")
-          .where("startDate", isLessThanOrEqualTo: now.toIso8601String())
-          .where("endDate", isGreaterThanOrEqualTo: now.toIso8601String())
+      final querySnapshot = await _db
+          .collection('sessions')
+          .where('startDate', isLessThanOrEqualTo: now.toIso8601String())
+          .where('endDate', isGreaterThanOrEqualTo: now.toIso8601String())
           .get();
 
-      // Filter out only the requested session IDs (efficient in memory)
-      Set<String> idSet = ids.toSet(); // Convert to a Set for fast lookup
-      activeIds = querySnapshot.docs
-          .where((doc) => idSet.contains(doc.id)) // Filter in memory
+      final idSet = ids.toSet();
+      return querySnapshot.docs
+          .where((doc) => idSet.contains(doc.id))
           .map((doc) => doc.id)
-          .toList();
+          .toSet();
     } catch (e) {
-      print("Error fetching active sessions: $e");
+      print('Error fetching active sessions: $e');
+      return {};
     }
-
-    return activeIds;
   }
 
-
-  /// Retrieves a single active object from a Firestore collection that is active now.
-  /// Assumes each document has "startDate" and "endDate" fields. If more than one active object is found, throws an error.
-  Future<String?> getFirstActiveObjectId(List<String> ids) async {
+  /// Returns the first matching active ID from [ids], or `null` if none are active.
+  Future<String?> getFirstActiveObjectId(Set<String> ids) async {
     final now = DateTime.now();
-    Set<String> idSet = ids.toSet(); // Convert to a Set for fast lookup
-
     try {
-      // Query Firestore for active sessions
-      QuerySnapshot querySnapshot = await _db
-          .collection("sessions")
-          .where("startDate", isLessThanOrEqualTo: now.toIso8601String())
-          .where("endDate", isGreaterThanOrEqualTo: now.toIso8601String())
+      final querySnapshot = await _db
+          .collection('sessions')
+          .where('startDate', isLessThanOrEqualTo: now.toIso8601String())
+          .where('endDate', isGreaterThanOrEqualTo: now.toIso8601String())
           .get();
 
-      // Find the first matching ID in the query results
-      for (var doc in querySnapshot.docs) {
-        if (idSet.contains(doc.id)) {
-          return doc.id; // Return immediately when the first match is found
-        }
-      }
-    } catch (e) {
-      print("Error fetching active sessions: $e");
-    }
+      final matchingDocs = querySnapshot.docs.where((doc) => ids.contains(doc.id));
+      if (matchingDocs.isEmpty) return null;
 
-    return null; // No matching active session found
+      return matchingDocs.first.id; // Return the first match
+    } catch (e) {
+      print('Error fetching active sessions: $e');
+      return null;
+    }
   }
 
+  /// Writes [object] to Firestore at the path derived from its ID, merging fields if the doc exists.
   Future<void> pushObject(BessObject object) async {
-    String prefix = BessIdFunctions.getIdPrefix(object.id);
-    final resolvedPath = "$prefix/${object.id}";
-
+    object.updateTimestamp();
+    final resolvedPath = '${BessIdFunctions.getIdPrefix(object.id)}/${object.id}';
     try {
       await _db.doc(resolvedPath).set(object.toJson(), SetOptions(merge: true));
     } catch (e) {
-      print("Error pushing object at $resolvedPath: $e");
+      print('Error pushing object at $resolvedPath: $e');
       rethrow;
     }
   }
 
-  /// Updates the document at [path] with the given [data].
+  /// Updates an existing Firestore document using its 'id' field in [data].
+  /// Throws an [ArgumentError] if 'id' is missing or not a [String].
   Future<void> updateDocument(Map<String, dynamic> data) async {
-    // Ensure the 'id' field exists; otherwise, throw an error.
-    if (!data.containsKey('id') || data['id'] is! String) {
-    throw ArgumentError("Document must contain a valid 'id' field.");
+    if (data['id'] is! String) {
+      throw ArgumentError("Document must contain a valid 'id' field.");
     }
-    String id = data['id'] as String;
-    String prefix = BessIdFunctions.getIdPrefix(id);
-    final resolvedPath = "$prefix/$id";
+    final id = data['id'] as String;
+    final resolvedPath = '${BessIdFunctions.getIdPrefix(id)}/$id';
 
     try {
+      // Automatically set updatedAt to now (in UTC)
+      data['updatedAt'] = DateTime.now().toUtc();
       await _db.doc(resolvedPath).update(data);
     } catch (e) {
-      print("Error updating document at $resolvedPath: $e");
+      print('Error updating document at $resolvedPath: $e');
       rethrow;
     }
   }
 
-  /// Deletes the document at the given [path].
+
   Future<void> deleteDocument(String id) async {
     // TODO: Call List<String> getSubObjectIds(); on the base object, run getSubObjectIds() in a loop on all ids in that list until the list stops growing, iterate through and delete all documents in that list
-    String prefix = BessIdFunctions.getIdPrefix(id);
-    final resolvedPath = "$prefix/$id";
-
-    try {
-      await _db.doc(resolvedPath).delete();
-    } catch (e) {
-      print("Error deleting document at $resolvedPath: $e");
-      rethrow;
-    }
   }
 
-  /// Returns a stream that listens to real-time changes for the document at [path].
+  /// Streams changes to the Firestore document at [path],
+  /// returning `null` if the document does not exist.
   Stream<Map<String, dynamic>?> documentStream(String path) {
-    return _db.doc(path).snapshots().map((doc) {
-      if (doc.exists) {
-        return doc.data() as Map<String, dynamic>;
-      }
-      return null;
-    });
+    return _db.doc(path).snapshots().map(
+          (doc) => doc.exists ? doc.data() : null,
+    );
   }
 
-  /// Returns a stream for a collection at [path].
-  /// [path] should be a collection path like 'Organizations/orgId/Branches/branchId/...'
-  Stream<List<Map<String, dynamic>>> collectionStream(String path) {
-    return _db.collection(path).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => doc.data()).toList();
-    });
-  }
+  /// Streams all documents from the Firestore collection at [path].
+  Stream<List<Map<String, dynamic>>> collectionStream(String path) =>
+      _db.collection(path).snapshots().map(
+            (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+      );
 }

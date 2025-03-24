@@ -27,7 +27,7 @@ class SessionRosterDesktop extends StatelessWidget {
       tableTitle: 'Session Master Roster',
       columns: columns,
       controller: Get.put(
-          RosterTableController(Roster(title: 'DELETE THIS DUMMY ROSTER')),
+          RosterTableController(),
           tag: "MasterRosterPageTable"
       ),
     );

@@ -14,7 +14,6 @@ abstract class BessObject {
   //Role minRoleWrite;
 
   final String idTitle;
-  bool isUpdating = false;
 
   BessObject({
     required this.idTitle,
@@ -22,11 +21,11 @@ abstract class BessObject {
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? BessIdFunctions.getBessId(idTitle),
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+        createdAt = (createdAt ?? DateTime.now()).toUtc(),
+        updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 
-  String get formattedCreatedAt => BessFormatter.formatDate(createdAt);
-  String get formattedUpdatedAt => BessFormatter.formatDate(updatedAt);
+  String get formattedCreatedAt => BessFormatter.formatDate(createdAt.toLocal());
+  String get formattedUpdatedAt => BessFormatter.formatDate(updatedAt.toLocal());
 
   String bessToString();
   Map<String, dynamic> toJson();
@@ -45,8 +44,9 @@ abstract class BessObject {
     if (!clone) {
       id = json['id'] as String;
     }
-    createdAt = json['createdAt'] is Timestamp ? (json['createdAt'] as Timestamp).toDate() : DateTime.now();
-    updatedAt = json['updatedAt'] is Timestamp ? (json['updatedAt'] as Timestamp).toDate() : DateTime.now();
+    // Convert any Timestamp to a DateTime in UTC; default to now (UTC) if missing or invalid.
+    createdAt = (json['createdAt'] is Timestamp) ? (json['createdAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
+    updatedAt = (json['updatedAt'] is Timestamp) ? (json['updatedAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
   }
 
   String toStringSuper() {
@@ -54,13 +54,6 @@ abstract class BessObject {
   }
 
   void updateTimestamp() {
-    if (isUpdating) {
-      return;
-    }
-    isUpdating = true;
-    updatedAt = DateTime.now();
-    Future.delayed(const Duration(milliseconds: 30), () {
-      isUpdating = false;
-    });
+    updatedAt = DateTime.now().toUtc();
   }
 }

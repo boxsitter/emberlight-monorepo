@@ -48,7 +48,6 @@ class SessionRosterService extends GetxService {
   //     age: age,
   //   );
   //   roster.campers[camperToAdd.id] = camperToAdd;
-  //   roster.updateTimestamp();
   //   SessionRosterUtils.addCamperToCabin(cabin, camperToAdd);
   //
   //   // initializes the camper preference objects for new campers added when a schedule already contains assignable activities
@@ -57,10 +56,8 @@ class SessionRosterService extends GetxService {
   //       if (block is AssignableActivityBlock) {
   //         AssignableActivityBlock assignableActivityBlock = block;
   //         camperToAdd.activityPreferences[block] = CamperPreference(camper: camperToAdd, block: block);
-  //         camperToAdd.updateTimestamp();
   //         for (Activity activity in assignableActivityBlock.activities.values) {
   //           camperToAdd.activityPreferences[assignableActivityBlock]!.preferences[activity] = null;
-  //           camperToAdd.activityPreferences[assignableActivityBlock]!.updateTimestamp();
   //         }
   //       }
   //     }
