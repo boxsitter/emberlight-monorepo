@@ -1,8 +1,15 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 
+import '../../../common/services/cabins_service.dart';
+import '../../../common/services/session_roster_service.dart';
+
 class ConsoleController extends GetxController {
   static final ConsoleController _instance = ConsoleController._internal();
+  CabinsService cabinsService = Get.find<CabinsService>();
+  SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   factory ConsoleController() {
     return _instance;
@@ -171,6 +178,17 @@ class ConsoleController extends GetxController {
     switch (baseCommand) {
       case 'clear':
         _clearScreen();
+        return;
+
+      case 'addcamper':
+        sessionRosterService.registerCamper(
+          firstName: arguments[0],
+          lastName: arguments [1],
+        );
+        return;
+
+      case 'importcsv':
+        sessionRosterService.importFromCsv();
         return;
 
       default:

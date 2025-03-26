@@ -7,7 +7,6 @@ import 'package:bessie/common/widgets/roster_table/widgets/table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../utils/helpers/bess_id_functions.dart';
 import 'controllers/roster_table_controller.dart';
 
 class BessRosterTable extends StatelessWidget {
@@ -26,13 +25,14 @@ class BessRosterTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      List<List<String>> data = controller.campers.values.map((camper) {
+      // Create the data list synchronously.
+      final data = controller.campers.values.map((camper) {
         return [
           camper.fullName,
           camper.preferredName,
           camper.gender,
-          camper.age.toString(), // converting int to String
-          BessIdFunctions.cabinNameFromId(camper.cabinId, 'none'),
+          camper.age.toString(),
+          camper.cabinName ?? 'none',
         ];
       }).toList();
 
@@ -48,7 +48,6 @@ class BessRosterTable extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             TableHeader(tableTitle: tableTitle, controller: controller),
-
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -60,19 +59,25 @@ class BessRosterTable extends StatelessWidget {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: columns.map((String column) => ColumnHeader(columnLabel: column, width: columnWidth)).toList(),
+                          children: columns
+                              .map((String column) => ColumnHeader(
+                            columnLabel: column,
+                            width: columnWidth,
+                          ))
+                              .toList(),
                         ),
-
                         Divider(
                           height: 1,
                           color: BessColors.borderPrimary,
                         ),
-
                         Expanded(
                           child: ListView.builder(
                             itemCount: data.length,
                             itemBuilder: (context, index) {
-                              return BessDataRow(data: data[index], cellWidth: columnWidth,);
+                              return BessDataRow(
+                                data: data[index],
+                                cellWidth: columnWidth,
+                              );
                             },
                           ),
                         ),
@@ -87,5 +92,6 @@ class BessRosterTable extends StatelessWidget {
       );
     });
   }
+
 }
 

@@ -1,64 +1,41 @@
 import 'package:bessie/common/feature_utils/pdf_utils.dart';
-import 'package:get/get.dart';
-import 'package:pdf/widgets.dart' as pw;
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 
 import '../../../../data/models/camper.dart';
-import '../../../../data/models/roster.dart';
 import '../../data/models/session.dart';
 import '../../pages/console/controller/console_controller.dart';
 
 class RosterUtils {
-  static Camper? getCamperByNameFromRoster(Roster roster, String fullName) {
-    for (Camper camper in roster.campers.values) {
-      if (camper.fullName == fullName) {
-        return camper;
-      }
-    }
-    return null; // TODO: Error checking, throw camper not found
+  /// Returns the first Camper with a matching full name, or null if not found.
+  static Camper? getCamperByName(Set<Camper> campers, String fullName) {
+    // Using firstWhereOrNull from package:collection
+    return campers.firstWhereOrNull((camper) => camper.fullName == fullName);
   }
 
-  static void removeCamperById(Roster roster, String id) {
-    for (Camper camper in roster.campers.values) {
-      if (camper.id == id) {
-        removeCamperFromRoster(roster, camper);
-        return;
-      }
-    }
-    // TODO: Throw error, camper not in roster
+  /// Removes the camper with the given [id] from the set.
+  static void removeCamperById(Set<Camper> campers, String id) {
+    campers.removeWhere((camper) => camper.id == id);
   }
 
-  static void addCamperToRoster(Roster roster, Camper camperToAdd) {
-    roster.campers[camperToAdd.id] = camperToAdd;
+  /// Logs the campers to the console.
+  static void logCampers(Set<Camper> campers) {
+    final rosterString = campers.map((camper) => camper.bessToString()).join('\n');
+    ConsoleController().log(rosterString);
   }
 
-  static void removeCamperFromRoster(Roster roster, Camper camperToRemove) {
-    roster.campers.remove(camperToRemove.id);
-  }
-
-  static RxMap<String, Camper> getCampers(Roster roster) {
-    return roster.campers.obs;
-  }
-
-  static void removeCamper(Roster roster, String camperId) {
-    roster.campers.remove(camperId);
-  }
-
-  // replaces the camper in roster with camper.id with camper
-  // I think ai wrote this and I don't understand why this is helpful yet
-  static void updateCamper(Roster roster, Camper camper) {
-    if (roster.campers.containsKey(camper.id)) {
-      roster.campers[camper.id] = camper;
-    }
-  }
-
-  static void logRoster(Roster roster) {
-    ConsoleController().log(roster.bessToString());
-  }
-
-  static void exportPdf(Roster roster, Session currentSession) {
-    pw.Document pdf = PdfUtils.rosterToPdf(roster);
-    String formattedSessionName = currentSession.name.replaceAll(' ', '_').toLowerCase();
-    String formattedTimestamp = roster.formattedUpdatedAt.replaceAll(' ', '_').replaceAll(RegExp(r'[^\w_]'), '-').toLowerCase();
+  /// Exports a PDF of the campers.
+  /// Note: This assumes you have or create a PdfUtils.campersToPdf that accepts a Set<Camper>.
+  static void exportPdf(Set<Camper> campers, Session currentSession) {
+    // Convert the set of campers to a PDF document.
+    final pdf = PdfUtils.campersToPdf(campers);
+    final formattedSessionName = currentSession.name.replaceAll(' ', '_').toLowerCase();
+    // Since we no longer have roster.formattedUpdatedAt, we'll use the current timestamp.
+    final formattedTimestamp = DateTime.now()
+        .toIso8601String()
+        .replaceAll(' ', '_')
+        .replaceAll(RegExp(r'[^\w_]'), '-')
+        .toLowerCase();
     PdfUtils.savePdfLocally(pdf, 'master_roster_${formattedSessionName}_$formattedTimestamp.pdf');
   }
 }

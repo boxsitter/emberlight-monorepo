@@ -1,16 +1,17 @@
 import 'package:bessie/data/abstract/bess_object.dart';
 
-class Branch extends BessObject{
+class Branch extends BessObject {
   final String name;
   final Set<String> seasons;
 
   Branch({
     required this.name,
-    this.seasons = const {},
+    Set<String>? seasons,
     super.id,
     super.createdAt,
     super.updatedAt,
-  }) : super(idTitle: 'branch-$name',);
+  })  : seasons = seasons ?? {},
+        super(idTitle: 'branch-$name');
 
   @override
   String bessToString() {

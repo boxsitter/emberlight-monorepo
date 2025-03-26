@@ -21,8 +21,8 @@ abstract class AppException implements Exception {
 
 class InvalidSessionPathException extends AppException {
   InvalidSessionPathException({
-    bool alertUser = true,
-    String message = "Invalid session path.",
-  }) : super(message: message, alertUser: alertUser);
+    super.alertUser,
+    super.message = "Invalid session path.",
+  });
 }
 

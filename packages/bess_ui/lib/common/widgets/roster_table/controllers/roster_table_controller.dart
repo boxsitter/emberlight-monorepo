@@ -1,24 +1,60 @@
+import 'dart:async';
+import 'package:bessie/common/services/cabins_service.dart';
+import 'package:bessie/data/repositories/bess_object_repository.dart';
 import 'package:get/get.dart';
+import 'package:bessie/data/models/camper.dart';
+import 'package:bessie/data/models/session.dart';
+import 'package:bessie/common/services/client_context_service.dart';
 
-import '../../../../data/models/camper.dart';
-import '../../../../data/models/roster.dart';
+import '../../../../data/repositories/live_data_repository.dart';
 
 class RosterTableController extends GetxController {
-  final Roster roster;
-  var campers = <String, Camper>{}.obs;
-  var count = 0.obs;
+  final BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
+  final ClientContextService contextService = Get.find<ClientContextService>();
+  final LiveDataRepository liveDataRepo = Get.find<LiveDataRepository>();
+  final CabinsService cabinsService = Get.find<CabinsService>();
 
-  RosterTableController(this.roster);
+  final campers = <String, Camper>{}.obs;
+  final count = 0.obs;
+
+  StreamSubscription<Map<String, Camper>>? _campersSubscription;
+
+  void _startListening() {
+    _campersSubscription = liveDataRepo
+        .watchDocWithChildDocs<Session, Camper>(
+      parentId: contextService.sessionId,
+      parentFromJson: Session.fromJson,
+      childIdField: 'registeredCamperIds',
+      childFromJson: Camper.fromJson,
+    )
+        .listen((camperMap) {
+      campers.assignAll(camperMap);
+    });
+  }
+
+  void startListening() {
+    if (_campersSubscription == null) {
+      print('Started listening');
+      _startListening();
+    }
+  }
+
+  void stopListening() {
+    print('Stopped listening');
+    _campersSubscription?.cancel();
+    _campersSubscription = null;
+  }
 
   @override
   void onInit() {
     super.onInit();
-    campers.assignAll(roster.campers);
-    count.value = campers.length;
-    // Listen for changes on myMap and update count in real time
-    ever(campers, (_) {
-      count.value = campers.length;
-    });
+    _startListening();
+    ever(campers, (_) => count.value = campers.length);
+  }
+
+  @override
+  void onClose() {
+    stopListening();
+    super.onClose();
   }
 }
-

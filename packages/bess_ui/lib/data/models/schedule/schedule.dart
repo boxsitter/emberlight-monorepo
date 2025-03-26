@@ -1,16 +1,15 @@
 import '../../abstract/bess_object.dart';
-import '../../abstract/schedule_block.dart';
-import 'assignable_activity_block.dart';
 
 class Schedule extends BessObject {
   final List<String> blocks;
 
   Schedule({
-    this.blocks = const [],
+    List<String>? blocks,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : super(idTitle: 'schedule',);
+  })  : blocks = blocks ?? [],
+        super(idTitle: 'schedule');
 
   @override
   String bessToString() {

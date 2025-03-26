@@ -13,12 +13,12 @@
 // import '../feature_utils/roster_utils.dart';
 //
 // class ScheduleService extends GetxService {
-//   FirebaseRepository firebaseRepo = Get.find<FirebaseRepository>();
+//   FirebaseRepository bessObjectRepo= Get.find<FirebaseRepository>();
 //
 //   Future<AssignedMultiActivityBlock> createAssignedMultiActivityBlock(String name) async {
 //     // creates the block and adds it to the schedule
 //     AssignedMultiActivityBlock blockToCreate = AssignedMultiActivityBlock(name: name);
-//     Schedule schedule = await firebaseRepo.getObject('./', fromJson);
+//     Schedule schedule = await bessObjectRepo.getObject('./', fromJson);
 //
 //     // iterates through each camper, adds the new block to their preference list, and initializes a prefernece object for it
 //     for (Camper camper in localData.session!.sessionRoster.values) {

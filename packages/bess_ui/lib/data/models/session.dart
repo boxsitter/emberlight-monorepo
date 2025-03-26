@@ -1,8 +1,5 @@
 import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:bessie/data/models/roster.dart';
-import 'package:bessie/data/models/schedule/schedule.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'cabin.dart';
 
 class Session extends BessObject {
   final String name;
@@ -10,19 +7,21 @@ class Session extends BessObject {
   final DateTime endDate;
   final Set<String> registeredCamperIds;
   final Set<String> cabinsInUseIds;
-  late final String scheduleId;
+  final String scheduleId;
 
   Session({
     required this.name,
     required this.startDate,
     required this.endDate,
-    this.registeredCamperIds = const {},
-    this.cabinsInUseIds = const {},
+    Set<String>? registeredCamperIds,
+    Set<String>? cabinsInUseIds,
     required this.scheduleId,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : super(idTitle: 'session-$name',);
+  })  : registeredCamperIds = registeredCamperIds ?? {},
+        cabinsInUseIds = cabinsInUseIds ?? {},
+        super(idTitle: 'session-$name');
 
   @override
   String bessToString() {
@@ -37,7 +36,7 @@ class Session extends BessObject {
       'startDate': Timestamp.fromDate(startDate),
       'endDate': Timestamp.fromDate(endDate),
       'registeredCamperIds': registeredCamperIds.toList(),
-      'cabinsInUse': cabinsInUseIds.toList(),
+      'cabinsInUseIds': cabinsInUseIds.toList(),
       'scheduleId': scheduleId,
     });
     return json;

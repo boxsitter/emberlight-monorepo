@@ -2,6 +2,6 @@ class User {
   static const String firstName = 'Leyton';
   static const String lastName = 'Houck';
   static const String preferredName = 'Ice Pop';
-  static const String organizationId = 'organization-ygs-13e1e95e-1fe3-426f-88d4-6ed23c5e5fa5';
-  static const String branchId = 'branch-colman-367cf135-575a-49f6-b4e4-e9e79f4d0206';
+  static const String organizationId = 'organization-ymca_of_greater_seattle-00f1d57b-8735-43ea-b131-a865c970dcc7';
+  static const String branchId = 'branch-colman-ebc16a28-f210-410b-80f9-fd4b7a09049b';
 }

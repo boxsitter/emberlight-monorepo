@@ -1,19 +1,18 @@
+import 'package:bessie/data/models/session.dart';
 import 'package:get/get.dart';
 
 import '../../data/models/cabin.dart';
 import '../../data/models/camper.dart';
-import '../../data/repositories/firebase_repository.dart';
-import '../feature_utils/roster_utils.dart';
+import '../../data/repositories/bess_object_repository.dart';
 import 'client_context_service.dart';
 
 class CabinsService extends GetxService {
-  FirebaseRepository firebaseRepo = Get.find<FirebaseRepository>();
+  BessObjectRepository bessObjectRepo= Get.find<BessObjectRepository>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
 
-  // TODO: Error for cabin not existing
-  Future<Cabin> getCabinById(String id) async {
-    final doc = await firebaseRepo.getDocument("./cabins/$id");
-    return Cabin.fromJson(doc!);
+  Future<String?> getCabinIdByName(String name) async {
+    Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson);
+    return bessObjectRepo.getFirstMatchingId(session.cabinsInUseIds, 'name', name);
   }
 
   // TODO: This method should be replaced eventually
@@ -23,36 +22,52 @@ class CabinsService extends GetxService {
       name: name,
       capacity: capacity,
     );
-    firebaseRepo.pushObject(cabinToCreate);
+    bessObjectRepo.pushObject(cabinToCreate);
   }
 
-  void removeCabinFromSession(String cabinId) {
-    firebaseRepo.deleteDocument("./cabins/$cabinId");
+  Future<void> removeCabinFromSession(String cabinToRemoveId, String? alternativeCabinId) async {
+    Set<String> campersInCabinToRemove = (await bessObjectRepo.getFieldValue(cabinToRemoveId, 'camperIds') as List<String>).toSet();
+    for (String camperId in campersInCabinToRemove) {
+      if (alternativeCabinId != null) {
+        addCamperToCabin(alternativeCabinId, camperId);
+      } else {
+        removeCamperFromCabin(cabinToRemoveId, camperId);
+      }
+    }
+    Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson);
+    session.cabinsInUseIds.remove(cabinToRemoveId);
+
+    bessObjectRepo.pushObject(session);
+    bessObjectRepo.deleteDocument(cabinToRemoveId);
   }
 
-  Future<void> addCamperToCabin(String cabinId, Camper camperId) async {
-    Cabin cabin = await firebaseRepo.getObject("./cabins/$cabinId", Cabin.fromJson);
-    Camper camperToAdd = await firebaseRepo.getObject("./campers/$camperId", Camper.fromJson);
-    if((cabin.camperCount + 1) > cabin.capacity) {
+  Future<void> addCamperToCabin(String cabinId, String camperId) async {
+    // TODO: Needs to check if that cabin is in use for the current session
+    Cabin cabin = await bessObjectRepo.getObject(cabinId, Cabin.fromJson);
+    Camper camperToAdd = await bessObjectRepo.getObject(camperId, Camper.fromJson);
+    if((cabin.camperIds.length + 1) > cabin.capacity) {
       //TODO: Over capacity conflict
     } else if (camperToAdd.cabinId == null) {
-      RosterUtils.addCamperToRoster(cabin.roster, camperToAdd);
+      cabin.camperIds.add(camperToAdd.id);
       camperToAdd.cabinId = cabin.id;
-      firebaseRepo.pushObject(cabin);
-      firebaseRepo.pushObject(camperToAdd);
+      camperToAdd.cabinName = cabin.name;
+      bessObjectRepo.pushObject(cabin);
+      bessObjectRepo.pushObject(camperToAdd);
     } else {
       removeCamperFromCabin(cabinId, camperId);
       addCamperToCabin(cabinId, camperId);
     }
   }
 
-  Future<void> removeCamperFromCabin(String cabinId, Camper camperId) async {
-    Cabin cabin = await firebaseRepo.getObject("./cabins/$cabinId", Cabin.fromJson);
-    Camper camperToRemove = await firebaseRepo.getObject("./campers/$camperId", Camper.fromJson);
-    RosterUtils.removeCamperFromRoster(cabin.roster, camperToRemove);
+  Future<void> removeCamperFromCabin(String cabinId, String camperId) async {
+    // TODO: Needs to check if that cabin is in use for the current session
+    Cabin cabin = await bessObjectRepo.getObject(cabinId, Cabin.fromJson);
+    Camper camperToRemove = await bessObjectRepo.getObject(camperId, Camper.fromJson);
+    cabin.camperIds.remove(camperToRemove.id);
     camperToRemove.cabinId = null;
-    firebaseRepo.pushObject(cabin);
-    firebaseRepo.pushObject(camperToRemove);
+    camperToRemove.cabinName = null;
+    bessObjectRepo.pushObject(cabin);
+    bessObjectRepo.pushObject(camperToRemove);
   }
 
 

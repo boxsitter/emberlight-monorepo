@@ -59,6 +59,10 @@ class BessSidebar extends StatelessWidget {
                         route: BessRoutes.responsiveDesignExample,
                         icon: LucideIcons.layoutPanelLeft,
                         itemName: 'Widgets'),
+                    const BessMenuItem(
+                        route: BessRoutes.console,
+                        icon: LucideIcons.squareTerminal,
+                        itemName: 'Console'),
                   ],
                 ),
               )

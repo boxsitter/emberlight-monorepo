@@ -26,46 +26,8 @@ class BessResponsiveWidget extends StatefulWidget {
   BessResponsiveWidgetState createState() => BessResponsiveWidgetState();
 }
 
-class BessResponsiveWidgetState extends State<BessResponsiveWidget> with WindowListener {
+class BessResponsiveWidgetState extends State<BessResponsiveWidget> {
   bool isFullScreen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    windowManager.addListener(this);
-    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
-  }
-
-  @override
-  void dispose() {
-    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
-    windowManager.removeListener(this);
-    super.dispose();
-  }
-
-  bool _handleKeyEvent(KeyEvent event) {
-    if (_isDesktop && event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.f11) {
-      _toggleFullScreen();
-      return true; // Indicate the event is handled.
-    }
-    return false; // Allow other handlers to process the event.
-  }
-
-  bool get _isDesktop {
-    // Check if the app is running on desktop platforms
-    return Platform.isWindows || Platform.isMacOS || Platform.isLinux;
-  }
-
-  Future<void> _toggleFullScreen() async {
-    if (isFullScreen) {
-      await windowManager.setFullScreen(false);
-    } else {
-      await windowManager.setFullScreen(true);
-    }
-    setState(() {
-      isFullScreen = !isFullScreen;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

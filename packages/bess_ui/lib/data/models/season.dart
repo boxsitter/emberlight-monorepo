@@ -11,13 +11,12 @@ class Season extends BessObject {
     required this.name,
     required this.startDate,
     required this.endDate,
-    this.sessions = const {},
+    Set<String>? sessions,
     super.id,
     super.createdAt,
     super.updatedAt,
-  }) : super(
-    idTitle: 'season-$name',
-  );
+  })  : sessions = sessions ?? {},
+        super(idTitle: 'season-$name');
 
   @override
   String bessToString() {
@@ -41,7 +40,8 @@ class Season extends BessObject {
       name: json['name'] ?? '',
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
-      sessions: (json['sessions'] as List?)?.cast<String>().toSet() ?? <String>{},
+      sessions:
+          (json['sessions'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     season.overwriteBessObjectFromJson(json, clone);
     return season;

@@ -8,6 +8,7 @@ class Camper extends BessObject {
   int age;
   String note;
   String? cabinId;
+  String? cabinName;
 
   // contains all AssignableActivityBlock's for the camper's session and their preferences for each
   //Map<AssignedMultiActivityBlock, CamperPreference> activityPreferences = {};
@@ -22,11 +23,13 @@ class Camper extends BessObject {
     this.age = 0,
     this.note = '',
     this.cabinId,
-    this.activitiesIds = const {},
+    this.cabinName,
+    Set<String>? activitiesIds,
     super.id,
     super.createdAt,
     super.updatedAt,
-  }) : super(idTitle: 'camper-$lastName-$firstName');
+  })  : activitiesIds = activitiesIds ?? {},
+        super(idTitle: 'camper-$lastName-$firstName');
 
   /// returns preferred name if set, first name if not
   String get name => preferredName.isNotEmpty ? preferredName : firstName;
@@ -53,6 +56,7 @@ class Camper extends BessObject {
       'age': age,
       'note': note,
       'cabinId': cabinId,
+      'cabinName': cabinName,
       'activitiesIds': activitiesIds.toList(),
     });
     return json;
@@ -64,10 +68,14 @@ class Camper extends BessObject {
       lastName: json['lastName'] ?? '',
       preferredName: json['preferredName'] ?? '',
       gender: json['gender'] ?? '',
-      age: json['age'] is int ? json['age'] : int.tryParse(json['age'].toString()) ?? 0,
+      age: json['age'] is int
+          ? json['age']
+          : int.tryParse(json['age'].toString()) ?? 0,
       note: json['note'] ?? '',
       cabinId: json['cabinId'],
-      activitiesIds: (json['activitiesIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      cabinName: json['cabinName'],
+      activitiesIds: (json['activitiesIds'] as List?)?.cast<String>().toSet() ??
+          <String>{},
     );
     camper.overwriteBessObjectFromJson(json, clone);
     return camper;

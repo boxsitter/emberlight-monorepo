@@ -1,7 +1,4 @@
-import 'package:bessie/data/models/roster.dart';
-
 import '../abstract/bess_object.dart';
-import 'camper.dart';
 
 class Cabin extends BessObject {
   final String name;
@@ -11,8 +8,12 @@ class Cabin extends BessObject {
   Cabin({
     required this.name,
     required this.capacity,
-    this.camperIds = const {},
-  }) : super(idTitle: 'Cabin-$name');
+    Set<String>? camperIds,
+    super.id,
+    super.createdAt,
+    super.updatedAt,
+  })  : camperIds = camperIds ?? {},
+        super(idTitle: 'cabin-$name');
 
   @override
   String bessToString() {
@@ -34,10 +35,10 @@ class Cabin extends BessObject {
     final cabin = Cabin(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
-      camperIds: (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      camperIds:
+          (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     cabin.overwriteBessObjectFromJson(json, clone);
     return cabin;
   }
-
 }

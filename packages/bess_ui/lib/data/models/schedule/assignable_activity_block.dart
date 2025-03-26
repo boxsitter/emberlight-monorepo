@@ -1,17 +1,17 @@
 import 'package:bessie/data/abstract/schedule_block.dart';
 
-import 'activity.dart';
 
 class AssignedMultiActivityBlock extends ScheduleBlock {
   final Set<String> activities;
 
   AssignedMultiActivityBlock({
-    this.activities = const {},
+    Set<String>? activities,
     required super.name,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : super();
+  })  : activities = activities ?? {},
+        super();
 
   @override
   String bessToString() {

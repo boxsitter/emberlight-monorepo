@@ -64,13 +64,16 @@ dependencies:
   # Firebase
   firebase_core: ^3.3.0
   cloud_firestore: ^5.2.1
-  firebase_crashlytics: ^4.3.4
-  firebase_analytics: ^11.4.4
+  # firebase_crashlytics: ^4.3.4
+  # firebase_analytics: ^11.4.4
+
+  rxdart: ^0.27.0
 
   # Random Shit
   xterm: ^4.0.0
   data_table_2: ^2.5.12
   http: any # dart fix says I need this
+  visibility_detector: ^0.2.2
 
 
 dev_dependencies:

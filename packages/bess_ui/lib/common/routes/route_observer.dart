@@ -8,8 +8,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../widgets/layouts/sidebars/sidebar_controller.dart';
+import '../widgets/roster_table/controllers/roster_table_controller.dart';
 
 class RouteObservers extends GetObserver {
+  // TODO: probably do everything through didChangeTop. It should hopefully fix the selected sidebar item bug
   @override
   void didPop(Route<dynamic>? route, Route<dynamic>? previousRoute) {
     final sidebarController = Get.find<SidebarController>();
@@ -20,6 +22,16 @@ class RouteObservers extends GetObserver {
           sidebarController.activeItem.value = routeName;
         }
       }
+    }
+  }
+
+  @override
+  void didChangeTop(Route topRoute, Route? previousTopRoute) {
+    RosterTableController controller = Get.find<RosterTableController>();
+    if (topRoute.settings.name == BessRoutes.sessionRoster) {
+      controller.startListening();
+    } else {
+      controller.stopListening();
     }
   }
 

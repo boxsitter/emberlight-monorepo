@@ -1,7 +1,6 @@
 import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../common/constants/enums.dart';
 import '../../common/utils/formatters/formatter.dart';
 
 abstract class BessObject {
