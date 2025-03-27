@@ -191,6 +191,10 @@ class ConsoleController extends GetxController {
         sessionRosterService.importFromCsv();
         return;
 
+    case 'deleteallcampers':
+      sessionRosterService.deleteAllCampersInSession();
+      return;
+
       default:
         error('Command not found, type "help" for a list of commands');
         break;

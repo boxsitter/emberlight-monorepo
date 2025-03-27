@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bessie/common/services/cabins_service.dart';
@@ -15,7 +16,10 @@ import '../../pages/console/controller/console_controller.dart';
 class SessionRosterService extends GetxService {
   BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
   CabinsService cabinsService = Get.find<CabinsService>();
-  ClientContextService contextService = Get.find<ClientContextService>();
+  ClientContextService clientContextService = Get.find<ClientContextService>();
+
+  Future<Set<String>> get sessionRoster async => await bessObjectRepo.getSetField(clientContextService.sessionId, 'registeredCamperIds');
+  Future<Set<Camper>> get registeredCampers async => await bessObjectRepo.getObjects(await sessionRoster, Camper.fromJson);
 
   Future<Camper?> registerCamper({
     String firstName = '',
@@ -65,30 +69,37 @@ class SessionRosterService extends GetxService {
     // }
 
     // Add camper to master session roster
-    Session session = await bessObjectRepo.getObject(contextService.sessionId, Session.fromJson);
-    session.registeredCamperIds.add(camperToAdd.id);
-    bessObjectRepo.pushObject(session);
-
+    bessObjectRepo.addIdToSet(clientContextService.sessionId, 'registeredCamperIds', camperToAdd.id);
     bessObjectRepo.pushObject(camperToAdd);
     cabinsService.addCamperToCabin(cabin.id, camperToAdd.id);
     ConsoleController().log('${camperToAdd.bessToString()}\n created!');
     return camperToAdd;
   }
 
-  Future<bool> isCamperDuplicate(String firstName, String lastName, int age, Set<String> idsToCheck) async {
-    final conditions = {
-      'firstName': firstName,
-      'lastName': lastName,
-      'age': age,
-    };
+  Future<void> deleteCamper(String id) async{
+    Camper camperToDelete = await bessObjectRepo.getObject(id, Camper.fromJson);
+    if (camperToDelete.cabinId != null) {
+      bessObjectRepo.purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
+    }
+    bessObjectRepo.purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
+    bessObjectRepo.deleteDocument(id);
+    // TODO: Remove them from all activity rosters!
+  }
 
-    final results = await bessObjectRepo.queryDocuments(
-      collectionName: 'camper',
-      ids: idsToCheck,
-      conditions: conditions,
-    );
+  Future<void> deleteAllCampersInSession() async {
+    // TODO: THERE NEEDS TO BE A BIG FAT WARNING FOR THIS
+    for (String id in await sessionRoster) {
+      deleteCamper(id);
+    }
+  }
 
-    return results.isNotEmpty;
+  Future<bool> isCamperDuplicate(String firstName, String lastName, int age, Set<Camper> registeredCampers) async {
+    for (Camper camper in registeredCampers) {
+      if (camper.firstName == firstName && camper.lastName == lastName && camper.age == age) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void importFromCsv() async {
@@ -104,8 +115,7 @@ class SessionRosterService extends GetxService {
         if (bytes != null) {
           final csvContent = String.fromCharCodes(bytes);
 
-          final raw = await bessObjectRepo.getFieldValue(contextService.sessionId, 'registeredCamperIds');
-          Set<String> registeredCamperIds = (raw as List<dynamic>).map((e) => e.toString()).toSet();
+          Set<Camper> registeredCampers = await this.registeredCampers;
 
           // Read the CSV file
           final rows = const CsvToListConverter().convert(csvContent, eol: '\n');
@@ -166,7 +176,7 @@ class SessionRosterService extends GetxService {
               continue;
             }
 
-            if (await isCamperDuplicate(firstName, lastName, age, registeredCamperIds)) {
+            if (await isCamperDuplicate(firstName, lastName, age, registeredCampers)) {
               // TODO: add some kind of confirmation to a allow the user to import duplicates
               print('Skipping duplicate camper: $firstName');
               continue;
@@ -180,8 +190,7 @@ class SessionRosterService extends GetxService {
               age: age,
               cabinName: cabinName,
             );
-
-            registeredCamperIds.add(camper!.id); // TODO: Fix null check
+            registeredCampers.add(camper!); // TODO: Fix null check
           }
 
           ConsoleController().log('CSV Import completed successfully.\n');

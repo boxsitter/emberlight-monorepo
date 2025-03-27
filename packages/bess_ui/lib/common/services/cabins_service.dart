@@ -34,7 +34,7 @@ class CabinsService extends GetxService {
         removeCamperFromCabin(cabinToRemoveId, camperId);
       }
     }
-    Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson);
+    Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson) as Session;
     session.cabinsInUseIds.remove(cabinToRemoveId);
 
     bessObjectRepo.pushObject(session);

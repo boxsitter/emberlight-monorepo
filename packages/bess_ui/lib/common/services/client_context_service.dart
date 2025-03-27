@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../data/models/branch.dart';
 import '../../data/models/season.dart';
+import '../../data/models/session.dart';
 import '../../data/user_houck_leyton.dart';
 
 class ClientContextService extends GetxService {
@@ -12,6 +13,8 @@ class ClientContextService extends GetxService {
   String branchId = '';
   String seasonId = '';
   String sessionId = '';
+
+  Future<Session> get session async => await bessObjectRepo.getObject(sessionId, Session.fromJson);
 
   @override
   void onInit() {
