@@ -21,7 +21,6 @@ class RosterUtils {
   /// Logs the campers to the console.
   static void logCampers(Set<Camper> campers) {
     final rosterString = campers.map((camper) => camper.bessToString()).join('\n');
-    ConsoleController().log(rosterString);
   }
 
   /// Exports a PDF of the campers.

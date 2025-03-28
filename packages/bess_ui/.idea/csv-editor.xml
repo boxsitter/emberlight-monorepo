@@ -10,6 +10,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\lib\data\test_files\dummy_roster_dupes.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\lib\data\test_files\dummy_roster_one.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\lib\data\test_files\dummy_roster_two.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

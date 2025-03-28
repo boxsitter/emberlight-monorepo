@@ -1,5 +1,6 @@
 import 'package:bessie/pages/console/view/themes/console_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:xterm/ui.dart';
 
@@ -37,6 +38,7 @@ class ConsoleScreenDesktop extends StatelessWidget {
               consoleController.terminal,
               autofocus: true,
               textStyle: const TerminalStyle(
+                fontFamily: 'FiraCodeMono',
                 fontSize: 15, // Customize font size
                 height: 1.5,
               ),

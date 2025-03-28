@@ -1,4 +1,5 @@
 import 'package:bessie/app_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -6,6 +7,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'common/routes/app_routes.dart';
 import 'common/routes/route_observer.dart';
 import 'common/constants//text_strings.dart';
+import 'common/routes/routes.dart';
 import 'common/theme/shad_theme.dart';
 import 'common/theme/theme.dart';
 import 'common/utils/device/web_material_scroll.dart';
@@ -15,6 +17,12 @@ class App extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final bool isWebRefresh = kIsWeb && Get.currentRoute != AppConfig.homePage;
+    // Redirect only on first load if not already on home
+    if (isWebRefresh) {
+      Future.microtask(() => Get.offAllNamed(AppConfig.homePage));
+    }
+
     return ShadApp.custom(
       themeMode: ThemeMode.light,
       theme: BessShadTheme.shadThemeData,

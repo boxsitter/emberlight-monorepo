@@ -1,4 +1,5 @@
 import 'package:bessie/data/abstract/schedule_block.dart';
+import 'package:flutter/material.dart';
 
 
 class AssignedMultiActivityBlock extends ScheduleBlock {
@@ -36,6 +37,5 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
     block.overwriteBessObjectFromJson(json, clone);
     return block;
   }
-
 
 }

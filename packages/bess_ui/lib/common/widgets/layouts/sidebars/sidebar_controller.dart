@@ -7,6 +7,13 @@ class SidebarController extends GetxController {
   final activeItem = BessRoutes.home.obs;
   final hoverItem = ''.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    // On refresh, set the current route as the active item
+    activeItem.value = Get.currentRoute;
+  }
+
   void changeActiveItem(String route) => activeItem.value = route;
 
   void changeHoverItem(String route) {
@@ -18,15 +25,13 @@ class SidebarController extends GetxController {
   bool isHovering(String route) => hoverItem.value == route;
 
   void menuOnTap(String route) {
-    if (!isActive(route)) {
-      changeActiveItem(route);
+    changeActiveItem(route);
 
-      if (BessDeviceUtils.isMobileScreen(Get.context!) ||
-          BessDeviceUtils.isTabletScreen(Get.context!)) {
-        Get.back();
-      }
-
-      Get.toNamed(route);
+    if (BessDeviceUtils.isMobileScreen(Get.context!) ||
+        BessDeviceUtils.isTabletScreen(Get.context!)) {
+      Get.back();
     }
+
+    Get.toNamed(route);
   }
 }

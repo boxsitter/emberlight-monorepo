@@ -86,7 +86,7 @@ class HardcodedObjectConfigs {
     scheduleId: 'schedule-test_schedule-6a23c537-3136-4b16-9837-601abdaa9819',
   );
 
-  Future<void> updateObjects() async {
+  Future<void> createObjects() async {
     // Each updateDocument call will convert these UTC datetimes to Firestore Timestamps.
     await bessObjectRepo.pushObject(ygs);
     await bessObjectRepo.pushObject(colman);
@@ -107,5 +107,57 @@ class HardcodedObjectConfigs {
     session.cabinsInUseIds.addAll(cabinsInUse);
 
     await bessObjectRepo.pushObject(session);
+  }
+
+  Future<void> updateObjects() async {
+    await bessObjectRepo.updateDocument({
+      'id': ygs.id,
+      'name': ygs.name,
+      'branches': ygs.branches.toList(),
+      'createdAt': ygs.createdAt.toUtc(),
+    });
+
+    await bessObjectRepo.updateDocument({
+      'id': colman.id,
+      'name': colman.name,
+      'seasons': colman.seasons.toList(),
+      'createdAt': colman.createdAt.toUtc(),
+    });
+
+    await bessObjectRepo.updateDocument({
+      'id': season.id,
+      'name': season.name,
+      'startDate': season.startDate.toUtc(),
+      'endDate': season.endDate.toUtc(),
+      'sessions': season.sessions.toList(),
+      'createdAt': season.createdAt.toUtc(),
+    });
+
+    await bessObjectRepo.updateDocument({
+      'id': schedule.id,
+    });
+
+    for (final cabin in [henderson, leckenby, yarrow, freeman1]) {
+      await bessObjectRepo.updateDocument({
+        'id': cabin.id,
+        'name': cabin.name,
+        'capacity': cabin.capacity,
+      });
+    }
+
+    await bessObjectRepo.updateDocument({
+      'id': session.id,
+      'name': session.name,
+      'startDate': session.startDate.toUtc(),
+      'endDate': session.endDate.toUtc(),
+      'scheduleId': session.scheduleId,
+      'cabins': [
+        henderson.id,
+        leckenby.id,
+        yarrow.id,
+        freeman1.id,
+      ],
+      'createdAt': session.createdAt.toUtc(),
+    });
   }
 }

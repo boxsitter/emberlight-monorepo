@@ -1,4 +1,11 @@
+import 'package:flutter/material.dart';
+
 import '../abstract/bess_object.dart';
+
+typedef CabinId = String;
+typedef AssignedMultiActivityBlockId = String;
+typedef CamperPreferenceId = String;
+typedef ActivityId = String;
 
 class Camper extends BessObject {
   String firstName;
@@ -7,13 +14,12 @@ class Camper extends BessObject {
   String gender;
   int age;
   String note;
-  String? cabinId;
+  CabinId? cabinId;
   String? cabinName;
 
-  // contains all AssignableActivityBlock's for the camper's session and their preferences for each
-  //Map<AssignedMultiActivityBlock, CamperPreference> activityPreferences = {};
-  // set of the activities a camper is assigned to for each activity block
-  Set<String> activitiesIds;
+  CamperPreferenceId? camperPreferenceId;
+  // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
+  Map<AssignedMultiActivityBlockId, ActivityId?> activityAssignments;
 
   Camper({
     this.firstName = '',
@@ -24,11 +30,13 @@ class Camper extends BessObject {
     this.note = '',
     this.cabinId,
     this.cabinName,
-    Set<String>? activitiesIds,
+    this.camperPreferenceId,
+    Map<AssignedMultiActivityBlockId, CamperPreferenceId>? activityPreferences,
+    Map<AssignedMultiActivityBlockId, ActivityId>? activityAssignments,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : activitiesIds = activitiesIds ?? {},
+  })  : activityAssignments = activityAssignments ?? {},
         super(idTitle: 'camper-$lastName-$firstName');
 
   /// returns preferred name if set, first name if not
@@ -57,7 +65,8 @@ class Camper extends BessObject {
       'note': note,
       'cabinId': cabinId,
       'cabinName': cabinName,
-      'activitiesIds': activitiesIds.toList(),
+      'camperPreferenceId': camperPreferenceId,
+      'activityAssignments': activityAssignments,
     });
     return json;
   }
@@ -68,14 +77,13 @@ class Camper extends BessObject {
       lastName: json['lastName'] ?? '',
       preferredName: json['preferredName'] ?? '',
       gender: json['gender'] ?? '',
-      age: json['age'] is int
-          ? json['age']
-          : int.tryParse(json['age'].toString()) ?? 0,
+      age: json['age'] is int ? json['age'] : int.tryParse(json['age'].toString()) ?? 0,
       note: json['note'] ?? '',
       cabinId: json['cabinId'],
       cabinName: json['cabinName'],
-      activitiesIds: (json['activitiesIds'] as List?)?.cast<String>().toSet() ??
-          <String>{},
+      camperPreferenceId: json['camperPreferenceId'],
+      activityAssignments:
+          (json['activityAssignments'] as Map?)?.cast<String, String>() ?? {},
     );
     camper.overwriteBessObjectFromJson(json, clone);
     return camper;

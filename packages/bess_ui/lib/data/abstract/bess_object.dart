@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../common/utils/formatters/formatter.dart';
 
+typedef BessObjectId = String;
+
 abstract class BessObject {
-  String id; // TODO: Add chld- and ref- prefixes to reference ids
+  BessObjectId id; // TODO: Add chld- and ref- prefixes to reference ids
   DateTime createdAt;
   DateTime updatedAt;
   //String organizationId;

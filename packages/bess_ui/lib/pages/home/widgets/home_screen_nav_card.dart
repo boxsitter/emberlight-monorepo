@@ -20,6 +20,8 @@ class HomeScreenNavCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BessRoundedContainer(
       height: 200,
+      showBorder: true,
+      borderThickness: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

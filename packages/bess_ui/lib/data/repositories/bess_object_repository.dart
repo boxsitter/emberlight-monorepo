@@ -302,15 +302,49 @@ class BessObjectRepository {
     }
   }
 
-  Future<void> removeIdFromSet(String parentId, String field, String idToRemove) async {
+  Future<void> removeIdFromCollection(String parentId, String field, String idToRemove) async {
     final resolvedPath = '${BessIdFunctions.getIdPrefix(parentId)}/$parentId';
 
+    // Fetch the current document so we can see the field type
+    final docSnapshot = await _db.doc(resolvedPath).get();
+    final data = docSnapshot.data();
+
+    if (data == null || !data.containsKey(field)) {
+      print('Field "$field" not found in document $parentId.');
+      return;
+    }
+
+    final currentField = data[field];
+
     try {
-      await _db.doc(resolvedPath).update({
-        field: FieldValue.arrayRemove([idToRemove]),
-        'updatedAt': DateTime.now().toUtc(),
-      });
-      print('Removed $idToRemove from $field in $parentId.');
+      if (currentField is List) {
+        // Remove value from array
+        await _db.doc(resolvedPath).update({
+          field: FieldValue.arrayRemove([idToRemove]),
+          'updatedAt': DateTime.now().toUtc(),
+        });
+        print('Removed $idToRemove from List "$field" in $parentId.');
+      } else if (currentField is Map) {
+        final map = Map<String, dynamic>.from(currentField);
+        final updates = <String, dynamic>{};
+
+        // Remove matching key or value
+        for (final entry in map.entries) {
+          if (entry.key == idToRemove || entry.value == idToRemove) {
+            updates['$field.${entry.key}'] = FieldValue.delete();
+          }
+        }
+
+        if (updates.isNotEmpty) {
+          updates['updatedAt'] = DateTime.now().toUtc();
+          await _db.doc(resolvedPath).update(updates);
+          print('Removed $idToRemove from Map "$field" in $parentId.');
+        } else {
+          print('No matching key/value found for $idToRemove in Map "$field".');
+        }
+      } else {
+        print('Field "$field" is not a List or Map. Skipping.');
+      }
     } catch (e) {
       print('Error updating $field in $parentId: $e');
       rethrow;
@@ -326,16 +360,42 @@ class BessObjectRepository {
     }
 
     bool modified = false;
+    final resolvedPath = '${BessIdFunctions.getIdPrefix(parentId)}/$parentId';
+    final fieldUpdates = <String, dynamic>{};
 
     for (final entry in document.entries) {
       final key = entry.key;
       final value = entry.value;
 
-      // Check for List fields containing the reference
-      if (value is List && value.contains(referenceIdToRemove)) {
-        await removeIdFromSet(parentId, key, referenceIdToRemove);
+      // Remove string fields where value is exactly the ID
+      if (value is String && value == referenceIdToRemove) {
+        fieldUpdates[key] = FieldValue.delete();
         modified = true;
       }
+
+      // Remove from lists
+      else if (value is List && value.contains(referenceIdToRemove)) {
+        await removeIdFromCollection(parentId, key, referenceIdToRemove);
+        modified = true;
+      }
+
+      // Remove from maps
+      else if (value is Map) {
+        final map = Map<String, dynamic>.from(value);
+        final matches = map.entries.any(
+              (entry) => entry.key == referenceIdToRemove || entry.value == referenceIdToRemove,
+        );
+        if (matches) {
+          await removeIdFromCollection(parentId, key, referenceIdToRemove);
+          modified = true;
+        }
+      }
+    }
+
+    // Apply single-field deletes (like top-level String fields)
+    if (fieldUpdates.isNotEmpty) {
+      fieldUpdates['updatedAt'] = DateTime.now().toUtc();
+      await _db.doc(resolvedPath).update(fieldUpdates);
     }
 
     if (!modified) {

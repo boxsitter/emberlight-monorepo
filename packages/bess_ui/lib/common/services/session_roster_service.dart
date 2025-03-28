@@ -1,22 +1,22 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bessie/common/services/cabins_service.dart';
 import 'package:bessie/common/services/client_context_service.dart';
+import 'package:bessie/data/models/camper_preference.dart';
+import 'package:bessie/data/models/schedule/schedule.dart';
+import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/cabin.dart';
 import '../../data/models/camper.dart';
-import '../../data/models/session.dart';
 import '../../data/repositories/bess_object_repository.dart';
-import '../../pages/console/controller/console_controller.dart';
 
-class SessionRosterService extends GetxService {
+class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
   BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
   CabinsService cabinsService = Get.find<CabinsService>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
+  ConsoleController consoleController = Get.find<ConsoleController>();
 
   Future<Set<String>> get sessionRoster async => await bessObjectRepo.getSetField(clientContextService.sessionId, 'registeredCamperIds');
   Future<Set<Camper>> get registeredCampers async => await bessObjectRepo.getObjects(await sessionRoster, Camper.fromJson);
@@ -30,19 +30,14 @@ class SessionRosterService extends GetxService {
     String cabinName = '',
     String note = '',
   }) async {
+    String? cabinId;
     // need to fetch cabin by name from the active cabins for the selected session
-    Cabin? cabin;
     if (cabinName.isNotEmpty) {
-      String? cabinId = await cabinsService.getCabinIdByName(cabinName);
+      cabinId = await cabinsService.getCabinIdByName(cabinName);
       if (cabinId == null) {
-        ConsoleController().error('Cabin $cabinName not found');
+        consoleController.error('Cabin $cabinName not found');
         return null;
       }
-      cabin = await bessObjectRepo.getObject(cabinId, Cabin.fromJson);
-    }
-    if (cabin == null) {
-      ConsoleController().error('Cabin $cabinName not found');
-      return null;
     }
 
     // TODO: Error checking here, validate stuff
@@ -52,27 +47,26 @@ class SessionRosterService extends GetxService {
       preferredName: preferredName,
       gender: gender,
       age: age,
+      cabinId: cabinId,
       note: note,
     );
 
-    // // initializes the camper preference objects for new campers added when a schedule already contains assignable activities
-    // if(localData.session!.schedule.blocks.isNotEmpty) {
-    //   for (ScheduleBlock block in localData.session!.schedule.blocks.values) {
-    //     if (block is AssignableActivityBlock) {
-    //       AssignableActivityBlock assignableActivityBlock = block;
-    //       camperToAdd.activityPreferences[block] = CamperPreference(camper: camperToAdd, block: block);
-    //       for (Activity activity in assignableActivityBlock.activities.values) {
-    //         camperToAdd.activityPreferences[assignableActivityBlock]!.preferences[activity] = null;
-    //       }
-    //     }
-    //   }
-    // }
+    CamperPreference camperPreference = CamperPreference(camperId: camperToAdd.id, camperName: camperToAdd.name);
+    camperToAdd.camperPreferenceId = camperPreference.id;
+    Schedule schedule = await clientContextService.schedule;
+    for (UniqueActivityTypeId uniqueActivityTypeId in schedule.uniqueActivityTypeIds) {
+      camperPreference.preferences[uniqueActivityTypeId] = null;
+      camperPreference.preferenceWeights[uniqueActivityTypeId] = 0;
+    }
+    bessObjectRepo.pushObject(camperPreference);
 
     // Add camper to master session roster
     bessObjectRepo.addIdToSet(clientContextService.sessionId, 'registeredCamperIds', camperToAdd.id);
     bessObjectRepo.pushObject(camperToAdd);
-    cabinsService.addCamperToCabin(cabin.id, camperToAdd.id);
-    ConsoleController().log('${camperToAdd.bessToString()}\n created!');
+    if (camperToAdd.cabinId != null) {
+      cabinsService.addCamperToCabin(cabinId!, camperToAdd.id);
+    }
+    consoleController.success('${camperToAdd.bessToString()}\n created!');
     return camperToAdd;
   }
 
@@ -82,6 +76,9 @@ class SessionRosterService extends GetxService {
       bessObjectRepo.purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
     }
     bessObjectRepo.purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
+    if (camperToDelete.camperPreferenceId != null) {
+      bessObjectRepo.deleteDocument(camperToDelete.camperPreferenceId!);
+    }
     bessObjectRepo.deleteDocument(id);
     // TODO: Remove them from all activity rosters!
   }
@@ -102,7 +99,7 @@ class SessionRosterService extends GetxService {
     return false;
   }
 
-  void importFromCsv() async {
+  Future<void> importFromCsv() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -121,7 +118,7 @@ class SessionRosterService extends GetxService {
           final rows = const CsvToListConverter().convert(csvContent, eol: '\n');
 
           if (rows.isEmpty) {
-            ConsoleController().error('CSV file is empty.');
+            consoleController.error('CSV file is empty.');
             return;
           }
 
@@ -139,8 +136,7 @@ class SessionRosterService extends GetxService {
 
           // Validate required columns
           if (firstNameIndex == -1 || lastNameIndex == -1 || ageIndex == -1) {
-            ConsoleController().error(
-                'CSV file must contain "First Name", "Last Name", and "Age" columns.');
+            consoleController.error('CSV file must contain "First Name", "Last Name", and "Age" columns.');
             return;
           }
 
@@ -148,8 +144,8 @@ class SessionRosterService extends GetxService {
           for (var row in rows.skip(1)) {
             // Skip the header row
             if (row.length < headers.length) {
-              ConsoleController()
-                  .error('Row has fewer columns than expected: $row');
+              //ConsoleController()
+               //   .error('Row has fewer columns than expected: $row');
               continue;
             }
 
@@ -172,7 +168,7 @@ class SessionRosterService extends GetxService {
                 : '';
 
             if (firstName.isEmpty || lastName.isEmpty || age <= 0) {
-              ConsoleController().error('Invalid data in row: $row');
+              consoleController.error('Invalid data in row: $row');
               continue;
             }
 
@@ -193,12 +189,12 @@ class SessionRosterService extends GetxService {
             registeredCampers.add(camper!); // TODO: Fix null check
           }
 
-          ConsoleController().log('CSV Import completed successfully.\n');
-          ConsoleController().writePrompt();
+          consoleController.log('CSV Import completed successfully.\n');
+          consoleController.writePrompt();
         }
       }
     } catch (e) {
-      ConsoleController().error('Error importing CSV: $e');
+      consoleController.error('Error importing CSV: $e');
     }
   }
 }

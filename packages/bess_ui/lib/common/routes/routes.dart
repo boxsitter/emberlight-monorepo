@@ -7,12 +7,14 @@ class BessRoutes {
   static const console = '/console';
   static const sessionRoster = '/session-roster';
 
+  static const activityPreferencesCabins = '/activity-preferences-cabins';
+  static const activityPreferencesCampers = '/activity-preferences-campers';
+
   static List sideMenuItems = [
     console,
     sessionRoster,
-    // home,
-    // secondScreen,
-    // responsiveDesignExample
+    home,
+    responsiveDesignExample
   ];
 
   static const login = '/login';

@@ -4,6 +4,7 @@
 // item always reflects the current screen.
 
 import 'package:bessie/common/routes/routes.dart';
+import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -27,11 +28,17 @@ class RouteObservers extends GetObserver {
 
   @override
   void didChangeTop(Route topRoute, Route? previousTopRoute) {
-    RosterTableController controller = Get.find<RosterTableController>();
+    RosterTableController rosterTableController = Get.find<RosterTableController>();
     if (topRoute.settings.name == BessRoutes.sessionRoster) {
-      controller.startListening();
+      rosterTableController.startListening();
     } else {
-      controller.stopListening();
+      rosterTableController.stopListening();
+    }
+
+    ActivityPreferencesController activityPreferencesController = Get.find<ActivityPreferencesController>();
+    if (topRoute.settings.name == BessRoutes.activityPreferencesCabins && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCabins) {
+      print('Did change top. Top Route: ${topRoute.settings.name}, Previous Top Route: ${previousTopRoute?.settings.name}');
+      activityPreferencesController.populateCabinMaps();
     }
   }
 

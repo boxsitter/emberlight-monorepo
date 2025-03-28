@@ -3,9 +3,11 @@
 // middleware. Uncommented routes can be easily added to extend functionality.
 
 import 'package:bessie/common/routes/routes.dart';
+import 'package:bessie/pages/activity_preferences/views/activity_preferences_cabins.dart';
 import 'package:bessie/pages/session_roster/session_roster.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
+import '../../pages/activity_preferences/views/activity_preferences_campers.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
@@ -19,6 +21,10 @@ class BessAppRoute {
     GetPage(name: BessRoutes.responsiveDesignExample, page: () => const ResponsiveDesignScreen()),
     GetPage(name: BessRoutes.console, page: () => const ConsoleScreen()),
     GetPage(name: BessRoutes.sessionRoster, page: () => const SessionRoster()),
+
+    GetPage(name: BessRoutes.activityPreferencesCabins, page: () => const ActivityPreferencesCabins()),
+    GetPage(name: BessRoutes.activityPreferencesCampers, page: () => const ActivityPreferencesCampers()),
+
     GetPage(name: BessRoutes.login, page: () => const LoginScreen()),
     GetPage(name: BessRoutes.forgotPassword, page: () => const ForgotPasswordScreen()),
     GetPage(name: BessRoutes.resetPassword, page: () => const ResetPasswordScreen()),

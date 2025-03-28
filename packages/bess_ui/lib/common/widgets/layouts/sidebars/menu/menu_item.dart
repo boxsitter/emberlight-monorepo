@@ -62,7 +62,10 @@ class BessMenuItem extends StatelessWidget {
                       menuController.isActive(route))
                     Flexible(
                         child: Text(itemName,
-                            style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.low)))
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .apply(color: BessColors.low)))
                   else
                     Flexible(
                         child: Text(itemName,

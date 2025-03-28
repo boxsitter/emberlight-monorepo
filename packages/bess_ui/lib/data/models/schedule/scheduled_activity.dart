@@ -1,12 +1,13 @@
 import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:flutter/material.dart';
 
-class Activity extends BessObject {
+class ScheduledActivity extends BessObject {
   final String name;
   final int capacity;
   final Set<String> camperIds;
   final String blockId;
 
-  Activity({
+  ScheduledActivity({
     required this.name,
     required this.capacity,
     required this.blockId,
@@ -34,8 +35,8 @@ class Activity extends BessObject {
     return json;
   }
 
-  factory Activity.fromJson(Map<String, dynamic> json, [bool clone = false]) {
-    Activity activity = Activity(
+  factory ScheduledActivity.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+    ScheduledActivity activity = ScheduledActivity(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       camperIds:

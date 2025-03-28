@@ -115,7 +115,6 @@ class PdfUtils {
 
       // If the user cancels the dialog, exit early.
       if (filePath == null) {
-        ConsoleController().error('Save operation canceled.');
         return;
       }
 
@@ -123,9 +122,8 @@ class PdfUtils {
       final file = File(filePath);
       await file.writeAsBytes(await pdf.save());
 
-      ConsoleController().success('PDF saved successfully at $filePath');
     } catch (e) {
-      ConsoleController().error('Error saving PDF: $e');
+      print('Error saving pdf locally');
     }
   }
 }

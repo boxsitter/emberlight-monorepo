@@ -10,6 +10,8 @@ class CabinsService extends GetxService {
   BessObjectRepository bessObjectRepo= Get.find<BessObjectRepository>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
 
+  Future<Set<Cabin>> get cabins async => await bessObjectRepo.getObjects(await clientContextService.cabinsInUseIds, Cabin.fromJson);
+
   Future<String?> getCabinIdByName(String name) async {
     Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson);
     return bessObjectRepo.getFirstMatchingId(session.cabinsInUseIds, 'name', name);
@@ -34,7 +36,7 @@ class CabinsService extends GetxService {
         removeCamperFromCabin(cabinToRemoveId, camperId);
       }
     }
-    Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson) as Session;
+    Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson);
     session.cabinsInUseIds.remove(cabinToRemoveId);
 
     bessObjectRepo.pushObject(session);

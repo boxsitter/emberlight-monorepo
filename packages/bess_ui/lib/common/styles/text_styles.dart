@@ -32,6 +32,13 @@ class BessTextStyles {
       fontWeight: FontWeight.w300,
   );
 
+  static final TextStyle largerLabel = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14.0,
+    color: BessColors.textSecondary,
+    fontWeight: FontWeight.w300,
+  );
+
   static final TextStyle subtle = TextStyle(
     fontFamily: 'Inter',
     fontSize: 12.0,
@@ -82,6 +89,14 @@ class BessTextStyles {
     fontFamily: 'Inter',
     fontSize: 12,
     color: BessColors.textSubtle,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 2.0,
+  );
+
+  static final TextStyle boldCardTitle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 18,
+    color: BessColors.textPrimary,
     fontWeight: FontWeight.w600,
     letterSpacing: 2.0,
   );

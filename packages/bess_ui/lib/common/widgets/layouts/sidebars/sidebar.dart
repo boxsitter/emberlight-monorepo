@@ -56,6 +56,10 @@ class BessSidebar extends StatelessWidget {
                         icon: LucideIcons.bookUser,
                         itemName: 'Session Roster'),
                     const BessMenuItem(
+                        route: BessRoutes.activityPreferencesCabins,
+                        icon: LucideIcons.listOrdered,
+                        itemName: 'Camper Activity Preferences'),
+                    const BessMenuItem(
                         route: BessRoutes.responsiveDesignExample,
                         icon: LucideIcons.layoutPanelLeft,
                         itemName: 'Widgets'),

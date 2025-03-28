@@ -50,34 +50,29 @@ class BessRoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Material(
-        elevation: showShadow ? 5.0 : 0.0,
+    return Material(
+      elevation: showShadow ? 5.0 : 0.0,
+      borderRadius: BorderRadius.circular(radius),
+      color: backgroundColor ?? BessColors.core,
+      child: InkWell(
         borderRadius: BorderRadius.circular(radius),
-        color: Colors.transparent,
+        splashColor: BessColors.primary.withAlpha(35),
+        onTap: onTap,
         child: Container(
           width: width,
           height: height,
           margin: margin,
           padding: padding,
           clipBehavior: clipContent ? Clip.antiAlias : Clip.none,
-          foregroundDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius),
-
-            border: showBorder ? Border.all(
-                color: borderColor ?? BessColors.borderPrimary,
-                width: borderThickness,
-                strokeAlign: BorderSide.strokeAlignInside,
-            ) : null,
-          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius),
-            color: backgroundColor ?? BessColors.element1,
+            border: showBorder ? Border.all(
+              color: borderColor ?? BessColors.borderPrimary,
+              width: borderThickness,
+              strokeAlign: BorderSide.strokeAlignInside,
+            ) : null,
           ),
-          child: ClipRect(
-              child: child
-          ),
+          child: child,
         ),
       ),
     );

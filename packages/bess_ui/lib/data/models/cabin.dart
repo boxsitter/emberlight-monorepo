@@ -1,14 +1,18 @@
+import 'package:flutter/material.dart';
+
 import '../abstract/bess_object.dart';
 
 class Cabin extends BessObject {
   final String name;
   final int capacity;
   final Set<String> camperIds;
+  int campersWithPreferencesCount;
 
   Cabin({
     required this.name,
     required this.capacity,
     Set<String>? camperIds,
+    this.campersWithPreferencesCount = 0,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -27,6 +31,7 @@ class Cabin extends BessObject {
       'name': name,
       'capacity': capacity,
       'camperIds': camperIds.toList(),
+      'campersWithPreferencesCount': campersWithPreferencesCount,
     });
     return json;
   }
@@ -35,8 +40,8 @@ class Cabin extends BessObject {
     final cabin = Cabin(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
-      camperIds:
-          (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      camperIds: (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      campersWithPreferencesCount: json['campersWithPreferencesCount'] as int,
     );
     cabin.overwriteBessObjectFromJson(json, clone);
     return cabin;
