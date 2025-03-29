@@ -10,11 +10,17 @@ class CabinsService extends GetxService {
   BessObjectRepository bessObjectRepo= Get.find<BessObjectRepository>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
 
-  Future<Set<Cabin>> get cabins async => await bessObjectRepo.getObjects(await clientContextService.cabinsInUseIds, Cabin.fromJson);
+  Future<Set<CabinId>> get cabinsInUseIds async => await (bessObjectRepo.getSetField(clientContextService.sessionId, 'cabinsInUseIds'));
+  Future<Set<Cabin>> get cabins async => await bessObjectRepo.getObjects(await cabinsInUseIds, Cabin.fromJson);
 
   Future<String?> getCabinIdByName(String name) async {
     Session session = await bessObjectRepo.getObject(clientContextService.sessionId, Session.fromJson);
-    return bessObjectRepo.getFirstMatchingId(session.cabinsInUseIds, 'name', name);
+    return await bessObjectRepo.getFirstMatchingId(session.cabinsInUseIds, 'name', name);
+  }
+
+  Future<Set<Camper>> getCampersInCabin(String id) async {
+    Set<String> camperIds = await bessObjectRepo.getSetField(id, 'camperIds');
+    return await bessObjectRepo.getObjects(camperIds, Camper.fromJson);
   }
 
   // TODO: This method should be replaced eventually

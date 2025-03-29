@@ -1,20 +1,20 @@
 import '../../abstract/bess_object.dart';
 
 typedef BlockId = String;
-typedef UniqueActivityTypeId = String;
+typedef ActivityTypeId = String;
 
 class Schedule extends BessObject {
   List<BlockId> blockIds;
-  Set<UniqueActivityTypeId> uniqueActivityTypeIds;
+  Set<ActivityTypeId> uniqueActivityTypeIds;
 
   Schedule({
     List<BlockId>? blocks,
     super.id,
     super.createdAt,
     super.updatedAt,
-    Set<UniqueActivityTypeId>? uniqueActivityTypes,
+    Set<ActivityTypeId>? activityTypes,
   })  : blockIds = blocks ?? [],
-        uniqueActivityTypeIds = uniqueActivityTypes ?? {},
+        uniqueActivityTypeIds = activityTypes ?? {},
         super(idTitle: 'schedule');
 
   @override
@@ -27,7 +27,7 @@ class Schedule extends BessObject {
     final json = toJsonSuper();
     json.addAll({
       'blocks': blockIds,
-      'uniqueActivityTypes': uniqueActivityTypeIds.toList(),
+      'activityTypes': uniqueActivityTypeIds.toList(),
     });
     return json;
   }
@@ -35,7 +35,7 @@ class Schedule extends BessObject {
   factory Schedule.fromJson(Map<String, dynamic> json, [bool clone = false]) {
     final schedule = Schedule(
       blocks: (json['blocks'] as List?)?.cast<BlockId>() ?? <BlockId>[],
-      uniqueActivityTypes: (json['uniqueActivityTypes'] as List?)?.cast<UniqueActivityTypeId>().toSet() ?? <UniqueActivityTypeId>{},
+      activityTypes: (json['activityTypes'] as List?)?.cast<ActivityTypeId>().toSet() ?? <ActivityTypeId>{},
     );
     schedule.overwriteBessObjectFromJson(json, clone);
     return schedule;

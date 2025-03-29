@@ -12,7 +12,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
     super.createdAt,
     super.updatedAt,
   })  : activities = activities ?? {},
-        super();
+        super(idTitle: 'assignedmultiactivityblock');
 
   @override
   String bessToString() {

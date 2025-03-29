@@ -2,6 +2,8 @@
   <configuration default="false" name="Profile" type="FlutterRunConfigurationType" factoryName="Flutter" activateToolWindowBeforeRun="false">
     <option name="additionalArgs" value="-d web-server --profile --web-port=8000" />
     <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
-    <method v="2" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Start Firestore Emulator" run_configuration_type="ShConfigurationType" />
+    </method>
   </configuration>
 </component>

@@ -16,7 +16,7 @@ class ScheduledActivity extends BessObject {
     super.createdAt,
     super.updatedAt,
   })  : camperIds = camperIds ?? {},
-        super(idTitle: 'activity-$name');
+        super(idTitle: 'scheduled_activity-$name');
 
   @override
   String bessToString() {

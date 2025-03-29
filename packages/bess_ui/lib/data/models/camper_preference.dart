@@ -7,8 +7,8 @@ typedef CamperId = String;
 class CamperPreference extends BessObject {
   final CamperId camperId;
   final String camperName;
-  final Map<UniqueActivityTypeId, double?> preferences; // A map of every unique activity type in the schedule to the camper's preference
-  final Map<UniqueActivityTypeId, double> preferenceWeights; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
+  final Map<ActivityTypeId, double?> preferences; // A map of every unique activity type in the schedule to the camper's preference
+  final Map<ActivityTypeId, double> preferenceWeights; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
   int preferencesCompletedCount;
   // true when the camper has indicated their preference for every activity in the block
   bool completed;
@@ -16,9 +16,8 @@ class CamperPreference extends BessObject {
   CamperPreference({
     required this.camperId,
     required this.camperName,
-    Map<UniqueActivityTypeId, double?>? preferences,
-    Map<UniqueActivityTypeId, double>? preferenceWeights,
-    Set<double>? seenValues,
+    Map<ActivityTypeId, double?>? preferences,
+    Map<ActivityTypeId, double>? preferenceWeights,
     this.preferencesCompletedCount = 0,
     this.completed = false,
     super.id,
@@ -41,7 +40,7 @@ class CamperPreference extends BessObject {
       'camperId': camperId,
       'camperName': camperName,
       'preferences': preferences.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
-      'preferenceWeights': preferenceWeights.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
+      'preferenceWeights': preferenceWeights.map((key, value) => MapEntry(key, value.clamp(0.0, 1.0))),
       'preferencesCompletedCount': preferencesCompletedCount,
       'completed': completed,
     });

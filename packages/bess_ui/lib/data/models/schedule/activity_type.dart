@@ -1,22 +1,20 @@
 import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:flutter/material.dart';
+
+typedef ActivityTypeId = String;
 
 class ActivityType extends BessObject {
   final String name;
   final int capacity;
-  final Set<String> camperIds;
-  final String blockId;
+  final String description;
 
   ActivityType({
     required this.name,
     required this.capacity,
-    required this.blockId,
-    Set<String>? camperIds,
+    required this.description,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : camperIds = camperIds ?? {},
-        super(idTitle: 'activity-$name');
+  })  : super(idTitle: 'activity_type-$name');
 
   @override
   String bessToString() {
@@ -29,8 +27,7 @@ class ActivityType extends BessObject {
     json.addAll({
       'name': name,
       'capacity': capacity,
-      'camperIds': camperIds.toList(),
-      'blockId': blockId,
+      'description': description,
     });
     return json;
   }
@@ -39,9 +36,7 @@ class ActivityType extends BessObject {
     ActivityType activity = ActivityType(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
-      camperIds:
-          (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
-      blockId: json['blockId'] as String,
+      description: json['description'] as String,
     );
     activity.overwriteBessObjectFromJson(json, clone);
     return activity;

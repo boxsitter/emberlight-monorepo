@@ -19,7 +19,6 @@ class ClientContextService extends GetxService {
   Future<Session> get session async => await bessObjectRepo.getObject(sessionId, Session.fromJson);
   Future<Schedule> get schedule async => await bessObjectRepo.getObject(await bessObjectRepo.getFieldValue(sessionId, 'scheduleId'), Schedule.fromJson);
   Future<String> get scheduleId async => await bessObjectRepo.getFieldValue(sessionId, 'scheduleId');
-  Future<Set<CabinId>> get cabinsInUseIds async => await (bessObjectRepo.getSetField(sessionId, 'cabinsInUseIds'));
 
   @override
   void onInit() {

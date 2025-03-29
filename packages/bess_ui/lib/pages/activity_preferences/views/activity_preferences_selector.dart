@@ -37,8 +37,20 @@ class ActivityPreferencesCampersDesktop extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Expanded(
+          child: Obx(() {
+            if (!controller.isCamperDataLoaded.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return Placeholder();
+          }),
+        ),
+
+        const SizedBox(height: BessSizes.spaceBtwItems),
+
         Text(
-          'Campers in ${controller.selectedCabinName}',
+          'Ranking activities for ${controller.selectedCabinName}',
           style: BessTextStyles.lightTitle,
           overflow: TextOverflow.clip,
           maxLines: 1,
@@ -52,28 +64,10 @@ class ActivityPreferencesCampersDesktop extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.only(right: 24),
-              child: Wrap (
-                spacing: 24,
-                runSpacing: 24,
-                children: controller.camperNames.keys.map((camperId) {
-                  final name = controller.camperNames[camperId] ?? 'Unknown';
-                  final completed = controller.camperIsCompleted[camperId] ?? false;
-
-                  return CardButton(
-                    title: name,
-                    height: 70,
-                    width: 200,
-                    onTap: () => print('Navigate to next page!'),
-                  );
-                }).toList(),
-              ),
-            );
+            return Placeholder();
           }),
         ),
       ],
     );
   }
 }
-

@@ -5,11 +5,10 @@ abstract class ScheduleBlock extends BessObject {
 
   ScheduleBlock({
     required this.name,
+    required super.idTitle,
     super.id,
     super.createdAt,
     super.updatedAt,
-  }) : super(
-    idTitle: 'scheduleBlock-$name',
-  );
+  }) : super();
 
 }

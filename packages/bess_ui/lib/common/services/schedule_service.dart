@@ -2,17 +2,17 @@ import 'package:bessie/common/services/client_context_service.dart';
 import 'package:bessie/common/services/session_roster_service.dart';
 import 'package:bessie/data/abstract/schedule_block.dart';
 import 'package:bessie/data/models/camper_preference.dart';
+import 'package:bessie/data/models/schedule/activity_type.dart';
 import 'package:bessie/data/repositories/bess_object_repository.dart';
 import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../data/models/branch.dart';
 import '../../data/models/camper.dart';
 import '../../data/models/schedule/scheduled_activity.dart';
 import '../../data/models/schedule/assigned_multi_activity_block.dart';
 import '../../data/models/schedule/schedule.dart';
-import '../feature_utils/pdf_utils.dart';
-import '../feature_utils/roster_utils.dart';
 
 class ScheduleService extends GetxService {
   BessObjectRepository bessObjectRepo= Get.find<BessObjectRepository>();
@@ -30,11 +30,32 @@ class ScheduleService extends GetxService {
   }
 
   Future<void> deleteAssignableActivityBlock(String blockToDeleteId) async {
+    // TODO: This will need to replace the block in the schedule with an empty block!
     await bessObjectRepo.purgeReferencesTo(await clientContextService.scheduleId, blockToDeleteId);
     // TODO: Delete all activities inside, make sure activities are cleaned up properly
     bessObjectRepo.deleteDocument(blockToDeleteId);
   }
-  //
+
+  Future<void> createActivityType(String name, int capacity, String description) async {
+    // TODO: Check with a query to make sure name is unique
+    ActivityType activityTypeToCreate = ActivityType(name: name, capacity: capacity, description: description);
+    bessObjectRepo.pushObject(activityTypeToCreate);
+    Branch branch = await bessObjectRepo.getObject(clientContextService.branchId, Branch.fromJson);
+    branch.activityTypeIds.add(activityTypeToCreate.id);
+    bessObjectRepo.pushObject(branch);
+  }
+
+  Future<void> deleteActivityType(String id) async { //TODO: ensure that delete is called on every scheduled activity of this type, which involves removing it from campers activity map
+    Branch branch = await bessObjectRepo.getObject(clientContextService.branchId, Branch.fromJson);
+    branch.activityTypeIds.remove(id);
+    bessObjectRepo.pushObject(branch);
+    bessObjectRepo.purgeReferencesTo(await clientContextService.scheduleId, id);
+
+    // TODO: Get all camper preferences from camperIdToPreferenceId in session and remove the activity type from them
+
+    bessObjectRepo.deleteDocument(id);
+  }
+
   // void createActivity({
   //   required String name,
   //

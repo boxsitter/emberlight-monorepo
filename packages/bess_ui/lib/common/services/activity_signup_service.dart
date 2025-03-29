@@ -10,6 +10,8 @@
 // class ActivitySignupService extends GetxService {
 //   Map<String, Camper> get campers => localData.session!.sessionRoster.campers;
 //
+//
+//
 //   // follows the rules of the simple assignment algorithm
 //   void setRanking ({
 //     required CamperPreference preference,

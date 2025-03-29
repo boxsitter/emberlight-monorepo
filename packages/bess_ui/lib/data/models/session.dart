@@ -1,5 +1,8 @@
 import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:bessie/data/models/camper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'camper_preference.dart';
 
 class Session extends BessObject {
   final String name;
@@ -7,6 +10,7 @@ class Session extends BessObject {
   final DateTime endDate;
   final Set<String> registeredCamperIds;
   final Set<String> cabinsInUseIds;
+  final Map<CamperId, CamperPreferenceId> camperIdToPreferenceId;
   final String scheduleId;
 
   Session({
@@ -15,12 +19,14 @@ class Session extends BessObject {
     required this.endDate,
     Set<String>? registeredCamperIds,
     Set<String>? cabinsInUseIds,
+    Map<CamperId, CamperPreferenceId>? camperIdToPreferenceId,
     required this.scheduleId,
     super.id,
     super.createdAt,
     super.updatedAt,
   })  : registeredCamperIds = registeredCamperIds ?? {},
         cabinsInUseIds = cabinsInUseIds ?? {},
+        camperIdToPreferenceId = camperIdToPreferenceId ?? {},
         super(idTitle: 'session-$name');
 
   @override
@@ -37,6 +43,7 @@ class Session extends BessObject {
       'endDate': Timestamp.fromDate(endDate),
       'registeredCamperIds': registeredCamperIds.toList(),
       'cabinsInUseIds': cabinsInUseIds.toList(),
+      'camperIdToPreferenceId': camperIdToPreferenceId,
       'scheduleId': scheduleId,
     });
     return json;
@@ -49,6 +56,7 @@ class Session extends BessObject {
       endDate: (json['endDate'] as Timestamp).toDate(),
       registeredCamperIds: (json['registeredCamperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
       cabinsInUseIds: (json['cabinsInUseIds'] as List?)?.cast<String>().toSet() ?? <String>{},
+      camperIdToPreferenceId: (json['camperIdToPreferenceId'] as Map?)?.cast<String, String>() ?? {},
       scheduleId: json['scheduleId'] as String,
     );
     session.overwriteBessObjectFromJson(json, clone);

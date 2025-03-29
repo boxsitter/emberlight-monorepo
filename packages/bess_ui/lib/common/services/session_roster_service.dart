@@ -10,6 +10,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
 import '../../data/models/camper.dart';
+import '../../data/models/session.dart';
 import '../../data/repositories/bess_object_repository.dart';
 
 class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
@@ -51,14 +52,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       note: note,
     );
 
-    CamperPreference camperPreference = CamperPreference(camperId: camperToAdd.id, camperName: camperToAdd.name);
-    camperToAdd.camperPreferenceId = camperPreference.id;
-    Schedule schedule = await clientContextService.schedule;
-    for (UniqueActivityTypeId uniqueActivityTypeId in schedule.uniqueActivityTypeIds) {
-      camperPreference.preferences[uniqueActivityTypeId] = null;
-      camperPreference.preferenceWeights[uniqueActivityTypeId] = 0;
-    }
-    bessObjectRepo.pushObject(camperPreference);
+    await initCamperPreference(camperToAdd);
 
     // Add camper to master session roster
     bessObjectRepo.addIdToSet(clientContextService.sessionId, 'registeredCamperIds', camperToAdd.id);
@@ -68,6 +62,20 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     }
     consoleController.success('${camperToAdd.bessToString()}\n created!');
     return camperToAdd;
+  }
+
+  Future<void> initCamperPreference(Camper camper) async {
+    CamperPreference camperPreference = CamperPreference(camperId: camper.id, camperName: camper.name);
+    camper.camperPreferenceId = camperPreference.id;
+    Schedule schedule = await clientContextService.schedule;
+    for (ActivityTypeId uniqueActivityTypeId in schedule.uniqueActivityTypeIds) {
+      camperPreference.preferences[uniqueActivityTypeId] = null;
+      camperPreference.preferenceWeights[uniqueActivityTypeId] = 0;
+    }
+    Session session = await clientContextService.session;
+    session.camperIdToPreferenceId[camper.id] = camperPreference.id;
+    await bessObjectRepo.pushObject(session);
+    await bessObjectRepo.pushObject(camperPreference);
   }
 
   Future<void> deleteCamper(String id) async{

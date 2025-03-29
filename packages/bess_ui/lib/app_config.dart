@@ -21,6 +21,7 @@ class AppConfig {
   static const String homePage = BessRoutes.home;
 
   static const bool updateHardCodedDataOnRun = false;
+  static const bool createHardCodedDataOnRun = false;
 }
 
 class HardcodedObjectConfigs {
@@ -121,6 +122,7 @@ class HardcodedObjectConfigs {
       'id': colman.id,
       'name': colman.name,
       'seasons': colman.seasons.toList(),
+      'activityTypeIds': [],
       'createdAt': colman.createdAt.toUtc(),
     });
 
@@ -151,7 +153,7 @@ class HardcodedObjectConfigs {
       'startDate': session.startDate.toUtc(),
       'endDate': session.endDate.toUtc(),
       'scheduleId': session.scheduleId,
-      'cabins': [
+      'cabinsInUseIds': [
         henderson.id,
         leckenby.id,
         yarrow.id,

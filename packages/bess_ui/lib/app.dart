@@ -7,14 +7,13 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'common/routes/app_routes.dart';
 import 'common/routes/route_observer.dart';
 import 'common/constants//text_strings.dart';
-import 'common/routes/routes.dart';
 import 'common/theme/shad_theme.dart';
 import 'common/theme/theme.dart';
 import 'common/utils/device/web_material_scroll.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     final bool isWebRefresh = kIsWeb && Get.currentRoute != AppConfig.homePage;
@@ -48,7 +47,7 @@ class App extends StatelessWidget {
           getPages: BessAppRoute.pages,
           builder: (context, child) {
             // Wrap with ShadToaster to support shadcn‑ui toast notifications (if you use them)
-            return ShadToaster(key: UniqueKey(), child: child!);
+            return ShadToaster(child: child!);
           },
         );
       },

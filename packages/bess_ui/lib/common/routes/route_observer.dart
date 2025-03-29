@@ -37,8 +37,10 @@ class RouteObservers extends GetObserver {
 
     ActivityPreferencesController activityPreferencesController = Get.find<ActivityPreferencesController>();
     if (topRoute.settings.name == BessRoutes.activityPreferencesCabins && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCabins) {
-      print('Did change top. Top Route: ${topRoute.settings.name}, Previous Top Route: ${previousTopRoute?.settings.name}');
       activityPreferencesController.populateCabinMaps();
+    }
+    if (topRoute.settings.name == BessRoutes.activityPreferencesCampers && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCampers) {
+      activityPreferencesController.populateCamperMaps();
     }
   }
 

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../abstract/bess_object.dart';
 
 typedef CabinId = String;
@@ -18,6 +16,7 @@ class Camper extends BessObject {
   String? cabinName;
 
   CamperPreferenceId? camperPreferenceId;
+  bool camperPreferenceCompleted;
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
   Map<AssignedMultiActivityBlockId, ActivityId?> activityAssignments;
 
@@ -31,7 +30,7 @@ class Camper extends BessObject {
     this.cabinId,
     this.cabinName,
     this.camperPreferenceId,
-    Map<AssignedMultiActivityBlockId, CamperPreferenceId>? activityPreferences,
+    this.camperPreferenceCompleted = false,
     Map<AssignedMultiActivityBlockId, ActivityId>? activityAssignments,
     super.id,
     super.createdAt,
@@ -66,6 +65,7 @@ class Camper extends BessObject {
       'cabinId': cabinId,
       'cabinName': cabinName,
       'camperPreferenceId': camperPreferenceId,
+      'camperPreferenceCompleted': camperPreferenceCompleted,
       'activityAssignments': activityAssignments,
     });
     return json;
@@ -81,9 +81,9 @@ class Camper extends BessObject {
       note: json['note'] ?? '',
       cabinId: json['cabinId'],
       cabinName: json['cabinName'],
-      camperPreferenceId: json['camperPreferenceId'],
-      activityAssignments:
-          (json['activityAssignments'] as Map?)?.cast<String, String>() ?? {},
+      camperPreferenceId: json['camperPreferenceId'] ?? '',
+      camperPreferenceCompleted: json['camperPreferenceCompleted'] ?? false,
+      activityAssignments: (json['activityAssignments'] as Map?)?.cast<String, String>() ?? {},
     );
     camper.overwriteBessObjectFromJson(json, clone);
     return camper;
