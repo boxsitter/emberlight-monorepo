@@ -2,10 +2,10 @@
 // import 'package:bessie/pages/console/controller/console_controller.dart';
 // import 'package:get/get.dart';
 //
-// import '../../data/models/camper.dart';
-// import '../../data/models/camper_preference.dart';
-// import '../../data/models/delete_this_old_localdata.dart';
-// import '../../data/models/schedule/activity.dart';
+// import '../../data/bess_objects/camper.dart';
+// import '../../data/bess_objects/camper_preference.dart';
+// import '../../data/bess_objects/delete_this_old_localdata.dart';
+// import '../../data/bess_objects/schedule/activity.dart';
 //
 // class ActivitySignupService extends GetxService {
 //   Map<String, Camper> get campers => localData.session!.sessionRoster.campers;

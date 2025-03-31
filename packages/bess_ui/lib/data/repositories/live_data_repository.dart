@@ -5,17 +5,19 @@ import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../common/utils/helpers/bess_id_functions.dart';
-import 'bess_object_repository.dart';
+import 'push_repository.dart';
 
 /// A generic repository for live-updating Firestore data.
 class LiveDataRepository {
-  BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
-  final FirebaseFirestore _db = Get.find<BessObjectRepository>().db;
+  PushRepository bessObjectRepo = Get.find<PushRepository>();
+  final FirebaseFirestore _db = Get.find<PushRepository>().db;
+
+  get pathService => null;
 
   /// Watches a single Firestore document by [id].
   /// Parses it into [T] via [fromJson]. If the doc doesn't exist, emits `null`.
   Stream<T?> watchDoc<T>({required String id, required T Function(Map<String, dynamic> json) fromJson,}) {
-    final resolvedPath = '${BessIdFunctions.getIdPrefix(id)}/$id';
+    final resolvedPath = pathService.getDocPathFromId(id);
     return _db.doc(resolvedPath).snapshots().map((snapshot) {
       if (!snapshot.exists) return null;
       final data = snapshot.data() as Map<String, dynamic>;
@@ -44,7 +46,7 @@ class LiveDataRepository {
     'childFromJson is required if updateChildrenRealtime is true.',
     );
 
-    final resolvedParentPath = '${BessIdFunctions.getIdPrefix(parentId)}/$parentId';
+    final resolvedParentPath = pathService.getPath(parentId, false);
 
     return _db.doc(resolvedParentPath).snapshots().switchMap((snapshot) {
       if (!snapshot.exists) {
@@ -80,7 +82,9 @@ class LiveDataRepository {
         // One-time fetch without real-time updates
         return Future.wait(
           childIds.map((childId) async {
-            final childData = await bessObjectRepo.getDocument(childId);
+            final resolvedChildPath = pathService.getPath(childId, false);
+            final doc = await _db.doc(resolvedChildPath).get();
+            final childData = doc.exists ? doc.data() : null;
             return MapEntry(
               childId,
               (childData != null && childFromJson != null)

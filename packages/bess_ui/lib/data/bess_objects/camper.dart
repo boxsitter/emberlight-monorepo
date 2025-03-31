@@ -1,9 +1,9 @@
 import '../abstract/bess_object.dart';
 
-typedef CabinId = String;
-typedef AssignedMultiActivityBlockId = String;
-typedef CamperPreferenceId = String;
-typedef ActivityId = String;
+typedef CabinRef = String;
+typedef AssignedMultiActivityBlockRef = String;
+typedef CamperPreferenceCmp = String;
+typedef ScheduledActivityRef = String;
 
 class Camper extends BessObject {
   String firstName;
@@ -12,42 +12,47 @@ class Camper extends BessObject {
   String gender;
   int age;
   String note;
-  CabinId? cabinId;
-  String? cabinName;
+  CabinRef? cabinRef;
+  String? cabinName; // TODO: This could cause problems with deletion of cabins or cabinsInUse, look into it
 
-  CamperPreferenceId? camperPreferenceId;
-  bool camperPreferenceCompleted;
+  CamperPreferenceCmp? camperPreferenceCmp;
+  bool camperPreferenceCompleted; // TODO: This could cause problems with deletion of preferences
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
-  Map<AssignedMultiActivityBlockId, ActivityId?> activityAssignments;
+  Map<AssignedMultiActivityBlockRef, ScheduledActivityRef?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
 
   Camper({
-    this.firstName = '',
-    this.lastName = '',
+    required this.firstName,
+    required this.lastName,
     this.preferredName = '',
     this.gender = '',
     this.age = 0,
     this.note = '',
-    this.cabinId,
+    this.cabinRef,
     this.cabinName,
-    this.camperPreferenceId,
+    this.camperPreferenceCmp,
     this.camperPreferenceCompleted = false,
-    Map<AssignedMultiActivityBlockId, ActivityId>? activityAssignments,
+    Map<AssignedMultiActivityBlockRef, ScheduledActivityRef>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : activityAssignments = activityAssignments ?? {},
-        super(idTitle: 'camper-$lastName-$firstName');
+  })  : activityAssignmentRefs = activityAssignmentRefs ?? {},
+        super(
+          domain: 'ses',
+          type: 'camper',
+          idTag: '${firstName}_${lastName[0]}',
+        );
 
   /// returns preferred name if set, first name if not
   String get name => preferredName.isNotEmpty ? preferredName : firstName;
   String get fullName => '$name $lastName';
+  String get lastInitial => lastName[0];
 
   @override
   String bessToString() {
     String idField = toStringSuper();
     String nameField = fullName;
     String ageField = 'Age: $age';
-    String cabinField = 'CabinId: ${cabinId ?? "none"}';
+    String cabinField = 'cabinRef: ${cabinRef ?? "none"}';
 
     return '$idField $nameField, $ageField, $cabinField';
   }
@@ -62,16 +67,16 @@ class Camper extends BessObject {
       'gender': gender,
       'age': age,
       'note': note,
-      'cabinId': cabinId,
+      'cabinRef': cabinRef,
       'cabinName': cabinName,
-      'camperPreferenceId': camperPreferenceId,
+      'camperPreferenceCmp': camperPreferenceCmp,
       'camperPreferenceCompleted': camperPreferenceCompleted,
-      'activityAssignments': activityAssignments,
+      'activityAssignmentRefs': activityAssignmentRefs,
     });
     return json;
   }
 
-  factory Camper.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+  factory Camper.fromJson(Map<String, dynamic> json) {
     Camper camper = Camper(
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
@@ -79,13 +84,13 @@ class Camper extends BessObject {
       gender: json['gender'] ?? '',
       age: json['age'] is int ? json['age'] : int.tryParse(json['age'].toString()) ?? 0,
       note: json['note'] ?? '',
-      cabinId: json['cabinId'],
+      cabinRef: json['cabinRef'],
       cabinName: json['cabinName'],
-      camperPreferenceId: json['camperPreferenceId'] ?? '',
+      camperPreferenceCmp: json['camperPreferenceCmp'] ?? '',
       camperPreferenceCompleted: json['camperPreferenceCompleted'] ?? false,
-      activityAssignments: (json['activityAssignments'] as Map?)?.cast<String, String>() ?? {},
+      activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String>() ?? {},
     );
-    camper.overwriteBessObjectFromJson(json, clone);
+    camper.overwriteBessObjectFromJson(json);
     return camper;
   }
 }

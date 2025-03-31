@@ -5,7 +5,9 @@ abstract class ScheduleBlock extends BessObject {
 
   ScheduleBlock({
     required this.name,
-    required super.idTitle,
+    required super.domain,
+    required super.type,
+    required super.idTag,
     super.id,
     super.createdAt,
     super.updatedAt,

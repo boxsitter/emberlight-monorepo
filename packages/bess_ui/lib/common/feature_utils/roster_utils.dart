@@ -2,8 +2,8 @@ import 'package:bessie/common/feature_utils/pdf_utils.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
-import '../../../../data/models/camper.dart';
-import '../../data/models/session.dart';
+import '../../../../data/bess_objects/camper.dart';
+import '../../data/bess_objects/session.dart';
 import '../../pages/console/controller/console_controller.dart';
 
 class RosterUtils {

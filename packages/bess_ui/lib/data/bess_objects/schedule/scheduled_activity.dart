@@ -4,19 +4,23 @@ import 'package:flutter/material.dart';
 class ScheduledActivity extends BessObject {
   final String name;
   final int capacity;
-  final Set<String> camperIds;
-  final String blockId;
+  final Set<String> camperRefs;
+  final String blockRef;
 
   ScheduledActivity({
     required this.name,
     required this.capacity,
-    required this.blockId,
-    Set<String>? camperIds,
+    required this.blockRef,
+    Set<String>? camperRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : camperIds = camperIds ?? {},
-        super(idTitle: 'scheduled_activity-$name');
+  })  : camperRefs = camperRefs ?? {},
+        super(
+          domain: 'ses',
+          type: 'scheduled_activity',
+          idTag: name,
+        );
 
   @override
   String bessToString() {
@@ -29,21 +33,20 @@ class ScheduledActivity extends BessObject {
     json.addAll({
       'name': name,
       'capacity': capacity,
-      'camperIds': camperIds.toList(),
-      'blockId': blockId,
+      'camperRefs': camperRefs.toList(),
+      'blockRef': blockRef,
     });
     return json;
   }
 
-  factory ScheduledActivity.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+  factory ScheduledActivity.fromJson(Map<String, dynamic> json) {
     ScheduledActivity activity = ScheduledActivity(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
-      camperIds:
-          (json['camperIds'] as List?)?.cast<String>().toSet() ?? <String>{},
-      blockId: json['blockId'] as String,
+      camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
+      blockRef: json['blockRef'] as String,
     );
-    activity.overwriteBessObjectFromJson(json, clone);
+    activity.overwriteBessObjectFromJson(json);
     return activity;
   }
 }

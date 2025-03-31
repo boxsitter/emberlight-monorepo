@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../../../data/models/camper.dart';
+import '../../../../data/bess_objects/camper.dart';
 import '../styles/pdf_styles.dart';
 
 class PdfUtils {

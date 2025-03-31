@@ -147,4 +147,8 @@ class BessHelperFunctions {
     }
     throw Exception("Invalid date type: ${value.runtimeType}");
   }
+
+  static void updateDocumentTimestamp(Map<String, dynamic> json) {
+    json['updatedAt'] = Timestamp.fromDate(DateTime.now().toUtc());
+  }
 }

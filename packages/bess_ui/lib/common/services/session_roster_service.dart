@@ -1,28 +1,32 @@
 import 'dart:async';
 
-import 'package:bessie/common/services/cabins_service.dart';
+import 'package:bessie/common/services/cabin_service.dart';
 import 'package:bessie/common/services/client_context_service.dart';
-import 'package:bessie/data/models/camper_preference.dart';
-import 'package:bessie/data/models/schedule/schedule.dart';
+import 'package:bessie/common/services/request_service.dart';
+import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
+import 'package:bessie/data/bess_objects/camper_preference.dart';
+import 'package:bessie/data/bess_objects/schedule/schedule.dart';
+import 'package:bessie/data/helper_objects/push_request.dart';
 import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/camper.dart';
-import '../../data/models/session.dart';
-import '../../data/repositories/bess_object_repository.dart';
+import '../../data/bess_objects/camper.dart';
+import '../../data/bess_objects/session.dart';
+import '../../data/repositories/pull_repository.dart';
+import '../../data/repositories/push_repository.dart';
 
 class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
-  BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
-  CabinsService cabinsService = Get.find<CabinsService>();
+  PullRepository pullRepo = Get.find<PullRepository>();
+  CabinService cabinsService = Get.find<CabinService>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
   ConsoleController consoleController = Get.find<ConsoleController>();
+  RequestService requestService = Get.find<RequestService>();
 
-  Future<Set<String>> get sessionRoster async => await bessObjectRepo.getSetField(clientContextService.sessionId, 'registeredCamperIds');
-  Future<Set<Camper>> get registeredCampers async => await bessObjectRepo.getObjects(await sessionRoster, Camper.fromJson);
+  Future<Set<Camper>> get registeredCampers async => await pullRepo.getObjectsInCollection('camper', 'ses', Camper.fromJson);
 
-  Future<Camper?> registerCamper({
+  Future<PushRequest?> registerCamper({
     String firstName = '',
     String lastName = '',
     String preferredName = '',
@@ -31,12 +35,12 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     String cabinName = '',
     String note = '',
   }) async {
-    String? cabinId;
+    String? cabinRef;
     // need to fetch cabin by name from the active cabins for the selected session
     if (cabinName.isNotEmpty) {
-      cabinId = await cabinsService.getCabinIdByName(cabinName);
-      if (cabinId == null) {
-        consoleController.error('Cabin $cabinName not found');
+      cabinRef = await cabinsService.getCabinRefByName(cabinName);
+      if (cabinRef == null) {
+        print('Cabin $cabinName not found');
         return null;
       }
     }
@@ -48,55 +52,59 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       preferredName: preferredName,
       gender: gender,
       age: age,
-      cabinId: cabinId,
+      cabinRef: cabinRef,
       note: note,
     );
 
-    await initCamperPreference(camperToAdd);
+    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
 
-    // Add camper to master session roster
-    bessObjectRepo.addIdToSet(clientContextService.sessionId, 'registeredCamperIds', camperToAdd.id);
-    bessObjectRepo.pushObject(camperToAdd);
-    if (camperToAdd.cabinId != null) {
-      cabinsService.addCamperToCabin(cabinId!, camperToAdd.id);
-    }
+    pushRequest = requestService.mergeRequests(pushRequest, await initCamperPreference(camperToAdd), 1);
+
+
+    pushRequest.objectsToPush.add(camperToAdd);
+    // TODO: merge the push request of add camper to cabin
+    // if (camperToAdd.cabinId != null) {
+    //   cabinsService.addCamperToCabin(cabinId!, camperToAdd.id);
+    // }
     consoleController.success('${camperToAdd.bessToString()}\n created!');
-    return camperToAdd;
+    return pushRequest;
   }
 
-  Future<void> initCamperPreference(Camper camper) async {
+  Future<PushRequest> initCamperPreference(Camper camper) async {
     CamperPreference camperPreference = CamperPreference(camperId: camper.id, camperName: camper.name);
-    camper.camperPreferenceId = camperPreference.id;
+    camper.camperPreferenceCmp = BessIdFunctions.objIdToCmp(camperPreference.id);
     Schedule schedule = await clientContextService.schedule;
-    for (ActivityTypeId uniqueActivityTypeId in schedule.uniqueActivityTypeIds) {
-      camperPreference.preferences[uniqueActivityTypeId] = null;
-      camperPreference.preferenceWeights[uniqueActivityTypeId] = 0;
+    for (ActivityTypeRef uniqueActivityTypeRef in schedule.uniqueActivityTypeRefs) {
+      camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
+      camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }
     Session session = await clientContextService.session;
-    session.camperIdToPreferenceId[camper.id] = camperPreference.id;
-    await bessObjectRepo.pushObject(session);
-    await bessObjectRepo.pushObject(camperPreference);
+    session.camperRefToPreferenceRef[camper.id] = camperPreference.id;
+    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    pushRequest.objectsToPush.add(session);
+    pushRequest.objectsToPush.add(camperPreference);
+    return pushRequest;
   }
 
-  Future<void> deleteCamper(String id) async{
-    Camper camperToDelete = await bessObjectRepo.getObject(id, Camper.fromJson);
-    if (camperToDelete.cabinId != null) {
-      bessObjectRepo.purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
-    }
-    bessObjectRepo.purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
-    if (camperToDelete.camperPreferenceId != null) {
-      bessObjectRepo.deleteDocument(camperToDelete.camperPreferenceId!);
-    }
-    bessObjectRepo.deleteDocument(id);
-    // TODO: Remove them from all activity rosters!
-  }
+  // Future<void> deleteCamper(String id) async{
+  //   Camper camperToDelete = await bessObjectRepo.getObject(id, Camper.fromJson);
+  //   if (camperToDelete.cabinId != null) {
+  //     bessObjectRepo._purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
+  //   }
+  //   bessObjectRepo._purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
+  //   if (camperToDelete.camperPreferenceId != null) {
+  //     bessObjectRepo.deleteDocument(camperToDelete.camperPreferenceId!);
+  //   }
+  //   bessObjectRepo.deleteDocument(id);
+  //   // TODO: Remove them from all activity rosters!
+  // }
 
-  Future<void> deleteAllCampersInSession() async {
-    // TODO: THERE NEEDS TO BE A BIG FAT WARNING FOR THIS
-    for (String id in await sessionRoster) {
-      deleteCamper(id);
-    }
-  }
+  // Future<void> deleteAllCampersInSession() async {
+  //   // TODO: THERE NEEDS TO BE A BIG FAT WARNING FOR THIS
+  //   for (String id in await sessionRoster) {
+  //     deleteCamper(id);
+  //   }
+  // }
 
   Future<bool> isCamperDuplicate(String firstName, String lastName, int age, Set<Camper> registeredCampers) async {
     for (Camper camper in registeredCampers) {
@@ -186,7 +194,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
               continue;
             }
 
-            Camper? camper = await registerCamper(
+            PushRequest? pushRequest = await registerCamper(
               firstName: firstName,
               lastName: lastName,
               preferredName: preferredName,

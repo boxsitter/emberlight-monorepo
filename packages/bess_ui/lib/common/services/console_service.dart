@@ -1,11 +1,11 @@
 import 'package:bessie/common/services/session_roster_service.dart';
-import 'package:bessie/data/repositories/bess_object_repository.dart';
+import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:get/get.dart';
-import '../../../data/models/camper.dart';
+import '../../../data/bess_objects/camper.dart';
 
 class ConsoleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
-  BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
+  PushRepository bessObjectRepo = Get.find<PushRepository>();
 
   Future<CommandResult> runCommand(String input) async {
     if (input.trim().isEmpty) return CommandResult();

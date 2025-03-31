@@ -1,20 +1,20 @@
-import 'package:bessie/common/services/cabins_service.dart';
+import 'package:bessie/common/services/cabin_service.dart';
 import 'package:bessie/common/services/session_roster_service.dart';
-import 'package:bessie/data/repositories/bess_object_repository.dart';
+import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:get/get.dart';
 import 'package:bessie/common/services/client_context_service.dart';
 
 import '../../../common/routes/routes.dart';
-import '../../../data/models/cabin.dart';
-import '../../../data/models/camper.dart';
-import '../../../data/models/camper_preference.dart';
-import '../../../data/models/schedule/assigned_multi_activity_block.dart';
+import '../../../data/bess_objects/branch_cabin.dart';
+import '../../../data/bess_objects/camper.dart';
+import '../../../data/bess_objects/camper_preference.dart';
+import '../../../data/bess_objects/schedule/assigned_multi_activity_block.dart';
 
 
 class ActivityPreferencesController extends GetxController {
-  final BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
+  final PushRepository bessObjectRepo = Get.find<PushRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
-  final CabinsService cabinsService = Get.find<CabinsService>();
+  final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   final RxMap<CabinId, String> cabinNames = <CabinId, String>{}.obs;
@@ -23,11 +23,11 @@ class ActivityPreferencesController extends GetxController {
 
   CabinId? selectedCabinId;
   String? selectedCabinName;
-  final RxMap<CamperId, String> camperNames = <CamperId, String>{}.obs;
-  final RxMap<CamperId, bool> camperIsCompleted = <CamperId, bool>{}.obs;
+  final RxMap<CamperRef, String> camperNames = <CamperRef, String>{}.obs;
+  final RxMap<CamperRef, bool> camperIsCompleted = <CamperRef, bool>{}.obs;
 
   CabinId? selectedCamperId;
-  final RxMap<ActivityId, String> activityNames = <ActivityId, String>{}.obs;
+  final RxMap<ScheduledActivityRef, String> activityNames = <ScheduledActivityRef, String>{}.obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -36,15 +36,15 @@ class ActivityPreferencesController extends GetxController {
   Future<void> populateCabinMaps() async {
     isCabinDataLoaded.value = false;
     print('POPULATING CABIN MAPS');
-    final Set<Cabin> cabinsInUseIds = await cabinsService.cabins;
+    final Set<BranchCabin> cabinsInUseIds = await cabinsService.cabinsInUse;
 
     final names = <CabinId, String>{};
     final counts = <CabinId, int>{};
     final preferences = <CabinId, int>{};
 
-    for (final Cabin cabin in cabinsInUseIds) {
+    for (final BranchCabin cabin in cabinsInUseIds) {
       names[cabin.id] = cabin.name;
-      counts[cabin.id] = cabin.camperIds.length;
+      counts[cabin.id] = cabin.camperRefs.length;
       preferences[cabin.id] = cabin.campersWithPreferencesCount;
     }
 
@@ -62,8 +62,8 @@ class ActivityPreferencesController extends GetxController {
     print('POPULATING CAMPER MAPS');
     final Set<Camper> campers = await cabinsService.getCampersInCabin(selectedCabinId!);
 
-    final names = <CamperId, String>{};
-    final completed = <CamperId, bool>{};
+    final names = <CamperRef, String>{};
+    final completed = <CamperRef, bool>{};
 
     for (final Camper camper in campers) {
       names[camper.id] = camper.fullName;

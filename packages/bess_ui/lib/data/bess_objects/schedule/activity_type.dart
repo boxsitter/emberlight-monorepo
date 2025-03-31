@@ -14,7 +14,11 @@ class ActivityType extends BessObject {
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : super(idTitle: 'activity_type-$name');
+  })  : super(
+          domain: 'brn',
+          type: 'activity_type',
+          idTag: name,
+        );
 
   @override
   String bessToString() {
@@ -32,13 +36,13 @@ class ActivityType extends BessObject {
     return json;
   }
 
-  factory ActivityType.fromJson(Map<String, dynamic> json, [bool clone = false]) {
+  factory ActivityType.fromJson(Map<String, dynamic> json) {
     ActivityType activity = ActivityType(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       description: json['description'] as String,
     );
-    activity.overwriteBessObjectFromJson(json, clone);
+    activity.overwriteBessObjectFromJson(json);
     return activity;
   }
 }

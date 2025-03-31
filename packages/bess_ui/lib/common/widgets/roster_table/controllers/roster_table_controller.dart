@@ -1,18 +1,18 @@
 import 'dart:async';
-import 'package:bessie/common/services/cabins_service.dart';
-import 'package:bessie/data/repositories/bess_object_repository.dart';
+import 'package:bessie/common/services/cabin_service.dart';
+import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:get/get.dart';
-import 'package:bessie/data/models/camper.dart';
-import 'package:bessie/data/models/session.dart';
+import 'package:bessie/data/bess_objects/camper.dart';
+import 'package:bessie/data/bess_objects/session.dart';
 import 'package:bessie/common/services/client_context_service.dart';
 
 import '../../../../data/repositories/live_data_repository.dart';
 
 class RosterTableController extends GetxController {
-  final BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
+  final PushRepository bessObjectRepo = Get.find<PushRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
   final LiveDataRepository liveDataRepo = Get.find<LiveDataRepository>();
-  final CabinsService cabinsService = Get.find<CabinsService>();
+  final CabinService cabinsService = Get.find<CabinService>();
 
   final campers = <String, Camper>{}.obs;
   final count = 0.obs;

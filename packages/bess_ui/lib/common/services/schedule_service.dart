@@ -1,21 +1,21 @@
 import 'package:bessie/common/services/client_context_service.dart';
 import 'package:bessie/common/services/session_roster_service.dart';
 import 'package:bessie/data/abstract/schedule_block.dart';
-import 'package:bessie/data/models/camper_preference.dart';
-import 'package:bessie/data/models/schedule/activity_type.dart';
-import 'package:bessie/data/repositories/bess_object_repository.dart';
+import 'package:bessie/data/bess_objects/camper_preference.dart';
+import 'package:bessie/data/bess_objects/schedule/activity_type.dart';
+import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:bessie/pages/console/controller/console_controller.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../data/models/branch.dart';
-import '../../data/models/camper.dart';
-import '../../data/models/schedule/scheduled_activity.dart';
-import '../../data/models/schedule/assigned_multi_activity_block.dart';
-import '../../data/models/schedule/schedule.dart';
+import '../../data/bess_objects/branch.dart';
+import '../../data/bess_objects/camper.dart';
+import '../../data/bess_objects/schedule/scheduled_activity.dart';
+import '../../data/bess_objects/schedule/assigned_multi_activity_block.dart';
+import '../../data/bess_objects/schedule/schedule.dart';
 
 class ScheduleService extends GetxService {
-  BessObjectRepository bessObjectRepo= Get.find<BessObjectRepository>();
+  PushRepository bessObjectRepo= Get.find<PushRepository>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
@@ -31,7 +31,7 @@ class ScheduleService extends GetxService {
 
   Future<void> deleteAssignableActivityBlock(String blockToDeleteId) async {
     // TODO: This will need to replace the block in the schedule with an empty block!
-    await bessObjectRepo.purgeReferencesTo(await clientContextService.scheduleId, blockToDeleteId);
+    await bessObjectRepo._purgeReferencesTo(await clientContextService.scheduleId, blockToDeleteId);
     // TODO: Delete all activities inside, make sure activities are cleaned up properly
     bessObjectRepo.deleteDocument(blockToDeleteId);
   }
@@ -49,7 +49,7 @@ class ScheduleService extends GetxService {
     Branch branch = await bessObjectRepo.getObject(clientContextService.branchId, Branch.fromJson);
     branch.activityTypeIds.remove(id);
     bessObjectRepo.pushObject(branch);
-    bessObjectRepo.purgeReferencesTo(await clientContextService.scheduleId, id);
+    bessObjectRepo._purgeReferencesTo(await clientContextService.scheduleId, id);
 
     // TODO: Get all camper preferences from camperIdToPreferenceId in session and remove the activity type from them
 

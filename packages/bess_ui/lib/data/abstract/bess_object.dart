@@ -6,22 +6,22 @@ import '../../common/utils/formatters/formatter.dart';
 typedef BessObjectId = String;
 
 abstract class BessObject {
-  BessObjectId id; // TODO: Add chld- and ref- prefixes to reference ids
+  BessObjectId id;
   DateTime createdAt;
   DateTime updatedAt;
-  //String organizationId;
-  //String branchId;
-  //Role minRoleRead;
-  //Role minRoleWrite;
 
-  final String idTitle;
+  final String domain;
+  final String type;
+  final String idTag;
 
   BessObject({
-    required this.idTitle,
+    required this.domain,
+    required this.type,
+    required this.idTag,
     String? id,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : id = id ?? BessIdFunctions.getBessId(idTitle),
+  })  : id = id ?? BessIdFunctions.generateBessId('obj', domain, type, idTag),
         createdAt = (createdAt ?? DateTime.now()).toUtc(),
         updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 
@@ -41,10 +41,8 @@ abstract class BessObject {
     };
   }
 
-  void overwriteBessObjectFromJson(Map<String, dynamic> json, bool clone) {
-    if (!clone) {
-      id = json['id'] as String;
-    }
+  void overwriteBessObjectFromJson(Map<String, dynamic> json) {
+    id = json['id'] as String;
     // Convert any Timestamp to a DateTime in UTC; default to now (UTC) if missing or invalid.
     createdAt = (json['createdAt'] is Timestamp) ? (json['createdAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
     updatedAt = (json['updatedAt'] is Timestamp) ? (json['updatedAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
