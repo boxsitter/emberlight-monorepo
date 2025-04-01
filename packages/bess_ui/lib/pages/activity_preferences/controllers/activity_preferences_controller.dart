@@ -1,14 +1,12 @@
 import 'package:bessie/common/services/cabin_service.dart';
 import 'package:bessie/common/services/session_roster_service.dart';
 import 'package:bessie/data/repositories/push_repository.dart';
+import 'package:ember_core/data/bess_objects/camper_preference.dart';
+import 'package:ember_core/data/bess_objects/principal/branch_cabin.dart';
 import 'package:get/get.dart';
 import 'package:bessie/common/services/client_context_service.dart';
 
 import '../../../common/routes/routes.dart';
-import '../../../data/bess_objects/branch_cabin.dart';
-import '../../../data/bess_objects/camper.dart';
-import '../../../data/bess_objects/camper_preference.dart';
-import '../../../data/bess_objects/schedule/assigned_multi_activity_block.dart';
 
 
 class ActivityPreferencesController extends GetxController {
