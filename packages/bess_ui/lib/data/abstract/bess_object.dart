@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../common/utils/formatters/formatter.dart';
 
-typedef BessObjectId = String;
+typedef BessObjectObjId = String;
 
 abstract class BessObject {
-  BessObjectId id;
+  BessObjectObjId objId;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -18,10 +18,10 @@ abstract class BessObject {
     required this.domain,
     required this.type,
     required this.idTag,
-    String? id,
+    String? objId,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : id = id ?? BessIdFunctions.generateBessId('obj', domain, type, idTag),
+  })  : objId = objId ?? BessIdFunctions.generateBessId('obj', domain, type, idTag),
         createdAt = (createdAt ?? DateTime.now()).toUtc(),
         updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 
@@ -30,26 +30,25 @@ abstract class BessObject {
 
   String bessToString();
   Map<String, dynamic> toJson();
-  //List<String> getSubObjectIds(); // return the ids of every BessObject that this object CONTAINS
-  //void replaceReferencesToId(String idToReplace, String newReferenceId); // any references to BessObjects should be checked. If matching idToReplace, replace with new reference
+  void purgeRef(String ref);
 
   Map<String, dynamic> toJsonSuper() {
     return {
-      'id': id,
+      'objId': objId,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
     };
   }
 
   void overwriteBessObjectFromJson(Map<String, dynamic> json) {
-    id = json['id'] as String;
+    objId = json['objId'] as String;
     // Convert any Timestamp to a DateTime in UTC; default to now (UTC) if missing or invalid.
     createdAt = (json['createdAt'] is Timestamp) ? (json['createdAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
     updatedAt = (json['updatedAt'] is Timestamp) ? (json['updatedAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
   }
 
   String toStringSuper() {
-    return '[$id]';
+    return '[$objId]';
   }
 
   void updateTimestamp() {

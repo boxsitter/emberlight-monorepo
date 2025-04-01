@@ -12,7 +12,7 @@ class ScheduledActivity extends BessObject {
     required this.capacity,
     required this.blockRef,
     Set<String>? camperRefs,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : camperRefs = camperRefs ?? {},

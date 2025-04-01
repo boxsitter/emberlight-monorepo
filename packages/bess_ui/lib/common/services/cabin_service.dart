@@ -1,6 +1,8 @@
+import 'package:bessie/common/services/request_service.dart';
+import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
 import 'package:bessie/common/utils/validators/bess_id_validation.dart';
-import 'package:bessie/data/bess_objects/cabin_in_use.dart';
-import 'package:bessie/data/bess_objects/session.dart';
+import 'package:bessie/data/bess_objects/dependent%20/cabin_in_use.dart';
+import 'package:bessie/data/bess_objects/domains/session.dart';
 import 'package:bessie/data/repositories/pull_repository.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +15,7 @@ import 'client_context_service.dart';
 class CabinService extends GetxService {
   PullRepository pullRepo= Get.find<PullRepository>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
+  RequestService requestService = Get.find<RequestService>();
 
   Future<Set<CabinInUse>> get cabinsInUse async => await pullRepo.getObjectsInCollection('cabin_in_use', 'ses', CabinInUse.fromJson);
   Future<Set<BranchCabin>> get branchCabins async => await pullRepo.getObjectsInCollection('branch_cabin', 'brn', BranchCabin.fromJson);
@@ -39,12 +42,8 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  Future<PushRequest> registerCabinToSession(String branchCabinObj) async {
-    if (!BessIdValidation.validateObjectType(branchCabinObj, 'branch_cabin')) {
-      throw ArgumentError('branchCabinObj needs to be an obj id of type branch_cabin');
-    }
-    BranchCabin cabinTemplate = await pullRepo.getObject(branchCabinObj, BranchCabin.fromJson);
-    CabinInUse cabinToRegister = CabinInUse(name: cabinTemplate.name, capacity: cabinTemplate.capacity);
+  PushRequest registerCabinToSession(BranchCabin branchCabin) {
+    CabinInUse cabinToRegister = CabinInUse(name: branchCabin.name, capacity: branchCabin.capacity);
     return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinToRegister});
   }
 
@@ -52,32 +51,27 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  Future<void> addCamperToCabin(String cabinInUseObj, String camperId) async {
-    CabinInUse cabin = await pullRepo.getObject(cabinInUseObj, BranchCabin.fromJson);
-    Camper camperToAdd = await pullRepo.getObject(camperId, Camper.fromJson);
-    if((cabin.camperIds.length + 1) > cabin.capacity) {
+  PushRequest addCamperToCabin(CabinInUse cabinInUse, Camper camperToAdd) {
+    if((cabinInUse.camperRefs.length + 1) > cabinInUse.capacity) {
       //TODO: Over capacity conflict
-    } else if (camperToAdd.cabinId == null) {
-      cabin.camperIds.add(camperToAdd.id);
-      camperToAdd.cabinId = cabin.id;
-      camperToAdd.cabinName = cabin.name;
-      pushRequest.objectsToPush.add(cabin);
-      pushRequest.objectsToPush.add(camperToAdd);
+      throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinInUse.name} because it will put it over capacity');
+    } else if (camperToAdd.cabinRef == null) {
+      cabinInUse.camperRefs.add(BessIdFunctions.objIdToRef(camperToAdd.objId));
+      camperToAdd.cabinRef = BessIdFunctions.objIdToRef(cabinInUse.objId);
+      camperToAdd.cabinName = cabinInUse.name;
+      return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinInUse, camperToAdd});
     } else {
-      removeCamperFromCabin(cabinInUseObj, camperId);
-      addCamperToCabin(cabinInUseObj, camperId);
+      PushRequest removeRequest = removeCamperFromCabin(cabinInUse, camperToAdd);
+      PushRequest addRequest = addCamperToCabin(cabinInUse, camperToAdd);
+      return requestService.mergeRequests(removeRequest, addRequest, 2);
     }
   }
 
-  Future<void> removeCamperFromCabin(String cabinId, String camperId) async {
-    // TODO: Needs to check if that cabin is in use for the current session
-    BranchCabin cabin = await pullRepo.getObject(cabinId, BranchCabin.fromJson);
-    Camper camperToRemove = await pullRepo.getObject(camperId, Camper.fromJson);
-    cabin.camperIds.remove(camperToRemove.id);
-    camperToRemove.cabinId = null;
+  PushRequest removeCamperFromCabin(CabinInUse cabinInUse, Camper camperToRemove) {
+    cabinInUse.camperRefs.remove(BessIdFunctions.objIdToRef(camperToRemove.objId));
+    camperToRemove.cabinRef = null;
     camperToRemove.cabinName = null;
-    pushRequest.objectsToPush.add(cabin);
-    pushRequest.objectsToPush.add(camperToRemove);
+    return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinInUse, camperToRemove});
   }
 
 

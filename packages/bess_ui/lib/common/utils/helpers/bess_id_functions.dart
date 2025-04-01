@@ -27,7 +27,7 @@ class BessIdFunctions {
     }
     final cleanType = clean(objectType);
     final cleanTag = clean(tag);
-    String randomPart = List.generate(5, (_) => BessIdValidation.validCharacters[_secureRandom.nextInt(BessIdValidation.validCharacters.length)]).join();
+    String randomPart = List.generate(6, (_) => BessIdValidation.validCharacters[_secureRandom.nextInt(BessIdValidation.validCharacters.length)]).join();
     return '$idType-$domain-$cleanType-$cleanTag-$randomPart';
   }
 

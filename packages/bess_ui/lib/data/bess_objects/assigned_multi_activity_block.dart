@@ -7,7 +7,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
   AssignedMultiActivityBlock({
     Set<String>? scheduledActivityCmps,
     required super.name,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : scheduledActivityCmps = scheduledActivityCmps ?? {},

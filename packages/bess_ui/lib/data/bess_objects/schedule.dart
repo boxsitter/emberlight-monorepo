@@ -10,7 +10,7 @@ class Schedule extends BessObject {
   Schedule({
     List<BlockId>? blockCmps,
     Set<ActivityTypeRef>? uniqueActivityTypeRefs,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : blockCmps = blockCmps ?? [],

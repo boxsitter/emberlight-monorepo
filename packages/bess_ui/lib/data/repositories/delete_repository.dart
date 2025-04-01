@@ -1,6 +1,7 @@
 import 'package:bessie/common/services/client_context_service.dart';
 import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
 import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:bessie/data/helper_objects/delete_request.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -15,8 +16,8 @@ class DeleteRepository {
   get db => _db;
 
   /// Simply deletes a document, does not perform cleanup.
-  Future<void> deleteDocument(String id) async {
-    final resolvedPath = pathService.getDocPathFromId(id);
+  Future<void> _deleteDocument(String id) async {
+    final resolvedPath = pathService.getDocPathFromRef(id);
     try {
       print('Deleting doc: $id');
       await _db.doc(resolvedPath).delete();
@@ -25,13 +26,8 @@ class DeleteRepository {
       rethrow;
     }
   }
-  
-  Future<void> deleteDomain() {
-    return Future(() => print('unimplemented'));
-    // Much easier process, just delete the domain document.
-    // Since references are contained to within domains, there is nothing to clean up
-    // Still, stringent checks are necessary to make sure this isn't done by mistake
-  }
+
+
   
   // /// Removes all instances of [referenceIdToRemove] from any array fields in the [parentId] document.
   // Future<Map<String, dynamic>> _purgeReferencesTo(Future<Map<String, dynamic>?> document, String referenceIdToRemove) async {

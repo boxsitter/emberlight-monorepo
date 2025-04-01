@@ -10,7 +10,7 @@ class Season extends BessObject {
     required this.name,
     required this.startDate,
     required this.endDate,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : super(
@@ -22,6 +22,12 @@ class Season extends BessObject {
   @override
   String bessToString() {
     return 'Season: $name, Start: $startDate, End: $endDate';
+  }
+
+  @override
+  void purgeRef(String ref) {
+    print('unnecessary purge');
+    return;
   }
 
   @override

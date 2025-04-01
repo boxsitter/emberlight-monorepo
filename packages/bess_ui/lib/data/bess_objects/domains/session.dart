@@ -1,9 +1,8 @@
 import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:bessie/data/bess_objects/camper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'camper.dart';
-import 'camper_preference.dart';
+import '../../../common/utils/helpers/bess_id_functions.dart';
+import '../camper_preference.dart';
 
 typedef CamperPreferenceRef = String;
 
@@ -17,8 +16,8 @@ class Session extends BessObject {
     required this.name,
     required this.startDate,
     required this.endDate,
-    Map<CamperRef, CamperPreferenceCmp>? camperIdToPreferenceId,
-    super.id,
+    Map<CamperRef, CamperPreferenceRef>? camperIdToPreferenceId,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : camperRefToPreferenceRef = camperIdToPreferenceId ?? {},
@@ -31,6 +30,17 @@ class Session extends BessObject {
   @override
   String bessToString() {
     return 'Session: $name';
+  }
+
+  @override
+  void purgeRef(String ref) {
+    if (BessIdFunctions.getIdPart(ref, 2) == 'camper') {
+      if(camperRefToPreferenceRef.remove(ref) == null) {
+        print('unnecessary purge');
+      }
+    } else if (BessIdFunctions.getIdPart(ref, 2) == 'camper_preference') {
+      camperRefToPreferenceRef.removeWhere((key, value) => value == ref);
+    }
   }
 
   @override

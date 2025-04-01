@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 
 import '../../common/services/path_service.dart';
 import '../../common/services/request_service.dart';
-import '../bess_objects/branch.dart';
+import '../bess_objects/domains/branch.dart';
 
 class PushRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -47,7 +47,7 @@ class PushRepository {
       Map<String, dynamic> document = object.toJson();
       BessIdValidation.validateDocument(document);
       BessHelperFunctions.updateDocumentTimestamp(document);
-      final resolvedPath = pathService.getDocPathFromId(object.id);
+      final resolvedPath = pathService.getDocPathFromRef(object.objId);
       final docRef = _db.doc(resolvedPath);
       batch.set(docRef, document, SetOptions(merge: true));
     }
@@ -72,7 +72,7 @@ class PushRepository {
       return;
     }
 
-    Map<String, dynamic> branchDoc = (await _db.doc(pathService.getDocPathFromId(clientContextService.branchId)).get()).data()!;
+    Map<String, dynamic> branchDoc = (await _db.doc(pathService.getDocPathFromRef(clientContextService.branchId)).get()).data()!;
     Branch branch = Branch.fromJson(branchDoc);
 
     Map<String, Set<String>> updatedRefTracker = _updateRefTracker(branch.refTracker, objectsToPush);
@@ -86,7 +86,7 @@ class PushRepository {
     final Set<Map<String, dynamic>> documents = objects.map((element) => element.toJson()).toSet();
     // Process each document to update the tracker.
     for (final doc in documents) {
-      final docId = BessIdFunctions.objIdToRef(doc['id'] as String);
+      final docId = BessIdFunctions.objIdToRef(doc['objId'] as String);
       // Extract the set of referenced IDs from the document.
       final currentRefs = _thisDocumentReferences(doc);
 

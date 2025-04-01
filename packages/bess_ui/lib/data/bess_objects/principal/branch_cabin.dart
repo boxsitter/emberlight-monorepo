@@ -7,7 +7,7 @@ class BranchCabin extends BessObject {
   BranchCabin({
     required this.name,
     required this.capacity,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  :  super(

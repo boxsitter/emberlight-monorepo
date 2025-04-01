@@ -1,0 +1,30 @@
+import 'package:bessie/data/abstract/bess_object.dart';
+
+class DeleteRequest {
+  bool _armed;
+  final int disarmRequirementsLevel;
+  Set<BessObject> objectsToDelete;
+  Set<BessObject> objectsToPurge;
+  String confirmationMessage;
+
+  bool get armed => _armed;
+
+  void disarm() {
+    if (disarmRequirementsLevel > 2) {
+      _armed = false;
+    } else {
+      throw Exception('This operation cannot be completed.'); // TODO: make a better error system please
+    }
+  }
+
+  // Constructor for initialization
+  DeleteRequest({
+    required this.disarmRequirementsLevel,
+    Set<BessObject>? objectsToDelete,
+    Set<BessObject>? objectsToPurge,
+    this.confirmationMessage = '',
+    Set<BessObject>? objectsToPush,
+  })  : _armed = disarmRequirementsLevel > 0,
+        objectsToDelete = objectsToDelete ?? {},
+        objectsToPurge = objectsToPurge ?? {};
+}

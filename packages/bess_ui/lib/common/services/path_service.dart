@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class PathService extends GetxService {
   ClientContext context = Get.find<ClientContext>();
 
-  String _getPath(String collectionName, String domain, String? id) {
+  String _getPath(String collectionName, String domain, String? ref) {
     if (!BessIdValidation.isValidDomain(domain)) {
       throw ArgumentError('Error getting path, invalid domain');
     }
@@ -19,11 +19,11 @@ class PathService extends GetxService {
     }
 
     String suffix;
-    if (id == null) {
+    if (ref == null) {
       suffix = collectionName;
     } else {
-      BessIdValidation.simpleValidate(id);
-      suffix = '$collectionName/${BessIdFunctions.refIdToObj(id)}';
+      BessIdValidation.simpleValidate(ref);
+      suffix = '$collectionName/${BessIdFunctions.refIdToObj(ref)}';
     }
 
     Map<String, String> domainPaths = {
@@ -40,13 +40,13 @@ class PathService extends GetxService {
     return '$outputPath/$suffix';
   }
 
-  String getDocPathFromId(String id) {
-    List<String> idParts = BessIdFunctions.getIdParts(id);
-    return _getPath(idParts[2], idParts[1], id);
+  String getDocPathFromRef(String ref) {
+    List<String> idParts = BessIdFunctions.getIdParts(ref);
+    return _getPath(idParts[2], idParts[1], ref);
   }
 
-  String getCollectionPathFromId(String id) {
-    List<String> idParts = BessIdFunctions.getIdParts(id);
+  String getCollectionPathFromRef(String ref) {
+    List<String> idParts = BessIdFunctions.getIdParts(ref);
     return _getPath(idParts[2], idParts[1], null);
   }
 

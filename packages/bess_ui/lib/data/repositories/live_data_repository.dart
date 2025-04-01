@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bessie/data/repositories/pull_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,15 +10,15 @@ import 'push_repository.dart';
 
 /// A generic repository for live-updating Firestore data.
 class LiveDataRepository {
-  PushRepository bessObjectRepo = Get.find<PushRepository>();
-  final FirebaseFirestore _db = Get.find<PushRepository>().db;
+  PullRepository bessObjectRepo = Get.find<PullRepository>();
+  final FirebaseFirestore _db = Get.find<PullRepository>().db;
 
   get pathService => null;
 
   /// Watches a single Firestore document by [id].
   /// Parses it into [T] via [fromJson]. If the doc doesn't exist, emits `null`.
   Stream<T?> watchDoc<T>({required String id, required T Function(Map<String, dynamic> json) fromJson,}) {
-    final resolvedPath = pathService.getDocPathFromId(id);
+    final resolvedPath = pathService.getDocPathFromRef(id);
     return _db.doc(resolvedPath).snapshots().map((snapshot) {
       if (!snapshot.exists) return null;
       final data = snapshot.data() as Map<String, dynamic>;

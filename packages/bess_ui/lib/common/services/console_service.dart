@@ -2,10 +2,11 @@ import 'package:bessie/common/services/session_roster_service.dart';
 import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:get/get.dart';
 import '../../../data/bess_objects/camper.dart';
+import '../../data/repositories/pull_repository.dart';
 
 class ConsoleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
-  PushRepository bessObjectRepo = Get.find<PushRepository>();
+  PullRepository bessObjectRepo = Get.find<PullRepository>();
 
   Future<CommandResult> runCommand(String input) async {
     if (input.trim().isEmpty) return CommandResult();
@@ -26,11 +27,8 @@ class ConsoleService extends GetxService {
       case 'importcsv':
         return await importCsv();
 
-      case 'getcamper':
-        return await getCamper();
-
-      case 'deleteallcampers':
-        return await deleteAllCampers();
+      // case 'deleteallcampers':
+      //   return await deleteAllCampers();
 
       default:
         return CommandResult(error: 'Command not found, type "help" for a list of commands');
@@ -51,24 +49,22 @@ class ConsoleService extends GetxService {
   }
 
   Future<CommandResult> importCsv() async {
-    await sessionRosterService.importFromCsv();
+    await sessionRosterService.importFromCsv(
+      firstNameHeader: 'First Name',
+      lastNameHeader: 'Last Name',
+      preferredNameHeader: 'Preferred Name',
+      genderHeader: 'Gender',
+      ageHeader: 'Age',
+      cabinHeader: 'Cabin',
+    );
     return CommandResult();
   }
 
-  Future<CommandResult> getCamper() async {
-    try {
-      Set<String> sessionRoster = await sessionRosterService.sessionRoster;
-      Camper camper = await bessObjectRepo.getObject(sessionRoster.first, Camper.fromJson);
-      return CommandResult(log: camper.toString());
-    } catch (e) {
-      return CommandResult(error: "Error retrieving camper: $e");
-    }
-  }
 
-  Future<CommandResult> deleteAllCampers() async {
-    await sessionRosterService.deleteAllCampersInSession();
-    return CommandResult(success: "All campers deleted.");
-  }
+  // Future<CommandResult> deleteAllCampers() async {
+  //   await sessionRosterService.deleteAllCampersInSession();
+  //   return CommandResult(success: "All campers deleted.");
+  // }
 }
 
 class CommandResult {

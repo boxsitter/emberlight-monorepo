@@ -2,12 +2,12 @@ import 'package:bessie/data/abstract/bess_object.dart';
 
 class Branch extends BessObject {
   final String name;
-  Map<String, Set<String>> refTracker;
+  Map<String, Set<String>> refTracker; // TODO: refactor to session, ensure only principal objects are above session, handle their deletion differently
 
   Branch({
     required this.name,
     Map<String, Set<String>>? refTracker,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : refTracker = refTracker ?? {},
@@ -20,6 +20,12 @@ class Branch extends BessObject {
   @override
   String bessToString() {
     return 'Branch: $name';
+  }
+
+  @override
+  void purgeRef(String ref) {
+    print('unnecessary purge');
+    return;
   }
 
   @override

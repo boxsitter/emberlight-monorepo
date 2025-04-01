@@ -1,13 +1,10 @@
-import 'package:bessie/data/bess_objects/organization.dart';
-import 'package:bessie/data/bess_objects/schedule/schedule.dart';
-import 'package:bessie/data/bess_objects/season.dart';
+import 'package:bessie/data/bess_objects/domains/organization.dart';
+import 'package:bessie/data/bess_objects/domains/season.dart';
 import 'package:get/get.dart';
 
 import 'common/constants/catppuccin_base.dart';
 import 'common/routes/routes.dart';
-import 'data/bess_objects/branch.dart';
-import 'data/bess_objects/branch_cabin.dart';
-import 'data/bess_objects/session.dart';
+import 'data/bess_objects/domains/session.dart';
 import 'data/repositories/push_repository.dart';
 
 class AppConfig {

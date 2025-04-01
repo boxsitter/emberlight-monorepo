@@ -32,7 +32,7 @@ class Camper extends BessObject {
     this.camperPreferenceCmp,
     this.camperPreferenceCompleted = false,
     Map<AssignedMultiActivityBlockRef, ScheduledActivityRef>? activityAssignmentRefs,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : activityAssignmentRefs = activityAssignmentRefs ?? {},
@@ -55,6 +55,20 @@ class Camper extends BessObject {
     String cabinField = 'cabinRef: ${cabinRef ?? "none"}';
 
     return '$idField $nameField, $ageField, $cabinField';
+  }
+
+  @override
+  void purgeRef(String ref) {
+    if (BessIdFunctions.getIdPart(ref, 2) == 'camper') {
+      if(camperRefs.remove(ref) == false) { // TODO: remove this once the delete logic is bug free
+        print('unnecessary purge');
+      }
+      if(campersWithPreferences.remove(ref) == null) {
+        print('unnecessary purge');
+      }
+    } else if (BessIdFunctions.getIdPart(ref, 2) == 'cab') {
+      campersWithPreferences.removeWhere((key, value) => value == ref);
+    }
   }
 
   @override

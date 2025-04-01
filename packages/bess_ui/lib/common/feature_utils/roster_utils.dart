@@ -3,7 +3,7 @@ import 'package:bessie/common/feature_utils/pdf_utils.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../data/bess_objects/camper.dart';
-import '../../data/bess_objects/session.dart';
+import '../../data/bess_objects/domains/session.dart';
 import '../../pages/console/controller/console_controller.dart';
 
 class RosterUtils {
@@ -15,7 +15,7 @@ class RosterUtils {
 
   /// Removes the camper with the given [id] from the set.
   static void removeCamperById(Set<Camper> campers, String id) {
-    campers.removeWhere((camper) => camper.id == id);
+    campers.removeWhere((camper) => camper.objId == id);
   }
 
   /// Logs the campers to the console.

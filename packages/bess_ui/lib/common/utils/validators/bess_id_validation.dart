@@ -67,8 +67,7 @@ class BessIdValidation {
   }
 
   static bool validateObjectType(String id, String expectedObjectType) {
-    List<String> idParts = BessIdFunctions.getIdParts(id);
-    if (idParts[0] == 'obj' && idParts[2] == expectedObjectType) {
+    if (BessIdFunctions.getIdPart(id, 2) == expectedObjectType) {
       return true;
     }
     return false;
@@ -139,27 +138,27 @@ class BessIdValidation {
   /// Throws an error with a descriptive message on failure.
   static void validateDocument(Map<String, dynamic> json) {
     // Validate top-level "id" field.
-    if (!json.containsKey('id')) {
-      throw ArgumentError("Missing required 'id' field.");
+    if (!json.containsKey('objId')) {
+      throw ArgumentError("Missing required 'objId' field.");
     }
-    dynamic idValue = json['id'];
-    if (idValue is! String) {
+    dynamic objIdValue = json['objId'];
+    if (objIdValue is! String) {
       throw ArgumentError("The 'id' field must be a string.");
     }
     try {
-      simpleValidate(idValue);
+      simpleValidate(objIdValue);
     } catch (e) {
-      throw ArgumentError("Top-level 'id' field error: $e");
+      throw ArgumentError("Top-level 'objId' field error: $e");
     }
-    if (BessIdFunctions.getIdPart(idValue, 0) != 'obj') {
-      throw ArgumentError("Top-level 'id' field must be of type 'obj', but got '${BessIdFunctions.getIdPart(idValue, 0)}'.");
+    if (BessIdFunctions.getIdPart(objIdValue, 0) != 'obj') {
+      throw ArgumentError("Top-level 'objId' field must be of type 'obj', but got '${BessIdFunctions.getIdPart(objIdValue, 0)}'.");
     }
-    String expectedDomain = BessIdFunctions.getIdPart(idValue, 1);
-    String expectedObjectType = BessIdFunctions.getIdPart(idValue, 2);
+    String expectedDomain = BessIdFunctions.getIdPart(objIdValue, 1);
+    String expectedObjectType = BessIdFunctions.getIdPart(objIdValue, 2);
 
     // Validate every other top-level field.
     json.forEach((key, value) {
-      if (key == 'id') return; // Already validated.
+      if (key == 'objId') return; // Already validated.
       if (value is String) {
         if (isPotentialId(value)) {
           try {

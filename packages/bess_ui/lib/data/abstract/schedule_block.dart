@@ -8,7 +8,7 @@ abstract class ScheduleBlock extends BessObject {
     required super.domain,
     required super.type,
     required super.idTag,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   }) : super();

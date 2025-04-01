@@ -3,13 +3,13 @@ import 'package:bessie/common/services/cabin_service.dart';
 import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:get/get.dart';
 import 'package:bessie/data/bess_objects/camper.dart';
-import 'package:bessie/data/bess_objects/session.dart';
+import 'package:bessie/data/bess_objects/domains/session.dart';
 import 'package:bessie/common/services/client_context_service.dart';
 
 import '../../../../data/repositories/live_data_repository.dart';
 
 class RosterTableController extends GetxController {
-  final PushRepository bessObjectRepo = Get.find<PushRepository>();
+  final PullRepository bessObjectRepo = Get.find<PullRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
   final LiveDataRepository liveDataRepo = Get.find<LiveDataRepository>();
   final CabinService cabinsService = Get.find<CabinService>();

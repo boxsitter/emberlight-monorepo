@@ -11,7 +11,7 @@ class ActivityType extends BessObject {
     required this.name,
     required this.capacity,
     required this.description,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : super(

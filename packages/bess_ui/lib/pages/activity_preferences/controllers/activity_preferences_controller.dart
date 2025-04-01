@@ -12,7 +12,7 @@ import '../../../data/bess_objects/schedule/assigned_multi_activity_block.dart';
 
 
 class ActivityPreferencesController extends GetxController {
-  final PushRepository bessObjectRepo = Get.find<PushRepository>();
+  final PullRepository bessObjectRepo = Get.find<PullRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
@@ -43,9 +43,9 @@ class ActivityPreferencesController extends GetxController {
     final preferences = <CabinId, int>{};
 
     for (final BranchCabin cabin in cabinsInUseIds) {
-      names[cabin.id] = cabin.name;
-      counts[cabin.id] = cabin.camperRefs.length;
-      preferences[cabin.id] = cabin.campersWithPreferencesCount;
+      names[cabin.objId] = cabin.name;
+      counts[cabin.objId] = cabin.camperRefs.length;
+      preferences[cabin.objId] = cabin.campersWithPreferences;
     }
 
     cabinNames.value = names;
@@ -66,8 +66,8 @@ class ActivityPreferencesController extends GetxController {
     final completed = <CamperRef, bool>{};
 
     for (final Camper camper in campers) {
-      names[camper.id] = camper.fullName;
-      completed[camper.id] = camper.camperPreferenceCompleted;
+      names[camper.objId] = camper.fullName;
+      completed[camper.objId] = camper.camperPreferenceCompleted;
     }
 
     camperNames.value = names;

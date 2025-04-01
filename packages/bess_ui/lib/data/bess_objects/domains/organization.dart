@@ -5,7 +5,7 @@ class Organization extends BessObject {
 
   Organization({
     required this.name,
-    super.id,
+    super.objId,
     super.createdAt,
     super.updatedAt,
   })  : super(
@@ -17,6 +17,12 @@ class Organization extends BessObject {
   @override
   String bessToString() {
     return 'Organization: $name';
+  }
+
+  @override
+  void purgeRef(String ref) {
+    print('unnecessary purge');
+    return;
   }
 
   @override
@@ -36,4 +42,6 @@ class Organization extends BessObject {
     org.overwriteBessObjectFromJson(json);
     return org;
   }
+
+
 }

@@ -2,9 +2,8 @@ import 'package:bessie/data/bess_objects/schedule/schedule.dart';
 import 'package:bessie/data/repositories/pull_repository.dart';
 import 'package:get/get.dart';
 
-import '../../data/bess_objects/branch.dart';
-import '../../data/bess_objects/season.dart';
-import '../../data/bess_objects/session.dart';
+import '../../data/bess_objects/domains/season.dart';
+import '../../data/bess_objects/domains/session.dart';
 import '../../data/user_houck_leyton.dart';
 
 class ClientContext {
@@ -25,7 +24,6 @@ class ClientContextService extends GetxService {
 
   Future<Session> get session async => await pullRepo.getObject(sessionId, Session.fromJson);
   Future<Schedule> get schedule async => await pullRepo.getObject(await pullRepo.getFieldValue(sessionId, 'scheduleId'), Schedule.fromJson);
-  Future<String> get scheduleId async => await pullRepo.getFieldValue(sessionId, 'scheduleId');
 
   @override
   void onInit() {
@@ -39,11 +37,9 @@ class ClientContextService extends GetxService {
     clientContext.branchId = User.branchId;
 
     // Retrieve the unique active Season.
-    Branch branch = await pullRepo.getObject(clientContext.branchId, Branch.fromJson);
-    clientContext.seasonId = await pullRepo.getFirstActiveObjectId(branch.seasons);
+    clientContext.seasonId = await pullRepo.getActiveObjectId('season', "brn");
 
     // Retrieve the unique active Session.
-    Season season = await pullRepo.getObject(clientContext.seasonId, Season.fromJson);
-    clientContext.sessionId = await pullRepo.getFirstActiveObjectId(season.sessions);
+    clientContext.sessionId = await pullRepo.getActiveObjectId('session', "sea");
   }
 }
