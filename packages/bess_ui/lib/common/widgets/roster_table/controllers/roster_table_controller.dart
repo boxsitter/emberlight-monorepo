@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:bessie/common/services/cabin_service.dart';
-import 'package:bessie/data/repositories/push_repository.dart';
 import 'package:get/get.dart';
 import 'package:bessie/data/bess_objects/camper.dart';
 import 'package:bessie/data/bess_objects/domains/session.dart';
 import 'package:bessie/common/services/client_context_service.dart';
 
 import '../../../../data/repositories/live_data_repository.dart';
+import '../../../../data/repositories/pull_repository.dart';
 
 class RosterTableController extends GetxController {
   final PullRepository bessObjectRepo = Get.find<PullRepository>();
