@@ -1,17 +1,12 @@
 import 'dart:async';
-import 'package:bessie/common/services/cabin_service.dart';
-import 'package:get/get.dart';
-import 'package:bessie/data/bess_objects/camper.dart';
-import 'package:bessie/data/bess_objects/domains/session.dart';
-import 'package:bessie/common/services/client_context_service.dart';
 
-import '../../../../data/repositories/live_data_repository.dart';
-import '../../../../data/repositories/pull_repository.dart';
+import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
+import 'package:get/get.dart';
 
 class RosterTableController extends GetxController {
-  final PullRepository bessObjectRepo = Get.find<PullRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
-  final LiveDataRepository liveDataRepo = Get.find<LiveDataRepository>();
   final CabinService cabinsService = Get.find<CabinService>();
 
   final campers = <String, Camper>{}.obs;
@@ -19,23 +14,22 @@ class RosterTableController extends GetxController {
 
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
 
-  void _startListening() {
-    _campersSubscription = liveDataRepo
-        .watchDocWithChildDocs<Session, Camper>(
-      parentId: contextService.sessionId,
-      parentFromJson: Session.fromJson,
-      childIdField: 'registeredCamperIds',
-      childFromJson: Camper.fromJson,
-    )
-        .listen((camperMap) {
-      campers.assignAll(camperMap);
-    });
-  }
+  // void _startListening() {
+  //   _campersSubscription = BackendManager.instance.watchDocWithChildDocs<Session, Camper>(
+  //     parentId: contextService.sessionId,
+  //     parentFromJson: Session.fromJson,
+  //     childIdField: 'registeredCamperIds',
+  //     childFromJson: Camper.fromJson,
+  //   )
+  //       .listen((camperMap) {
+  //     campers.assignAll(camperMap);
+  //   });
+  // }
 
   void startListening() {
     if (_campersSubscription == null) {
       print('Started listening');
-      _startListening();
+      //_startListening();
     }
   }
 
@@ -48,7 +42,7 @@ class RosterTableController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _startListening();
+    //_startListening();
     ever(campers, (_) => count.value = campers.length);
   }
 

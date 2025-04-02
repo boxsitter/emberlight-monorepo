@@ -1,10 +1,12 @@
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
 import '../../../common/routes/routes.dart';
 
+typedef CabinId = String;
 
 class ActivityPreferencesController extends GetxController {
-  final PullRepository bessObjectRepo = Get.find<PullRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
@@ -28,16 +30,16 @@ class ActivityPreferencesController extends GetxController {
   Future<void> populateCabinMaps() async {
     isCabinDataLoaded.value = false;
     print('POPULATING CABIN MAPS');
-    final Set<BranchCabin> cabinsInUseIds = await cabinsService.cabinsInUse;
+    final Set<CabinInUse> cabinsInUseIds = await cabinsService.cabinsInUse;
 
     final names = <CabinId, String>{};
     final counts = <CabinId, int>{};
     final preferences = <CabinId, int>{};
 
-    for (final BranchCabin cabin in cabinsInUseIds) {
+    for (final CabinInUse cabin in cabinsInUseIds) {
       names[cabin.objId] = cabin.name;
       counts[cabin.objId] = cabin.camperRefs.length;
-      preferences[cabin.objId] = cabin.campersWithPreferences;
+      preferences[cabin.objId] = cabin.campersWithPreferences.length;
     }
 
     cabinNames.value = names;
