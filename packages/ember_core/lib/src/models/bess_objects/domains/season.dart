@@ -36,8 +36,8 @@ class Season extends BessObject {
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'startDate': Timestamp.fromDate(startDate),
-      'endDate': Timestamp.fromDate(endDate),
+      'startDate': startDate,
+      'endDate': endDate,
     });
     return json;
   }
@@ -45,10 +45,12 @@ class Season extends BessObject {
   factory Season.fromJson(Map<String, dynamic> json) {
     final season = Season(
       name: json['name'] ?? '',
-      startDate: (json['startDate'] as Timestamp).toDate(),
-      endDate: (json['endDate'] as Timestamp).toDate(),
+      // Just cast the values as DateTime now:
+      startDate: json['startDate'] as DateTime,
+      endDate: json['endDate'] as DateTime,
     );
     season.overwriteBessObjectFromJson(json);
     return season;
   }
+
 }

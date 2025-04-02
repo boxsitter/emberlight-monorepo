@@ -1,6 +1,5 @@
 import 'package:ember_core/ember_core_models.dart';
-
-import '../camper_preference.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 typedef CamperPreferenceRef = String;
 
@@ -9,8 +8,8 @@ class Session extends BessObject {
   final DateTime startDate;
   final DateTime endDate;
   final Map<CamperRef, CamperPreferenceRef> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
-  Map<String, Set<String>> refTracker;
-  Map<String, Set<String>> principalDependantLinkTracker;
+  Map<String, Set<String>> refTracker; // TODO: Still track who is referencing a principal in here. If the principal is deleted or found missing, call purge on everyone referencing it and delete the entry.
+  Map<String, Set<String>> principalDependantLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependants and purge references to it
 
   Session({
     required this.name,
@@ -50,8 +49,8 @@ class Session extends BessObject {
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'startDate': Timestamp.fromDate(startDate),
-      'endDate': Timestamp.fromDate(endDate),
+      'startDate': startDate,
+      'endDate': endDate,
       'camperIdToPreferenceId': camperRefToPreferenceRef,
       'refTracker': refTracker.map((key, value) => MapEntry(key, value.toList())),
     });
@@ -61,8 +60,8 @@ class Session extends BessObject {
   factory Session.fromJson(Map<String, dynamic> json) {
     final session = Session(
       name: json['name'] as String,
-      startDate: (json['startDate'] as Timestamp).toDate(),
-      endDate: (json['endDate'] as Timestamp).toDate(),
+      startDate: json['startDate'] as DateTime,
+      endDate: json['endDate'] as DateTime,
       camperIdToPreferenceId: (json['camperIdToPreferenceId'] as Map?)?.cast<String, String>() ?? {},
       refTracker: (json['refTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
     );

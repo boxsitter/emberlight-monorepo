@@ -32,16 +32,15 @@ abstract class BessObject { // TODO: remove timestamp
   Map<String, dynamic> toJsonSuper() {
     return {
       'objId': objId,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'updatedAt': Timestamp.fromDate(updatedAt),
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
   void overwriteBessObjectFromJson(Map<String, dynamic> json) {
     objId = json['objId'] as String;
-    // Convert any Timestamp to a DateTime in UTC; default to now (UTC) if missing or invalid.
-    createdAt = (json['createdAt'] is Timestamp) ? (json['createdAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
-    updatedAt = (json['updatedAt'] is Timestamp) ? (json['updatedAt'] as Timestamp).toDate().toUtc() : DateTime.now().toUtc();
+    createdAt = (json['createdAt'] as DateTime?)?.toUtc() ?? DateTime.now().toUtc();
+    updatedAt = (json['updatedAt'] as DateTime?)?.toUtc() ?? DateTime.now().toUtc();
   }
 
   String toStringSuper() {
