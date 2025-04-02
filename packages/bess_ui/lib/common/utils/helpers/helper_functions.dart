@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../constants/enums.dart';
 
@@ -137,4 +136,5 @@ class BessHelperFunctions {
       wrappedList.add(Row(children: rowChildren));
     }
     return wrappedList;
+  }
 }

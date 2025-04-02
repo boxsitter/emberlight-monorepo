@@ -1,11 +1,7 @@
-import 'package:bessie/data/bess_objects/domains/organization.dart';
-import 'package:bessie/data/bess_objects/domains/season.dart';
 import 'package:get/get.dart';
 
 import 'common/constants/catppuccin_base.dart';
 import 'common/routes/routes.dart';
-import 'data/bess_objects/domains/session.dart';
-import 'data/repositories/push_repository.dart';
 
 class AppConfig {
   static Flavor theme = catppuccin.latte;

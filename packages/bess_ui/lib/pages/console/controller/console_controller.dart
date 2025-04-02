@@ -1,6 +1,6 @@
+import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
-import '../../../common/services/console_service.dart';
 
 class ConsoleController extends GetxController {
   late ConsoleService consoleService;
