@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:bessie/data/repositories/pull_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../common/utils/helpers/bess_id_functions.dart';
+import 'pull_repository.dart';
 import 'push_repository.dart';
 
 /// A generic repository for live-updating Firestore data.

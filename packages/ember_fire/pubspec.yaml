@@ -1,6 +1,7 @@
 name: ember_fire
 description: A starting point for Dart libraries or applications.
 version: 1.0.0
+publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -11,6 +12,8 @@ dependencies:
 
   ember_core:
     path: ../ember_core
+
+  rxdart: ^0.28.0
 
   # State Management
   get: ^4.7.2

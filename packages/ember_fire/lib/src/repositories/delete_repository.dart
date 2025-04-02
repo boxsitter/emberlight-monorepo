@@ -1,12 +1,8 @@
-import 'package:bessie/common/services/client_context_service.dart';
-import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
-import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:bessie/data/helper_objects/delete_request.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-import '../../common/services/path_service.dart';
+import '../path_service.dart';
 
 class DeleteRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
