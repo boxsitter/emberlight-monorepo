@@ -1,8 +1,7 @@
-import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:bessie/data/bess_objects/schedule.dart';
-import 'package:bessie/data/bess_objects/schedule/schedule.dart';
 
-import '../../common/utils/helpers/bess_id_functions.dart';
+
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 typedef CamperRef = String;
 

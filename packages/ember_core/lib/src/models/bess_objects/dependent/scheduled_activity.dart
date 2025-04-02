@@ -1,5 +1,4 @@
-import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:flutter/material.dart';
+import 'package:ember_core/ember_core_models.dart';
 
 class ScheduledActivity extends BessObject {
   final String name;
@@ -48,5 +47,10 @@ class ScheduledActivity extends BessObject {
     );
     activity.overwriteBessObjectFromJson(json);
     return activity;
+  }
+
+  @override
+  void purgeRef(String ref) {
+    // TODO: implement purgeRef
   }
 }

@@ -1,4 +1,4 @@
-import '../helpers/bess_id_functions.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 class BessIdValidation {
   static const String validCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789_.~';

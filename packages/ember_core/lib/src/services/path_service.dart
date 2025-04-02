@@ -1,7 +1,7 @@
-import 'package:bessie/common/services/client_context_service.dart';
-import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
-import 'package:bessie/common/utils/validators/bess_id_validation.dart';
 import 'package:ember_core/ember_core.dart';
+import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
 
 class PathService extends GetxService {

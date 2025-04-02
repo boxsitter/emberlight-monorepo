@@ -1,5 +1,4 @@
-import 'package:bessie/data/abstract/schedule_block.dart';
-
+import 'package:ember_core/ember_core_models.dart';
 
 class AssignedMultiActivityBlock extends ScheduleBlock {
   final Set<String> scheduledActivityCmps;
@@ -39,6 +38,11 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
     );
     block.overwriteBessObjectFromJson(json);
     return block;
+  }
+
+  @override
+  void purgeRef(String ref) {
+    // TODO: implement purgeRef
   }
 
 }

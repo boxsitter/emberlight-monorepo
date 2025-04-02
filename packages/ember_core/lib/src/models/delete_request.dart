@@ -1,9 +1,10 @@
-import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:ember_core/ember_core_models.dart';
 
-class PushRequest {
+class DeleteRequest {
   bool _armed;
   final int disarmRequirementsLevel;
-  Set<BessObject> objectsToPush;
+  Set<BessObject> objectsToDelete;
+  Set<BessObject> objectsToPurge;
   String confirmationMessage;
 
   bool get armed => _armed;
@@ -17,10 +18,13 @@ class PushRequest {
   }
 
   // Constructor for initialization
-  PushRequest({
+  DeleteRequest({
     required this.disarmRequirementsLevel,
+    Set<BessObject>? objectsToDelete,
+    Set<BessObject>? objectsToPurge,
     this.confirmationMessage = '',
     Set<BessObject>? objectsToPush,
   })  : _armed = disarmRequirementsLevel > 0,
-        objectsToPush = objectsToPush ?? {};
+        objectsToDelete = objectsToDelete ?? {},
+        objectsToPurge = objectsToPurge ?? {};
 }

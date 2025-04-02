@@ -1,4 +1,4 @@
-import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:ember_core/ember_core_models.dart';
 
 abstract class ScheduleBlock extends BessObject {
   final String name;

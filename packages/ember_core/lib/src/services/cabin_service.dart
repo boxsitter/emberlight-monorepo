@@ -1,17 +1,8 @@
-import 'package:bessie/common/services/request_service.dart';
-import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
-import 'package:bessie/common/utils/validators/bess_id_validation.dart';
-import 'package:bessie/data/bess_objects/dependent%20/cabin_in_use.dart';
-import 'package:bessie/data/bess_objects/domains/session.dart';
-import 'package:bessie/data/repositories/pull_repository.dart';
-import 'package:ember_fire/repositories/pull_repository.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
-
-import '../../data/bess_objects/branch_cabin.dart';
-import '../../data/bess_objects/camper.dart';
-import '../../data/helper_objects/push_request.dart';
-import '../../data/repositories/push_repository.dart';
-import 'client_context_service.dart';
 
 class CabinService extends GetxService {
   PullRepository pullRepo= Get.find<PullRepository>();

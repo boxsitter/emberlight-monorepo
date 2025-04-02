@@ -1,11 +1,8 @@
-import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../../common/utils/formatters/formatter.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 typedef BessObjectObjId = String;
 
-abstract class BessObject {
+abstract class BessObject { // TODO: remove timestamp
   BessObjectObjId objId;
   DateTime createdAt;
   DateTime updatedAt;
@@ -25,8 +22,8 @@ abstract class BessObject {
         createdAt = (createdAt ?? DateTime.now()).toUtc(),
         updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 
-  String get formattedCreatedAt => BessFormatter.formatDate(createdAt.toLocal());
-  String get formattedUpdatedAt => BessFormatter.formatDate(updatedAt.toLocal());
+  String get formattedCreatedAt => Formatter.formatDate(createdAt.toLocal());
+  String get formattedUpdatedAt => Formatter.formatDate(updatedAt.toLocal());
 
   String bessToString();
   Map<String, dynamic> toJson();

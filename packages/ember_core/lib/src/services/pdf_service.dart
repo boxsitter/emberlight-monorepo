@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:bessie/pages/console/controller/console_controller.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../../../data/bess_objects/camper.dart';
-import '../styles/pdf_styles.dart';
+import '../utils/pdf_styles.dart';
 
-class PdfUtils {
+class PdfService extends GetxService{
   static pw.TableRow camperToPaddedTableRow(Camper camper) {
     return pw.TableRow(
       children: [

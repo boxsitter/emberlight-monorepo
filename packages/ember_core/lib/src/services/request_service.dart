@@ -1,10 +1,8 @@
 import 'dart:math';
 
-import 'package:bessie/data/helper_objects/push_request.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
-import '../../data/abstract/bess_object.dart';
-import '../widgets/popups/confirm_operation.dart';
 
 class RequestService extends GetxService{
   Future<bool> disarmRequest(PushRequest pushRequest) async {
@@ -16,7 +14,9 @@ class RequestService extends GetxService{
       return true;
     }
     if (pushRequest.disarmRequirementsLevel == 1) {
-      bool confirmed = await showConfirmationDialog( // TODO: Give the user details about operation
+      // TODO: Give the user details about operation
+      // TODO: This can't be called from here anymore
+      bool confirmed = await showConfirmationDialog(
         title: 'Confirm Action',
         message: pushRequest.confirmationMessage,
       );

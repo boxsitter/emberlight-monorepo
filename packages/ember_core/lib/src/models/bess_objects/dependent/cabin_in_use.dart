@@ -1,9 +1,5 @@
-import 'package:bessie/common/utils/helpers/bess_id_functions.dart';
-import 'package:bessie/common/utils/validators/bess_id_validation.dart';
-import 'package:bessie/data/bess_objects/domains/session.dart';
-
-import '../../../abstract/bess_object.dart';
-import '../../camper_preference.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 class CabinInUse extends BessObject {
   final String name;

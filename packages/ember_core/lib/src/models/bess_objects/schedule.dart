@@ -1,4 +1,4 @@
-import '../../abstract/bess_object.dart';
+import 'package:ember_core/ember_core_models.dart';
 
 typedef BlockId = String;
 typedef ActivityTypeRef = String;
@@ -43,5 +43,10 @@ class Schedule extends BessObject {
     );
     schedule.overwriteBessObjectFromJson(json);
     return schedule;
+  }
+
+  @override
+  void purgeRef(String ref) {
+    // TODO: implement purgeRef
   }
 }

@@ -1,4 +1,5 @@
-import '../abstract/bess_object.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 typedef CabinRef = String;
 typedef AssignedMultiActivityBlockRef = String;
@@ -58,20 +59,6 @@ class Camper extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
-    if (BessIdFunctions.getIdPart(ref, 2) == 'camper') {
-      if(camperRefs.remove(ref) == false) { // TODO: remove this once the delete logic is bug free
-        print('unnecessary purge');
-      }
-      if(campersWithPreferences.remove(ref) == null) {
-        print('unnecessary purge');
-      }
-    } else if (BessIdFunctions.getIdPart(ref, 2) == 'cab') {
-      campersWithPreferences.removeWhere((key, value) => value == ref);
-    }
-  }
-
-  @override
   Map<String, dynamic> toJson() {
     final json = toJsonSuper();
     json.addAll({
@@ -106,5 +93,10 @@ class Camper extends BessObject {
     );
     camper.overwriteBessObjectFromJson(json);
     return camper;
+  }
+
+  @override
+  void purgeRef(String ref) {
+    // TODO: implement purgeRef
   }
 }

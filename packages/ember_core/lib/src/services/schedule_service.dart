@@ -1,8 +1,9 @@
-
+import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../ember_core.dart';
+import '../../ember_core_services.dart';
 
 
 class ScheduleService extends GetxService {

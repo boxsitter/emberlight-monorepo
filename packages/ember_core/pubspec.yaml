@@ -13,8 +13,13 @@ dependencies:
     path: ../ember_fire
 
   # State Management
-  get: ^4.6.6
-  get_storage: ^2.1.1
+  get: ^4.7.2
+
+  # Utility Packages
+  intl: any
+  pdf: ^3.11.3
+  file_picker: ^10.0.0
+  csv: ^6.0.0
 
 
 dev_dependencies:

@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:csv/csv.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_fire/ember_fire.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import '../../ember_core.dart';
 
@@ -49,7 +54,6 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     // if (camperToAdd.cabinId != null) {
     //   cabinsService.addCamperToCabin(cabinId!, camperToAdd.id);
     // }
-    consoleController.success('${camperToAdd.bessToString()}\n created!');
     return pushRequest;
   }
 
@@ -185,7 +189,6 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
         // Basic validation
         if (firstName.isEmpty || lastName.isEmpty || age <= 0) {
-          consoleController.error('Invalid data in row: $row');
           continue;
         }
 

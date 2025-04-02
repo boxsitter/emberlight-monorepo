@@ -1,4 +1,4 @@
-import '../abstract/bess_object.dart';
+import 'package:ember_core/ember_core_models.dart';
 
 class BranchCabin extends BessObject {
   final String name;
@@ -38,5 +38,10 @@ class BranchCabin extends BessObject {
     );
     branchCabin.overwriteBessObjectFromJson(json);
     return branchCabin;
+  }
+
+  @override
+  void purgeRef(String ref) {
+    // TODO: implement purgeRef
   }
 }

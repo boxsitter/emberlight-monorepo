@@ -1,5 +1,6 @@
-import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+import 'package:ember_core/ember_core_models.dart';
 
 class Season extends BessObject {
   final String name;

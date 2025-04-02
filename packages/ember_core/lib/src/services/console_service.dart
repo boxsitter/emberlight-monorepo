@@ -1,8 +1,6 @@
-import 'package:bessie/common/services/session_roster_service.dart';
-import 'package:bessie/data/repositories/push_repository.dart';
+import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
-import '../../../data/bess_objects/camper.dart';
-import '../../data/repositories/pull_repository.dart';
 
 class ConsoleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();

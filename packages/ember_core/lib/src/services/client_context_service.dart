@@ -1,10 +1,8 @@
-import 'package:bessie/data/bess_objects/schedule/schedule.dart';
-import 'package:bessie/data/repositories/pull_repository.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/user_houck_leyton.dart';
+import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
 
-import '../../data/bess_objects/domains/season.dart';
-import '../../data/bess_objects/domains/session.dart';
-import '../../data/user_houck_leyton.dart';
 
 class ClientContext {
   late String organizationId;

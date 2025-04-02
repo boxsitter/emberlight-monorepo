@@ -1,4 +1,4 @@
-import 'package:bessie/data/abstract/bess_object.dart';
+import 'package:ember_core/ember_core_models.dart';
 
 typedef ActivityTypeId = String;
 
@@ -44,5 +44,10 @@ class ActivityType extends BessObject {
     );
     activity.overwriteBessObjectFromJson(json);
     return activity;
+  }
+
+  @override
+  void purgeRef(String ref) {
+    // TODO: implement purgeRef
   }
 }

@@ -1,7 +1,5 @@
-import 'package:bessie/data/abstract/bess_object.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ember_core/ember_core_models.dart';
 
-import '../../../common/utils/helpers/bess_id_functions.dart';
 import '../camper_preference.dart';
 
 typedef CamperPreferenceRef = String;

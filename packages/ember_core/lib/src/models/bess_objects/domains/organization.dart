@@ -1,4 +1,6 @@
-import 'package:bessie/data/abstract/bess_object.dart';
+
+
+import 'package:ember_core/ember_core_models.dart';
 
 class Organization extends BessObject {
   final String name;
