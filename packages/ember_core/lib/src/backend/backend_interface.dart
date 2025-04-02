@@ -15,4 +15,5 @@ abstract class BackendInterface {
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value);
   Future<void> commit(PushRequest pushRequest);
   Future<void> deleteObject(String key);
+  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>();
 }

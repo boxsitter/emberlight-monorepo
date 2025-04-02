@@ -17,6 +17,7 @@ class Session extends BessObject {
     required this.endDate,
     Map<CamperRef, CamperPreferenceRef>? camperIdToPreferenceId,
     Map<String, Set<String>>? refTracker,
+    Map<String, Set<String>>? principalDependantLinkTracker,
     super.objId,
     super.createdAt,
     super.updatedAt,
@@ -53,6 +54,7 @@ class Session extends BessObject {
       'endDate': endDate,
       'camperIdToPreferenceId': camperRefToPreferenceRef,
       'refTracker': refTracker.map((key, value) => MapEntry(key, value.toList())),
+      'principalDependantLinkTracker': principalDependantLinkTracker.map((key, value) => MapEntry(key, value.toList())),
     });
     return json;
   }
@@ -64,6 +66,7 @@ class Session extends BessObject {
       endDate: json['endDate'] as DateTime,
       camperIdToPreferenceId: (json['camperIdToPreferenceId'] as Map?)?.cast<String, String>() ?? {},
       refTracker: (json['refTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
+      principalDependantLinkTracker: (json['principalDependantLinkTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
     );
     session.overwriteBessObjectFromJson(json);
     return session;
