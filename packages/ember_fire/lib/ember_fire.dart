@@ -73,4 +73,9 @@ class EmberFire implements BackendInterface {
     return queryField(collectionName, domain, field, value);
   }
 
+  @override
+  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>() {
+    return watchDocWithChildDocs();
+  }
+
 }
