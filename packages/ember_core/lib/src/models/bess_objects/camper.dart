@@ -1,5 +1,4 @@
 import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_utils.dart';
 
 typedef CabinRef = String;
 typedef AssignedMultiActivityBlockRef = String;
