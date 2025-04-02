@@ -1,10 +1,10 @@
+import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_services.dart';
-import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
 
 class ConsoleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
-  PullRepository bessObjectRepo = Get.find<PullRepository>();
+  static BackendInterface backend = BackendManager.instance;
 
   Future<CommandResult> runCommand(String input) async {
     if (input.trim().isEmpty) return CommandResult();

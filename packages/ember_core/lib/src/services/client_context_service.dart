@@ -1,7 +1,8 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/user_houck_leyton.dart';
-import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
+
+import '../../ember_core_backend.dart';
 
 
 class ClientContext {
@@ -12,7 +13,7 @@ class ClientContext {
 }
 
 class ClientContextService extends GetxService {
-  final PullRepository pullRepo = Get.find<PullRepository>();
+  static BackendInterface backend = BackendManager.instance;
   final ClientContext clientContext = Get.find<ClientContext>();
 
   get organizationId => clientContext.organizationId;
@@ -20,8 +21,8 @@ class ClientContextService extends GetxService {
   get seasonId => clientContext.seasonId;
   get sessionId => clientContext.sessionId;
 
-  Future<Session> get session async => await pullRepo.getObject(sessionId, Session.fromJson);
-  Future<Schedule> get schedule async => await pullRepo.getObject(await pullRepo.getFieldValue(sessionId, 'scheduleId'), Schedule.fromJson);
+  Future<Session> get session async => await backend.getObject(sessionId, Session.fromJson);
+  Future<Schedule> get schedule async => await backend.getObject(await backend.getFieldValue(sessionId, 'scheduleId'), Schedule.fromJson);
 
   @override
   void onInit() {
@@ -35,9 +36,9 @@ class ClientContextService extends GetxService {
     clientContext.branchId = User.branchId;
 
     // Retrieve the unique active Season.
-    clientContext.seasonId = await pullRepo.getActiveObjectId('season', "brn");
+    clientContext.seasonId = await backend.getActiveObjectId('season', "brn");
 
     // Retrieve the unique active Session.
-    clientContext.sessionId = await pullRepo.getActiveObjectId('session', "sea");
+    clientContext.sessionId = await backend.getActiveObjectId('session', "sea");
   }
 }

@@ -1,24 +1,23 @@
+import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
-import 'package:ember_fire/ember_fire.dart';
 import 'package:get/get.dart';
 
 class CabinService extends GetxService {
-  PullRepository pullRepo= Get.find<PullRepository>();
-  ClientContextService clientContextService = Get.find<ClientContextService>();
+  static BackendInterface backend = BackendManager.instance;
   RequestService requestService = Get.find<RequestService>();
 
-  Future<Set<CabinInUse>> get cabinsInUse async => await pullRepo.getObjectsInCollection('cabin_in_use', 'ses', CabinInUse.fromJson);
-  Future<Set<BranchCabin>> get branchCabins async => await pullRepo.getObjectsInCollection('branch_cabin', 'brn', BranchCabin.fromJson);
+  Future<Set<CabinInUse>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_in_use', 'ses', CabinInUse.fromJson);
+  Future<Set<BranchCabin>> get branchCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn', BranchCabin.fromJson);
 
   Future<String?> getCabinRefByName(String name) async {
-    return await pullRepo.queryField('cabin_in_use', 'ses', 'name', name);
+    return await backend.queryField('cabin_in_use', 'ses', 'name', name);
   }
 
   Future<Set<Camper>> getCampersInCabin(String id) async {
-    Set<String> camperIds = await pullRepo.getSetFieldValue(id, 'camperRefs');
-    return await pullRepo.getObjects(camperIds, Camper.fromJson);
+    Set<String> camperIds = await backend.getSetFieldValue(id, 'camperRefs');
+    return await backend.getObjects(camperIds, Camper.fromJson);
   }
 
   PushRequest createBranchCabin(String name, int capacity) {
