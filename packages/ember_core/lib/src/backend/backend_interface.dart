@@ -13,6 +13,7 @@ abstract class BackendInterface {
   Future<Set<T>> getObjects<T>(Set<String> ref, FromJson<T> fromJson);
   Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain, FromJson<T> fromJson);
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value);
+  Future<String> getActiveObjectId(String collectionName, String domain);
   Future<void> commit(PushRequest pushRequest);
   Future<void> deleteObject(String key);
   Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>();

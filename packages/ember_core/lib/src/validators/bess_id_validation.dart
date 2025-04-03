@@ -12,12 +12,12 @@ class BessIdValidation {
   static void validateIdsShareCollection(Set<String> ids) {
     if (ids.isEmpty) return;
 
-    final List<String> firstParts = BessIdFunctions.getIdParts(ids.first);
+    final List<String> firstParts = IdFunctions.getIdParts(ids.first);
     final String expectedDomain = firstParts[1];
     final String expectedType = firstParts[2];
 
     for (final id in ids.skip(1)) {
-      final parts = BessIdFunctions.getIdParts(id);
+      final parts = IdFunctions.getIdParts(id);
       if (parts[1] != expectedDomain) {
         throw ArgumentError("Not all objects are of the same domain");
       }
@@ -35,7 +35,7 @@ class BessIdValidation {
   /// Performs a simple full check on the Bess ID format.
   /// Throws an error describing the failure if the format is invalid.
   static void simpleValidate(String id) {
-    final List<String> idParts = BessIdFunctions.getIdParts(id);
+    final List<String> idParts = IdFunctions.getIdParts(id);
     if (idParts.length != 5) {
       throw ArgumentError("ID '$id' does not have exactly 5 parts (found ${idParts.length}).");
     }
@@ -51,7 +51,7 @@ class BessIdValidation {
   }
 
   static bool validateIdType(String id, String expectedType) {
-    if (BessIdFunctions.getIdPart(id, 0) == expectedType) {
+    if (IdFunctions.getIdPart(id, 0) == expectedType) {
       return true;
     }
     return false;
@@ -59,7 +59,7 @@ class BessIdValidation {
 
   static bool validateIdTypes(Set<String> ids, String expectedType) {
     for (String id in ids) {
-      if (BessIdFunctions.getIdPart(id, 0) != expectedType) {
+      if (IdFunctions.getIdPart(id, 0) != expectedType) {
         return false;
       }
     }
@@ -67,7 +67,7 @@ class BessIdValidation {
   }
 
   static bool validateObjectType(String id, String expectedObjectType) {
-    if (BessIdFunctions.getIdPart(id, 2) == expectedObjectType) {
+    if (IdFunctions.getIdPart(id, 2) == expectedObjectType) {
       return true;
     }
     return false;
@@ -80,7 +80,7 @@ class BessIdValidation {
   /// Throws an error with a descriptive message on failure.
   static void validateScalarId(String id, {required bool mustBeObj, required String expectedDomain, String? expectedObjectType}) {
     simpleValidate(id); // Throws error if invalid format.
-    final List<String> idParts = BessIdFunctions.getIdParts(id);
+    final List<String> idParts = IdFunctions.getIdParts(id);
     String idType = idParts[0];
     if (mustBeObj && idType != 'obj') {
       throw ArgumentError("Expected idType 'obj' but got '$idType' for id '$id'.");
@@ -110,7 +110,7 @@ class BessIdValidation {
         } catch (e) {
           throw ArgumentError("In collection at index $index: $e");
         }
-        final parts = BessIdFunctions.getIdParts(item);
+        final parts = IdFunctions.getIdParts(item);
         String currentIdType = parts[0];
         String currentObjectType = parts[2];
         if (commonIdType == null) {
@@ -150,11 +150,11 @@ class BessIdValidation {
     } catch (e) {
       throw ArgumentError("Top-level 'objId' field error: $e");
     }
-    if (BessIdFunctions.getIdPart(objIdValue, 0) != 'obj') {
-      throw ArgumentError("Top-level 'objId' field must be of type 'obj', but got '${BessIdFunctions.getIdPart(objIdValue, 0)}'.");
+    if (IdFunctions.getIdPart(objIdValue, 0) != 'obj') {
+      throw ArgumentError("Top-level 'objId' field must be of type 'obj', but got '${IdFunctions.getIdPart(objIdValue, 0)}'.");
     }
-    String expectedDomain = BessIdFunctions.getIdPart(objIdValue, 1);
-    String expectedObjectType = BessIdFunctions.getIdPart(objIdValue, 2);
+    String expectedDomain = IdFunctions.getIdPart(objIdValue, 1);
+    String expectedObjectType = IdFunctions.getIdPart(objIdValue, 2);
 
     // Validate every other top-level field.
     json.forEach((key, value) {

@@ -2,8 +2,15 @@ import 'dart:math';
 
 import 'package:ember_core/ember_core_validators.dart';
 
-class BessIdFunctions {
+class IdFunctions {
   static final Random _secureRandom = Random.secure();
+
+  static String clean(String input) {
+    return input
+        .toLowerCase()
+        .replaceAll(' ', '_')
+        .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+  }
 
   /// Generates a Bess ID in the format:
   /// [idType]-[domain]-[objectType]-[tag]-[5-char random string]
@@ -18,17 +25,16 @@ class BessIdFunctions {
     if (tag.length < 3) {
       throw ArgumentError('Tag "$tag" is too short, must be at least 3 characters');
     }
-    // Helper: clean input string.
-    String clean(String input) {
-      return input
-          .toLowerCase()
-          .replaceAll(' ', '_')
-          .replaceAll(RegExp(r'[^a-z0-9_]'), '');
-    }
     final cleanType = clean(objectType);
     final cleanTag = clean(tag);
     String randomPart = List.generate(6, (_) => BessIdValidation.validCharacters[_secureRandom.nextInt(BessIdValidation.validCharacters.length)]).join();
     return '$idType-$domain-$cleanType-$cleanTag-$randomPart';
+  }
+
+  static String generateSimpleId(String tag) {
+    final cleanTag = clean(tag);
+    String randomPart = List.generate(6, (_) => BessIdValidation.validCharacters[_secureRandom.nextInt(BessIdValidation.validCharacters.length)]).join();
+    return '$cleanTag-$randomPart';
   }
 
   /// Returns the specified part of a Bess ID.

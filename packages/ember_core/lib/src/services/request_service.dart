@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
@@ -15,11 +16,13 @@ class RequestService extends GetxService{
     }
     if (pushRequest.disarmRequirementsLevel == 1) {
       // TODO: Give the user details about operation
-      // TODO: This can't be called from here anymore
-      bool confirmed = await showConfirmationDialog(
-        title: 'Confirm Action',
-        message: pushRequest.confirmationMessage,
-      );
+      bool confirmed = (await MessageBus.poseInquiry(
+        CoreInquiry(
+            type: InquiryType.confirmation,
+            title: 'Confirm Action',
+            content: pushRequest.confirmationMessage
+        ))).userConfirmed!;
+
       if (confirmed) {
         pushRequest.disarm();
         return true;

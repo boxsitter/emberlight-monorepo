@@ -30,14 +30,14 @@ class CabinInUse extends BessObject {
 
   @override
   void purgeRef(String ref) {
-    if (BessIdFunctions.getIdPart(ref, 2) == 'camper') {
+    if (IdFunctions.getIdPart(ref, 2) == 'camper') {
       if(camperRefs.remove(ref) == false) { // TODO: remove this once the delete logic is bug free
         print('unnecessary purge');
       }
       if(campersWithPreferences.remove(ref) == null) {
         print('unnecessary purge');
       }
-    } else if (BessIdFunctions.getIdPart(ref, 2) == 'camper_preference') {
+    } else if (IdFunctions.getIdPart(ref, 2) == 'camper_preference') {
       campersWithPreferences.removeWhere((key, value) => value == ref);
     }
   }

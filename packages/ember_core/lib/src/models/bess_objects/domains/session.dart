@@ -23,6 +23,7 @@ class Session extends BessObject {
     super.updatedAt,
   })  : camperRefToPreferenceRef = camperIdToPreferenceId ?? {},
         refTracker = refTracker ?? {},
+        principalDependantLinkTracker = principalDependantLinkTracker ?? {},
         super(
           domain: 'sea',
           type: 'session',
@@ -36,11 +37,11 @@ class Session extends BessObject {
 
   @override
   void purgeRef(String ref) {
-    if (BessIdFunctions.getIdPart(ref, 2) == 'camper') {
+    if (IdFunctions.getIdPart(ref, 2) == 'camper') {
       if(camperRefToPreferenceRef.remove(ref) == null) {
         print('unnecessary purge');
       }
-    } else if (BessIdFunctions.getIdPart(ref, 2) == 'camper_preference') {
+    } else if (IdFunctions.getIdPart(ref, 2) == 'camper_preference') {
       camperRefToPreferenceRef.removeWhere((key, value) => value == ref);
     }
   }

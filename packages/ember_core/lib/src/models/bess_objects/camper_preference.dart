@@ -41,7 +41,7 @@ class CamperPreference extends BessObject {
 
   @override
   void purgeRef(String ref) {
-    if (BessIdFunctions.getIdPart(ref, 2) == 'activity_type') {
+    if (IdFunctions.getIdPart(ref, 2) == 'activity_type') {
       if(preferencesRefs.remove(ref) == null) {
         print('unnecessary purge');
       }

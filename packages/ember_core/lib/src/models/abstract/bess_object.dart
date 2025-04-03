@@ -18,7 +18,7 @@ abstract class BessObject { // TODO: remove timestamp
     String? objId,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : objId = objId ?? BessIdFunctions.generateBessId('obj', domain, type, idTag),
+  })  : objId = objId ?? IdFunctions.generateBessId('obj', domain, type, idTag),
         createdAt = (createdAt ?? DateTime.now()).toUtc(),
         updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 

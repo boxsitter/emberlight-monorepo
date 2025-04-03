@@ -58,7 +58,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
   Future<PushRequest> initCamperPreference(Camper camper) async {
     CamperPreference camperPreference = CamperPreference(camperRef: camper.objId, camperName: camper.name);
-    camper.camperPreferenceCmp = BessIdFunctions.objIdToCmp(camperPreference.objId);
+    camper.camperPreferenceCmp = IdFunctions.objIdToCmp(camperPreference.objId);
     Schedule schedule = await clientContextService.schedule;
     for (ActivityTypeRef uniqueActivityTypeRef in schedule.uniqueActivityTypeRefs) {
       camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
