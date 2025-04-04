@@ -4,9 +4,9 @@ import 'dart:async';
 
 import 'package:bessie/common/widgets/popups/confirmation.dart';
 import 'package:ember_core/ember_core_frontend.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
-class MessageListener extends GetxController {
+class MessageListener extends GetxService {
   late final StreamSubscription<CoreMessage> _sub;
 
   @override

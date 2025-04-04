@@ -17,11 +17,11 @@ class ActivityPreferencesController extends GetxController {
 
   CabinId? selectedCabinId;
   String? selectedCabinName;
-  final RxMap<CamperRef, String> camperNames = <CamperRef, String>{}.obs;
-  final RxMap<CamperRef, bool> camperIsCompleted = <CamperRef, bool>{}.obs;
+  final RxMap<CamperId, String> camperNames = <CamperId, String>{}.obs;
+  final RxMap<CamperId, bool> camperIsCompleted = <CamperId, bool>{}.obs;
 
   CabinId? selectedCamperId;
-  final RxMap<ScheduledActivityRef, String> activityNames = <ScheduledActivityRef, String>{}.obs;
+  final RxMap<ScheduledActivityId, String> activityNames = <ScheduledActivityId, String>{}.obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -37,9 +37,9 @@ class ActivityPreferencesController extends GetxController {
     final preferences = <CabinId, int>{};
 
     for (final CabinInUse cabin in cabinsInUseIds) {
-      names[cabin.objId] = cabin.name;
-      counts[cabin.objId] = cabin.camperRefs.length;
-      preferences[cabin.objId] = cabin.campersWithPreferences.length;
+      names[cabin.id] = cabin.name;
+      counts[cabin.id] = cabin.camperRefs.length;
+      preferences[cabin.id] = cabin.campersWithPreferences.length;
     }
 
     cabinNames.value = names;
@@ -56,12 +56,12 @@ class ActivityPreferencesController extends GetxController {
     print('POPULATING CAMPER MAPS');
     final Set<Camper> campers = await cabinsService.getCampersInCabin(selectedCabinId!);
 
-    final names = <CamperRef, String>{};
-    final completed = <CamperRef, bool>{};
+    final names = <CamperId, String>{};
+    final completed = <CamperId, bool>{};
 
     for (final Camper camper in campers) {
-      names[camper.objId] = camper.fullName;
-      completed[camper.objId] = camper.camperPreferenceCompleted;
+      names[camper.id] = camper.fullName;
+      completed[camper.id] = camper.camperPreferenceCompleted;
     }
 
     camperNames.value = names;
