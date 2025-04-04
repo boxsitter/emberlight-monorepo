@@ -1,14 +1,16 @@
+import 'package:ember_core/ember_core_frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Future<bool> showConfirmationDialog({
-  required String title,
-  required String message,
-}) async {
+Future<bool> showConfirmationDialog(CoreInquiry inquiry) async {
+  if (inquiry.type != InquiryType.confirmation) {
+    throw ArgumentError('Inquiry must be of type "confirmation"');
+  }
+
   return await Get.dialog<bool>(
     AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      title: Text(inquiry.title),
+      content: inquiry.content != null ? Text(inquiry.content!) : null,
       actions: [
         TextButton(
           onPressed: () => Get.back(result: false), // Return false on cancel
