@@ -6,7 +6,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
   AssignedMultiActivityBlock({
     Set<String>? scheduledActivityCmps,
     required super.name,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : scheduledActivityCmps = scheduledActivityCmps ?? {},
@@ -41,7 +41,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     // TODO: implement purgeRef
   }
 

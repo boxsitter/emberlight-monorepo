@@ -4,15 +4,15 @@ import 'package:ember_core/ember_core_utils.dart';
 class CabinInUse extends BessObject {
   final String name;
   final int capacity;
-  final Set<CamperRef> camperRefs;
-  final Map<CamperRef, CamperPreferenceRef> campersWithPreferences;
+  final Set<CamperId> camperRefs;
+  final Map<CamperId, CamperPreferenceId> campersWithPreferences;
 
   CabinInUse({
     required this.name,
     required this.capacity,
     Set<String>? camperRefs,
-    Map<CamperRef, CamperPreferenceRef>? campersWithPreferences ,
-    super.objId,
+    Map<CamperId, CamperPreferenceId>? campersWithPreferences ,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : camperRefs = camperRefs ?? {},
@@ -29,16 +29,16 @@ class CabinInUse extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
-    if (IdFunctions.getIdPart(ref, 2) == 'camper') {
-      if(camperRefs.remove(ref) == false) { // TODO: remove this once the delete logic is bug free
+  void purgeRef(String id) {
+    if (IdFunctions.getIdPart(id, 2) == 'camper') {
+      if(camperRefs.remove(id) == false) { // TODO: remove this once the delete logic is bug free
         print('unnecessary purge');
       }
-      if(campersWithPreferences.remove(ref) == null) {
+      if(campersWithPreferences.remove(id) == null) {
         print('unnecessary purge');
       }
-    } else if (IdFunctions.getIdPart(ref, 2) == 'camper_preference') {
-      campersWithPreferences.removeWhere((key, value) => value == ref);
+    } else if (IdFunctions.getIdPart(id, 2) == 'camper_preference') {
+      campersWithPreferences.removeWhere((key, value) => value == id);
     }
   }
 

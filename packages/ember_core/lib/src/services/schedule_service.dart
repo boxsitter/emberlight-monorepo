@@ -13,7 +13,7 @@ class ScheduleService extends GetxService {
     // creates the block and adds it to the schedule
     AssignedMultiActivityBlock blockToCreate = AssignedMultiActivityBlock(name: name);
     Schedule schedule = await clientContextService.schedule;
-    schedule.blockCmps.add(blockToCreate.objId);
+    schedule.blockCmps.add(blockToCreate.id);
     return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {blockToCreate, schedule});
   }
 

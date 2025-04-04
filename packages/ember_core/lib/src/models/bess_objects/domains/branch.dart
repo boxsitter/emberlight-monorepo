@@ -8,7 +8,7 @@ class Branch extends BessObject {
 
   Branch({
     required this.name,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : super(
@@ -23,7 +23,7 @@ class Branch extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     print('unnecessary purge');
     return;
   }

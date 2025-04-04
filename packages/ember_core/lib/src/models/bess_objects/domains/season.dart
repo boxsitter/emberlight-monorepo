@@ -11,7 +11,7 @@ class Season extends BessObject {
     required this.name,
     required this.startDate,
     required this.endDate,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : super(
@@ -26,7 +26,7 @@ class Season extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     print('unnecessary purge');
     return;
   }

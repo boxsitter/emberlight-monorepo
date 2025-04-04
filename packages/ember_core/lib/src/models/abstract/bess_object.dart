@@ -3,7 +3,7 @@ import 'package:ember_core/ember_core_utils.dart';
 typedef BessObjectObjId = String;
 
 abstract class BessObject { // TODO: remove timestamp
-  BessObjectObjId objId;
+  BessObjectObjId id;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -15,10 +15,10 @@ abstract class BessObject { // TODO: remove timestamp
     required this.domain,
     required this.type,
     required this.idTag,
-    String? objId,
+    String? id,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : objId = objId ?? IdFunctions.generateBessId('obj', domain, type, idTag),
+  })  : id = id ?? IdFunctions.generateBessId( domain, type, idTag),
         createdAt = (createdAt ?? DateTime.now()).toUtc(),
         updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 
@@ -27,24 +27,24 @@ abstract class BessObject { // TODO: remove timestamp
 
   String bessToString();
   Map<String, dynamic> toJson();
-  void purgeRef(String ref);
+  void purgeRef(String id);
 
   Map<String, dynamic> toJsonSuper() {
     return {
-      'objId': objId,
+      'id': id,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
   }
 
   void overwriteBessObjectFromJson(Map<String, dynamic> json) {
-    objId = json['objId'] as String;
+    id = json['id'] as String;
     createdAt = (json['createdAt'] as DateTime?)?.toUtc() ?? DateTime.now().toUtc();
     updatedAt = (json['updatedAt'] as DateTime?)?.toUtc() ?? DateTime.now().toUtc();
   }
 
   String toStringSuper() {
-    return '[$objId]';
+    return '[$id]';
   }
 
   void updateTimestamp() {

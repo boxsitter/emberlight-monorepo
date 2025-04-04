@@ -1,16 +1,15 @@
 import 'package:ember_core/ember_core_models.dart';
 
 typedef BlockId = String;
-typedef ActivityTypeRef = String;
 
 class Schedule extends BessObject {
   List<BlockId> blockCmps;
-  Set<ActivityTypeRef> uniqueActivityTypeRefs;
+  Set<ActivityTypeId> uniqueActivityTypeRefs;
 
   Schedule({
     List<BlockId>? blockCmps,
-    Set<ActivityTypeRef>? uniqueActivityTypeRefs,
-    super.objId,
+    Set<ActivityTypeId>? uniqueActivityTypeRefs,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : blockCmps = blockCmps ?? [],
@@ -39,14 +38,14 @@ class Schedule extends BessObject {
   factory Schedule.fromJson(Map<String, dynamic> json) {
     final schedule = Schedule(
       blockCmps: (json['blockCmps'] as List?)?.cast<BlockId>() ?? <BlockId>[],
-      uniqueActivityTypeRefs: (json['uniqueActivityTypeRefs'] as List?)?.cast<ActivityTypeRef>().toSet() ?? <ActivityTypeRef>{},
+      uniqueActivityTypeRefs: (json['uniqueActivityTypeRefs'] as List?)?.cast<ActivityTypeId>().toSet() ?? <ActivityTypeId>{},
     );
     schedule.overwriteBessObjectFromJson(json);
     return schedule;
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     // TODO: implement purgeRef
   }
 }

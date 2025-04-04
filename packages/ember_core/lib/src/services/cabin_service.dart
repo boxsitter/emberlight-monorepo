@@ -47,8 +47,8 @@ class CabinService extends GetxService {
       //TODO: Over capacity conflict
       throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinInUse.name} because it will put it over capacity');
     } else if (camperToAdd.cabinRef == null) {
-      cabinInUse.camperRefs.add(IdFunctions.objIdToRef(camperToAdd.objId));
-      camperToAdd.cabinRef = IdFunctions.objIdToRef(cabinInUse.objId);
+      cabinInUse.camperRefs.add(camperToAdd.id);
+      camperToAdd.cabinRef = cabinInUse.id;
       camperToAdd.cabinName = cabinInUse.name;
       return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinInUse, camperToAdd});
     } else {
@@ -59,7 +59,7 @@ class CabinService extends GetxService {
   }
 
   PushRequest removeCamperFromCabin(CabinInUse cabinInUse, Camper camperToRemove) {
-    cabinInUse.camperRefs.remove(IdFunctions.objIdToRef(camperToRemove.objId));
+    cabinInUse.camperRefs.remove(camperToRemove.id);
     camperToRemove.cabinRef = null;
     camperToRemove.cabinName = null;
     return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinInUse, camperToRemove});

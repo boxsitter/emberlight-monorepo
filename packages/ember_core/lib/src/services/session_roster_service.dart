@@ -57,15 +57,15 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   }
 
   Future<PushRequest> initCamperPreference(Camper camper) async {
-    CamperPreference camperPreference = CamperPreference(camperRef: camper.objId, camperName: camper.name);
-    camper.camperPreferenceCmp = IdFunctions.objIdToCmp(camperPreference.objId);
+    CamperPreference camperPreference = CamperPreference(camperRef: camper.id, camperName: camper.name);
+    camper.camperPreferenceCmp = camperPreference.id;
     Schedule schedule = await clientContextService.schedule;
-    for (ActivityTypeRef uniqueActivityTypeRef in schedule.uniqueActivityTypeRefs) {
+    for (ActivityTypeId uniqueActivityTypeRef in schedule.uniqueActivityTypeRefs) {
       camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
       camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }
     Session session = await clientContextService.session;
-    session.camperRefToPreferenceRef[camper.objId] = camperPreference.objId;
+    session.camperRefToPreferenceRef[camper.id] = camperPreference.id;
     PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
     pushRequest.objectsToPush.add(session);
     pushRequest.objectsToPush.add(camperPreference);

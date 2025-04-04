@@ -3,14 +3,14 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
-typedef CamperRef = String;
+typedef CamperId = String;
 
 // Represents a camper's preference for each activity in a given AssignableActivityBlock
 class CamperPreference extends BessObject {
-  final CamperRef camperRef;
+  final CamperId camperRef;
   final String camperName;
-  final Map<ActivityTypeRef, double?> preferencesRefs; // A map of every unique activity type in the schedule to the camper's preference
-  final Map<ActivityTypeRef, double> preferenceWeightRefs; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
+  final Map<ActivityTypeId, double?> preferencesRefs; // A map of every unique activity type in the schedule to the camper's preference
+  final Map<ActivityTypeId, double> preferenceWeightRefs; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
   int preferencesCompletedCount;
   // true when the camper has indicated their preference for every activity in the block
   bool completed;
@@ -18,11 +18,11 @@ class CamperPreference extends BessObject {
   CamperPreference({
     required this.camperRef,
     required this.camperName,
-    Map<ActivityTypeRef, double?>? preferencesRefs,
-    Map<ActivityTypeRef, double>? preferenceWeightRefs,
+    Map<ActivityTypeId, double?>? preferencesRefs,
+    Map<ActivityTypeId, double>? preferenceWeightRefs,
     this.preferencesCompletedCount = 0,
     this.completed = false,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : preferencesRefs = preferencesRefs ?? {},
@@ -40,13 +40,13 @@ class CamperPreference extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
-    if (IdFunctions.getIdPart(ref, 2) == 'activity_type') {
-      if(preferencesRefs.remove(ref) == null) {
+  void purgeRef(String id) {
+    if (IdFunctions.getIdPart(id, 2) == 'activity_type') {
+      if(preferencesRefs.remove(id) == null) {
         print('unnecessary purge');
       }
 
-      if(preferenceWeightRefs.remove(ref) == null) {
+      if(preferenceWeightRefs.remove(id) == null) {
         print('unnecessary purge');
       }
     }

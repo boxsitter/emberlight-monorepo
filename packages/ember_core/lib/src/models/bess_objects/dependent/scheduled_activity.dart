@@ -11,7 +11,7 @@ class ScheduledActivity extends BessObject {
     required this.capacity,
     required this.blockRef,
     Set<String>? camperRefs,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : camperRefs = camperRefs ?? {},
@@ -50,7 +50,7 @@ class ScheduledActivity extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     // TODO: implement purgeRef
   }
 }

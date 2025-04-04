@@ -1,9 +1,8 @@
 import 'package:ember_core/ember_core_models.dart';
 
-typedef CabinRef = String;
-typedef AssignedMultiActivityBlockRef = String;
-typedef CamperPreferenceCmp = String;
-typedef ScheduledActivityRef = String;
+typedef CabinId = String;
+typedef AssignedMultiActivityBlockId = String;
+typedef ScheduledActivityId = String;
 
 class Camper extends BessObject {
   String firstName;
@@ -12,13 +11,13 @@ class Camper extends BessObject {
   String gender;
   int age;
   String note;
-  CabinRef? cabinRef;
+  CabinId? cabinRef;
   String? cabinName; // TODO: This could cause problems with deletion of cabins or cabinsInUse, look into it
 
-  CamperPreferenceCmp? camperPreferenceCmp;
+  CamperPreferenceId? camperPreferenceCmp;
   bool camperPreferenceCompleted; // TODO: This could cause problems with deletion of preferences
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
-  Map<AssignedMultiActivityBlockRef, ScheduledActivityRef?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
+  Map<AssignedMultiActivityBlockId, ScheduledActivityId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
 
   Camper({
     required this.firstName,
@@ -31,8 +30,8 @@ class Camper extends BessObject {
     this.cabinName,
     this.camperPreferenceCmp,
     this.camperPreferenceCompleted = false,
-    Map<AssignedMultiActivityBlockRef, ScheduledActivityRef>? activityAssignmentRefs,
-    super.objId,
+    Map<AssignedMultiActivityBlockId, ScheduledActivityId>? activityAssignmentRefs,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : activityAssignmentRefs = activityAssignmentRefs ?? {},
@@ -95,7 +94,7 @@ class Camper extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     // TODO: implement purgeRef
   }
 }

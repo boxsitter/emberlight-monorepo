@@ -1,13 +1,13 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
-typedef CamperPreferenceRef = String;
+typedef CamperPreferenceId = String;
 
 class Session extends BessObject {
   final String name;
   final DateTime startDate;
   final DateTime endDate;
-  final Map<CamperRef, CamperPreferenceRef> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
+  final Map<CamperId, CamperPreferenceId> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
   Map<String, Set<String>> refTracker; // TODO: Still track who is referencing a principal in here. If the principal is deleted or found missing, call purge on everyone referencing it and delete the entry.
   Map<String, Set<String>> principalDependantLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependants and purge references to it
 
@@ -15,10 +15,10 @@ class Session extends BessObject {
     required this.name,
     required this.startDate,
     required this.endDate,
-    Map<CamperRef, CamperPreferenceRef>? camperIdToPreferenceId,
+    Map<CamperId, CamperPreferenceId>? camperIdToPreferenceId,
     Map<String, Set<String>>? refTracker,
     Map<String, Set<String>>? principalDependantLinkTracker,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : camperRefToPreferenceRef = camperIdToPreferenceId ?? {},
@@ -36,13 +36,13 @@ class Session extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
-    if (IdFunctions.getIdPart(ref, 2) == 'camper') {
-      if(camperRefToPreferenceRef.remove(ref) == null) {
+  void purgeRef(String id) {
+    if (IdFunctions.getIdPart(id, 2) == 'camper') {
+      if(camperRefToPreferenceRef.remove(id) == null) {
         print('unnecessary purge');
       }
-    } else if (IdFunctions.getIdPart(ref, 2) == 'camper_preference') {
-      camperRefToPreferenceRef.removeWhere((key, value) => value == ref);
+    } else if (IdFunctions.getIdPart(id, 2) == 'camper_preference') {
+      camperRefToPreferenceRef.removeWhere((key, value) => value == id);
     }
   }
 

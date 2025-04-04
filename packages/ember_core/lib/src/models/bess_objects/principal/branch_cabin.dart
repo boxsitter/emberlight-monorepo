@@ -7,7 +7,7 @@ class BranchCabin extends BessObject {
   BranchCabin({
     required this.name,
     required this.capacity,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  :  super(
@@ -41,7 +41,7 @@ class BranchCabin extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     // TODO: implement purgeRef
   }
 }

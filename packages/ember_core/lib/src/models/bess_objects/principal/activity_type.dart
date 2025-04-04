@@ -11,7 +11,7 @@ class ActivityType extends BessObject {
     required this.name,
     required this.capacity,
     required this.description,
-    super.objId,
+    super.id,
     super.createdAt,
     super.updatedAt,
   })  : super(
@@ -47,7 +47,7 @@ class ActivityType extends BessObject {
   }
 
   @override
-  void purgeRef(String ref) {
+  void purgeRef(String id) {
     // TODO: implement purgeRef
   }
 }
