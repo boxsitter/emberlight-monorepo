@@ -1,26 +1,39 @@
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_fire/src/repositories/pull_repository.dart';
 import 'package:get/get.dart';
 
 class DeletionService extends GetxService {
-  Future<DeleteRequest> deleteObject(BessObject objectToDelete) {
+  PullRepository pullRepo = Get.find<PullRepository>();
+  ClientContextService clientContextService = Get.find<ClientContextService>();
+
+  Future<DeleteRequest> deleteObject(BessObject objectToDelete) async {
     //get chain of components
     Set<Map<String, dynamic>> objectsToDeleteJsons = {objectToDelete.toJson()};
     int preOpLength = 1;
     int postOpLength = 0;
     Set<Map<String, dynamic>> lastLoopSet = objectsToDeleteJsons;
-    while (preOpLength != postOpLength) {
+    while (preOpLength != postOpLength) { // TODO: handle this recursively. We need to end up with a list of ids to delete and a list of ids to purge
       preOpLength = objectsToDeleteJsons.length;
       Set<String> idsFound = {};
       for (Map<String, dynamic> json in lastLoopSet) {
         idsFound.addAll(getCmps(json));
       }
       // TODO: pull all cmps from database as jsons, add them, run again
+      lastLoopSet.addAll((await pullRepo.getDocuments(idsFound)));
+      objectsToDeleteJsons.addAll(lastLoopSet);
+      postOpLength = objectsToDeleteJsons.length; // TODO: check if duplicate maps (jsons) will be ignored
     }
 
     //get a set of all references to those components
+    Map<String, Set<String>> refTracker = (await clientContextService.session).refTracker;
+    Set<String> objectsToDeleteIds;
+    Set<String> objectsToPurge = {};
+
+
     // TODO: remove the set of objects to be deleted from references to purge, it would be unnecessary calls
 
-    // TODO: don't forget to update the reference tracker
+    // TODO: don't forget to update the reference tracker (Only necessary for deleted items, purged objects will be updated on push)
 
     // TODO: handle master objects
   }

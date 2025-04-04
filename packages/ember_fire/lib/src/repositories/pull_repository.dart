@@ -30,7 +30,7 @@ class PullRepository {
   /// Retrieves multiple documents from Firestore for the given set of [ids].
   /// Validates that all IDs share the same collection and batches the queries according to Firestore’s whereIn limit.
   /// Returns a map where each key is a document ID and the value is its data (or null if not found).
-  Future<Map<String, Map<String, dynamic>?>> _getDocuments(Set<String> ids) async {
+  Future<Map<String, Map<String, dynamic>?>> getDocuments(Set<String> ids) async {
     if (ids.isEmpty) return {};
     BessIdValidation.validateIdsShareCollection(ids);
     final collection = pathService.getCollectionPathFromId(ids.first);
@@ -147,7 +147,7 @@ class PullRepository {
   /// Throws an error if any document is not found.
   /// Returns a set of the converted objects.
   Future<Set<T>> getObjects<T>(Set<String> ids, T Function(Map<String, dynamic> json) fromJson,) async {
-    final documentMap = await _getDocuments(ids);
+    final documentMap = await getDocuments(ids);
     return ids.map((id) {
       final data = documentMap[id];
       if (data == null) {
