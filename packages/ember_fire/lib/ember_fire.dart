@@ -78,4 +78,9 @@ class EmberFire implements BackendInterface {
     return watchDocWithChildDocs();
   }
 
+  @override
+  Future<String> getActiveObjectId(String collectionName, String domain) {
+    return getActiveObjectId(collectionName, domain);
+  }
+
 }

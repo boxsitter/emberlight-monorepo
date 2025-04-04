@@ -1,4 +1,3 @@
-import 'package:ember_core/ember_core.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/ember_core_validators.dart';
@@ -7,7 +6,7 @@ import 'package:get/get.dart';
 class PathService extends GetxService {
   ClientContext context = Get.find<ClientContext>();
 
-  String _getPath(String collectionName, String domain, String? ref) {
+  String _getPath(String collectionName, String domain, String? id) {
     if (!BessIdValidation.isValidDomain(domain)) {
       throw ArgumentError('Error getting path, invalid domain');
     }
@@ -20,11 +19,11 @@ class PathService extends GetxService {
     }
 
     String suffix;
-    if (ref == null) {
+    if (id == null) {
       suffix = collectionName;
     } else {
-      BessIdValidation.simpleValidate(ref);
-      suffix = '$collectionName/${BessIdFunctions.refIdToObj(ref)}';
+      BessIdValidation.simpleValidate(id);
+      suffix = '$collectionName/$id';
     }
 
     Map<String, String> domainPaths = {
@@ -41,14 +40,14 @@ class PathService extends GetxService {
     return '$outputPath/$suffix';
   }
 
-  String getDocPathFromRef(String ref) {
-    List<String> idParts = BessIdFunctions.getIdParts(ref);
-    return _getPath(idParts[2], idParts[1], ref);
+  String getDocPathFromId(String id) {
+    List<String> idParts = IdFunctions.getIdParts(id);
+    return _getPath(idParts[1], idParts[0], id);
   }
 
-  String getCollectionPathFromRef(String ref) {
-    List<String> idParts = BessIdFunctions.getIdParts(ref);
-    return _getPath(idParts[2], idParts[1], null);
+  String getCollectionPathFromId(String id) {
+    List<String> idParts = IdFunctions.getIdParts(id);
+    return _getPath(idParts[1], idParts[0], null);
   }
 
   String getCollectionPath(String collectionName, String domain) {

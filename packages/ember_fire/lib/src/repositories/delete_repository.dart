@@ -13,7 +13,7 @@ class DeleteRepository {
 
   /// Simply deletes a document, does not perform cleanup.
   Future<void> _deleteDocument(String id) async {
-    final resolvedPath = pathService.getDocPathFromRef(id);
+    final resolvedPath = pathService.getDocPathFromId(id);
     try {
       print('Deleting doc: $id');
       await _db.doc(resolvedPath).delete();

@@ -11,13 +11,13 @@ class PullRepository {
 
   FirebaseFirestore get db => _db;
 
-  /// Retrieves a document from Firestore for the given [ref] using the resolved document path.
+  /// Retrieves a document from Firestore for the given [id] using the resolved document path.
   /// Returns a map of the document data if it exists, or null if it doesn't.
   /// Throws an error if there is an issue during retrieval.
-  Future<Map<String, dynamic>?> _getDocument(String ref) async {
-    final resolvedPath = pathService.getDocPathFromRef(ref);
+  Future<Map<String, dynamic>?> _getDocument(String id) async {
+    final resolvedPath = pathService.getDocPathFromId(id);
     try {
-      print('Getting doc: $ref');
+      print('Getting doc: $id');
       final doc = await _db.doc(resolvedPath).get();
       return doc.exists ? doc.data() : null;
     } catch (e) {
@@ -27,16 +27,16 @@ class PullRepository {
     }
   }
 
-  /// Retrieves multiple documents from Firestore for the given set of [refs].
+  /// Retrieves multiple documents from Firestore for the given set of [ids].
   /// Validates that all IDs share the same collection and batches the queries according to Firestore’s whereIn limit.
   /// Returns a map where each key is a document ID and the value is its data (or null if not found).
-  Future<Map<String, Map<String, dynamic>?>> _getDocuments(Set<String> refs) async {
-    if (refs.isEmpty) return {};
-    BessIdValidation.validateIdsShareCollection(refs);
-    final collection = pathService.getCollectionPathFromRef(refs.first);
-    final idList = BessIdFunctions.refIdsToObjs(refs).toList();
+  Future<Map<String, Map<String, dynamic>?>> _getDocuments(Set<String> ids) async {
+    if (ids.isEmpty) return {};
+    BessIdValidation.validateIdsShareCollection(ids);
+    final collection = pathService.getCollectionPathFromId(ids.first);
+    final idList = ids.toList();
 
-    print('Getting docs: [${refs.join('\n')}]');
+    print('Getting docs: [${ids.join('\n')}]');
 
     // Create batches of at most 10 IDs each (Firestore whereIn limit)
     final batches = <List<String>>[];
@@ -85,43 +85,43 @@ class PullRepository {
     return results;
   }
 
-  /// Retrieves the specific [field] from a document identified by [ref].
+  /// Retrieves the specific [field] from a document identified by [id].
   /// Throws an error if the document or the field is not found.
-  Future<dynamic> _getDocumentField(String ref, String field) async {
-    final document = await _getDocument(ref);
+  Future<dynamic> _getDocumentField(String id, String field) async {
+    final document = await _getDocument(id);
     if (document == null) {
-      throw ArgumentError("Document with id '$ref' does not exist.");
+      throw ArgumentError("Document with id '$id' does not exist.");
     }
     if (!document.containsKey(field)) {
-      throw ArgumentError("Field '$field' does not exist in document with id '$ref'.");
+      throw ArgumentError("Field '$field' does not exist in document with id '$id'.");
     }
     return document[field];
   }
 
-  /// Retrieves the value of [field] from the document with the given [ref] and casts it to type [T].
+  /// Retrieves the value of [field] from the document with the given [id] and casts it to type [T].
   /// Throws an error if the document is missing, the field doesn't exist, or if the value isn't of type [T].
-  Future<T> getFieldValue<T>(String ref, String field) async {
-    final value = await _getDocumentField(ref, field);
+  Future<T> getFieldValue<T>(String id, String field) async {
+    final value = await _getDocumentField(id, field);
     if (value is! T) {
       throw ArgumentError(
           "Field '$field' is expected to be of type ${T.toString()} but found ${value.runtimeType}."
       );
     }
-    print('Getting field: $field in $ref');
-    return value as T;
+    print('Getting field: $field in $id');
+    return value;
   }
 
-  /// Retrieves the value of [field] from the document with the given [ref] as a List,
+  /// Retrieves the value of [field] from the document with the given [id] as a List,
   /// and converts it to a [Set] of type [T].
   /// Throws an error if the document or field is missing, if the field is not a List, or if the conversion fails.
-  Future<Set<T>> getSetFieldValue<T>(String ref, String field) async {
-    final value = await _getDocumentField(ref, field);
+  Future<Set<T>> getSetFieldValue<T>(String id, String field) async {
+    final value = await _getDocumentField(id, field);
     if (value is! List) {
       throw ArgumentError(
           "Field '$field' is expected to be a List but found ${value.runtimeType}."
       );
     }
-    print('Getting set: $field in $ref');
+    print('Getting set: $field in $id');
     try {
       return (value).map((e) => e as T).toSet();
     } catch (_) {
@@ -131,24 +131,24 @@ class PullRepository {
     }
   }
 
-  /// Retrieves a document with the given [ref] and converts its data into an object of type [T]
+  /// Retrieves a document with the given [id] and converts its data into an object of type [T]
   /// using the provided [fromJson] function.
   /// Throws an error if the document is not found.
-  Future<T> getObject<T>(String ref, T Function(Map<String, dynamic> json) fromJson,) async {
-    final data = await _getDocument(ref);
+  Future<T> getObject<T>(String id, T Function(Map<String, dynamic> json) fromJson,) async {
+    final data = await _getDocument(id);
     if (data == null) {
-      throw StateError('No document found for ID: $ref');
+      throw StateError('No document found for ID: $id');
     }
     return fromJson(data);
   }
 
-  /// Retrieves multiple documents specified by the set of [ref] and converts each into an object of type [T]
+  /// Retrieves multiple documents specified by the set of [ids] and converts each into an object of type [T]
   /// using the provided [fromJson] function.
   /// Throws an error if any document is not found.
   /// Returns a set of the converted objects.
-  Future<Set<T>> getObjects<T>(Set<String> ref, T Function(Map<String, dynamic> json) fromJson,) async {
-    final documentMap = await _getDocuments(ref);
-    return ref.map((id) {
+  Future<Set<T>> getObjects<T>(Set<String> ids, T Function(Map<String, dynamic> json) fromJson,) async {
+    final documentMap = await _getDocuments(ids);
+    return ids.map((id) {
       final data = documentMap[id];
       if (data == null) {
         throw StateError('No document found for ID: $id');
@@ -209,6 +209,7 @@ class PullRepository {
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value,) async {
     return await _queryCollection(collectionName, domain, { field: value });
   }
+
 
   /// Queries for the first active document in the collection (specified by [collectionName] and [domain]).
   /// An active document is defined as one with a 'startDate' less than or equal to the current time

@@ -17,7 +17,7 @@ class LiveDataRepository {
   /// Watches a single Firestore document by [id].
   /// Parses it into [T] via [fromJson]. If the doc doesn't exist, emits `null`.
   Stream<T?> watchDoc<T>({required String id, required T Function(Map<String, dynamic> json) fromJson,}) {
-    final resolvedPath = pathService.getDocPathFromRef(id);
+    final resolvedPath = pathService.getDocPathFromId(id);
     return _db.doc(resolvedPath).snapshots().map((snapshot) {
       if (!snapshot.exists) return null;
       final data = snapshot.data() as Map<String, dynamic>;

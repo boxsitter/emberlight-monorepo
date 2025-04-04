@@ -42,10 +42,10 @@ class PushRepository {
     for (final object in objects) {
       Map<String, dynamic> document = object.toJson();
       BessIdValidation.validateDocument(document);
-      BessHelperFunctions.updateDocumentTimestamp(document);
-      final resolvedPath = pathService.getDocPathFromRef(object.objId);
-      final docRef = _db.doc(resolvedPath);
-      batch.set(docRef, document, SetOptions(merge: true));
+      CoreHelperFunctions.updateDocumentTimestamp(document);
+      final resolvedPath = pathService.getDocPathFromId(object.id);
+      final docId = _db.doc(resolvedPath);
+      batch.set(docId, document, SetOptions(merge: true));
     }
 
     try {
@@ -68,21 +68,20 @@ class PushRepository {
       return;
     }
 
-    Map<String, dynamic> branchDoc = (await _db.doc(pathService.getDocPathFromRef(clientContextService.branchId)).get()).data()!;
-    Branch branch = Branch.fromJson(branchDoc);
+    Map<String, dynamic> sessionDoc = (await _db.doc(pathService.getDocPathFromId(clientContextService.sessionId)).get()).data()!;
+    Session session = Session.fromJson(sessionDoc);
 
-    Map<String, Set<String>> updatedRefTracker = _updateRefTracker(branch.refTracker, objectsToPush);
-    branch.refTracker = updatedRefTracker;
-    objectsToPush.add(branch);
+    Map<String, Set<String>> updatedRefTracker = _updateRefTracker(session.refTracker, objectsToPush);
+    session.refTracker = updatedRefTracker;
+    objectsToPush.add(session);
     _bulkPushObjects(objectsToPush);
-
   }
 
   static Map<String, Set<String>> _updateRefTracker(Map<String, Set<String>> refTracker, Set<BessObject> objects) {
     final Set<Map<String, dynamic>> documents = objects.map((element) => element.toJson()).toSet();
     // Process each document to update the tracker.
     for (final doc in documents) {
-      final docId = BessIdFunctions.objIdToRef(doc['objId'] as String);
+      final docId = doc['id'] as String;
       // Extract the set of referenced IDs from the document.
       final currentRefs = _thisDocumentReferences(doc);
 
@@ -96,8 +95,8 @@ class PushRepository {
 
       // Add missing references:
       // For each referenced id in the document, ensure that the doc's id is added to the tracker.
-      for (final ref in currentRefs) {
-        refTracker.putIfAbsent(ref, () => <String>{}).add(docId);
+      for (final id in currentRefs) {
+        refTracker.putIfAbsent(id, () => <String>{}).add(docId);
       }
     }
 
@@ -113,11 +112,11 @@ class PushRepository {
 
     void collectIds(String key, dynamic value) {
       if (key.endsWith('ref') || key.endsWith('refs') || key.endsWith('Ref') || key.endsWith('Refs')) {
-        if (value is String && value.startsWith("ref")) {
+        if (value is String) {
           referencedIds.add(value);
         } else if (value is List) {
           for (var item in value) {
-            if (item is String && item.startsWith("ref")) {
+            if (item is String) {
               referencedIds.add(item);
             }
           }
