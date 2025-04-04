@@ -1,12 +1,15 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class ScheduledActivity extends BessObject {
+class ActivityDependant extends BessObject implements Dependant{
+  @override
+  final String principalPar;
   final String name;
   final int capacity;
   final Set<String> camperRefs;
   final String blockRef;
 
-  ScheduledActivity({
+  ActivityDependant({
+    required this.principalPar,
     required this.name,
     required this.capacity,
     required this.blockRef,
@@ -17,7 +20,7 @@ class ScheduledActivity extends BessObject {
   })  : camperRefs = camperRefs ?? {},
         super(
           domain: 'ses',
-          type: 'scheduled_activity',
+          type: 'activity_dependant',
           idTag: name,
         );
 
@@ -30,6 +33,7 @@ class ScheduledActivity extends BessObject {
   Map<String, dynamic> toJson() {
     final json = toJsonSuper();
     json.addAll({
+      'principalPar': principalPar,
       'name': name,
       'capacity': capacity,
       'camperRefs': camperRefs.toList(),
@@ -38,8 +42,9 @@ class ScheduledActivity extends BessObject {
     return json;
   }
 
-  factory ScheduledActivity.fromJson(Map<String, dynamic> json) {
-    ScheduledActivity activity = ScheduledActivity(
+  factory ActivityDependant.fromJson(Map<String, dynamic> json) {
+    ActivityDependant activity = ActivityDependant(
+      principalPar: json['principalPar'] as String,
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},

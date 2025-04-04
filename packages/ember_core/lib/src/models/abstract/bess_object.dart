@@ -22,6 +22,12 @@ abstract class BessObject { // TODO: remove timestamp
         createdAt = (createdAt ?? DateTime.now()).toUtc(),
         updatedAt = (updatedAt ?? DateTime.now()).toUtc();
 
+  @override
+  bool operator == (Object other) => identical(this, other) || (other is BessObject && runtimeType == other.runtimeType && id == other.id);
+
+  @override
+  int get hashCode => id.hashCode;
+
   String get formattedCreatedAt => Formatter.formatDate(createdAt.toLocal());
   String get formattedUpdatedAt => Formatter.formatDate(updatedAt.toLocal());
 

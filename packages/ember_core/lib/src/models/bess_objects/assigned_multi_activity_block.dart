@@ -1,15 +1,15 @@
 import 'package:ember_core/ember_core_models.dart';
 
 class AssignedMultiActivityBlock extends ScheduleBlock {
-  final Set<String> scheduledActivityCmps;
+  final Set<String> activityDependantCmps;
 
   AssignedMultiActivityBlock({
-    Set<String>? scheduledActivityCmps,
+    Set<String>? activityDependantCmps,
     required super.name,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : scheduledActivityCmps = scheduledActivityCmps ?? {},
+  })  : activityDependantCmps = activityDependantCmps ?? {},
         super(
           domain: 'ses',
           type: 'AMA_Block',
@@ -18,7 +18,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
 
   @override
   String bessToString() {
-    return 'AssignedMultiActivityBlock: $name, Activities: ${scheduledActivityCmps.length}';
+    return 'AssignedMultiActivityBlock: $name, Activities: ${activityDependantCmps.length}';
   }
 
   @override
@@ -26,7 +26,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'scheduledActivityCmps': scheduledActivityCmps.toList(),
+      'activityDependantCmps': activityDependantCmps.toList(),
     });
     return json;
   }
@@ -34,7 +34,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
   factory AssignedMultiActivityBlock.fromJson(Map<String, dynamic> json) {
     final block = AssignedMultiActivityBlock(
       name: json['name'] as String,
-      scheduledActivityCmps: (json['scheduledActivityCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
+      activityDependantCmps: (json['activityDependantCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     block.overwriteBessObjectFromJson(json);
     return block;

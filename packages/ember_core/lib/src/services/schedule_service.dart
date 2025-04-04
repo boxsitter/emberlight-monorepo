@@ -47,7 +47,7 @@ class ScheduleService extends GetxService {
   //   required int capacity,
   //   required AssignedMultiActivityBlock assignableActivityBlock,
   // }) {
-  //   ScheduledActivity activityToAdd = ScheduledActivity(
+  //   ActivityDependant activityToAdd = ActivityDependant(
   //     name: name,
   //     capacity: capacity,
   //     block: assignableActivityBlock,
@@ -60,7 +60,7 @@ class ScheduleService extends GetxService {
   //   }
   // }
   //
-  // void removeActivityFromBlock(AssignedMultiActivityBlock block, ScheduledActivity activityToRemove) {
+  // void removeActivityFromBlock(AssignedMultiActivityBlock block, ActivityDependant activityToRemove) {
   //   block.activities.remove(activityToRemove.id);
   //
   //   for (Camper camper in localData.session!.sessionRoster.values) {
@@ -89,13 +89,13 @@ class ScheduleService extends GetxService {
   //     }
   //
   //     var map = camper.activityPreferences[block]!.preferences;
-  //     List<ScheduledActivity> sortedKeys = map.keys.toList()..sort((a, b) => map[a]!.compareTo(map[b]!)); // a list of activities for the block sorted by the camper's ranking
+  //     List<ActivityDependant> sortedKeys = map.keys.toList()..sort((a, b) => map[a]!.compareTo(map[b]!)); // a list of activities for the block sorted by the camper's ranking
   //
   //     // attempt to assign the camper to their preferred activities
   //     // moving down their list by rank when activities are full
   //     bool camperAssigned = false;
   //     int ranked = 1;
-  //     for (ScheduledActivity activity in sortedKeys) {
+  //     for (ActivityDependant activity in sortedKeys) {
   //       ConsoleController().log('Attempting to assign ${camper.fullName} to ${activity.name}, ranked: $ranked');
   //       if (assignCamperToActivity(camper, activity)) {
   //         camperAssigned = true;
@@ -112,13 +112,13 @@ class ScheduleService extends GetxService {
   // // adds camper to an activity's roster as long as the activity has space
   // // returns false otherwise
   // // if the camper is in another activity, they are removed from it and added to
-  // bool assignCamperToActivity(Camper camper, ScheduledActivity activity) {
+  // bool assignCamperToActivity(Camper camper, ActivityDependant activity) {
   //   if (activity.roster.length + 1 > activity.capacity) {
   //     ConsoleController().error('Adding ${camper.fullName} to ${activity.name} would put it over capacity. Current count: ${activity.roster.length}, Capacity: ${activity.capacity}');
   //     return false;
   //   }
   //   if (camper.activities[activity.block] != null) {
-  //     ScheduledActivity currentAssignedActivity = camper.activities[activity.block]!;
+  //     ActivityDependant currentAssignedActivity = camper.activities[activity.block]!;
   //     removeCamperFromActivity(camper, currentAssignedActivity);
   //   }
   //   RosterUtils.addCamperToRoster(activity.roster, camper);
@@ -127,7 +127,7 @@ class ScheduleService extends GetxService {
   //   return true;
   // }
   //
-  // void removeCamperFromActivity(Camper camper, ScheduledActivity activity) {
+  // void removeCamperFromActivity(Camper camper, ActivityDependant activity) {
   //   RosterUtils.removeCamperFromRoster(activity.roster, camper);
   //   camper.activities[activity.block] = null;
   //   ConsoleController().log('${camper.fullName} removed from ${activity.name}');
@@ -138,7 +138,7 @@ class ScheduleService extends GetxService {
   //     if(scheduleBlock is AssignedMultiActivityBlock) {
   //       AssignedMultiActivityBlock block = scheduleBlock;
   //       ConsoleController().log('Block: ${block.name}\n');
-  //       for (ScheduledActivity activity in block.activities.values) {
+  //       for (ActivityDependant activity in block.activities.values) {
   //         ConsoleController().log('${activity.roster.bessToString()}\n');
   //       }
   //     }

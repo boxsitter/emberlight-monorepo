@@ -2,11 +2,12 @@ library;
 
 // abstract
 export 'src/models/abstract/bess_object.dart';
+export 'src/models/abstract/dependant.dart';
 export 'src/models/abstract/schedule_block.dart';
 
 // bess_objects
 // dependent
-export 'src/models/bess_objects/dependent/cabin_in_use.dart';
+export 'src/models/bess_objects/dependent/cabin_dependant.dart';
 export 'src/models/bess_objects/dependent/scheduled_activity.dart';
 
 // domains

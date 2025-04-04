@@ -2,6 +2,8 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
 typedef CamperPreferenceId = String;
+typedef DependantId = String;
+typedef PrincipalId = String;
 
 class Session extends BessObject {
   final String name;
@@ -9,7 +11,7 @@ class Session extends BessObject {
   final DateTime endDate;
   final Map<CamperId, CamperPreferenceId> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
   Map<String, Set<String>> refTracker; // TODO: Still track who is referencing a principal in here. If the principal is deleted or found missing, call purge on everyone referencing it and delete the entry.
-  Map<String, Set<String>> principalDependantLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependants and purge references to it
+  Map<PrincipalId, Set<DependantId>> principalDependantLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependants and purge references to it
 
   Session({
     required this.name,

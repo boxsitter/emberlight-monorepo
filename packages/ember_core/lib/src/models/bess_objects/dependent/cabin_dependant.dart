@@ -1,13 +1,16 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
-class CabinInUse extends BessObject {
+class CabinDependant extends BessObject implements Dependant{
+  @override
+  final String principalPar;
   final String name;
   final int capacity;
   final Set<CamperId> camperRefs;
   final Map<CamperId, CamperPreferenceId> campersWithPreferences;
 
-  CabinInUse({
+  CabinDependant({
+    required this.principalPar,
     required this.name,
     required this.capacity,
     Set<String>? camperRefs,
@@ -19,7 +22,7 @@ class CabinInUse extends BessObject {
         campersWithPreferences = campersWithPreferences ?? {},
         super(
           domain: 'ses',
-          type: 'cabin_in_use',
+          type: 'cabin_dependant',
           idTag: name,
         );
 
@@ -46,6 +49,7 @@ class CabinInUse extends BessObject {
   Map<String, dynamic> toJson() {
     final json = toJsonSuper();
     json.addAll({
+      'principalPar': principalPar,
       'name': name,
       'capacity': capacity,
       'camperRefs': camperRefs.toList(),
@@ -54,14 +58,15 @@ class CabinInUse extends BessObject {
     return json;
   }
 
-  factory CabinInUse.fromJson(Map<String, dynamic> json) {
-    final cabinInUse = CabinInUse(
+  factory CabinDependant.fromJson(Map<String, dynamic> json) {
+    final cabinDependant = CabinDependant(
+      principalPar: json['principalPar'] as String,
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
       campersWithPreferences: (json['campersWithPreferences'] as Map?)?.cast<String, String>() ?? {},
     );
-    cabinInUse.overwriteBessObjectFromJson(json);
-    return cabinInUse;
+    cabinDependant.overwriteBessObjectFromJson(json);
+    return cabinDependant;
   }
 }

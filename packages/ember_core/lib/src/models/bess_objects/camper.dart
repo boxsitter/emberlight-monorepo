@@ -2,7 +2,7 @@ import 'package:ember_core/ember_core_models.dart';
 
 typedef CabinId = String;
 typedef AssignedMultiActivityBlockId = String;
-typedef ScheduledActivityId = String;
+typedef ActivityDependantId = String;
 
 class Camper extends BessObject {
   String firstName;
@@ -17,7 +17,7 @@ class Camper extends BessObject {
   CamperPreferenceId? camperPreferenceCmp;
   bool camperPreferenceCompleted; // TODO: This could cause problems with deletion of preferences
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
-  Map<AssignedMultiActivityBlockId, ScheduledActivityId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
+  Map<AssignedMultiActivityBlockId, ActivityDependantId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
 
   Camper({
     required this.firstName,
@@ -30,7 +30,7 @@ class Camper extends BessObject {
     this.cabinName,
     this.camperPreferenceCmp,
     this.camperPreferenceCompleted = false,
-    Map<AssignedMultiActivityBlockId, ScheduledActivityId>? activityAssignmentRefs,
+    Map<AssignedMultiActivityBlockId, ActivityDependantId>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
