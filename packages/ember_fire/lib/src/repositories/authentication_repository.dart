@@ -36,9 +36,9 @@
 //       // If the user is logged in
 //       if (user != null) {
 //         // Navigate to the home screen
-//         Get.offAllNamed(BessRoutes.home);
+//         Get.offAllNamed(CoreRoutes.home);
 //       } else {
-//         Get.offAllNamed(BessRoutes.login);
+//         Get.offAllNamed(CoreRoutes.login);
 //       }
 //     }
 //   }
@@ -50,13 +50,13 @@
 //       return await _auth.signInWithEmailAndPassword(
 //           email: email, password: password);
 //     } on FirebaseAuthException catch (e) {
-//       throw BessFirebaseAuthException(e.code).message;
+//       throw CoreFirebaseAuthException(e.code).message;
 //     } on FirebaseException catch (e) {
-//       throw BessFirebaseException(e.code).message;
+//       throw CoreFirebaseException(e.code).message;
 //     } on FormatException catch (_) {
-//       throw const BessFormatException();
+//       throw const CoreFormatException();
 //     } on PlatformException catch (e) {
-//       throw BessPlatformException(e.code).message;
+//       throw CorePlatformException(e.code).message;
 //     } catch (e) {
 //       throw 'Something went wrong. Please try again';
 //     }
@@ -69,13 +69,13 @@
 //       return await _auth.createUserWithEmailAndPassword(
 //           email: email, password: password);
 //     } on FirebaseAuthException catch (e) {
-//       throw BessFirebaseAuthException(e.code).message;
+//       throw CoreFirebaseAuthException(e.code).message;
 //     } on FirebaseException catch (e) {
-//       throw BessFirebaseException(e.code).message;
+//       throw CoreFirebaseException(e.code).message;
 //     } on FormatException catch (_) {
-//       throw const BessFormatException();
+//       throw const CoreFormatException();
 //     } on PlatformException catch (e) {
-//       throw BessPlatformException(e.code).message;
+//       throw CorePlatformException(e.code).message;
 //     } catch (e) {
 //       throw 'Something went wrong. Please try again';
 //     }

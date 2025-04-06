@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
-import '../path_service.dart';
+import '../services/path_service.dart';
 
 class DeleteRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;

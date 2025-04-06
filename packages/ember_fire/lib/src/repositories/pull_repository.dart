@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
 
-import '../path_service.dart';
+import '../services/path_service.dart';
 
 class PullRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -11,87 +12,146 @@ class PullRepository {
 
   FirebaseFirestore get db => _db;
 
-  /// Retrieves a document from Firestore for the given [id] using the resolved document path.
-  /// Returns a map of the document data if it exists, or null if it doesn't.
-  /// Throws an error if there is an issue during retrieval.
-  Future<Map<String, dynamic>?> _getDocument(String id) async {
+  Future<bool> docExists(String id) async {
     final resolvedPath = pathService.getDocPathFromId(id);
+    print('Getting doc: $id');
+
     try {
-      print('Getting doc: $id');
-      final doc = await _db.doc(resolvedPath).get();
-      return doc.exists ? doc.data() : null;
+      final docSnapshot = await _db.doc(resolvedPath).get();
+      // If doc doesn't exist or doc.data() is null, return empty map
+      if (!docSnapshot.exists || docSnapshot.data() == null) {
+        return false;
+      } else {
+        return true;
+      }
+    } on FirebaseException catch (e) {
+      print('Error fetching document at $resolvedPath: ${e.message}');
+      rethrow;
     } catch (e) {
-      // TODO: replace with logging system and proper error throwing
+      // Handle all other errors
       print('Error fetching document at $resolvedPath: $e');
       rethrow;
     }
   }
 
+  /// Retrieves a document from Firestore for the given [id] using the resolved document path.
+  /// Returns a map of the document data if it exists, or null if it doesn't.
+  /// Throws an error if there is an issue during retrieval.
+  Future<Map<String, dynamic>> getDoc(String id) async {
+    final resolvedPath = pathService.getDocPathFromId(id);
+    print('Getting doc: $id');
+
+    try {
+      final docSnapshot = await _db.doc(resolvedPath).get();
+
+      // If doc doesn't exist or doc.data() is null, return empty map
+      if (!docSnapshot.exists || docSnapshot.data() == null) {
+        return {};
+      }
+
+      // Otherwise, return the document's data
+      return docSnapshot.data()!;
+    } on FirebaseException catch (e) {
+      print('Error fetching document at $resolvedPath: ${e.message}');
+      rethrow;
+    } catch (e) {
+      // Handle all other errors
+      print('Error fetching document at $resolvedPath: $e');
+      rethrow;
+    }
+  }
+
+
   /// Retrieves multiple documents from Firestore for the given set of [ids].
   /// Validates that all IDs share the same collection and batches the queries according to Firestore’s whereIn limit.
-  /// Returns a map where each key is a document ID and the value is its data (or null if not found).
-  Future<Map<String, Map<String, dynamic>?>> getDocuments(Set<String> ids) async {
-    if (ids.isEmpty) return {};
-    BessIdValidation.validateIdsShareCollection(ids);
+  /// Returns a map where each key is a document ID and the value is its data.
+  Future<Map<String, Map<String, dynamic>>> getDocs(Set<String> ids) async {
+    if (ids.isEmpty) {
+      return {};
+    }
+
+    // Validate that all IDs share the same collection path
+    CoreIdValidation.validateIdsShareCollection(ids);
     final collection = pathService.getCollectionPathFromId(ids.first);
     final idList = ids.toList();
 
     print('Getting docs: [${ids.join('\n')}]');
 
-    // Create batches of at most 10 IDs each (Firestore whereIn limit)
+    // Create batches of at most 10 IDs each
     final batches = <List<String>>[];
     for (int i = 0; i < idList.length; i += 10) {
-      final end = (i + 10 < idList.length) ? i + 10 : idList.length;
+      final end = (i + 10 <= idList.length) ? i + 10 : idList.length;
       batches.add(idList.sublist(i, end));
     }
 
-    // Execute each batch query concurrently and collect their results
-    final batchResults = await Future.wait(batches.map((batch) async {
-      final querySnapshot = await _db
-          .collection(collection)
-          .where(FieldPath.documentId, whereIn: batch)
-          .get();
-      final batchMap = <String, Map<String, dynamic>?>{};
-      for (final doc in querySnapshot.docs) {
-        batchMap[doc.id] = doc.data();
-      }
-      return batchMap;
-    }));
+    final results = <String, Map<String, dynamic>>{};
 
-    // Merge the maps from all batches into a single results map
-    final results = <String, Map<String, dynamic>?>{};
-    for (final map in batchResults) {
-      results.addAll(map);
+    try {
+      // Execute each batch query concurrently
+      final batchResults = await Future.wait(batches.map((batch) async {
+        final querySnapshot = await _db
+            .collection(collection)
+            .where(FieldPath.documentId, whereIn: batch)
+            .get();
+
+        final batchMap = <String, Map<String, dynamic>>{};
+        for (final doc in querySnapshot.docs) {
+          // Typically doc.data() cannot be null if doc exists, but we check just in case
+          final data = doc.data();
+          batchMap[doc.id] = data;
+                }
+        return batchMap;
+      }));
+
+      // Merge the maps from all batches
+      for (final map in batchResults) {
+        results.addAll(map);
+      }
+    } on FirebaseException catch (e) {
+      print('Error fetching documents: ${e.message}');
+      rethrow;
+    } catch (e) {
+      print('Error fetching documents: $e');
+      rethrow;
     }
+
+    // If none found or all were null => results is empty
     return results;
   }
 
   /// Retrieves all documents from the collection specified by [collectionName] and [domain].
   /// Returns a map of document IDs to their data.
   /// Throws an error if the retrieval fails.
-  Future<Map<String, Map<String, dynamic>?>> _getDocumentsInCollection(String collectionName, String domain) async {
-    final results = <String, Map<String, dynamic>?>{};
-    final collection = pathService.getCollectionPath(collectionName, domain);
+  Future<Map<String, Map<String, dynamic>>> getDocsInCollection(String collectionName, String domain,) async {
+    final collectionPath = pathService.getCollectionPath(collectionName, domain);
+    print('Fetching all documents from collection: $collectionPath');
     try {
-      print('Fetching all documents from collection: $collectionName');
-      final querySnapshot = await _db.collection(collection).get();
+      final querySnapshot = await _db.collection(collectionPath).get();
+
+      // If no docs, return empty map
+      if (querySnapshot.docs.isEmpty) {
+        return {};
+      }
+
+      final results = <String, Map<String, dynamic>>{};
       for (final doc in querySnapshot.docs) {
         results[doc.id] = doc.data();
       }
+      return results;
+    } on FirebaseException catch (e) {
+      throw StateError(
+        'Error fetching documents from $collectionName: ${e.message}',
+      );
     } catch (e) {
       print('Error fetching documents from collection $collectionName: $e');
       rethrow;
     }
-    return results;
   }
 
   /// Retrieves the specific [field] from a document identified by [id].
   /// Throws an error if the document or the field is not found.
   Future<dynamic> _getDocumentField(String id, String field) async {
-    final document = await _getDocument(id);
-    if (document == null) {
-      throw ArgumentError("Document with id '$id' does not exist.");
-    }
+    final document = await getDoc(id);
     if (!document.containsKey(field)) {
       throw ArgumentError("Field '$field' does not exist in document with id '$id'.");
     }
@@ -134,26 +194,25 @@ class PullRepository {
   /// Retrieves a document with the given [id] and converts its data into an object of type [T]
   /// using the provided [fromJson] function.
   /// Throws an error if the document is not found.
-  Future<T> getObject<T>(String id, T Function(Map<String, dynamic> json) fromJson,) async {
-    final data = await _getDocument(id);
-    if (data == null) {
-      throw StateError('No document found for ID: $id');
-    }
-    return fromJson(data);
+  Future<T> getObject<T>(String id) async {
+    final data = await getDoc(id);
+    String objectType = IdFunctions.getIdPart(id, 1);
+    return CoreObject.fromJsons[objectType]!(data) as T;
   }
 
   /// Retrieves multiple documents specified by the set of [ids] and converts each into an object of type [T]
   /// using the provided [fromJson] function.
   /// Throws an error if any document is not found.
   /// Returns a set of the converted objects.
-  Future<Set<T>> getObjects<T>(Set<String> ids, T Function(Map<String, dynamic> json) fromJson,) async {
-    final documentMap = await getDocuments(ids);
+  Future<Set<T>> getObjects<T>(Set<String> ids) async {
+    final documentMap = await getDocs(ids);
     return ids.map((id) {
       final data = documentMap[id];
       if (data == null) {
         throw StateError('No document found for ID: $id');
       }
-      return fromJson(data);
+      String objectType = IdFunctions.getIdPart(id, 1);
+      return CoreObject.fromJsons[objectType]!(data) as T;
     }).toSet();
   }
 
@@ -161,13 +220,10 @@ class PullRepository {
   /// converting each document’s data into an object of type [T] via the [fromJson] function.
   /// Throws an error if any document is missing.
   /// Returns a set of the converted objects.
-  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain, T Function(Map<String, dynamic> json) fromJson,) async {
-    final documentMap = await _getDocumentsInCollection(collectionName, domain);
+  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain) async {
+    final documentMap = await getDocsInCollection(collectionName, domain);
     return documentMap.entries.map((entry) {
-      if (entry.value == null) {
-        throw StateError('No document found for ID: ${entry.key}');
-      }
-      return fromJson(entry.value!);
+      return CoreObject.fromJsons[collectionName]!(entry.value) as T;
     }).toSet();
   }
 

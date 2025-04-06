@@ -1,10 +1,10 @@
 /// Custom exception class to handle various Firebase authentication-related errors.
-class BessFirebaseAuthException implements Exception {
+class CoreFirebaseAuthException implements Exception {
   /// The error code associated with the exception.
   final String code;
 
   /// Constructor that takes an error code.
-  BessFirebaseAuthException(this.code);
+  CoreFirebaseAuthException(this.code);
 
   /// Get the corresponding error message based on the error code.
   String get message {

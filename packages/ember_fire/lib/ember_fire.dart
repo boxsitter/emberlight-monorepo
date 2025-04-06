@@ -49,18 +49,18 @@ class EmberFire implements BackendInterface {
   }
 
   @override
-  Future<T> getObject<T>(String ref, FromJson<T> fromJson) {
-    return getObject(ref, fromJson);
+  Future<T> getObject<T>(String ref) {
+    return getObject(ref);
   }
 
   @override
-  Future<Set<T>> getObjects<T>(Set<String> ref, FromJson<T> fromJson) {
-    return getObjects(ref, fromJson);
+  Future<Set<T>> getObjects<T>(Set<String> ref) {
+    return getObjects(ref);
   }
 
   @override
-  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain, FromJson<T> fromJson) {
-    return getObjectsInCollection(collectionName, domain, fromJson);
+  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain) {
+    return getObjectsInCollection(collectionName, domain);
   }
 
   @override
@@ -81,6 +81,11 @@ class EmberFire implements BackendInterface {
   @override
   Future<String> getActiveObjectId(String collectionName, String domain) {
     return getActiveObjectId(collectionName, domain);
+  }
+
+  @override
+  Future<PushRequest> mergeObjectsWithDatabase({required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) {
+    return mergeObjectsWithDatabase(objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
   }
 
 }

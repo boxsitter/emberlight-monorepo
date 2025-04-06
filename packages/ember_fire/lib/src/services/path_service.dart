@@ -7,7 +7,7 @@ class PathService extends GetxService {
   ClientContext context = Get.find<ClientContext>();
 
   String _getPath(String collectionName, String domain, String? id) {
-    if (!BessIdValidation.isValidDomain(domain)) {
+    if (!CoreIdValidation.isValidDomain(domain)) {
       throw ArgumentError('Error getting path, invalid domain');
     }
 
@@ -22,7 +22,7 @@ class PathService extends GetxService {
     if (id == null) {
       suffix = collectionName;
     } else {
-      BessIdValidation.simpleValidate(id);
+      CoreIdValidation.simpleValidate(id);
       suffix = '$collectionName/$id';
     }
 

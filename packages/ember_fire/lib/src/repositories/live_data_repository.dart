@@ -9,7 +9,7 @@ import 'push_repository.dart';
 
 /// A generic repository for live-updating Firestore data.
 class LiveDataRepository {
-  PullRepository bessObjectRepo = Get.find<PullRepository>();
+  PullRepository coreObjectRepo = Get.find<PullRepository>();
   final FirebaseFirestore _db = Get.find<PullRepository>().db;
 
   get pathService => null;

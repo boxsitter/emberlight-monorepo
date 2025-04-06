@@ -6,7 +6,7 @@ import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
 
 
-import '../path_service.dart';
+import '../services/path_service.dart';
 
 class PushRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -16,9 +16,9 @@ class PushRepository {
 
   get db => _db;
 
-  /// Pushes a set of [BessObject]s to Firestore using batch writes.
+  /// Pushes a set of [CoreObject]s to Firestore using batch writes.
   /// Automatically updates the `updatedAt` field on each object.
-  Future<void> _bulkPushObjects(Set<BessObject> objects) async {
+  Future<void> _bulkPushObjects(Set<CoreObject> objects) async {
     if (objects.isEmpty) return;
 
     final batch = _db.batch();
@@ -41,7 +41,7 @@ class PushRepository {
   }
 
   Future<void> commit(PushRequest pushRequest) async {
-    Set<BessObject> objectsToPush = pushRequest.objectsToPush;
+    Set<CoreObject> objectsToPush = pushRequest.objectsToPush;
     if (objectsToPush.isEmpty) {
       throw ArgumentError('Can\'t commit nothing');
     }
@@ -59,7 +59,7 @@ class PushRepository {
     ]);
 
 
-    BessObject? existing = objectsToPush.lookup(newSession);
+    CoreObject? existing = objectsToPush.lookup(newSession);
     if (existing == null) {
       objectsToPush.add(newSession);
     } else {
@@ -68,7 +68,7 @@ class PushRepository {
     _bulkPushObjects(objectsToPush);
   }
 
-  static void _updateRefTracker(Map<String, Set<String>> refTracker, Set<BessObject> objects) {
+  static void _updateRefTracker(Map<String, Set<String>> refTracker, Set<CoreObject> objects) {
     final Set<Map<String, dynamic>> documents = objects.map((element) => element.toJson()).toSet();
     // Process each document to update the tracker.
     for (final Map<String, dynamic>doc in documents) {
@@ -95,14 +95,14 @@ class PushRepository {
     refTracker.removeWhere((key, set) => set.isEmpty);
   }
 
-  static void _updatePrincipalDependantLinkTracker(Map<PrincipalId, Set<DependantId>> linkTracker, Set<BessObject> objects) {
-    for (BessObject bessObject in objects) {
-      if (bessObject is Dependant) {
-        Dependant dependant = bessObject as Dependant;
+  static void _updatePrincipalDependantLinkTracker(Map<PrincipalId, Set<DependantId>> linkTracker, Set<CoreObject> objects) {
+    for (CoreObject coreObject in objects) {
+      if (coreObject is Dependant) {
+        Dependant dependant = coreObject as Dependant;
         if (linkTracker.containsKey(dependant.principalPar)) {
-          linkTracker[dependant.principalPar]?.add(bessObject.id);
+          linkTracker[dependant.principalPar]?.add(coreObject.id);
         } else {
-          linkTracker[dependant.principalPar] = {bessObject.id};
+          linkTracker[dependant.principalPar] = {coreObject.id};
         }
       }
     }
@@ -118,7 +118,7 @@ class PushRepository {
     Set<String> referencedIds = {};
 
     // Base case: if the item itself is a valid reference
-    if (item is String && BessIdValidation.isPotentialId(item)) {
+    if (item is String && CoreIdValidation.isPotentialId(item)) {
       referencedIds.add(item);
     } else if (item is List) {
       // Recursively process each element in the list
