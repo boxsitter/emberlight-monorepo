@@ -1,9 +1,9 @@
 // import '../../constants//enums.dart';
 // import '../../utils/formatters/formatter.dart';
-// import '../abstract/bess_object.dart';
+// import '../abstract/core_object.dart';
 //
 // /// Model class representing user data
-// class User extends BessObject {
+// class User extends CoreObject {
 //   String firstName;
 //   String lastName;
 //   String nickname;
@@ -29,7 +29,7 @@
 //   String get fullName => '$firstName $lastName';
 //
 //   @override
-//   String get formattedDate => BessFormatter.formatDate(createdAt);
+//   String get formattedDate => CoreFormatter.formatDate(createdAt);
 //
 //   /// Static function to create an empty user model
 //   static User empty() => User(email: '');
@@ -50,8 +50,8 @@
 //   }
 //
 //   @override
-//   String bessToString() {
-//     // TODO: implement bessToString
+//   String coreToString() {
+//     // TODO: implement coreToString
 //     throw UnimplementedError();
 //   }
 //

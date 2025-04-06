@@ -1,10 +1,10 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class BranchCabin extends BessObject {
+class PrincipalCabin extends CoreObject {
   final String name;
   final int capacity;
 
-  BranchCabin({
+  PrincipalCabin({
     required this.name,
     required this.capacity,
     super.id,
@@ -12,12 +12,12 @@ class BranchCabin extends BessObject {
     super.updatedAt,
   })  :  super(
           domain: 'brn',
-          type: 'branch_cabin',
+          type: 'principal_cabin',
           idTag: name,
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Branch cabin: $name, Capacity: $capacity}';
   }
 
@@ -31,12 +31,12 @@ class BranchCabin extends BessObject {
     return json;
   }
 
-  factory BranchCabin.fromJson(Map<String, dynamic> json) {
-    final branchCabin = BranchCabin(
+  factory PrincipalCabin.fromJson(Map<String, dynamic> json) {
+    final branchCabin = PrincipalCabin(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
     );
-    branchCabin.overwriteBessObjectFromJson(json);
+    branchCabin.overwriteCoreObjectFromJson(json);
     return branchCabin;
   }
 

@@ -1,10 +1,12 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import 'domains/session.dart';
+
 typedef CabinId = String;
 typedef AssignedMultiActivityBlockId = String;
 typedef ActivityDependantId = String;
 
-class Camper extends BessObject {
+class Camper extends CoreObject {
   String firstName;
   String preferredName;
   String lastName;
@@ -47,7 +49,7 @@ class Camper extends BessObject {
   String get lastInitial => lastName[0];
 
   @override
-  String bessToString() {
+  String coreToString() {
     String idField = toStringSuper();
     String nameField = fullName;
     String ageField = 'Age: $age';
@@ -89,7 +91,7 @@ class Camper extends BessObject {
       camperPreferenceCompleted: json['camperPreferenceCompleted'] ?? false,
       activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String>() ?? {},
     );
-    camper.overwriteBessObjectFromJson(json);
+    camper.overwriteCoreObjectFromJson(json);
     return camper;
   }
 

@@ -1,12 +1,15 @@
+import 'dart:math';
+
 import 'package:ember_core/ember_core_models.dart';
 
 class PushRequest {
   bool _armed;
-  final int disarmRequirementsLevel;
-  Set<BessObject> objectsToPush;
+  int _disarmRequirementsLevel;
+  Set<CoreObject> objectsToPush;
   String confirmationMessage;
 
   bool get armed => _armed;
+  int get disarmRequirementsLevel => _disarmRequirementsLevel;
 
   void disarm() {
     if (disarmRequirementsLevel > 2) {
@@ -18,9 +21,18 @@ class PushRequest {
 
   // Constructor for initialization
   PushRequest({
-    required this.disarmRequirementsLevel,
+    required int disarmRequirementsLevel,
     this.confirmationMessage = '',
-    Set<BessObject>? objectsToPush,
+    Set<CoreObject>? objectsToPush,
   })  : _armed = disarmRequirementsLevel > 0,
+        _disarmRequirementsLevel = disarmRequirementsLevel,
         objectsToPush = objectsToPush ?? {};
+
+  void add (PushRequest pushRequest, [bool? inheritNewMessage]) {
+    _disarmRequirementsLevel = max(disarmRequirementsLevel, pushRequest.disarmRequirementsLevel);
+    objectsToPush = {...objectsToPush, ...pushRequest.objectsToPush};
+    if (inheritNewMessage != null && inheritNewMessage) {
+      confirmationMessage = pushRequest.confirmationMessage;
+    }
+  }
 }

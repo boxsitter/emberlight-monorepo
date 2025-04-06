@@ -1,6 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class ActivityDependant extends BessObject implements Dependant{
+class ActivityDependant extends CoreObject implements Dependant{
   @override
   final String principalPar;
   final String name;
@@ -25,7 +25,7 @@ class ActivityDependant extends BessObject implements Dependant{
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Activity: $name, Capacity: $capacity';
   }
 
@@ -50,7 +50,7 @@ class ActivityDependant extends BessObject implements Dependant{
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
       blockRef: json['blockRef'] as String,
     );
-    activity.overwriteBessObjectFromJson(json);
+    activity.overwriteCoreObjectFromJson(json);
     return activity;
   }
 

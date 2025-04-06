@@ -8,8 +8,8 @@ class CabinService extends GetxService {
   static BackendInterface backend = BackendManager.instance;
   RequestService requestService = Get.find<RequestService>();
 
-  Future<Set<CabinDependant>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependant', 'ses', CabinDependant.fromJson);
-  Future<Set<BranchCabin>> get branchCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn', BranchCabin.fromJson);
+  Future<Set<CabinDependant>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependant', 'ses',);
+  Future<Set<PrincipalCabin>> get branchCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
 
   Future<String?> getCabinRefByName(String name) async {
     return await backend.queryField('cabin_dependant', 'ses', 'name', name);
@@ -17,11 +17,11 @@ class CabinService extends GetxService {
 
   Future<Set<Camper>> getCampersInCabin(String id) async {
     Set<String> camperIds = await backend.getSetFieldValue(id, 'camperRefs');
-    return await backend.getObjects(camperIds, Camper.fromJson);
+    return await backend.getObjects(camperIds);
   }
 
   PushRequest createBranchCabin(String name, int capacity) {
-    BranchCabin cabinToCreate = BranchCabin(
+    PrincipalCabin cabinToCreate = PrincipalCabin(
       name: name,
       capacity: capacity,
     );
@@ -33,7 +33,7 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  PushRequest registerCabinToSession(BranchCabin branchCabin) {
+  PushRequest registerCabinToSession(PrincipalCabin branchCabin) {
     CabinDependant cabinToRegister = CabinDependant(principalPar: branchCabin.id, name: branchCabin.name, capacity: branchCabin.capacity);
     return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinToRegister});
   }
@@ -54,7 +54,7 @@ class CabinService extends GetxService {
     } else {
       PushRequest removeRequest = removeCamperFromCabin(cabinDependant, camperToAdd);
       PushRequest addRequest = addCamperToCabin(cabinDependant, camperToAdd);
-      return requestService.mergeRequests(removeRequest, addRequest, 2);
+      return RequestUtils.mergeRequests(removeRequest, addRequest, 2);
     }
   }
 

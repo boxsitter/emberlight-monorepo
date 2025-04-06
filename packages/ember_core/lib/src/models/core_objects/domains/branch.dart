@@ -2,7 +2,7 @@
 
 import 'package:ember_core/ember_core_models.dart';
 
-class Branch extends BessObject {
+class Branch extends CoreObject {
   final String name;
    // TODO: refactor to session, ensure only principal objects are above session, handle their deletion differently
 
@@ -18,7 +18,7 @@ class Branch extends BessObject {
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Branch: $name';
   }
 
@@ -41,7 +41,7 @@ class Branch extends BessObject {
     final branch = Branch(
       name: json['name'] as String,
     );
-    branch.overwriteBessObjectFromJson(json);
+    branch.overwriteCoreObjectFromJson(json);
     return branch;
   }
 }

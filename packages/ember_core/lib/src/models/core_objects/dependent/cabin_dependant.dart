@@ -1,7 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
-class CabinDependant extends BessObject implements Dependant{
+class CabinDependant extends CoreObject implements Dependant{
   @override
   final String principalPar;
   final String name;
@@ -27,7 +27,7 @@ class CabinDependant extends BessObject implements Dependant{
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Cabin: $name, Capacity: $capacity}';
   }
 
@@ -66,7 +66,7 @@ class CabinDependant extends BessObject implements Dependant{
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
       campersWithPreferences: (json['campersWithPreferences'] as Map?)?.cast<String, String>() ?? {},
     );
-    cabinDependant.overwriteBessObjectFromJson(json);
+    cabinDependant.overwriteCoreObjectFromJson(json);
     return cabinDependant;
   }
 }

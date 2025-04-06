@@ -1,8 +1,8 @@
 /// Exception class for handling various platform-related errors.
-class BessPlatformException implements Exception {
+class CorePlatformException implements Exception {
   final String code;
 
-  BessPlatformException(this.code);
+  CorePlatformException(this.code);
 
   String get message {
     switch (code) {

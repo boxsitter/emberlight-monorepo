@@ -5,7 +5,7 @@ typedef CamperPreferenceId = String;
 typedef DependantId = String;
 typedef PrincipalId = String;
 
-class Session extends BessObject {
+class Session extends CoreObject {
   final String name;
   final DateTime startDate;
   final DateTime endDate;
@@ -33,7 +33,7 @@ class Session extends BessObject {
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Session: $name';
   }
 
@@ -71,7 +71,7 @@ class Session extends BessObject {
       refTracker: (json['refTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
       principalDependantLinkTracker: (json['principalDependantLinkTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
     );
-    session.overwriteBessObjectFromJson(json);
+    session.overwriteCoreObjectFromJson(json);
     return session;
   }
 }

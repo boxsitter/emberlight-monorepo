@@ -2,7 +2,7 @@
 
 import 'package:ember_core/ember_core_models.dart';
 
-class Organization extends BessObject {
+class Organization extends CoreObject {
   final String name;
 
   Organization({
@@ -17,7 +17,7 @@ class Organization extends BessObject {
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Organization: $name';
   }
 
@@ -41,7 +41,7 @@ class Organization extends BessObject {
     final org = Organization(
       name: json['name'] as String,
     );
-    org.overwriteBessObjectFromJson(json);
+    org.overwriteCoreObjectFromJson(json);
     return org;
   }
 

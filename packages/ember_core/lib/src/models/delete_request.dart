@@ -3,8 +3,8 @@ import 'package:ember_core/ember_core_models.dart';
 class DeleteRequest {
   bool _armed;
   final int disarmRequirementsLevel;
-  Set<BessObject> objectsToDelete;
-  Set<BessObject> objectsToPurge;
+  Set<CoreObject> objectsToDelete;
+  Set<CoreObject> objectsToPurge;
   String confirmationMessage;
 
   bool get armed => _armed;
@@ -20,10 +20,10 @@ class DeleteRequest {
   // Constructor for initialization
   DeleteRequest({
     required this.disarmRequirementsLevel,
-    Set<BessObject>? objectsToDelete,
-    Set<BessObject>? objectsToPurge,
+    Set<CoreObject>? objectsToDelete,
+    Set<CoreObject>? objectsToPurge,
     this.confirmationMessage = '',
-    Set<BessObject>? objectsToPush,
+    Set<CoreObject>? objectsToPush,
   })  : _armed = disarmRequirementsLevel > 0,
         objectsToDelete = objectsToDelete ?? {},
         objectsToPurge = objectsToPurge ?? {};

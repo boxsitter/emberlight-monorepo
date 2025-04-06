@@ -3,13 +3,13 @@
 // import 'package:get/get_core/src/get_main.dart';
 // import 'package:shadcn_ui/shadcn_ui.dart';
 //
-// import '../exceptions/bess_exceptions.dart';
+// import '../exceptions/core_exceptions.dart';
 //
 // class ExceptionHandlerService extends GetxService {
 //   /// Handles exceptions by logging and displaying a toast.
 //   void handle(dynamic error, [StackTrace? stack]) {
 //     // Log every error regardless of type.
-//     //bessLogger.logException(error, stack: stack); // TODO: Make BessLogger
+//     //coreLogger.logException(error, stack: stack); // TODO: Make CoreLogger
 //
 //     // Determine the message to display.
 //     String message;

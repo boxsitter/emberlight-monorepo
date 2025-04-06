@@ -9,12 +9,19 @@ abstract class BackendInterface {
   Future<void> init();
   Future<T> getFieldValue<T>(String ref, String field);
   Future<Set<T>> getSetFieldValue<T>(String ref, String field);
-  Future<T> getObject<T>(String ref, FromJson<T> fromJson);
-  Future<Set<T>> getObjects<T>(Set<String> ref, FromJson<T> fromJson);
-  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain, FromJson<T> fromJson);
+  Future<T> getObject<T>(String ref);
+  Future<Set<T>> getObjects<T>(Set<String> ref);
+  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain);
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value);
   Future<String> getActiveObjectId(String collectionName, String domain);
   Future<void> commit(PushRequest pushRequest);
   Future<void> deleteObject(String key);
-  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>();
+  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>(); // TODO: watch collection instead
+  Future<PushRequest> mergeObjectsWithDatabase({
+    required Set<CoreObject> objects,
+    required bool prioritizeAFields,
+    required bool prioritizeAValues,
+    required bool overwriteWithEmptyAValues,
+    Set<String>? aFieldsToIgnore
+  });
 }

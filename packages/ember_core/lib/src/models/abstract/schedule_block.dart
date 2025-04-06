@@ -1,6 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
-abstract class ScheduleBlock extends BessObject {
+abstract class ScheduleBlock extends CoreObject {
   final String name;
 
   ScheduleBlock({

@@ -2,11 +2,12 @@
 
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_core/src/models/core_objects/principal/principal_activity.dart';
 
 typedef CamperId = String;
 
 // Represents a camper's preference for each activity in a given AssignableActivityBlock
-class CamperPreference extends BessObject {
+class CamperPreference extends CoreObject {
   final CamperId camperRef;
   final String camperName;
   final Map<ActivityTypeId, double?> preferencesRefs; // A map of every unique activity type in the schedule to the camper's preference
@@ -34,8 +35,8 @@ class CamperPreference extends BessObject {
         );
 
   @override
-  String bessToString() {
-    // TODO: implement bessToString
+  String coreToString() {
+    // TODO: implement coreToString
     throw UnimplementedError();
   }
 
@@ -75,7 +76,7 @@ class CamperPreference extends BessObject {
       preferencesCompletedCount: json['preferencesCompletedCount'] ?? 0,
       completed: json['completed'] ?? false,
     );
-    preference.overwriteBessObjectFromJson(json);
+    preference.overwriteCoreObjectFromJson(json);
     return preference;
   }
 

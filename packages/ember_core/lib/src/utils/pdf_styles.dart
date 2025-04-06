@@ -1,7 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class BessPdfStyles {
+class CorePdfStyles {
   // Text styles
   static pw.TextStyle rosterTitleTextStyle = pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold);
   static pw.TextStyle rosterSizeTextStyle = const pw.TextStyle(fontSize: 8);

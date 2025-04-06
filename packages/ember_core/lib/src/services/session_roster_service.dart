@@ -15,7 +15,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   ClientContextService clientContextService = Get.find<ClientContextService>();
   RequestService requestService = Get.find<RequestService>();
 
-  Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses', Camper.fromJson);
+  Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses');
 
   Future<PushRequest> registerCamper({
     String firstName = '',
@@ -45,7 +45,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
     PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
 
-    pushRequest = requestService.mergeRequests(pushRequest, await initCamperPreference(camperToAdd), 1);
+    pushRequest = RequestUtils.mergeRequests(pushRequest, await initCamperPreference(camperToAdd), 1);
 
 
     pushRequest.objectsToPush.add(camperToAdd);
@@ -73,15 +73,15 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   }
 
   // Future<void> deleteCamper(String id) async{
-  //   Camper camperToDelete = await bessObjectRepo.getObject(id, Camper.fromJson);
+  //   Camper camperToDelete = await coreObjectRepo.getObject(id, Camper.fromJson);
   //   if (camperToDelete.cabinId != null) {
-  //     bessObjectRepo._purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
+  //     coreObjectRepo._purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
   //   }
-  //   bessObjectRepo._purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
+  //   coreObjectRepo._purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
   //   if (camperToDelete.camperPreferenceId != null) {
-  //     bessObjectRepo.deleteDocument(camperToDelete.camperPreferenceId!);
+  //     coreObjectRepo.deleteDocument(camperToDelete.camperPreferenceId!);
   //   }
-  //   bessObjectRepo.deleteDocument(id);
+  //   coreObjectRepo.deleteDocument(id);
   //   // TODO: Remove them from all activity rosters!
   // }
 
@@ -214,7 +214,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
           cabinName: cabinName,
         );
         combinedRequest =
-            requestService.mergeRequests(newCamperRequest, combinedRequest, 2);
+            RequestUtils.mergeRequests(newCamperRequest, combinedRequest, 2);
       }
 
       return combinedRequest;

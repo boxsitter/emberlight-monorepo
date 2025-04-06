@@ -17,7 +17,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'AssignedMultiActivityBlock: $name, Activities: ${activityDependantCmps.length}';
   }
 
@@ -36,7 +36,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
       name: json['name'] as String,
       activityDependantCmps: (json['activityDependantCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
-    block.overwriteBessObjectFromJson(json);
+    block.overwriteCoreObjectFromJson(json);
     return block;
   }
 

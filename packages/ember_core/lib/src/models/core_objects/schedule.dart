@@ -1,8 +1,9 @@
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/src/models/core_objects/principal/principal_activity.dart';
 
 typedef BlockId = String;
 
-class Schedule extends BessObject {
+class Schedule extends CoreObject {
   List<BlockId> blockCmps;
   Set<ActivityTypeId> uniqueActivityTypeRefs;
 
@@ -21,7 +22,7 @@ class Schedule extends BessObject {
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Schedule with ${blockCmps.length} block(s)';
   }
 
@@ -40,7 +41,7 @@ class Schedule extends BessObject {
       blockCmps: (json['blockCmps'] as List?)?.cast<BlockId>() ?? <BlockId>[],
       uniqueActivityTypeRefs: (json['uniqueActivityTypeRefs'] as List?)?.cast<ActivityTypeId>().toSet() ?? <ActivityTypeId>{},
     );
-    schedule.overwriteBessObjectFromJson(json);
+    schedule.overwriteCoreObjectFromJson(json);
     return schedule;
   }
 

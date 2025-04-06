@@ -19,14 +19,14 @@ class ScheduleService extends GetxService {
 
   // Future<DeleteRequest> deleteAssignableActivityBlock(String blockToDeleteId) async {
   //   // TODO: This will need to replace the block in the schedule with an empty block!
-  //   await bessObjectRepo._purgeReferencesTo(await clientContextService.scheduleId, blockToDeleteId);
+  //   await coreObjectRepo._purgeReferencesTo(await clientContextService.scheduleId, blockToDeleteId);
   //   // TODO: Delete all activities inside, make sure activities are cleaned up properly
-  //   bessObjectRepo.deleteDocument(blockToDeleteId);
+  //   coreObjectRepo.deleteDocument(blockToDeleteId);
   // }
 
   Future<PushRequest> createActivityType(String name, int capacity, String description) async {
     // TODO: Check with a query to make sure name is unique
-    ActivityType activityTypeToCreate = ActivityType(name: name, capacity: capacity, description: description);
+    PrincipalActivity activityTypeToCreate = PrincipalActivity(name: name, capacity: capacity, description: description);
     return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {activityTypeToCreate});
   }
 
@@ -139,7 +139,7 @@ class ScheduleService extends GetxService {
   //       AssignedMultiActivityBlock block = scheduleBlock;
   //       ConsoleController().log('Block: ${block.name}\n');
   //       for (ActivityDependant activity in block.activities.values) {
-  //         ConsoleController().log('${activity.roster.bessToString()}\n');
+  //         ConsoleController().log('${activity.roster.coreToString()}\n');
   //       }
   //     }
   //   }

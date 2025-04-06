@@ -12,24 +12,24 @@ class PdfService extends GetxService{
   static pw.TableRow camperToPaddedTableRow(Camper camper) {
     return pw.TableRow(
       children: [
-        BessPdfStyles.paddedText(camper.lastName, BessPdfStyles.tableCellTextStyle),
-        BessPdfStyles.paddedText(camper.name, BessPdfStyles.tableCellTextStyle),
-        BessPdfStyles.paddedText(camper.age.toString(), BessPdfStyles.tableCellTextStyle),
-        BessPdfStyles.paddedText(camper.gender, BessPdfStyles.tableCellTextStyle),
-        BessPdfStyles.paddedText(camper.cabinName ?? 'none', BessPdfStyles.tableCellTextStyle),
+        CorePdfStyles.paddedText(camper.lastName, CorePdfStyles.tableCellTextStyle),
+        CorePdfStyles.paddedText(camper.name, CorePdfStyles.tableCellTextStyle),
+        CorePdfStyles.paddedText(camper.age.toString(), CorePdfStyles.tableCellTextStyle),
+        CorePdfStyles.paddedText(camper.gender, CorePdfStyles.tableCellTextStyle),
+        CorePdfStyles.paddedText(camper.cabinName ?? 'none', CorePdfStyles.tableCellTextStyle),
       ],
     );
   }
 
   static pw.TableRow generateHeaderRow() {
     return pw.TableRow(
-      decoration: BessPdfStyles.tableHeaderDecoration,
+      decoration: CorePdfStyles.tableHeaderDecoration,
       children: [
-        BessPdfStyles.paddedText('Last Name', BessPdfStyles.tableHeaderTextStyle),
-        BessPdfStyles.paddedText('First Name', BessPdfStyles.tableHeaderTextStyle),
-        BessPdfStyles.paddedText('Age', BessPdfStyles.tableHeaderTextStyle),
-        BessPdfStyles.paddedText('Gender', BessPdfStyles.tableHeaderTextStyle),
-        BessPdfStyles.paddedText('Cabin', BessPdfStyles.tableHeaderTextStyle),
+        CorePdfStyles.paddedText('Last Name', CorePdfStyles.tableHeaderTextStyle),
+        CorePdfStyles.paddedText('First Name', CorePdfStyles.tableHeaderTextStyle),
+        CorePdfStyles.paddedText('Age', CorePdfStyles.tableHeaderTextStyle),
+        CorePdfStyles.paddedText('Gender', CorePdfStyles.tableHeaderTextStyle),
+        CorePdfStyles.paddedText('Cabin', CorePdfStyles.tableHeaderTextStyle),
       ],
     );
   }
@@ -51,8 +51,8 @@ class PdfService extends GetxService{
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: pw.CrossAxisAlignment.end,
                 children: [
-                  pw.Text(title, style: BessPdfStyles.rosterTitleTextStyle),
-                  pw.Text('Count: ${campers.length}', style: BessPdfStyles.rosterSizeTextStyle),
+                  pw.Text(title, style: CorePdfStyles.rosterTitleTextStyle),
+                  pw.Text('Count: ${campers.length}', style: CorePdfStyles.rosterSizeTextStyle),
                 ],
               ),
               pw.SizedBox(height: 5),

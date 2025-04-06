@@ -2,12 +2,12 @@ import 'package:ember_core/ember_core_models.dart';
 
 typedef ActivityTypeId = String;
 
-class ActivityType extends BessObject {
+class PrincipalActivity extends CoreObject {
   final String name;
   final int capacity;
   final String description;
 
-  ActivityType({
+  PrincipalActivity({
     required this.name,
     required this.capacity,
     required this.description,
@@ -16,12 +16,12 @@ class ActivityType extends BessObject {
     super.updatedAt,
   })  : super(
           domain: 'brn',
-          type: 'activity_type',
+          type: 'principal_activity',
           idTag: name,
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Activity: $name, Capacity: $capacity';
   }
 
@@ -36,13 +36,13 @@ class ActivityType extends BessObject {
     return json;
   }
 
-  factory ActivityType.fromJson(Map<String, dynamic> json) {
-    ActivityType activity = ActivityType(
+  factory PrincipalActivity.fromJson(Map<String, dynamic> json) {
+    PrincipalActivity activity = PrincipalActivity(
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       description: json['description'] as String,
     );
-    activity.overwriteBessObjectFromJson(json);
+    activity.overwriteCoreObjectFromJson(json);
     return activity;
   }
 

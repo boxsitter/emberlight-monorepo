@@ -2,7 +2,7 @@
 
 import 'package:ember_core/ember_core_models.dart';
 
-class Season extends BessObject {
+class Season extends CoreObject {
   final String name;
   final DateTime startDate;
   final DateTime endDate;
@@ -21,7 +21,7 @@ class Season extends BessObject {
         );
 
   @override
-  String bessToString() {
+  String coreToString() {
     return 'Season: $name, Start: $startDate, End: $endDate';
   }
 
@@ -49,7 +49,7 @@ class Season extends BessObject {
       startDate: json['startDate'] as DateTime,
       endDate: json['endDate'] as DateTime,
     );
-    season.overwriteBessObjectFromJson(json);
+    season.overwriteCoreObjectFromJson(json);
     return season;
   }
 

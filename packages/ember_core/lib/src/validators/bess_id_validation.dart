@@ -1,6 +1,6 @@
 import 'package:ember_core/ember_core_utils.dart';
 
-class BessIdValidation {
+class CoreIdValidation {
   static const String validCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789_.~';
   static const Set<String> validDomains = {'rot', 'org', 'brn', 'sea', 'ses'};
   static final RegExp potentialIdPattern = RegExp(r'^(rot|org|brn|sea|ses)-');
@@ -25,12 +25,12 @@ class BessIdValidation {
     }
   }
 
-  /// Checks if [value] appears to be a Bess ID by ensuring it has exactly 4 parts and starts with a valid domain
+  /// Checks if [value] appears to be a Core ID by ensuring it has exactly 4 parts and starts with a valid domain
   static bool isPotentialId(String value) {
     return potentialIdPattern.hasMatch(value) && value.split('-').length == 4;
   }
 
-  /// Performs a simple full check on the Bess ID format.
+  /// Performs a simple full check on the Core ID format.
   /// Throws an error describing the failure if the format is invalid.
   static void simpleValidate(String id) {
     final List<String> idParts = IdFunctions.getIdParts(id);
@@ -52,7 +52,7 @@ class BessIdValidation {
     return false;
   }
 
-// /// Validates a single scalar Bess ID.
+// /// Validates a single scalar Core ID.
 // /// [expectedDomain] enforces that the ID's domain matches.
 // /// [expectedObjectType] optionally enforces the object type.
 // /// Throws an error with a descriptive message on failure.
@@ -67,7 +67,7 @@ class BessIdValidation {
 //   }
 // }
 //
-// /// Validates a collection (List) of potential Bess IDs.
+// /// Validates a collection (List) of potential Core IDs.
 // /// Ensures that if any item is a potential ID, then each item is valid and all items have the same objectType.
 // /// Throws an error with a descriptive message on failure.
 // static void validateIdCollection(Iterable collection, String expectedDomain) {
@@ -94,7 +94,7 @@ class BessIdValidation {
 //   }
 // }
 //
-// /// Validates the structure of a flat BessObject JSON.
+// /// Validates the structure of a flat CoreObject JSON.
 // /// Requirements:
 // ///     and must have the same domain as the top-level ID.
 // ///   • In any collection of IDs, all items must have the same objectType.

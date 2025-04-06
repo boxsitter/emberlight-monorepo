@@ -21,8 +21,8 @@ class ClientContextService extends GetxService {
   get seasonId => clientContext.seasonId;
   get sessionId => clientContext.sessionId;
 
-  Future<Session> get session async => await backend.getObject(sessionId, Session.fromJson);
-  Future<Schedule> get schedule async => await backend.getObject(await backend.getFieldValue(sessionId, 'scheduleId'), Schedule.fromJson);
+  Future<Session> get session async => await backend.getObject(sessionId);
+  Future<Schedule> get schedule async => await backend.getObject(await backend.getFieldValue(sessionId, 'scheduleId'));
 
   @override
   void onInit() {
