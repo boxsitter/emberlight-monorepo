@@ -5,7 +5,14 @@ import 'package:get/get.dart';
 import '../../ember_core_backend.dart';
 
 
-class ClientContext {
+class ClientContext extends GetxService {
+  @override
+  void onInit() {
+    super.onInit();
+    organizationId = User.organizationId;
+    branchId = User.branchId;
+  }
+
   late String organizationId;
   late String branchId;
   late String seasonId;
@@ -24,21 +31,15 @@ class ClientContextService extends GetxService {
   Future<Session> get session async => await backend.getObject(sessionId);
   Future<Schedule> get schedule async => await backend.getObject(await backend.getFieldValue(sessionId, 'scheduleId'));
 
-  @override
-  void onInit() {
-    super.onInit();
-    setDefaultContext();
-  }
-
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
     clientContext.organizationId = User.organizationId;
     clientContext.branchId = User.branchId;
 
     // Retrieve the unique active Season.
-    clientContext.seasonId = await backend.getActiveObjectId('season', "brn");
+    clientContext.seasonId = await backend.getActiveObjectId('season', 'brn');
 
     // Retrieve the unique active Session.
-    clientContext.sessionId = await backend.getActiveObjectId('session', "sea");
+    clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
   }
 }

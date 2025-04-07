@@ -5,7 +5,7 @@ import 'package:ember_core/ember_core_utils.dart';
 import 'package:get/get.dart';
 
 class CabinService extends GetxService {
-  static BackendInterface backend = BackendManager.instance;
+  BackendInterface backend = BackendManager.instance;
   RequestService requestService = Get.find<RequestService>();
 
   Future<Set<CabinDependant>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependant', 'ses',);

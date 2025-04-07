@@ -69,8 +69,8 @@ abstract class CoreObject{
     'season': (json) => Season.fromJson(json),
     'session': (json) => Session.fromJson(json),
 
-    //'activity_principal': (json) => ActivityPrincipal.fromJson(json),
-    //'branch_principal': (json) => BranchPrincipal.fromJson(json),
+    'principal_activity': (json) => PrincipalActivity.fromJson(json),
+    'principal_cabin': (json) => PrincipalCabin.fromJson(json),
 
     'AMA_Block': (json) => AssignedMultiActivityBlock.fromJson(json),
     'camper': (json) => Camper.fromJson(json),
@@ -80,6 +80,10 @@ abstract class CoreObject{
   };
 
   static T fromJson<T>(Map<String, dynamic> json) {
-    return fromJsons[IdFunctions.getIdPart(json['id'], 1)]!(json) as T;
+    JsonFactory<dynamic>? fromJsonFunction = fromJsons[IdFunctions.getIdPart(json['id'], 1)];
+    if (fromJsonFunction == null) {
+      throw StateError('NEED TO ADD ${json['id']} TO FROMJSONS LIST IN COREOBJECT!');
+    }
+    return fromJsonFunction(json) as T;
   }
 }

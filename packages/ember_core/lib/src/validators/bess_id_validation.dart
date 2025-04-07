@@ -34,13 +34,13 @@ class CoreIdValidation {
   /// Throws an error describing the failure if the format is invalid.
   static void simpleValidate(String id) {
     final List<String> idParts = IdFunctions.getIdParts(id);
-    if (idParts.length != 5) {
+    if (idParts.length != 4) {
       throw ArgumentError("ID '$id' does not have exactly 5 parts (found ${idParts.length}).");
     }
     if (!validDomains.contains(idParts[0])) {
       throw ArgumentError("ID '$id' has an invalid domain '${idParts[0]}'.");
     }
-    if (idParts.last.length != 4) {
+    if (idParts.last.length != 6) {
       throw ArgumentError("ID '$id' has a random part of length ${idParts.last.length}, expected 4.");
     }
   }

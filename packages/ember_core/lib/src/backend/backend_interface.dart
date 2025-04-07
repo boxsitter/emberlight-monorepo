@@ -7,6 +7,7 @@ abstract class BackendInterface {
   String get backendDescription;
 
   Future<void> init();
+  void initLate();
   Future<T> getFieldValue<T>(String ref, String field);
   Future<Set<T>> getSetFieldValue<T>(String ref, String field);
   Future<T> getObject<T>(String ref);
@@ -16,7 +17,13 @@ abstract class BackendInterface {
   Future<String> getActiveObjectId(String collectionName, String domain);
   Future<void> commit(PushRequest pushRequest);
   Future<void> deleteObject(String key);
-  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>(); // TODO: watch collection instead
+  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>({
+    required String parentId,
+    required Parent Function(Map<String, dynamic> json) parentFromJson,
+    required String childIdField,
+    bool updateChildrenRealtime = true,
+    Child Function(Map<String, dynamic> json)? childFromJson,
+  }); // TODO: watch collection instead
   Future<PushRequest> mergeObjectsWithDatabase({
     required Set<CoreObject> objects,
     required bool prioritizeAFields,
@@ -24,4 +31,5 @@ abstract class BackendInterface {
     required bool overwriteWithEmptyAValues,
     Set<String>? aFieldsToIgnore
   });
+  Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session);
 }

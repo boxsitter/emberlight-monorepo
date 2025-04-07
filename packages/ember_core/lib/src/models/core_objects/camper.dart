@@ -1,6 +1,5 @@
 import 'package:ember_core/ember_core_models.dart';
 
-import 'domains/session.dart';
 
 typedef CabinId = String;
 typedef AssignedMultiActivityBlockId = String;

@@ -1,4 +1,5 @@
 import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +24,9 @@ class ConsoleService extends GetxService {
         return await addCamper(arguments);
 
       case 'importcsv':
-        return await importCsv();
+        CommandResult commandResult = await importCsv();
+        backend.commit(commandResult.pushRequest!);
+        return commandResult;
 
       // case 'deleteallcampers':
       //   return await deleteAllCampers();
@@ -47,7 +50,7 @@ class ConsoleService extends GetxService {
   }
 
   Future<CommandResult> importCsv() async {
-    await sessionRosterService.importFromCsv(
+    PushRequest pushRequest = await sessionRosterService.importFromCsv(
       firstNameHeader: 'First Name',
       lastNameHeader: 'Last Name',
       preferredNameHeader: 'Preferred Name',
@@ -55,7 +58,7 @@ class ConsoleService extends GetxService {
       ageHeader: 'Age',
       cabinHeader: 'Cabin',
     );
-    return CommandResult();
+    return CommandResult(pushRequest: pushRequest);
   }
 
 
@@ -69,6 +72,7 @@ class CommandResult {
   final String? log;
   final String? error;
   final String? success;
+  final PushRequest? pushRequest;
 
-  CommandResult({this.log, this.error, this.success});
+  CommandResult({this.log, this.error, this.success, this.pushRequest});
 }
