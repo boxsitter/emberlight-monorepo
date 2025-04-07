@@ -12,6 +12,7 @@ class DeleteRepository {
   get db => _db;
 
   /// Simply deletes a document, does not perform cleanup.
+  // ignore: unused_element
   Future<void> _deleteDocument(String id) async {
     final resolvedPath = pathService.getDocPathFromId(id);
     try {

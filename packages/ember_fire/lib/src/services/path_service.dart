@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/ember_core_validators.dart';
@@ -26,15 +28,15 @@ class PathService extends GetxService {
       suffix = '$collectionName/$id';
     }
 
-    Map<String, String> domainPaths = {
-      'brn': '${context.organizationId}/branch/${context.branchId}',
-      'sea': '/season/${context.seasonId}',
-      'ses': '/session/${context.sessionId}',
-    };
-
-    for (var entry in domainPaths.entries) {
-      if (domain == entry.key) break;
-      outputPath += entry.value;
+    // TODO: Make this less horrible, but also work when seasonId and sessionId aren't set yet
+    if (domain == 'org') {
+      outputPath += context.organizationId;
+    } else if (domain == 'brn') {
+      outputPath += '${context.organizationId}/branch/${context.branchId}';
+    } else if (domain == 'sea') {
+      outputPath += '${context.organizationId}/branch/${context.branchId}' '/season/${context.seasonId}';
+    } else if (domain == 'ses') {
+      outputPath += '${context.organizationId}/branch/${context.branchId}' '/season/${context.seasonId}' '/session/${context.sessionId}';
     }
 
     return '$outputPath/$suffix';

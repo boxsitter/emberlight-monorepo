@@ -3,6 +3,7 @@
 
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:get/get.dart';
 
 import '../repositories/pull_repository.dart';
@@ -17,10 +18,25 @@ class DatabaseRepairService extends GetxService{
 
 
   PullRepository pullRepo = Get.find<PullRepository>();
+  DumbPushRepository dumbRepo = Get.find<DumbPushRepository>();
 
+  // TODO: Implement
   // void cleanOrphanedDependants() {
   //   // the reference tracker tracks all ids that reference the master
   // }
+
+  // TODO: Do something better to solve this please
+  Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session) async {
+    String orgId = org.id;
+    String branchId = branch.id;
+    String seasonId = season.id;
+    String sessionId = session.id;
+
+    await dumbRepo.dumbPush('organization/$orgId', org);
+    await dumbRepo.dumbPush('organization/$orgId/branch/$branchId', branch);
+    await dumbRepo.dumbPush('organization/$orgId/branch/$branchId/season/$seasonId', season);
+    await dumbRepo.dumbPush('organization/$orgId/branch/$branchId/season/$seasonId/session/$sessionId', session);
+  }
 
   Future<PushRequest> mergeObjectsWithDatabase({
     required Set<CoreObject> objects,
@@ -65,6 +81,7 @@ class DatabaseRepairService extends GetxService{
     }
 
     if (jsonB == null) {
+      print("Did not find matching object!!!");
       return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {CoreObject.fromJson(jsonA)});
     }
 
@@ -74,7 +91,7 @@ class DatabaseRepairService extends GetxService{
     // Iterate over each field in A
     jsonA.forEach((key, valueA) {
       // If this field is ignored, skip it
-      if (aFieldsToIgnore != null && aFieldsToIgnore.contains(key)) {
+      if ((aFieldsToIgnore != null && aFieldsToIgnore.contains(key)) || key == 'id') {
         return;
       }
 
@@ -121,7 +138,7 @@ class DatabaseRepairService extends GetxService{
     }
 
     // If there's a known doc ID from B, we keep that. Otherwise, fallback to A's ID.
-    mergedJson['id'] = mergedJson['id'] ?? idA;
+    mergedJson['id'] = (jsonB != null && jsonB.containsKey('id')) ? jsonB['id'] : idA;
 
     CoreObject mergedObject = CoreObject.fromJson(mergedJson);
     return PushRequest(

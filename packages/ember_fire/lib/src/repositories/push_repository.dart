@@ -3,6 +3,7 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/ember_core_validators.dart';
+import 'package:ember_fire/src/repositories/pull_repository.dart';
 import 'package:get/get.dart';
 
 
@@ -10,7 +11,8 @@ import '../services/path_service.dart';
 
 class PushRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  late final ClientContextService clientContextService;
+  final PullRepository pullRepo = Get.find<PullRepository>();
+  final ClientContextService clientContextService = Get.find<ClientContextService>();
   final PathService pathService = Get.find<PathService>();
   RequestService requestService = Get.find<RequestService>();
 
@@ -51,8 +53,7 @@ class PushRepository {
       return;
     }
 
-    Map<String, dynamic> sessionDoc = (await _db.doc(pathService.getDocPathFromId(clientContextService.sessionId)).get()).data()!;
-    Session newSession = Session.fromJson(sessionDoc);
+    Session newSession = await pullRepo.getObject(clientContextService.sessionId);
     await Future.wait([
       Future(() => _updateRefTracker(newSession.refTracker, objectsToPush)),
       Future(() => _updatePrincipalDependantLinkTracker(newSession.principalDependantLinkTracker, objectsToPush)),

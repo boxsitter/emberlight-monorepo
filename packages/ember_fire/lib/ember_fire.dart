@@ -2,7 +2,15 @@ library;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_fire/src/repositories/delete_repository.dart';
+import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
+import 'package:ember_fire/src/repositories/live_data_repository.dart';
+import 'package:ember_fire/src/repositories/pull_repository.dart';
+import 'package:ember_fire/src/repositories/push_repository.dart';
+import 'package:ember_fire/src/services/database_repair_service.dart';
+import 'package:ember_fire/src/services/path_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
 
 import 'firebase_options.dart';
 
@@ -10,6 +18,11 @@ const _backendName = 'EmberFire';
 const _backendDescription = 'Firebase backend for EmberCore.';
 
 class EmberFire implements BackendInterface {
+  late final PullRepository pullRepo;
+  late final PushRepository pushRepo;
+  late final LiveDataRepository liveDataRepo;
+  late final DeleteRepository deleteRepo;
+  late final DatabaseRepairService databaseRepairService;
 
   final bool isReleaseMode;
 
@@ -24,6 +37,18 @@ class EmberFire implements BackendInterface {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       print("Using Firestore Emulator");
     }
+    Get.put(DumbPushRepository());
+    Get.put(PathService());
+    pullRepo = Get.put(PullRepository());
+    liveDataRepo = Get.put(LiveDataRepository());
+    deleteRepo = Get.put(DeleteRepository());
+    databaseRepairService = Get.put(DatabaseRepairService());
+  }
+
+  @override
+  void initLate() {
+    pushRepo = Get.put(PushRepository());
+    //Get.put(DeletionService);
   }
 
   @override
@@ -35,57 +60,75 @@ class EmberFire implements BackendInterface {
 
   @override
   Future<void> commit(PushRequest pushRequest) async {
-    commit(pushRequest);
+    pushRepo.commit(pushRequest);
   }
 
   @override
   Future<void> deleteObject(String key) async {
-    deleteObject(key);
+    //deleteRepo.deleteObject(key);
+    throw UnimplementedError();
   }
 
   @override
   Future<T> getFieldValue<T>(String ref, String field) {
-    return getFieldValue(ref, field);
+    return pullRepo.getFieldValue(ref, field);
   }
 
   @override
   Future<T> getObject<T>(String ref) {
-    return getObject(ref);
+    return pullRepo.getObject(ref);
   }
 
   @override
   Future<Set<T>> getObjects<T>(Set<String> ref) {
-    return getObjects(ref);
+    return pullRepo.getObjects(ref);
   }
 
   @override
   Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain) {
-    return getObjectsInCollection(collectionName, domain);
+    return pullRepo.getObjectsInCollection(collectionName, domain);
   }
 
   @override
   Future<Set<T>> getSetFieldValue<T>(String ref, String field) {
-    return getSetFieldValue(ref, field);
+    return pullRepo.getSetFieldValue(ref, field);
   }
 
   @override
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value) {
-    return queryField(collectionName, domain, field, value);
+    return pullRepo.queryField(collectionName, domain, field, value);
   }
 
   @override
-  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>() {
-    return watchDocWithChildDocs();
+  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>({
+    required String parentId,
+    required Parent Function(Map<String, dynamic> json) parentFromJson,
+    required String childIdField,
+    bool updateChildrenRealtime = true,
+    Child Function(Map<String, dynamic> json)? childFromJson,
+  }) {
+    return liveDataRepo.watchDocWithChildDocs(
+      parentId: parentId,
+      parentFromJson: parentFromJson,
+      childIdField: childIdField,
+      updateChildrenRealtime: updateChildrenRealtime,
+      childFromJson: childFromJson,
+    );
   }
 
   @override
   Future<String> getActiveObjectId(String collectionName, String domain) {
-    return getActiveObjectId(collectionName, domain);
+    return pullRepo.getActiveObjectId(collectionName, domain);
   }
 
   @override
   Future<PushRequest> mergeObjectsWithDatabase({required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) {
-    return mergeObjectsWithDatabase(objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
+    return databaseRepairService.mergeObjectsWithDatabase(objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
+  }
+
+  @override
+  Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session) async {
+    databaseRepairService.dumbDomainSetup(org, branch, season, session);
   }
 
 }

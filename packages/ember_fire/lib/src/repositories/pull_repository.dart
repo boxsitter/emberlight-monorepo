@@ -49,8 +49,10 @@ class PullRepository {
         return {};
       }
 
-      // Otherwise, return the document's data
-      return docSnapshot.data()!;
+      // Convert timestamps in the final data map
+      final data = docSnapshot.data()!;
+      final converted = _convertTimestamps(data);
+      return converted;
     } on FirebaseException catch (e) {
       print('Error fetching document at $resolvedPath: ${e.message}');
       rethrow;
@@ -96,10 +98,10 @@ class PullRepository {
 
         final batchMap = <String, Map<String, dynamic>>{};
         for (final doc in querySnapshot.docs) {
-          // Typically doc.data() cannot be null if doc exists, but we check just in case
           final data = doc.data();
-          batchMap[doc.id] = data;
-                }
+          final converted = _convertTimestamps(data);
+          batchMap[doc.id] = converted;
+        }
         return batchMap;
       }));
 
@@ -135,7 +137,9 @@ class PullRepository {
 
       final results = <String, Map<String, dynamic>>{};
       for (final doc in querySnapshot.docs) {
-        results[doc.id] = doc.data();
+        final data = doc.data();
+        final converted = _convertTimestamps(data);
+        results[doc.id] = converted;
       }
       return results;
     } on FirebaseException catch (e) {
@@ -146,6 +150,36 @@ class PullRepository {
       print('Error fetching documents from collection $collectionName: $e');
       rethrow;
     }
+  }
+
+  // Helper method
+  Map<String, dynamic> _convertTimestamps(Map<String, dynamic> data) {
+    data.forEach((key, value) {
+      if (value is Timestamp) {
+        data[key] = value.toDate();
+      } else if (value is String) {
+        // Try to parse ISO 8601 timestamp strings.
+        DateTime? parsed = DateTime.tryParse(value);
+        if (parsed != null) {
+          data[key] = parsed;
+        }
+      } else if (value is Map<String, dynamic>) {
+        data[key] = _convertTimestamps(value);
+      } else if (value is List) {
+        data[key] = value.map((item) {
+          if (item is Timestamp) {
+            return item.toDate();
+          } else if (item is String) {
+            DateTime? parsed = DateTime.tryParse(item);
+            return parsed ?? item;
+          } else if (item is Map<String, dynamic>) {
+            return _convertTimestamps(item);
+          }
+          return item;
+        }).toList();
+      }
+    });
+    return data;
   }
 
   /// Retrieves the specific [field] from a document identified by [id].
