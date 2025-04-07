@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
-import '../widgets/card_button.dart';
 
 class ActivityPreferencesCampers extends StatelessWidget {
   const ActivityPreferencesCampers({super.key});

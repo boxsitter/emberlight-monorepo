@@ -59,7 +59,6 @@ class ActivityPreferencesCampersDesktop extends StatelessWidget {
                 runSpacing: 24,
                 children: controller.camperNames.keys.map((camperId) {
                   final name = controller.camperNames[camperId] ?? 'Unknown';
-                  final completed = controller.camperIsCompleted[camperId] ?? false;
 
                   return CardButton(
                     title: name,
