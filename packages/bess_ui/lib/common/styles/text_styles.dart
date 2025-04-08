@@ -10,6 +10,13 @@ class BessTextStyles {
     fontWeight: FontWeight.w400,
   );
 
+  static final TextStyle standardBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14.0,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w600,
+  );
+
   static final TextStyle standardInverted = TextStyle(
     fontFamily: 'Inter',
     fontSize: 14.0,
@@ -42,6 +49,12 @@ class BessTextStyles {
   static final TextStyle subtle = TextStyle(
     fontFamily: 'Inter',
     fontSize: 12.0,
+    color: BessColors.textSubtle,
+    fontWeight: FontWeight.w300,
+  );
+  static final TextStyle tiny = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 10.0,
     color: BessColors.textSubtle,
     fontWeight: FontWeight.w300,
   );
