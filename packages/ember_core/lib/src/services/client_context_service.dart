@@ -6,14 +6,7 @@ import '../../ember_core_backend.dart';
 
 
 class ClientContext extends GetxService {
-  @override
-  void onInit() {
-    super.onInit();
-    organizationId = User.organizationId;
-    branchId = User.branchId;
-  }
-
-  late String organizationId;
+   late String organizationId;
   late String branchId;
   late String seasonId;
   late String sessionId;

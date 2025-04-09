@@ -11,7 +11,7 @@ class CabinService extends GetxService {
   Future<Set<CabinDependant>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependant', 'ses',);
   Future<Set<PrincipalCabin>> get branchCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
 
-  Future<String?> getCabinRefByName(String name) async {
+  Future<String?> getCabinDependantIdByName(String name) async {
     return await backend.queryField('cabin_dependant', 'ses', 'name', name);
   }
 
@@ -20,7 +20,7 @@ class CabinService extends GetxService {
     return await backend.getObjects(camperIds);
   }
 
-  PushRequest createBranchCabin(String name, int capacity) {
+  PushRequest createPrincipalCabin(String name, int capacity) {
     PrincipalCabin cabinToCreate = PrincipalCabin(
       name: name,
       capacity: capacity,
@@ -42,7 +42,8 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  PushRequest addCamperToCabin(CabinDependant cabinDependant, Camper camperToAdd) {
+  Future<PushRequest> addCamperToCabin(String cabinDependantId, Camper camperToAdd) async {
+    CabinDependant cabinDependant = await backend.getObject(cabinDependantId);
     if((cabinDependant.camperRefs.length + 1) > cabinDependant.capacity) {
       //TODO: Over capacity conflict
       throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinDependant.name} because it will put it over capacity');
@@ -53,7 +54,7 @@ class CabinService extends GetxService {
       return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinDependant, camperToAdd});
     } else {
       PushRequest removeRequest = removeCamperFromCabin(cabinDependant, camperToAdd);
-      PushRequest addRequest = addCamperToCabin(cabinDependant, camperToAdd);
+      PushRequest addRequest = await addCamperToCabin(cabinDependantId, camperToAdd);
       return RequestUtils.mergeRequests(removeRequest, addRequest, 2);
     }
   }

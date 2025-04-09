@@ -1,7 +1,7 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 class CoreIdValidation {
-  static const String validCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789_.~';
+  static const String validCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.~';
   static const Set<String> validDomains = {'rot', 'org', 'brn', 'sea', 'ses'};
   static final RegExp potentialIdPattern = RegExp(r'^(rot|org|brn|sea|ses)-');
   

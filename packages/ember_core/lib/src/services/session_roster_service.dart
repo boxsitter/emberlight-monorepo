@@ -29,7 +29,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     String? cabinRef;
     // need to fetch cabin by name from the active cabins for the selected session
     if (cabinName.isNotEmpty) {
-      cabinRef = await cabinsService.getCabinRefByName(cabinName);
+      cabinRef = await cabinsService.getCabinDependantIdByName(cabinName);
     }
 
     // TODO: Error checking here, validate stuff
@@ -45,14 +45,12 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
     PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
 
-    pushRequest = RequestUtils.mergeRequests(pushRequest, await initCamperPreference(camperToAdd), 1);
-
+    pushRequest.add(await initCamperPreference(camperToAdd));
 
     pushRequest.objectsToPush.add(camperToAdd);
-    // TODO: merge the push request of add camper to cabin
-    // if (camperToAdd.cabinId != null) {
-    //   cabinsService.addCamperToCabin(cabinId!, camperToAdd.id);
-    // }
+    if (camperToAdd.cabinRef != null) {
+      pushRequest.add(await cabinsService.addCamperToCabin(cabinRef!, camperToAdd));
+    }
     return pushRequest;
   }
 
@@ -110,117 +108,161 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     String? cabinHeader,
   }) async {
     try {
-      // 1. Pick the file
-      final FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['csv'],
-      );
-      if (result == null) {
-        throw StateError('No CSV file selected.');
-      }
+      // 1. Pick and Read File Content
+      final csvContent = await _pickAndReadCsv();
 
-      // 2. Convert file contents to a String
-      final Uint8List? bytes = result.files.first.bytes;
-      if (bytes == null) {
-        throw StateError('Unable to read CSV data (no bytes found).');
-      }
-      final csvContent = String.fromCharCodes(bytes);
-
-      // 3. Convert CSV String to a list of rows
-      final List<List<dynamic>> rows =
-      const CsvToListConverter().convert(csvContent, eol: '\n');
+      // 2. Parse CSV
+      final List<List<dynamic>> rows = const CsvToListConverter().convert(csvContent, eol: '\n');
       if (rows.isEmpty) {
         throw ArgumentError('CSV file is empty.');
       }
 
-      // 4. Extract & validate columns from the header row
-      final List<String> headers = rows.first
-          .map((header) => header.toString().toLowerCase().trim())
-          .toList();
-
-      // Locate each column index (throw if required column is missing)
-      final int firstNameIndex = _findColumnIndex(
-        headers,
-        firstNameHeader,
-        isRequired: true,
-      );
-      final int lastNameIndex = _findColumnIndex(
-        headers,
-        lastNameHeader,
-        isRequired: true,
-      );
-      final int ageIndex = _findColumnIndex(
-        headers,
-        ageHeader,
-        isRequired: true,
+      // 3. Process Headers
+      final headers = rows.first.map((h) => h.toString().toLowerCase().trim()).toList();
+      final indices = _parseHeaderIndices(
+        headers: headers,
+        firstNameHeader: firstNameHeader,
+        lastNameHeader: lastNameHeader,
+        ageHeader: ageHeader,
+        preferredNameHeader: preferredNameHeader,
+        genderHeader: genderHeader,
+        cabinHeader: cabinHeader,
       );
 
-      // For optional columns, we allow -1 if not found
-      final int preferredIndex = preferredNameHeader == null
-          ? -1
-          : _findColumnIndex(headers, preferredNameHeader, isRequired: false);
-      final int genderIndex = genderHeader == null
-          ? -1
-          : _findColumnIndex(headers, genderHeader, isRequired: false);
-      final int cabinIndex = cabinHeader == null
-          ? -1
-          : _findColumnIndex(headers, cabinHeader, isRequired: false);
+      // 4. Prepare for Processing
+      final Set<Camper> alreadyRegistered = await registeredCampers; // Assuming this getter exists
+      // Keep track of campers added in *this* import to check for duplicates within the CSV
+      final Set<Camper> newlyAddedInThisImport = {};
+      PushRequest combinedRequest = PushRequest(
+          disarmRequirementsLevel: 1,
+          confirmationMessage: 'Confirm import of newly parsed campers.' // Simplified message
+      );
 
-      // 5. Prepare data sets and a PushRequest for bulk creation
-      final Set<Camper> alreadyRegistered = await registeredCampers;
-      PushRequest combinedRequest = PushRequest(disarmRequirementsLevel: 1, confirmationMessage: 'Are you sure you want to import however many campers you are importing?');
-
-      // 6. Process each row (skip the header)
+      // 5. Process Each Data Row
       for (final row in rows.skip(1)) {
-        // If a row doesn’t match the header length, skip it (malformed data)
         if (row.length < headers.length) {
-          // consoleController.error('Row has fewer columns than expected: $row');
+          print('Skipping malformed row (wrong column count): $row');
           continue;
         }
 
-        // Extract fields safely
-        final String firstName = _getCellValue(row, firstNameIndex);
-        final String lastName = _getCellValue(row, lastNameIndex);
-        final String preferredName = _getCellValue(row, preferredIndex);
-        final String gender = _getCellValue(row, genderIndex);
-        final int age = int.tryParse(_getCellValue(row, ageIndex)) ?? 0;
-        final String cabinName = _getCellValue(row, cabinIndex);
-
-        // Basic validation
-        if (firstName.isEmpty || lastName.isEmpty || age <= 0) {
-          continue;
+        // Extract and validate row data
+        final camperData = _extractCamperDataFromRow(row, indices);
+        if (camperData == null) {
+          print('Skipping invalid row data: $row');
+          continue; // Skip if basic validation failed (e.g., empty name, invalid age)
         }
 
-        // Prevent duplicates
-        final totalKnownCampers = <Camper>{
-          ...combinedRequest.objectsToPush as Set<Camper>,
+        // Check for duplicates against already registered AND newly added ones
+        final Set<Camper> potentialDuplicates = {
           ...alreadyRegistered,
+          ...newlyAddedInThisImport,
         };
-        final bool isDuplicate =
-        await isCamperDuplicate(firstName, lastName, age, totalKnownCampers);
+        final bool isDuplicate = await isCamperDuplicate(
+          camperData['firstName'],
+          camperData['lastName'],
+          camperData['age'],
+          potentialDuplicates,
+        );
+
         if (isDuplicate) {
-          // Optionally log the skipped duplicates
-          print('Skipping duplicate camper: $firstName $lastName ($age y/o)');
+          print('Skipping duplicate camper: ${camperData['firstName']} ${camperData['lastName']}');
           continue;
         }
 
-        // 7. Create camper & merge into combined request
-        final PushRequest newCamperRequest = await registerCamper(
-          firstName: firstName,
-          lastName: lastName,
-          preferredName: preferredName,
-          gender: gender,
-          age: age,
-          cabinName: cabinName,
-        );
-        combinedRequest =
-            RequestUtils.mergeRequests(newCamperRequest, combinedRequest, 2);
+        // 6. Create Camper PushRequest and Update State
+        try {
+          final PushRequest newCamperRequest = await registerCamper(
+            firstName: camperData['firstName'],
+            lastName: camperData['lastName'],
+            preferredName: camperData['preferredName'],
+            gender: camperData['gender'],
+            age: camperData['age'],
+            cabinName: camperData['cabinName'],
+          );
+
+          if (newCamperRequest.objectsToPush.isNotEmpty && newCamperRequest.objectsToPush.first is Camper) {
+            newlyAddedInThisImport.add(newCamperRequest.objectsToPush.first as Camper);
+          } else {
+            print('Warning: registerCamper did not return a single Camper object as expected for row: $row');
+            continue;
+          }
+
+          // Merge the new request into the combined one
+          combinedRequest = RequestUtils.mergeRequests(newCamperRequest, combinedRequest, 2);
+
+        } catch(e) {
+          print('Error registering camper for row: $row. Error: $e');
+          continue;
+        }
       }
 
+      // Update confirmation message with actual count
+      combinedRequest.confirmationMessage = 'Are you sure you want to import ${newlyAddedInThisImport.length} new campers?';
+
       return combinedRequest;
+
     } catch (e) {
+      // Catch specific errors like FileSystemException, ArgumentError, StateError if needed
+      print('Error during CSV import process: $e'); // Log the error
+      // Rethrow or handle as appropriate for UI feedback
       throw StateError('Error importing CSV: $e');
     }
+  }
+
+  Future<String> _pickAndReadCsv() async {
+    final FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+    if (result == null) {
+      throw StateError('No CSV file selected.');
+    }
+    final Uint8List? bytes = result.files.first.bytes;
+    if (bytes == null) {
+      throw StateError('Unable to read CSV data.');
+    }
+    // Consider adding checks for file size or basic content validation here
+    return String.fromCharCodes(bytes);
+  }
+
+  Map<String, int> _parseHeaderIndices({
+    required List<String> headers,
+    required String firstNameHeader,
+    required String lastNameHeader,
+    required String ageHeader,
+    String? preferredNameHeader,
+    String? genderHeader,
+    String? cabinHeader,
+  }) {
+    return {
+      'firstName': _findColumnIndex(headers, firstNameHeader, isRequired: true),
+      'lastName': _findColumnIndex(headers, lastNameHeader, isRequired: true),
+      'age': _findColumnIndex(headers, ageHeader, isRequired: true),
+      'preferredName': preferredNameHeader == null ? -1 : _findColumnIndex(headers, preferredNameHeader, isRequired: false),
+      'gender': genderHeader == null ? -1 : _findColumnIndex(headers, genderHeader, isRequired: false),
+      'cabin': cabinHeader == null ? -1 : _findColumnIndex(headers, cabinHeader, isRequired: false),
+    };
+  }
+
+  Map<String, dynamic>? _extractCamperDataFromRow(List<dynamic> row, Map<String, int> indices) {
+    final String firstName = _getCellValue(row, indices['firstName']!);
+    final String lastName = _getCellValue(row, indices['lastName']!);
+    final String ageString = _getCellValue(row, indices['age']!);
+    final int age = int.tryParse(ageString) ?? 0;
+
+    // Basic validation
+    if (firstName.isEmpty || lastName.isEmpty || age <= 0) {
+      return null; // Indicate invalid data
+    }
+
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'age': age,
+      'preferredName': _getCellValue(row, indices['preferredName']!),
+      'gender': _getCellValue(row, indices['gender']!),
+      'cabinName': _getCellValue(row, indices['cabin']!),
+    };
   }
 
   /// Returns the index of [columnName] within [headers]. Throws an error if

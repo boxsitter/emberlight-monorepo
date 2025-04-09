@@ -13,10 +13,10 @@ class Camper extends CoreObject {
   int age;
   String note;
   CabinId? cabinRef;
-  String? cabinName; // TODO: This could cause problems with deletion of cabins or cabinsInUse, look into it
+  String? cabinName;
 
   CamperPreferenceId? camperPreferenceCmp;
-  bool camperPreferenceCompleted; // TODO: This could cause problems with deletion of preferences
+  bool camperPreferenceCompleted;
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
   Map<AssignedMultiActivityBlockId, ActivityDependantId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
 

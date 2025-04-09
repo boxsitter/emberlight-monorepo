@@ -1,5 +1,3 @@
-
-
 import 'package:ember_core/ember_core_models.dart';
 
 class Season extends CoreObject {

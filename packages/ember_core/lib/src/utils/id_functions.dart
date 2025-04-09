@@ -7,10 +7,12 @@ class IdFunctions {
 
   static String clean(String input) {
     return input
-        .toLowerCase()
+        .toLowerCase() // PUT THIS BACK
         .replaceAll(' ', '_')
+    // Revert regex to only allow lowercase/numbers/_
         .replaceAll(RegExp(r'[^a-z0-9_]'), '');
   }
+
 
   /// Generates a Core ID in the format:
   /// [domain]-[objectType]-[tag]-[5-char random string]
