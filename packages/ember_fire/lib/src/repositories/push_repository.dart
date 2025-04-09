@@ -28,6 +28,7 @@ class PushRepository {
     for (final object in objects) {
       Map<String, dynamic> document = object.toJson();
       CoreHelperFunctions.updateDocumentTimestamp(document);
+      convertDatesToTimestamp(document);
       final resolvedPath = pathService.getDocPathFromId(object.id);
       final docId = _db.doc(resolvedPath);
       batch.set(docId, document, SetOptions(merge: true));
@@ -137,4 +138,40 @@ class PushRepository {
 
     return referencedIds;
   }
+
+  Map<String, dynamic> convertDatesToTimestamp(Map<String, dynamic> data) {
+    data.forEach((key, value) {
+      if (value is DateTime) {
+        // Convert DateTime values to UTC Timestamp.
+        data[key] = Timestamp.fromDate(value.toUtc());
+      } else if (value is Timestamp) {
+        // Re-create Timestamp to enforce UTC.
+        data[key] = Timestamp.fromDate(value.toDate().toUtc());
+      } else if (value is String) {
+        // Parse string as date and convert to Timestamp.
+        DateTime? parsed = DateTime.tryParse(value);
+        if (parsed != null) {
+          data[key] = Timestamp.fromDate(parsed.toUtc());
+        }
+      } else if (value is Map<String, dynamic>) {
+        data[key] = convertDatesToTimestamp(value);
+      } else if (value is List) {
+        data[key] = value.map((item) {
+          if (item is DateTime) {
+            return Timestamp.fromDate(item.toUtc());
+          } else if (item is Timestamp) {
+            return Timestamp.fromDate(item.toDate().toUtc());
+          } else if (item is String) {
+            DateTime? parsed = DateTime.tryParse(item);
+            return parsed != null ? Timestamp.fromDate(parsed.toUtc()) : item;
+          } else if (item is Map<String, dynamic>) {
+            return convertDatesToTimestamp(item);
+          }
+          return item;
+        }).toList();
+      }
+    });
+    return data;
+  }
 }
+

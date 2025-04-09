@@ -11,10 +11,11 @@ import '../repositories/pull_repository.dart';
 class DatabaseRepairService extends GetxService{
   static const double matchThreshold = 0.75;
   static const double fieldPresenceWeight = 0.20;
-  static const double valueEqualityWeight = 0.20;
+  static const double valueEqualityWeight = 0.25;
   static const Set<String> specialFields = {'name', 'firstName'};
-  static const double specialFieldPresenceWeight = 0.20;
+  static const double specialFieldPresenceWeight = 0.15;
   static const double specialValueEqualityWeight = 0.40;
+  static const Set<String> alwaysIgnore = {'id', 'createdAt', 'updatedAt'};
 
 
   PullRepository pullRepo = Get.find<PullRepository>();
@@ -81,7 +82,6 @@ class DatabaseRepairService extends GetxService{
     }
 
     if (jsonB == null) {
-      print("Did not find matching object!!!");
       return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {CoreObject.fromJson(jsonA)});
     }
 
@@ -163,6 +163,7 @@ class DatabaseRepairService extends GetxService{
     Set<Map <String, dynamic>> jsons = (await pullRepo.getDocsInCollection(collectionName, domain)).values.toSet();
     for (var jsonB in jsons) {
       if (computeJsonSimilarity(jsonA, jsonB) >= matchThreshold) {
+        print('MATCHING DOC FOUND!');
         return jsonB;
       }
     }
@@ -183,34 +184,67 @@ class DatabaseRepairService extends GetxService{
   /// must not be null
 
   double computeJsonSimilarity(Map<String, dynamic> jsonA, Map<String, dynamic> jsonB) {
-
+    // --- Weight Validation ---
     if (specialFields == null && fieldPresenceWeight + valueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of fieldPresenceWeight and valueEqualityWeight must be 1.0');
-
     } else if (specialFields != null && (specialFieldPresenceWeight == null || specialValueEqualityWeight == null)) {
       throw ArgumentError('specialFieldPresenceWeight and specialValueEqualityWeight cannot be null if specialFields is not null');
     } else if (specialFields != null && fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight! + specialValueEqualityWeight! != 1.0) {
       throw ArgumentError('The sum of all weights must be 1.0');
     }
+    // --- End Weight Validation ---
 
-    // Calculate the “regular” indexes, each multiplied by its weight.
-    double fp = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, exclude: {...?specialFields, 'id'}) * fieldPresenceWeight;
+    bool specialFieldsPresent = specialFields != null && specialFields.any((field) => jsonA.containsKey(field) || jsonB.containsKey(field));
 
-    double ve = compareValueEquality(jsonA: jsonA, jsonB: jsonB, exclude: {...?specialFields, 'id'}) * valueEqualityWeight;
+    double effectiveFieldPresenceWeight;
+    double effectiveValueEqualityWeight;
+    double effectiveSpecialFieldPresenceWeight = 0;
+    double effectiveSpecialValueEqualityWeight = 0;
 
-    double sum = fp + ve;
-    double count = 2.0;
-
-    // If there are special fields, compute them as well
-    if (specialFields != null && specialFieldPresenceWeight != null && specialValueEqualityWeight != null) {
-      double sfp = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: {'id'}) * specialFieldPresenceWeight;
-      double sve = compareValueEquality(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: {'id'}) * specialValueEqualityWeight;
-
-      sum += sfp + sve;
-      count += 2.0;
+    if (specialFieldsPresent && specialFields != null && specialFieldPresenceWeight != null && specialValueEqualityWeight != null) {
+      effectiveFieldPresenceWeight = fieldPresenceWeight;
+      effectiveValueEqualityWeight = valueEqualityWeight;
+      effectiveSpecialFieldPresenceWeight = specialFieldPresenceWeight!;
+      effectiveSpecialValueEqualityWeight = specialValueEqualityWeight!;
+    } else {
+      double originalRegularWeightSum = fieldPresenceWeight + valueEqualityWeight;
+      if (originalRegularWeightSum <= 0) {
+        effectiveFieldPresenceWeight = 0.5; // Default split if original weights are zero
+        effectiveValueEqualityWeight = 0.5;
+      } else {
+        effectiveFieldPresenceWeight = fieldPresenceWeight / originalRegularWeightSum;
+        effectiveValueEqualityWeight = valueEqualityWeight / originalRegularWeightSum;
+      }
     }
 
-    return sum / count;
+    final Set<String> regularExclude = {...?specialFields, ...alwaysIgnore};
+    double fieldPresenceIndex = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, exclude: regularExclude);
+    double valueEqualityIndex = compareValueEquality(jsonA: jsonA, jsonB: jsonB, exclude: regularExclude);
+
+    double sum = fieldPresenceIndex * effectiveFieldPresenceWeight + valueEqualityIndex * effectiveValueEqualityWeight;
+
+    double specialFieldPresenceIndex = 0;
+    double specialValueEqualityIndex = 0;
+
+    if (specialFieldsPresent && specialFields != null) {
+      double specialFieldPresenceIndex = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: alwaysIgnore);
+      double specialValueEqualityIndex = compareValueEquality(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: alwaysIgnore);
+      sum += specialFieldPresenceIndex * effectiveSpecialFieldPresenceWeight + specialValueEqualityIndex * effectiveSpecialValueEqualityWeight;
+
+      // --- Add this print statement ---
+      print(
+          "Similarity (${jsonA['id']} vs ${jsonB['id']}): "
+              "RegFP(${fieldPresenceIndex.toStringAsFixed(3)}*${effectiveFieldPresenceWeight.toStringAsFixed(3)}) + "
+              "RegVE(${valueEqualityIndex.toStringAsFixed(3)}*${effectiveValueEqualityWeight.toStringAsFixed(3)}) + "
+              "SpcFP(${specialFieldPresenceIndex.toStringAsFixed(3)}*${effectiveSpecialFieldPresenceWeight.toStringAsFixed(3)}) + "
+              "SpcVE(${specialValueEqualityIndex.toStringAsFixed(3)}*${effectiveSpecialValueEqualityWeight.toStringAsFixed(3)}) = "
+              "${sum.toStringAsFixed(3)}"
+      );
+      // --- End print statement ---
+
+    }
+
+    return sum;
   }
 
   /// Computes how similar two JSONs are in terms of field presence.
@@ -290,13 +324,19 @@ class DatabaseRepairService extends GetxService{
     // Only compare fields that exist in both JSONs.
     final commonFields = fieldsA.intersection(fieldsB);
 
-    // Edge case: if no fields remain, return 1.0
-    // (no differences among zero fields).
     if (commonFields.isEmpty) {
-      return 1.0;
+      // If *neither* JSON had any relevant fields after filtering,
+      // then they are "equally empty" - score 1.0.
+      if (fieldsA.isEmpty && fieldsB.isEmpty) {
+        return 1.0;
+      } else {
+        // Otherwise, at least one JSON had relevant fields, but
+        // none were shared. Value equality for the considered
+        // set is 0.0 because no values could be compared.
+        return 0.0;
+      }
     }
 
-    // Count how many fields have equal values.
     int matchCount = 0;
     for (var key in commonFields) {
       if (_valuesAreEqual(jsonA[key], jsonB[key])) {
@@ -305,10 +345,16 @@ class DatabaseRepairService extends GetxService{
     }
 
     // Return fraction of how many matched out of total in the intersection.
+    // commonFields length is guaranteed to be > 0 here.
     return matchCount / commonFields.length;
   }
 
   bool _valuesAreEqual(dynamic a, dynamic b) {
+    if (a is DateTime && b is DateTime) {
+      // Convert both to UTC before comparing their equality
+      return a.toUtc() == b.toUtc();
+    }
+
     // If both are Lists, do a listEquality check
     if (a is List && b is List) {
       if (a.length != b.length) return false;
