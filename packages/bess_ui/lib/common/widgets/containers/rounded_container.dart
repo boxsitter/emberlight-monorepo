@@ -5,18 +5,6 @@ import '../../constants//sizes.dart';
 
 /// A container widget with rounded corners and customizable properties.
 class BessRoundedContainer extends StatelessWidget {
-  /// Create a rounded container with customizable properties.
-  ///
-  /// Parameters:
-  ///   - width: The width of the container.
-  ///   - height: The height of the container.
-  ///   - radius: The border radius for the rounded corners.
-  ///   - padding: The padding inside the container.
-  ///   - margin: The margin around the container.
-  ///   - child: The widget to be placed inside the container.
-  ///   - backgroundColor: The background color of the container.
-  ///   - borderColor: The color of the container's border.
-  ///   - showBorder: A flag to determine if the container should have a border.
   const BessRoundedContainer({
     super.key,
     this.child,
@@ -31,7 +19,7 @@ class BessRoundedContainer extends StatelessWidget {
     this.backgroundColor,
     this.onTap,
     this.borderThickness = BessSizes.borderThicknessSm,
-    this.clipContent = false,
+    this.clipContent = true, // Clipping primarily handled by Material
   });
 
   final Widget? child;
@@ -50,31 +38,85 @@ class BessRoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    Widget content = Material(
+      color: backgroundColor ?? BessColors.core,
       elevation: showShadow ? 5.0 : 0.0,
       borderRadius: BorderRadius.circular(radius),
-      color: backgroundColor ?? BessColors.core,
+      clipBehavior: clipContent ? Clip.antiAlias : Clip.none,
       child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(radius),
         splashColor: BessColors.primary.withAlpha(35),
-        onTap: onTap,
-        child: Container(
-          width: width,
-          height: height,
-          margin: margin,
+        child: Padding(
           padding: padding,
-          clipBehavior: clipContent ? Clip.antiAlias : Clip.none,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius),
-            border: showBorder ? Border.all(
-              color: borderColor ?? BessColors.borderPrimary,
-              width: borderThickness,
-              strokeAlign: BorderSide.strokeAlignInside,
-            ) : null,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: child,
           ),
-          child: child,
         ),
       ),
     );
+
+    if (margin != null) {
+      content = Padding(padding: margin!, child: content);
+    }
+
+    if (showBorder) {
+      return CustomPaint(
+        // *** Use foregroundPainter to draw ON TOP ***
+        foregroundPainter: _BorderPainter(
+          color: borderColor ?? BessColors.borderPrimary,
+          thickness: borderThickness,
+          radius: Radius.circular(radius),
+        ),
+        // painter: null, // No background painter needed
+        child: content, // The Material/InkWell/Child goes here
+      );
+    } else {
+      return content;
+    }
+  }
+}
+
+// Custom painter for drawing the border overlay
+class _BorderPainter extends CustomPainter {
+  final Color color;
+  final double thickness;
+  final Radius radius;
+
+  _BorderPainter({
+    required this.color,
+    required this.thickness,
+    required this.radius,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = thickness
+      ..style = PaintingStyle.stroke; // Only draw the stroke
+
+    // Create a rounded rectangle path inset by half the stroke width
+    // to align the border correctly with the Material's edge.
+    final RRect rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+          thickness / 2.0, thickness / 2.0,
+          size.width - thickness, size.height - thickness
+      ),
+      radius,
+    );
+
+    canvas.drawRRect(rrect, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // Repaint only if border properties change
+    return oldDelegate is! _BorderPainter ||
+        oldDelegate.color != color ||
+        oldDelegate.thickness != thickness ||
+        oldDelegate.radius != radius;
   }
 }
