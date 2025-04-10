@@ -26,7 +26,7 @@ class EmberCore {
     }
     ClientContextService clientContextService = ClientContextService();
     await clientContextService.setDefaultContext();
-    Get.put( ClientContextService());
+    Get.put( clientContextService);
     backend.initLate();
     if (EmberCoreConfig.repairHardcodedObjects) {
       await repairHardcodedObjects();
