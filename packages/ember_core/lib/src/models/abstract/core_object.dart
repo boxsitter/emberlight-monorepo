@@ -61,8 +61,8 @@ abstract class CoreObject{
   }
 
   static final Map<String, JsonFactory> fromJsons = {
-    'cabin_dependant': (json) => CabinDependant.fromJson(json),
-    'activity_dependant': (json) => ActivityDependant.fromJson(json),
+    'cabin_dependent': (json) => CabinDependent.fromJson(json),
+    'activity_dependent': (json) => ActivityDependent.fromJson(json),
 
     'branch': (json) => Branch.fromJson(json),
     'organization': (json) => Organization.fromJson(json),

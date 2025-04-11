@@ -3,7 +3,7 @@ import 'package:ember_core/ember_core_models.dart';
 
 typedef CabinId = String;
 typedef AssignedMultiActivityBlockId = String;
-typedef ActivityDependantId = String;
+typedef ActivityDependentId = String;
 
 class Camper extends CoreObject {
   String firstName;
@@ -18,7 +18,7 @@ class Camper extends CoreObject {
   CamperPreferenceId? camperPreferenceCmp;
   bool camperPreferenceCompleted;
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
-  Map<AssignedMultiActivityBlockId, ActivityDependantId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
+  Map<AssignedMultiActivityBlockId, ActivityDependentId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
 
   Camper({
     required this.firstName,
@@ -31,7 +31,7 @@ class Camper extends CoreObject {
     this.cabinName,
     this.camperPreferenceCmp,
     this.camperPreferenceCompleted = false,
-    Map<AssignedMultiActivityBlockId, ActivityDependantId>? activityAssignmentRefs,
+    Map<AssignedMultiActivityBlockId, ActivityDependentId>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,

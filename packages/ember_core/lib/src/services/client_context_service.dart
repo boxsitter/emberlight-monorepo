@@ -22,7 +22,7 @@ class ClientContextService extends GetxService {
   get sessionId => clientContext.sessionId;
 
   Future<Session> get session async => await backend.getObject(sessionId);
-  Future<Schedule> get schedule async => await backend.getObject(await backend.getFieldValue(sessionId, 'scheduleId'));
+  Future<Schedule> get schedule async => (await backend.getObjectsInCollection('schedule', 'ses')).first as Schedule;
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {

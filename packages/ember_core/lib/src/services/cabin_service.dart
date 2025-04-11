@@ -8,11 +8,11 @@ class CabinService extends GetxService {
   BackendInterface backend = BackendManager.instance;
   RequestService requestService = Get.find<RequestService>();
 
-  Future<Set<CabinDependant>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependant', 'ses',);
+  Future<Set<CabinDependent>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
   Future<Set<PrincipalCabin>> get branchCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
 
-  Future<String?> getCabinDependantIdByName(String name) async {
-    return await backend.queryField('cabin_dependant', 'ses', 'name', name);
+  Future<String?> getCabinDependentIdByName(String name) async {
+    return await backend.queryField('cabin_dependent', 'ses', 'name', name);
   }
 
   Future<Set<Camper>> getCampersInCabin(String id) async {
@@ -20,50 +20,81 @@ class CabinService extends GetxService {
     return await backend.getObjects(camperIds);
   }
 
-  PushRequest createPrincipalCabin(String name, int capacity) {
+  Future<Map<String, String>> getPrincipalCabinNames() async {
+    final rawData = await backend.getFieldFromCollection('principal_cabin', 'brn', 'name');
+    Map<String, String> valuesToString = rawData.map((key, value) => MapEntry(key, value as String));
+    return valuesToString;
+  }
+
+  Future<Map<String, String>> getCabinDependentIdsToPrincipalIds() async {
+    final rawData = await backend.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
+    Map<String, String> valuesToString = rawData.map((key, value) => MapEntry(key, value as String));
+    return valuesToString;
+  }
+
+  Future<Set<String>> getRegisteredPrincipalCabinIds() async {
+    final rawData = await backend.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
+    Set<dynamic> dynamicSet = rawData.values.toSet();
+    Set<String> stringSet = {};
+    for (var item in dynamicSet) {
+      stringSet.add(item as String);
+    }
+    return stringSet;
+  }
+
+  void createPrincipalCabin(PushRequest pushRequest, String name, int capacity) {
     PrincipalCabin cabinToCreate = PrincipalCabin(
       name: name,
       capacity: capacity,
     );
-
-    return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinToCreate});
+    pushRequest.addObject(cabinToCreate);
   }
 
   // Future<DeleteRequest> deleteBranchCabin() {
   //   // TODO: implement this
   // }
 
-  PushRequest registerCabinToSession(PrincipalCabin branchCabin) {
-    CabinDependant cabinToRegister = CabinDependant(principalPar: branchCabin.id, name: branchCabin.name, capacity: branchCabin.capacity);
-    return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinToRegister});
+  Future<void> registerCabinToSession(PushRequest pushRequest, PrincipalCabin principalCabin) async {
+    if ((await getRegisteredPrincipalCabinIds()).contains(principalCabin.id)) {
+      print('This cabin is already registered to this session');
+      return;
+    }
+    CabinDependent cabinToRegister = CabinDependent(principalPar: principalCabin.id, name: principalCabin.name, capacity: principalCabin.capacity);
+    pushRequest.addObject(cabinToRegister);
   }
 
-  // Future<DeleteRequest> unregisterCabinDependant() {
+  Future<void> registerCabinToSessionFromId(PushRequest pushRequest, String principalCabinId) async {
+    PrincipalCabin principalCabin = await backend.getObject(principalCabinId);
+    await registerCabinToSession(pushRequest, principalCabin);
+  }
+
+  // Future<DeleteRequest> unregisterCabinDependent() {
   //   // TODO: implement this
   // }
 
-  Future<PushRequest> addCamperToCabin(String cabinDependantId, Camper camperToAdd) async {
-    CabinDependant cabinDependant = await backend.getObject(cabinDependantId);
-    if((cabinDependant.camperRefs.length + 1) > cabinDependant.capacity) {
+  Future<void> addCamperToCabin(PushRequest pushRequest, String cabinDependentId, Camper camperToAdd) async {
+    CabinDependent cabinDependent = pushRequest.getObject(id: cabinDependentId) ?? await backend.getObject(cabinDependentId);
+    if((cabinDependent.camperRefs.length + 1) > cabinDependent.capacity) {
       //TODO: Over capacity conflict
-      throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinDependant.name} because it will put it over capacity');
+      throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinDependent.name} because it will put it over capacity');
     } else if (camperToAdd.cabinRef == null) {
-      cabinDependant.camperRefs.add(camperToAdd.id);
-      camperToAdd.cabinRef = cabinDependant.id;
-      camperToAdd.cabinName = cabinDependant.name;
-      return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinDependant, camperToAdd});
+      cabinDependent.camperRefs.add(camperToAdd.id);
+      camperToAdd.cabinRef = cabinDependent.id;
+      camperToAdd.cabinName = cabinDependent.name;
+      pushRequest.addObject(cabinDependent);
+      pushRequest.addObject(camperToAdd);
     } else {
-      PushRequest removeRequest = removeCamperFromCabin(cabinDependant, camperToAdd);
-      PushRequest addRequest = await addCamperToCabin(cabinDependantId, camperToAdd);
-      return RequestUtils.mergeRequests(removeRequest, addRequest, 2);
+      removeCamperFromCabin(pushRequest, cabinDependent, camperToAdd);
+      addCamperToCabin(pushRequest, cabinDependentId, camperToAdd);
     }
   }
 
-  PushRequest removeCamperFromCabin(CabinDependant cabinDependant, Camper camperToRemove) {
-    cabinDependant.camperRefs.remove(camperToRemove.id);
+  void removeCamperFromCabin(PushRequest pushRequest, CabinDependent cabinDependent, Camper camperToRemove) {
+    cabinDependent.camperRefs.remove(camperToRemove.id);
     camperToRemove.cabinRef = null;
     camperToRemove.cabinName = null;
-    return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {cabinDependant, camperToRemove});
+    pushRequest.addObject(cabinDependent);
+    pushRequest.addObject(camperToRemove);
   }
 
 

@@ -2,12 +2,12 @@ library;
 
 // abstract
 export 'src/models/abstract/core_object.dart';
-export 'src/models/abstract/dependant.dart';
+export 'src/models/abstract/dependent.dart';
 export 'src/models/abstract/schedule_block.dart';
 
 // core_objects
 // dependent
-export 'src/models/core_objects/dependent/cabin_dependant.dart';
+export 'src/models/core_objects/dependent/cabin_dependent.dart';
 export 'src/models/core_objects/dependent/scheduled_activity.dart';
 
 // domains

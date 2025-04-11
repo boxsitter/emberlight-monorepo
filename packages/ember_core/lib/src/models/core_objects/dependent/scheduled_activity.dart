@@ -1,6 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class ActivityDependant extends CoreObject implements Dependant{
+class ActivityDependent extends CoreObject implements Dependent{
   @override
   final String principalPar;
   final String name;
@@ -8,7 +8,7 @@ class ActivityDependant extends CoreObject implements Dependant{
   final Set<String> camperRefs;
   final String blockRef;
 
-  ActivityDependant({
+  ActivityDependent({
     required this.principalPar,
     required this.name,
     required this.capacity,
@@ -20,7 +20,7 @@ class ActivityDependant extends CoreObject implements Dependant{
   })  : camperRefs = camperRefs ?? {},
         super(
           domain: 'ses',
-          type: 'activity_dependant',
+          type: 'activity_dependent',
           idTag: name,
         );
 
@@ -42,8 +42,8 @@ class ActivityDependant extends CoreObject implements Dependant{
     return json;
   }
 
-  factory ActivityDependant.fromJson(Map<String, dynamic> json) {
-    ActivityDependant activity = ActivityDependant(
+  factory ActivityDependent.fromJson(Map<String, dynamic> json) {
+    ActivityDependent activity = ActivityDependent(
       principalPar: json['principalPar'] as String,
       name: json['name'] as String,
       capacity: json['capacity'] as int,

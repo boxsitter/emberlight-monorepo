@@ -24,12 +24,14 @@ abstract class BackendInterface {
     bool updateChildrenRealtime = true,
     Child Function(Map<String, dynamic> json)? childFromJson,
   }); // TODO: watch collection instead
-  Future<PushRequest> mergeObjectsWithDatabase({
+  Future<void> mergeObjectsWithDatabase({
+    required PushRequest pushRequest,
     required Set<CoreObject> objects,
     required bool prioritizeAFields,
     required bool prioritizeAValues,
     required bool overwriteWithEmptyAValues,
-    Set<String>? aFieldsToIgnore
+    Set<String>? aFieldsToIgnore,
   });
   Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session);
+  Future<Map<String, dynamic>> getFieldFromCollection(String collectionName, String domain, String field);
 }

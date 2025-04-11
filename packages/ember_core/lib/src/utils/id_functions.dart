@@ -21,9 +21,9 @@ class IdFunctions {
     if (!CoreIdValidation.isValidDomain(domain)) {
       throw ArgumentError('$domain is not a valid domain');
     }
-    if (tag.length < 3) {
-      throw ArgumentError('Tag "$tag" is too short, must be at least 3 characters');
-    }
+    // if (tag.length < 3) {
+    //   throw ArgumentError('Tag "$tag" is too short, must be at least 3 characters');
+    // }
     final cleanType = clean(objectType);
     final cleanTag = clean(tag);
     String randomPart = List.generate(6, (_) => CoreIdValidation.validCharacters[_secureRandom.nextInt(CoreIdValidation.validCharacters.length)]).join();

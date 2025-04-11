@@ -35,11 +35,14 @@ class EmberCore {
     Get.put(SessionRosterService());
     Get.put(ConsoleService());
     Get.put(ScheduleService());
+    Get.put(FrontendCommitService());
   }
 
   static Future<void> repairHardcodedObjects() async {
     BackendInterface backend = BackendManager.instance;
-    PushRequest pushRequest = await backend.mergeObjectsWithDatabase(
+    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    await backend.mergeObjectsWithDatabase(
+      pushRequest: pushRequest,
       objects: HardcodedObjects.hardcodedObjects,
       prioritizeAFields: true,
       prioritizeAValues: true,

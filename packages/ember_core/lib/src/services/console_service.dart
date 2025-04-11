@@ -20,12 +20,11 @@ class ConsoleService extends GetxService {
       case 'clear':
         return CommandResult(log: '\x1B[2J\x1B[H');
 
-      case 'addcamper':
-        return await addCamper(arguments);
+      // case 'addcamper':
+      //   return await addCamper(arguments);
 
       case 'importcsv':
         CommandResult commandResult = await importCsv();
-        backend.commit(commandResult.pushRequest!);
         return commandResult;
 
       // case 'deleteallcampers':
@@ -36,21 +35,23 @@ class ConsoleService extends GetxService {
     }
   }
 
-  Future<CommandResult> addCamper(List<String> arguments) async {
-    if (arguments.length < 2) {
-      return CommandResult(error: "Usage: addcamper <firstName> <lastName>");
-    }
-
-    await sessionRosterService.registerCamper(
-      firstName: arguments[0],
-      lastName: arguments[1],
-    );
-
-    return CommandResult(success: "Camper added successfully");
-  }
+  // Future<CommandResult> addCamper(List<String> arguments) async {
+  //   if (arguments.length < 2) {
+  //     return CommandResult(error: "Usage: addcamper <firstName> <lastName>");
+  //   }
+  //
+  //   await sessionRosterService.registerCamper(
+  //     firstName: arguments[0],
+  //     lastName: arguments[1],
+  //   );
+  //
+  //   return CommandResult(success: "Camper added successfully");
+  // }
 
   Future<CommandResult> importCsv() async {
-    PushRequest pushRequest = await sessionRosterService.importFromCsv(
+    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    await sessionRosterService.importFromCsv(
+      pushRequest: pushRequest,
       firstNameHeader: 'First Name',
       lastNameHeader: 'Last Name',
       preferredNameHeader: 'Preferred Name',
@@ -58,7 +59,8 @@ class ConsoleService extends GetxService {
       ageHeader: 'Age',
       cabinHeader: 'Cabin',
     );
-    return CommandResult(pushRequest: pushRequest);
+    backend.commit(pushRequest);
+    return CommandResult();
   }
 
 

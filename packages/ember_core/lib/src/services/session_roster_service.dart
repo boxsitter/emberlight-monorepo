@@ -17,19 +17,20 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
   Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses');
 
-  Future<PushRequest> registerCamper({
-    String firstName = '',
-    String lastName = '',
+  Future<void> registerCamper({
+    required PushRequest pushRequest,
+    required String firstName,
+    required String lastName,
     String preferredName = '',
     String gender = '',
-    int age = 0,
+    required int age,
     String cabinName = '',
     String note = '',
   }) async {
     String? cabinRef;
     // need to fetch cabin by name from the active cabins for the selected session
     if (cabinName.isNotEmpty) {
-      cabinRef = await cabinsService.getCabinDependantIdByName(cabinName);
+      cabinRef = await cabinsService.getCabinDependentIdByName(cabinName);
     }
 
     // TODO: Error checking here, validate stuff
@@ -39,35 +40,33 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       preferredName: preferredName,
       gender: gender,
       age: age,
-      cabinRef: cabinRef,
       note: note,
     );
 
-    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    initCamperPreference(pushRequest,camperToAdd);
+    print('Camper: ${camperToAdd.fullName} added');
+    pushRequest.addObject(camperToAdd);
 
-    pushRequest.add(await initCamperPreference(camperToAdd));
-
-    pushRequest.objectsToPush.add(camperToAdd);
-    if (camperToAdd.cabinRef != null) {
-      pushRequest.add(await cabinsService.addCamperToCabin(cabinRef!, camperToAdd));
+    if (cabinRef != null) {
+      await cabinsService.addCamperToCabin(pushRequest, cabinRef, camperToAdd);
     }
-    return pushRequest;
   }
 
-  Future<PushRequest> initCamperPreference(Camper camper) async {
+  Future<void> initCamperPreference(PushRequest pushRequest, Camper camper) async {
     CamperPreference camperPreference = CamperPreference(camperRef: camper.id, camperName: camper.name);
     camper.camperPreferenceCmp = camperPreference.id;
-    Schedule schedule = await clientContextService.schedule;
+    Schedule schedule = pushRequest.getObjectOfType() ?? await clientContextService.schedule;
+
     for (ActivityTypeId uniqueActivityTypeRef in schedule.uniqueActivityTypeRefs) {
       camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
       camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }
-    Session session = await clientContextService.session;
+    Session session = pushRequest.getObjectOfType() ?? await clientContextService.session;
+
     session.camperRefToPreferenceRef[camper.id] = camperPreference.id;
-    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
-    pushRequest.objectsToPush.add(session);
-    pushRequest.objectsToPush.add(camperPreference);
-    return pushRequest;
+    pushRequest.addObject(schedule);
+    pushRequest.addObject(session);
+    pushRequest.addObject(camperPreference);
   }
 
   // Future<void> deleteCamper(String id) async{
@@ -99,7 +98,8 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     return false;
   }
 
-  Future<PushRequest> importFromCsv({
+  Future<void> importFromCsv({
+    required PushRequest pushRequest,
     required String firstNameHeader,
     required String lastNameHeader,
     required String ageHeader,
@@ -130,13 +130,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       );
 
       // 4. Prepare for Processing
-      final Set<Camper> alreadyRegistered = await registeredCampers; // Assuming this getter exists
-      // Keep track of campers added in *this* import to check for duplicates within the CSV
-      final Set<Camper> newlyAddedInThisImport = {};
-      PushRequest combinedRequest = PushRequest(
-          disarmRequirementsLevel: 1,
-          confirmationMessage: 'Confirm import of newly parsed campers.' // Simplified message
-      );
+      final Set<Camper> alreadyRegistered = await registeredCampers;
 
       // 5. Process Each Data Row
       for (final row in rows.skip(1)) {
@@ -155,7 +149,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
         // Check for duplicates against already registered AND newly added ones
         final Set<Camper> potentialDuplicates = {
           ...alreadyRegistered,
-          ...newlyAddedInThisImport,
+          ...pushRequest.getObjectsOfType(),
         };
         final bool isDuplicate = await isCamperDuplicate(
           camperData['firstName'],
@@ -171,7 +165,8 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
         // 6. Create Camper PushRequest and Update State
         try {
-          final PushRequest newCamperRequest = await registerCamper(
+          await registerCamper(
+            pushRequest: pushRequest,
             firstName: camperData['firstName'],
             lastName: camperData['lastName'],
             preferredName: camperData['preferredName'],
@@ -180,27 +175,11 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
             cabinName: camperData['cabinName'],
           );
 
-          if (newCamperRequest.objectsToPush.isNotEmpty && newCamperRequest.objectsToPush.first is Camper) {
-            newlyAddedInThisImport.add(newCamperRequest.objectsToPush.first as Camper);
-          } else {
-            print('Warning: registerCamper did not return a single Camper object as expected for row: $row');
-            continue;
-          }
-
-          // Merge the new request into the combined one
-          combinedRequest = RequestUtils.mergeRequests(newCamperRequest, combinedRequest, 2);
-
         } catch(e) {
           print('Error registering camper for row: $row. Error: $e');
           continue;
         }
       }
-
-      // Update confirmation message with actual count
-      combinedRequest.confirmationMessage = 'Are you sure you want to import ${newlyAddedInThisImport.length} new campers?';
-
-      return combinedRequest;
-
     } catch (e) {
       // Catch specific errors like FileSystemException, ArgumentError, StateError if needed
       print('Error during CSV import process: $e'); // Log the error

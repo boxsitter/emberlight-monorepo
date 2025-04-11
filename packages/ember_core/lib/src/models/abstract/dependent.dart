@@ -1,4 +1,4 @@
 
-abstract class Dependant {
+abstract class Dependent {
   String get principalPar;
 }
