@@ -22,7 +22,7 @@ class DatabaseRepairService extends GetxService{
   DumbPushRepository dumbRepo = Get.find<DumbPushRepository>();
 
   // TODO: Implement
-  // void cleanOrphanedDependants() {
+  // void cleanOrphanedDependents() {
   //   // the reference tracker tracks all ids that reference the master
   // }
 
@@ -39,27 +39,28 @@ class DatabaseRepairService extends GetxService{
     await dumbRepo.dumbPush('organization/$orgId/branch/$branchId/season/$seasonId/session/$sessionId', session);
   }
 
-  Future<PushRequest> mergeObjectsWithDatabase({
+  Future<void> mergeObjectsWithDatabase({
+    required PushRequest pushRequest,
     required Set<CoreObject> objects,
     required bool prioritizeAFields,
     required bool prioritizeAValues,
     required bool overwriteWithEmptyAValues,
     Set<String>? aFieldsToIgnore,
   }) async {
-    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
     for (CoreObject object in objects) {
-      pushRequest.add(await mergeObjectWithDatabase(
+      await mergeObjectWithDatabase(
+        pushRequest: pushRequest,
         objectToMerge: object,
         prioritizeAFields: prioritizeAFields,
         prioritizeAValues: prioritizeAValues,
         overwriteWithEmptyAValues: overwriteWithEmptyAValues,
         aFieldsToIgnore: aFieldsToIgnore,
-      ));
+      );
     }
-    return pushRequest;
   }
 
-  Future<PushRequest> mergeObjectWithDatabase({
+  Future<void> mergeObjectWithDatabase({
+    required PushRequest pushRequest,
     required CoreObject objectToMerge,
     required bool prioritizeAFields,
     required bool prioritizeAValues,
@@ -82,7 +83,8 @@ class DatabaseRepairService extends GetxService{
     }
 
     if (jsonB == null) {
-      return PushRequest(disarmRequirementsLevel: 0, objectsToPush: {CoreObject.fromJson(jsonA)});
+      pushRequest.addObject(CoreObject.fromJson(jsonA));
+      return;
     }
 
     // Start with B's data as our base
@@ -141,10 +143,7 @@ class DatabaseRepairService extends GetxService{
     mergedJson['id'] = (jsonB != null && jsonB.containsKey('id')) ? jsonB['id'] : idA;
 
     CoreObject mergedObject = CoreObject.fromJson(mergedJson);
-    return PushRequest(
-      disarmRequirementsLevel: 0,
-      objectsToPush: {mergedObject},
-    );
+    pushRequest.addObject(mergedObject);
   }
 
   bool _isEmptyValue(dynamic value) {
@@ -184,7 +183,6 @@ class DatabaseRepairService extends GetxService{
   /// must not be null
 
   double computeJsonSimilarity(Map<String, dynamic> jsonA, Map<String, dynamic> jsonB) {
-    // --- Weight Validation ---
     if (specialFields == null && fieldPresenceWeight + valueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of fieldPresenceWeight and valueEqualityWeight must be 1.0');
     } else if (specialFields != null && (specialFieldPresenceWeight == null || specialValueEqualityWeight == null)) {
@@ -192,7 +190,6 @@ class DatabaseRepairService extends GetxService{
     } else if (specialFields != null && fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight! + specialValueEqualityWeight! != 1.0) {
       throw ArgumentError('The sum of all weights must be 1.0');
     }
-    // --- End Weight Validation ---
 
     bool specialFieldsPresent = specialFields != null && specialFields.any((field) => jsonA.containsKey(field) || jsonB.containsKey(field));
 
@@ -230,18 +227,6 @@ class DatabaseRepairService extends GetxService{
       double specialFieldPresenceIndex = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: alwaysIgnore);
       double specialValueEqualityIndex = compareValueEquality(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: alwaysIgnore);
       sum += specialFieldPresenceIndex * effectiveSpecialFieldPresenceWeight + specialValueEqualityIndex * effectiveSpecialValueEqualityWeight;
-
-      // --- Add this print statement ---
-      print(
-          "Similarity (${jsonA['id']} vs ${jsonB['id']}): "
-              "RegFP(${fieldPresenceIndex.toStringAsFixed(3)}*${effectiveFieldPresenceWeight.toStringAsFixed(3)}) + "
-              "RegVE(${valueEqualityIndex.toStringAsFixed(3)}*${effectiveValueEqualityWeight.toStringAsFixed(3)}) + "
-              "SpcFP(${specialFieldPresenceIndex.toStringAsFixed(3)}*${effectiveSpecialFieldPresenceWeight.toStringAsFixed(3)}) + "
-              "SpcVE(${specialValueEqualityIndex.toStringAsFixed(3)}*${effectiveSpecialValueEqualityWeight.toStringAsFixed(3)}) = "
-              "${sum.toStringAsFixed(3)}"
-      );
-      // --- End print statement ---
-
     }
 
     return sum;

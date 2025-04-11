@@ -38,8 +38,7 @@ class PathService extends GetxService {
     } else if (domain == 'ses') {
       outputPath += '${context.organizationId}/branch/${context.branchId}' '/season/${context.seasonId}' '/session/${context.sessionId}';
     }
-
-    print('output path: $outputPath/$suffix');
+    
     return '$outputPath/$suffix';
   }
 

@@ -199,6 +199,26 @@ class PullRepository {
     return document[field];
   }
 
+  Future<Map<String, dynamic>> getFieldFromCollection(String collectionName, String domain, String field) async {
+    final List<Map<String, dynamic>> documents = (await getDocsInCollection(collectionName, domain)).values.toList();
+
+    final Map<String, dynamic> fieldValues = {};
+
+    for (final document in documents) {
+      if (document.containsKey(field)) {
+        fieldValues[document['id']] = document[field];
+      } else {
+        throw ArgumentError("Field '$field' not found in one of the documents in collection '$collectionName'");
+      }
+    }
+
+    if (fieldValues.isEmpty) {
+      print("Warning: Field '$field' was not found in any documents in collection '$collectionName' (domain: '$domain'). Returning empty list.");
+    }
+
+    return fieldValues;
+  }
+
   /// Retrieves the value of [field] from the document with the given [id] and casts it to type [T].
   /// Throws an error if the document is missing, the field doesn't exist, or if the value isn't of type [T].
   Future<T> getFieldValue<T>(String id, String field) async {

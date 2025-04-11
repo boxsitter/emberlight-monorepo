@@ -44,9 +44,10 @@ class PushRepository {
   }
 
   Future<void> commit(PushRequest pushRequest) async {
-    Set<CoreObject> objectsToPush = pushRequest.objectsToPush;
+    Set<CoreObject> objectsToPush = pushRequest.objectsToPush.values.toSet();
     if (objectsToPush.isEmpty) {
-      throw ArgumentError('Can\'t commit nothing');
+      print('Nothing to commit!');
+      return;
     }
 
     if (!await requestService.disarmRequest(pushRequest)) {
@@ -54,19 +55,14 @@ class PushRepository {
       return;
     }
 
-    Session newSession = await pullRepo.getObject(clientContextService.sessionId);
+    Session newSession = pushRequest.getObjectOfType() ?? await pullRepo.getObject(clientContextService.sessionId);
     await Future.wait([
       Future(() => _updateRefTracker(newSession.refTracker, objectsToPush)),
-      Future(() => _updatePrincipalDependantLinkTracker(newSession.principalDependantLinkTracker, objectsToPush)),
+      Future(() => _updatePrincipalDependentLinkTracker(newSession.principalDependentLinkTracker, objectsToPush)),
     ]);
 
 
-    CoreObject? existing = objectsToPush.lookup(newSession);
-    if (existing == null) {
-      objectsToPush.add(newSession);
-    } else {
-      (existing as Session).refTracker = newSession.refTracker;
-    }
+    pushRequest.addObject(newSession);
     _bulkPushObjects(objectsToPush);
   }
 
@@ -97,14 +93,14 @@ class PushRepository {
     refTracker.removeWhere((key, set) => set.isEmpty);
   }
 
-  static void _updatePrincipalDependantLinkTracker(Map<PrincipalId, Set<DependantId>> linkTracker, Set<CoreObject> objects) {
+  static void _updatePrincipalDependentLinkTracker(Map<PrincipalId, Set<DependentId>> linkTracker, Set<CoreObject> objects) {
     for (CoreObject coreObject in objects) {
-      if (coreObject is Dependant) {
-        Dependant dependant = coreObject as Dependant;
-        if (linkTracker.containsKey(dependant.principalPar)) {
-          linkTracker[dependant.principalPar]?.add(coreObject.id);
+      if (coreObject is Dependent) {
+        Dependent dependent = coreObject as Dependent;
+        if (linkTracker.containsKey(dependent.principalPar)) {
+          linkTracker[dependent.principalPar]?.add(coreObject.id);
         } else {
-          linkTracker[dependant.principalPar] = {coreObject.id};
+          linkTracker[dependent.principalPar] = {coreObject.id};
         }
       }
     }
@@ -140,38 +136,55 @@ class PushRepository {
   }
 
   Map<String, dynamic> convertDatesToTimestamp(Map<String, dynamic> data) {
-    data.forEach((key, value) {
+    // Use .map().collect() to create a new map instead of modifying the original
+    // while iterating, which is safer.
+    final Map<String, dynamic> newData = data.map((key, value) {
       if (value is DateTime) {
         // Convert DateTime values to UTC Timestamp.
-        data[key] = Timestamp.fromDate(value.toUtc());
+        return MapEntry(key, Timestamp.fromDate(value.toUtc()));
       } else if (value is Timestamp) {
         // Re-create Timestamp to enforce UTC.
-        data[key] = Timestamp.fromDate(value.toDate().toUtc());
+        return MapEntry(key, Timestamp.fromDate(value.toDate().toUtc()));
       } else if (value is String) {
         // Parse string as date and convert to Timestamp.
         DateTime? parsed = DateTime.tryParse(value);
         if (parsed != null) {
-          data[key] = Timestamp.fromDate(parsed.toUtc());
+          return MapEntry(key, Timestamp.fromDate(parsed.toUtc()));
+        } else {
+          // If not parsable as a date, return the original string
+          return MapEntry(key, value);
         }
       } else if (value is Map<String, dynamic>) {
-        data[key] = convertDatesToTimestamp(value);
+        // Recursively convert nested maps
+        return MapEntry(key, convertDatesToTimestamp(value));
       } else if (value is List) {
-        data[key] = value.map((item) {
-          if (item is DateTime) {
-            return Timestamp.fromDate(item.toUtc());
-          } else if (item is Timestamp) {
-            return Timestamp.fromDate(item.toDate().toUtc());
-          } else if (item is String) {
-            DateTime? parsed = DateTime.tryParse(item);
-            return parsed != null ? Timestamp.fromDate(parsed.toUtc()) : item;
-          } else if (item is Map<String, dynamic>) {
-            return convertDatesToTimestamp(item);
-          }
-          return item;
-        }).toList();
+        // Recursively convert items within the list
+        return MapEntry(key, _convertListItems(value)); // Use helper for lists
+      } else {
+        // Return other types unchanged
+        return MapEntry(key, value);
       }
     });
-    return data;
+    return newData;
+  }
+
+// Helper function to process list items recursively
+  List<dynamic> _convertListItems(List list) {
+    return list.map((item) {
+      if (item is DateTime) {
+        return Timestamp.fromDate(item.toUtc());
+      } else if (item is Timestamp) {
+        return Timestamp.fromDate(item.toDate().toUtc());
+      } else if (item is String) {
+        DateTime? parsed = DateTime.tryParse(item);
+        return parsed != null ? Timestamp.fromDate(parsed.toUtc()) : item;
+      } else if (item is Map<String, dynamic>) {
+        return convertDatesToTimestamp(item); // Recursive call for maps
+      } else if (item is List) {
+        return _convertListItems(item); // Recursive call for nested lists
+      }
+      return item; // Return other types unchanged
+    }).toList(); // This correctly results in List<dynamic>
   }
 }
 

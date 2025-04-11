@@ -122,13 +122,18 @@ class EmberFire implements BackendInterface {
   }
 
   @override
-  Future<PushRequest> mergeObjectsWithDatabase({required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) {
-    return databaseRepairService.mergeObjectsWithDatabase(objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
+  Future<void> mergeObjectsWithDatabase({required PushRequest pushRequest, required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) async {
+    await databaseRepairService.mergeObjectsWithDatabase(pushRequest: pushRequest, objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
   }
 
   @override
   Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session) async {
-    databaseRepairService.dumbDomainSetup(org, branch, season, session);
+    await databaseRepairService.dumbDomainSetup(org, branch, season, session);
+  }
+
+  @override
+  Future<Map<String, dynamic>> getFieldFromCollection(String collectionName, String domain, String field) {
+    return pullRepo.getFieldFromCollection(collectionName, domain, field);
   }
 
 }
