@@ -137,4 +137,14 @@ class BessHelperFunctions {
     }
     return wrappedList;
   }
+
+  static Map<V, K> transposeMap<K, V>(Map<K, V> originalMap) {
+    final transposedMap = <V, K>{};
+    originalMap.forEach((key, value) {
+      // Be cautious: If the original map has duplicate values,
+      // only the last key associated with that value will be kept in the transposed map.
+      transposedMap[value] = key;
+    });
+    return transposedMap;
+  }
 }

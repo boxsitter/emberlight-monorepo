@@ -16,12 +16,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isWebRefresh = kIsWeb && Get.currentRoute != AppConfig.homePage;
-    // Redirect only on first load if not already on home
-    if (isWebRefresh) {
-      Future.microtask(() => Get.offAllNamed(AppConfig.homePage));
-    }
-
     return ShadApp.custom(
       themeMode: ThemeMode.light,
       theme: BessShadTheme.shadThemeData,

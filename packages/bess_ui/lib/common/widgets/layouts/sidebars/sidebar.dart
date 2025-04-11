@@ -76,7 +76,7 @@ class BessSidebar extends StatelessWidget {
                                     icon: LucideIcons.columns3,
                                     itemName: 'Schedule'),
                                 const BessMenuItem(
-                                    route: BessRoutes.console,
+                                    route: BessRoutes.sessionManager,
                                     icon: LucideIcons.calendarCog,
                                     itemName: 'Session Manager'),
                                 const BessMenuItem(

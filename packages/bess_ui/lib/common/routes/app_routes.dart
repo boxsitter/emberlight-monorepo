@@ -14,6 +14,7 @@ import '../../pages/authentication/view/reset_password/reset_password.dart';
 import '../../pages/console/view/console.dart';
 import '../../pages/home/home.dart';
 import '../../pages/responsive_design_test/responsive_design.dart';
+import '../../pages/session_manager/session_manager.dart';
 
 class BessAppRoute {
   static final List<GetPage> pages = [
@@ -21,6 +22,7 @@ class BessAppRoute {
     GetPage(name: BessRoutes.responsiveDesignExample, page: () => const ResponsiveDesignScreen()),
     GetPage(name: BessRoutes.console, page: () => const ConsoleScreen()),
     GetPage(name: BessRoutes.sessionRoster, page: () => const SessionRoster()),
+    GetPage(name: BessRoutes.sessionManager, page: () => const SessionManager()),
 
     GetPage(name: BessRoutes.activityPreferencesCabins, page: () => const ActivityPreferencesCabins()),
     GetPage(name: BessRoutes.activityPreferencesCampers, page: () => const ActivityPreferencesCampers()),

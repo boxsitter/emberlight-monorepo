@@ -21,7 +21,7 @@ class ActivityPreferencesController extends GetxController {
   final RxMap<CamperId, bool> camperIsCompleted = <CamperId, bool>{}.obs;
 
   CabinId? selectedCamperId;
-  final RxMap<ActivityDependantId, String> activityNames = <ActivityDependantId, String>{}.obs;
+  final RxMap<ActivityDependentId, String> activityNames = <ActivityDependentId, String>{}.obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -30,13 +30,13 @@ class ActivityPreferencesController extends GetxController {
   Future<void> populateCabinMaps() async {
     isCabinDataLoaded.value = false;
     print('POPULATING CABIN MAPS');
-    final Set<CabinDependant> cabinsInUseIds = await cabinsService.cabinsInUse;
+    final Set<CabinDependent> cabinsInUseIds = await cabinsService.cabinsInUse;
 
     final names = <CabinId, String>{};
     final counts = <CabinId, int>{};
     final preferences = <CabinId, int>{};
 
-    for (final CabinDependant cabin in cabinsInUseIds) {
+    for (final CabinDependent cabin in cabinsInUseIds) {
       names[cabin.id] = cabin.name;
       counts[cabin.id] = cabin.camperRefs.length;
       preferences[cabin.id] = cabin.campersWithPreferences.length;

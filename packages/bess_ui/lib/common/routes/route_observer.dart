@@ -5,6 +5,7 @@
 
 import 'package:bessie/common/routes/routes.dart';
 import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bessie/pages/session_manager/session_manager_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -41,6 +42,11 @@ class RouteObservers extends GetObserver {
     }
     if (topRoute.settings.name == BessRoutes.activityPreferencesCampers && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCampers) {
       activityPreferencesController.populateCamperMaps();
+    }
+
+    SessionManagerController sessionManagerController = Get.find<SessionManagerController>();
+    if (topRoute.settings.name == BessRoutes.sessionManager && previousTopRoute?.settings.name != BessRoutes.sessionManager) {
+      sessionManagerController.populate();
     }
   }
 
