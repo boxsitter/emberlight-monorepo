@@ -23,22 +23,12 @@ class SessionRosterDesktop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RosterTableController controller = Get.find<RosterTableController>();
+    controller.initializeColumns(columns);
 
-    return VisibilityDetector(
-      key: const Key('session-roster-desktop'),
-      onVisibilityChanged: (visibilityInfo) {
-        double visibleFraction = visibilityInfo.visibleFraction;
-        if (visibleFraction == 0) {
-          controller.stopListening();
-        } else {
-          controller.startListening();
-        }
-      },
-      child: BessRosterTable(
-        tableTitle: 'Session Master Roster',
-        columns: columns,
-        controller: controller,
-      ),
+    return BessRosterTable(
+      tableTitle: 'Session Master Roster',
+      columns: columns,
+      controller: controller,
     );
   }
 }

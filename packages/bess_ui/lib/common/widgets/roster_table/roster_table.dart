@@ -25,19 +25,8 @@ class BessRosterTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // Create the data list synchronously.
-      final data = controller.campers.values.map((camper) {
-        return [
-          camper.fullName,
-          camper.preferredName,
-          camper.gender,
-          camper.age.toString(),
-          camper.cabinName ?? 'none',
-        ];
-      }).toList();
-
       return BessRoundedContainer(
-        height: double.infinity,
+
         showShadow: false,
         showBorder: true,
         borderThickness: BessSizes.borderThicknessMd,
@@ -45,47 +34,52 @@ class BessRosterTable extends StatelessWidget {
         padding: EdgeInsets.zero,
         clipContent: true,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             TableHeader(tableTitle: tableTitle, controller: controller),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: columns.length * 250,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: columns
-                              .map((String column) => ColumnHeader(
-                            columnLabel: column,
-                            width: columnWidth,
-                          ))
-                              .toList(),
+
+            Column(
+              children: [
+                Row(
+                  children: List.generate(columns.length, (index) {
+                    if (index == columns.length - 1) {
+                      return Expanded(
+                        child: ColumnHeader(
+                          columnLabel: columns[index],
                         ),
-                        Divider(
-                          height: 1,
-                          color: BessColors.borderPrimary,
+                      );
+                    } else {
+                      // Other columns -> SizedBox with specific width
+                      // Check if currentWidths has data to prevent range errors during init
+                      final width = index < controller.columnWidths.length ? controller.columnWidths[index] : RosterTableController.minColumnWidth;
+                      return SizedBox(
+                        width: width, // Apply width from controller's list
+                        child: ColumnHeader(
+                          columnLabel: columns[index],
                         ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              return BessDataRow(
-                                data: data[index],
-                                cellWidth: columnWidth,
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    }
+                  }),
+                ),
+
+                Divider(
+                  height: 1,
+                  color: BessColors.borderPrimary,
+                ),
+
+                SizedBox(
+                  height: 1000,
+                  child: ListView.builder(
+                    itemCount: controller.processedCampersData.length,
+                    itemBuilder: (context, rowIndex) {
+                      return BessDataRow(
+                        data: controller.processedCampersData[rowIndex], // Data for this specific row
+                        columnWidths: controller.columnWidths,  // Pass the *entire* list of widths
+                        even: rowIndex % 2 == 0,
+                      );
+                    },
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),

@@ -8,6 +8,7 @@ class BessTextStyles {
     fontSize: 14.0,
     color: BessColors.textPrimary,
     fontWeight: FontWeight.w400,
+    height: 1.2,
   );
 
   static final TextStyle standardBold = TextStyle(

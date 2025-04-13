@@ -6,12 +6,12 @@ import '../../../styles/text_styles.dart';
 
 class ColumnHeader extends StatelessWidget {
   final String columnLabel;
-  final double width;
+  final double? width;
 
   const ColumnHeader({
     super.key,
     required this.columnLabel,
-    required this.width,
+    this.width,
   });
 
   @override
@@ -29,7 +29,7 @@ class ColumnHeader extends StatelessWidget {
           columnLabel,
           style: BessTextStyles.columnHeader,
           maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+          overflow: TextOverflow.clip,
         ),
       ),
     );
