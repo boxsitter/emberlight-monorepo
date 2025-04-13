@@ -6,7 +6,7 @@ import '../../ember_core_backend.dart';
 
 
 class ClientContext extends GetxService {
-   late String organizationId;
+  late String organizationId;
   late String branchId;
   late String seasonId;
   late String sessionId;

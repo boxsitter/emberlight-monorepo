@@ -17,13 +17,11 @@ abstract class BackendInterface {
   Future<String> getActiveObjectId(String collectionName, String domain);
   Future<void> commit(PushRequest pushRequest);
   Future<void> deleteObject(String key);
-  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>({
-    required String parentId,
-    required Parent Function(Map<String, dynamic> json) parentFromJson,
-    required String childIdField,
-    bool updateChildrenRealtime = true,
-    Child Function(Map<String, dynamic> json)? childFromJson,
-  }); // TODO: watch collection instead
+  Stream<Map<String, T>> watchCollection<T>({
+    required String collectionName,
+    required String domain,
+    bool updateDataInRealtime = true,
+  });
   Future<void> mergeObjectsWithDatabase({
     required PushRequest pushRequest,
     required Set<CoreObject> objects,

@@ -16,6 +16,8 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   RequestService requestService = Get.find<RequestService>();
 
   Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses');
+  Stream<Map<String, Camper>> get camperStream => backend.watchCollection(collectionName: 'camper', domain: 'ses');
+
 
   Future<void> registerCamper({
     required PushRequest pushRequest,

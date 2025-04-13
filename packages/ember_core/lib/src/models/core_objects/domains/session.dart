@@ -39,11 +39,11 @@ class Session extends CoreObject {
 
   @override
   void purgeRef(String id) {
-    if (IdFunctions.getIdPart(id, 2) == 'camper') {
+    if (IdFunctions.getIdPart(id, 1) == 'camper') {
       if(camperRefToPreferenceRef.remove(id) == null) {
         print('unnecessary purge');
       }
-    } else if (IdFunctions.getIdPart(id, 2) == 'camper_preference') {
+    } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
       camperRefToPreferenceRef.removeWhere((key, value) => value == id);
     }
   }

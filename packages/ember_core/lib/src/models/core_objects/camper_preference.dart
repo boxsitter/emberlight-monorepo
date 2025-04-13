@@ -42,7 +42,7 @@ class CamperPreference extends CoreObject {
 
   @override
   void purgeRef(String id) {
-    if (IdFunctions.getIdPart(id, 2) == 'activity_type') {
+    if (IdFunctions.getIdPart(id, 1) == 'activity_type') {
       if(preferencesRefs.remove(id) == null) {
         print('unnecessary purge');
       }

@@ -3,7 +3,7 @@ import 'package:ember_core/ember_core_utils.dart';
 class CoreIdValidation {
   static const String validCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.~';
   static const Set<String> validDomains = {'rot', 'org', 'brn', 'sea', 'ses'};
-  static final RegExp potentialIdPattern = RegExp(r'^(rot|org|brn|sea|ses)-');
+  static final RegExp potentialIdPattern = RegExp(r'^[^-]+-[^-]+-(rot|org|brn|sea|ses)(?:-|$)');
   
   static bool isValidDomain(String domain) => validDomains.contains(domain);
 
@@ -11,12 +11,12 @@ class CoreIdValidation {
     if (ids.isEmpty) return;
 
     final List<String> firstParts = IdFunctions.getIdParts(ids.first);
-    final String expectedDomain = firstParts[0];
+    final String expectedDomain = firstParts[2];
     final String expectedType = firstParts[1];
 
     for (final id in ids.skip(1)) {
       final parts = IdFunctions.getIdParts(id);
-      if (parts[0] != expectedDomain) {
+      if (parts[2] != expectedDomain) {
         throw ArgumentError("Not all objects are of the same domain");
       }
       if (parts[1] != expectedType) {
@@ -37,16 +37,16 @@ class CoreIdValidation {
     if (idParts.length != 4) {
       throw ArgumentError("ID '$id' does not have exactly 5 parts (found ${idParts.length}).");
     }
-    if (!validDomains.contains(idParts[0])) {
-      throw ArgumentError("ID '$id' has an invalid domain '${idParts[0]}'.");
+    if (!validDomains.contains(idParts[2])) {
+      throw ArgumentError("ID '$id' has an invalid domain '${idParts[2]}'.");
     }
     if (idParts.last.length != 6) {
-      throw ArgumentError("ID '$id' has a random part of length ${idParts.last.length}, expected 4.");
+      throw ArgumentError("ID '$id' has a random part of length ${idParts.last.length}, expected 6.");
     }
   }
 
   static bool validateObjectType(String id, String expectedObjectType) {
-    if (IdFunctions.getIdPart(id, 2) == expectedObjectType) {
+    if (IdFunctions.getIdPart(id, 1) == expectedObjectType) {
       return true;
     }
     return false;
