@@ -44,12 +44,12 @@ class PathService extends GetxService {
 
   String getDocPathFromId(String id) {
     List<String> idParts = IdFunctions.getIdParts(id);
-    return _getPath(idParts[1], idParts[0], id);
+    return _getPath(idParts[1], idParts[2], id);
   }
 
   String getCollectionPathFromId(String id) {
     List<String> idParts = IdFunctions.getIdParts(id);
-    return _getPath(idParts[1], idParts[0], null);
+    return _getPath(idParts[1], idParts[2], null);
   }
 
   String getCollectionPath(String collectionName, String domain) {

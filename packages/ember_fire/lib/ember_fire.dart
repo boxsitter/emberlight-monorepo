@@ -100,19 +100,15 @@ class EmberFire implements BackendInterface {
   }
 
   @override
-  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>({
-    required String parentId,
-    required Parent Function(Map<String, dynamic> json) parentFromJson,
-    required String childIdField,
-    bool updateChildrenRealtime = true,
-    Child Function(Map<String, dynamic> json)? childFromJson,
+  Stream<Map<String, T>> watchCollection<T>({
+    required String collectionName,
+    required String domain,
+    bool updateDataInRealtime = true,
   }) {
-    return liveDataRepo.watchDocWithChildDocs(
-      parentId: parentId,
-      parentFromJson: parentFromJson,
-      childIdField: childIdField,
-      updateChildrenRealtime: updateChildrenRealtime,
-      childFromJson: childFromJson,
+    return liveDataRepo.watchCollection(
+      collectionName: collectionName,
+      domain: domain,
+      updateDataInRealtime: updateDataInRealtime,
     );
   }
 

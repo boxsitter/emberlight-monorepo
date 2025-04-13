@@ -75,7 +75,7 @@ class DatabaseRepairService extends GetxService{
       jsonB = await pullRepo.getDoc(idA);
     } else {
       String jsonACollection = IdFunctions.getIdPart(idA, 1);
-      String jsonADomain = IdFunctions.getIdPart(idA, 0);
+      String jsonADomain = IdFunctions.getIdPart(idA, 2);
       Map<String, dynamic>? likelyMatch = await getLikelyMatchFromCollection(jsonA: jsonA, collectionName: jsonACollection, domain: jsonADomain);
       if (likelyMatch != null) {
         jsonB = likelyMatch;

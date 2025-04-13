@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_fire/src/services/path_service.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,99 +10,146 @@ import 'pull_repository.dart';
 
 /// A generic repository for live-updating Firestore data.
 class LiveDataRepository {
-  PullRepository coreObjectRepo = Get.find<PullRepository>();
+  PullRepository pullRepo = Get.find<PullRepository>();
   final FirebaseFirestore _db = Get.find<PullRepository>().db;
+  final PathService pathService = Get.find<PathService>();
 
-  get pathService => null;
-
-  /// Watches a single Firestore document by [id].
+  /// Watches a single Firestore document by its full [documentPath].
   /// Parses it into [T] via [fromJson]. If the doc doesn't exist, emits `null`.
-  Stream<T?> watchDoc<T>({required String id, required T Function(Map<String, dynamic> json) fromJson,}) {
-    final resolvedPath = pathService.getDocPathFromId(id);
+  Stream<T?> watchDoc<T>({
+    required String documentPath,
+    required T Function(Map<String, dynamic> json) fromJson,
+  }) {
+    final resolvedPath = documentPath; // Assuming direct path
+
     return _db.doc(resolvedPath).snapshots().map((snapshot) {
-      if (!snapshot.exists) return null;
-      final data = snapshot.data() as Map<String, dynamic>;
-      return fromJson(data);
+      if (!snapshot.exists || snapshot.data() == null) {
+        return null;
+      }
+      try {
+        final data = snapshot.data() as Map<String, dynamic>;
+        return fromJson(data);
+      } catch (e) {
+        print("Error parsing document ${snapshot.id}: $e");
+        return null;
+      }
     });
   }
 
-  /// Watches a parent document at [parentId] that has a field [childIdField]
-  /// containing a list (or set) of child IDs (Strings).
+  /// Watches a Firestore collection identified by [collectionName] and [domain].
+  /// The actual path is resolved via [pathService].
+  /// Parses documents into [T] via [fromJson], returning a Stream of Map String, T.
+  /// Optional [queryBuilder] can be provided to filter/order the collection.
   ///
-  /// For each child ID, we subscribe to its document [childDocPathBuilder(childId)]
-  /// and parse it into [Child] with [childFromJson].
-  ///
-  /// Whenever the parent’s set of child IDs changes, the subscription set
-  /// is automatically updated. Emitted values are a Map of childId -> Child,
-  /// excluding any child docs that don't exist (or are null).
-  Stream<Map<String, Child>> watchDocWithChildDocs<Parent, Child>({
-    required String parentId,
-    required Parent Function(Map<String, dynamic> json) parentFromJson,
-    required String childIdField,
-    bool updateChildrenRealtime = true,
-    Child Function(Map<String, dynamic> json)? childFromJson,
+  /// - If [updateDataInRealtime] is true (default): Emits a new Map whenever
+  ///   documents are added, removed, OR modified. Document data is always fresh.
+  /// - If [updateDataInRealtime] is false: Emits a new Map ONLY when documents
+  ///   are added or removed (membership changes). The data for the documents
+  ///   in the Map is fetched once at the time of the membership change and
+  ///   will not update in real-time if the document content changes later.
+  Stream<Map<String, T>> watchCollection<T>({
+    required String collectionName,
+    required String domain,
+    bool updateDataInRealtime = true,
+    // Optional: Re-add if you need custom queries beyond the base collection path
+    // Query<Map<String, dynamic>> Function(Query<Map<String, dynamic>> query)? queryBuilder,
   }) {
-    assert(
-    !updateChildrenRealtime || childFromJson != null,
-    'childFromJson is required if updateChildrenRealtime is true.',
-    );
+    // Resolve the collection path using the provided service
+    final String resolvedPath = pathService.getCollectionPath(collectionName, domain);
+    Query<Map<String, dynamic>> query = _db.collection(resolvedPath);
 
-    final resolvedParentPath = pathService.getPath(parentId, false);
+    // Optional: Apply custom query modifications if queryBuilder is used
+    // if (queryBuilder != null) {
+    //   query = queryBuilder(query);
+    // }
 
-    return _db.doc(resolvedParentPath).snapshots().switchMap((snapshot) {
-      if (!snapshot.exists) {
-        return Stream.value(<String, Child>{});
-      }
-
-      final data = snapshot.data() ?? {};
-      final childIds = (data[childIdField] as List?)?.cast<String>() ?? [];
-
-      if (childIds.isEmpty) {
-        return Stream.value(<String, Child>{});
-      }
-
-      if (updateChildrenRealtime) {
-        // Real-time updates for each child
-        final childStreams = childIds.map((childId) {
-          return watchDoc<Child>(
-            id: childId,
-            fromJson: childFromJson!,
-          ).map((childObj) => MapEntry(childId, childObj));
-        });
-
-        return CombineLatestStream.list(childStreams).map((entries) {
-          final result = <String, Child>{};
-          for (final entry in entries) {
-            if (entry.value != null) {
-              result[entry.key] = entry.value as Child;
+    if (updateDataInRealtime) {
+      // --- Mode 1: Real-time data updates ---
+      return query.snapshots().map((snapshot) {
+        final resultMap = <String, T>{};
+        for (final doc in snapshot.docs) {
+          // Ensure doc exists and data is not null before parsing
+          if (doc.exists) {
+            try {
+              // Pass the document ID and data to the provided fromJson function
+              final parsedObject = CoreObject.fromJson(convertToDateTime(doc.data()));
+              resultMap[doc.id] = parsedObject;
+            } catch (e) {
+              print("Error parsing document ${doc.id} (realtime) in collection $collectionName ($domain): $e");
+              // Decide how to handle parse errors (e.g., skip the doc, log, etc.)
             }
           }
-          return result;
-        });
-      } else {
-        // One-time fetch without real-time updates
-        return Future.wait(
-          childIds.map((childId) async {
-            final resolvedChildPath = pathService.getPath(childId, false);
-            final doc = await _db.doc(resolvedChildPath).get();
-            final childData = doc.exists ? doc.data() : null;
-            return MapEntry(
-              childId,
-              (childData != null && childFromJson != null)
-                  ? childFromJson(childData)
-                  : null,
-            );
-          }),
-        ).asStream().map((entries) {
-          final result = <String, Child>{};
-          for (final entry in entries) {
-            if (entry.value != null) {
-              result[entry.key] = entry.value as Child;
+        }
+        // Debug print (optional)
+        // print("WATCH COLLECTION (Realtime): Emitting Map with ${resultMap.length} docs for $collectionName ($domain)");
+        return resultMap;
+      });
+    } else {
+      // --- Mode 2: Only update Map on membership changes ---
+      return query.snapshots()
+      // 1. Map snapshots to the set of document IDs.
+          .map((snapshot) => snapshot.docs.map((doc) => doc.id).toSet())
+      // 2. Use distinct to filter out emissions where the set of IDs hasn't changed.
+          .distinct((previousIds, currentIds) =>
+      previousIds.length == currentIds.length && previousIds.containsAll(currentIds))
+      // 3. When the distinct set of IDs is emitted, trigger a one-time fetch (`get()`).
+          .asyncMap((_) async {
+        // Debug print (optional)
+        // print("WATCH COLLECTION (Membership Changed - Fetching Data): Fetching $collectionName ($domain)");
+        final currentSnapshot = await query.get();
+        final resultMap = <String, T>{};
+        for (final doc in currentSnapshot.docs) {
+          // Ensure doc exists and data is not null before parsing
+          if (doc.exists) {
+            try {
+              // Pass the document ID and data to the provided fromJson function
+              final parsedObject = CoreObject.fromJson(convertToDateTime(doc.data()));
+              resultMap[doc.id] = parsedObject;
+            } catch (e) {
+              print("Error parsing document ${doc.id} (snapshot fetch) in collection $collectionName ($domain): $e");
+              // Decide how to handle parse errors
             }
           }
-          return result;
-        });
+        }
+        // Debug print (optional)
+        // print("WATCH COLLECTION (Membership Changed - Fetching Data): Emitting Map with ${resultMap.length} docs for $collectionName ($domain)");
+        return resultMap;
+      });
+    }
+  }
+
+  Map<String, dynamic> convertToDateTime(Map<String, dynamic> data) {
+    data.forEach((key, value) {
+      if (value is Timestamp) {
+        // Convert Firestore Timestamp to local DateTime.
+        data[key] = value.toDate().toLocal();
+      } else if (value is DateTime) {
+        // Optionally, ensure it's in local time.
+        data[key] = value.toLocal();
+      } else if (value is String) {
+        // Try parsing and leave as DateTime if successful.
+        DateTime? parsed = DateTime.tryParse(value);
+        if (parsed != null) {
+          data[key] = parsed.toLocal();
+        }
+      } else if (value is Map<String, dynamic>) {
+        data[key] = convertToDateTime(value);
+      } else if (value is List) {
+        data[key] = value.map((item) {
+          if (item is Timestamp) {
+            return item.toDate().toLocal();
+          } else if (item is DateTime) {
+            return item.toLocal();
+          } else if (item is String) {
+            DateTime? parsed = DateTime.tryParse(item);
+            return parsed != null ? parsed.toLocal() : item;
+          } else if (item is Map<String, dynamic>) {
+            return convertToDateTime(item);
+          }
+          return item;
+        }).toList();
       }
     });
+    return data;
   }
 }
