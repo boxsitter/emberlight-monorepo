@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:bessie/common/constants/colors.dart';
 import 'package:bessie/common/constants/sizes.dart';
+import 'package:bessie/common/styles/shadows.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:bessie/common/widgets/roster_table/widgets/column_header.dart';
 import 'package:bessie/common/widgets/roster_table/widgets/data_row.dart';
@@ -25,8 +28,22 @@ class BessRosterTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return BessRoundedContainer(
+      // Ensure widths are calculated and match column count
+      if (controller.columnWidths.isEmpty ||
+          controller.columnWidths.length != columns.length) {
+        if (controller.columnWidths.isEmpty && columns.isNotEmpty) {
+          // Initialize with minimums if empty but headers exist
+          controller.columnWidths.assignAll(List.filled(columns.length, RosterTableController.minColumnWidth));
+        } else {
+          // Or return a loading state if critical info is missing
+          return const Center(child: CircularProgressIndicator(key: ValueKey('loading')));
+        }
+      }
 
+      // Calculate the total minimum width required by the content
+      final double totalContentWidth = controller.columnWidths.reduce((a, b) => a + b);
+
+      return BessRoundedContainer(
         showShadow: false,
         showBorder: true,
         borderThickness: BessSizes.borderThicknessMd,
@@ -34,58 +51,59 @@ class BessRosterTable extends StatelessWidget {
         padding: EdgeInsets.zero,
         clipContent: true,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TableHeader(tableTitle: tableTitle, controller: controller),
+            Expanded(
+              child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double availableWidth = constraints.maxWidth;
+                    final double layoutWidth = max(totalContentWidth, availableWidth);
 
-            Column(
-              children: [
-                Row(
-                  children: List.generate(columns.length, (index) {
-                    if (index == columns.length - 1) {
-                      return Expanded(
-                        child: ColumnHeader(
-                          columnLabel: columns[index],
-                        ),
-                      );
-                    } else {
-                      // Other columns -> SizedBox with specific width
-                      // Check if currentWidths has data to prevent range errors during init
-                      final width = index < controller.columnWidths.length ? controller.columnWidths[index] : RosterTableController.minColumnWidth;
-                      return SizedBox(
-                        width: width, // Apply width from controller's list
-                        child: ColumnHeader(
-                          columnLabel: columns[index],
-                        ),
-                      );
-                    }
+                    return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: layoutWidth,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: BessColors.background,
+                                ),
+                                child: Row(
+                                  children: List.generate(columns.length, (index) {
+                                    final width = index < controller.columnWidths.length ? controller.columnWidths[index] : RosterTableController.minColumnWidth;
+                                    return ColumnHeader(
+                                      columnLabel: columns[index],
+                                      width: width,
+                                    );
+                                  }),
+                                ),
+                              ),
+
+                              Divider(height: 1, color: BessColors.borderPrimary,),
+
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: controller.processedCampersData.length,
+                                  itemBuilder: (context, rowIndex) {
+                                    return BessDataRow(
+                                      data: controller.processedCampersData[rowIndex], // Data for this specific row
+                                      columnWidths: controller.columnWidths, // Pass the *entire* list of widths
+                                      even: rowIndex % 2 == 0,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ));
                   }),
-                ),
-
-                Divider(
-                  height: 1,
-                  color: BessColors.borderPrimary,
-                ),
-
-                SizedBox(
-                  height: 1000,
-                  child: ListView.builder(
-                    itemCount: controller.processedCampersData.length,
-                    itemBuilder: (context, rowIndex) {
-                      return BessDataRow(
-                        data: controller.processedCampersData[rowIndex], // Data for this specific row
-                        columnWidths: controller.columnWidths,  // Pass the *entire* list of widths
-                        even: rowIndex % 2 == 0,
-                      );
-                    },
-                  ),
-                ),
-              ],
             ),
           ],
         ),
       );
     });
   }
-
 }
-

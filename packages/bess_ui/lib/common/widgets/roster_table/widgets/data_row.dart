@@ -21,24 +21,12 @@ class BessDataRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: even ?? false ? BessColors.core : BessColors.crust,
-        border: Border(
-          bottom: BorderSide(
-            color: BessColors.crust,
-            width: 2,
-          ),
-        ),
+        color: even ?? false ? BessColors.core : BessColors.background,
       ),
       child: Row(
         children: List.generate(data.length, (cellIndex) {
-          if (cellIndex == columnWidths.length - 1) {
-            // Last cell -> Expanded
-            return Expanded(child: StringCell(content: data[cellIndex]));
-            // return SizedBox(child: Container(color: Colors.red,));
-          } else {
-            final width = cellIndex < columnWidths.length ? columnWidths[cellIndex] : RosterTableController.minColumnWidth;
-            return StringCell(content: data[cellIndex], width: width);
-          }
+          final width = cellIndex < columnWidths.length ? columnWidths[cellIndex] : RosterTableController.minColumnWidth;
+          return StringCell(content: data[cellIndex], width: width);
         }),
       )
     );

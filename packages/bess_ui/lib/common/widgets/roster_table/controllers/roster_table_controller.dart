@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:bessie/common/utils/device/device_utility.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../constants/sizes.dart';
 import '../../../styles/text_styles.dart';
 
 class RosterTableController extends GetxController {
@@ -15,8 +17,9 @@ class RosterTableController extends GetxController {
 
   // --- Configuration ---
   List<String> _columnHeaders = []; // Internal storage for column headers
-  static const double maxColumnWidth = 300; // Max width constraint
+  static const double maxColumnWidth = 300.0;
   static const double minColumnWidth = 80;  // Min width constraint
+  static const double horizontalPadding = BessSizes.md;
 
   // Placeholder TextStyles
   static final TextStyle _headerStyle = BessTextStyles.columnHeader;
@@ -56,7 +59,16 @@ class RosterTableController extends GetxController {
       textDirection: TextDirection.ltr,
     )..layout(minWidth: 0, maxWidth: double.infinity);
     // Return only the calculated text width
-    return textPainter.size.width;
+    double calculatedWidth = textPainter.size.width;
+    double widthWithPadding = calculatedWidth + (horizontalPadding * 2);
+    double roundedUpToEven = widthWithPadding.ceil() as double;
+    if (roundedUpToEven % 2 != 0) {
+      roundedUpToEven++;
+    }
+    if ((roundedUpToEven as int) - ((horizontalPadding as int) * 2) == (minColumnWidth as int)) {
+      roundedUpToEven += 2;
+    }
+    return roundedUpToEven;
   }
 
   // --- Core Logic: Calculate and Update Widths ---
@@ -88,7 +100,6 @@ class RosterTableController extends GetxController {
 
     // Update the reactive list - UI will react via Obx/GetX
     columnWidths.assignAll(calculated);
-    print('Column widths calculated: $columnWidths'); // For debugging
   }
 
 

@@ -17,12 +17,8 @@ class ColumnHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 35,
       width: width,
-      decoration: BoxDecoration(
-        color: BessColors.background,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: BessSizes.md),
+      padding: const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: BessSizes.sm),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
