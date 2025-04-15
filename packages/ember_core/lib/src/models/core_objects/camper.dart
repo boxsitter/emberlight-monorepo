@@ -1,5 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import '../../../ember_core_utils.dart';
+
 
 typedef CabinId = String;
 typedef AssignedMultiActivityBlockId = String;
@@ -96,6 +98,11 @@ class Camper extends CoreObject {
 
   @override
   void purgeRef(String id) {
-    // TODO: implement purgeRef
+    if (IdFunctions.getIdPart(id, 1) == 'cabin_dependent') {
+      if (cabinRef == id) {
+        cabinRef == null;
+        cabinName == null;
+      }
+    }
   }
 }
