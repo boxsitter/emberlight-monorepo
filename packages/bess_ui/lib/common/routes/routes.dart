@@ -6,6 +6,7 @@ class BessRoutes {
   static const responsiveDesignExample = '/responsive-design/';
   static const console = '/console';
   static const sessionRoster = '/session-roster';
+  static const sessionManager = '/session-manager';
 
   static const activityPreferencesCabins = '/activity-preferences-cabins';
   static const activityPreferencesCampers = '/activity-preferences-campers';
@@ -14,7 +15,9 @@ class BessRoutes {
     console,
     sessionRoster,
     home,
-    responsiveDesignExample
+    activityPreferencesCabins,
+    responsiveDesignExample,
+    sessionManager,
   ];
 
   static const login = '/login';

@@ -25,61 +25,55 @@ dependencies:
   flutter:
     sdk: flutter
 
+  ember_core:
+    path: ../ember_core
+
+  ember_fire:
+    path: ../ember_fire
+
   # UI
-  shadcn_ui: ^0.20.3
+  shadcn_ui: ^0.23.4
 
   # Utility Packages
-  intl: ^0.19.0
+  # intl: ^0.19.0
   lottie: ^3.1.0
   shimmer: ^3.0.0
-  clipboard: ^0.1.3
-  image_picker: ^1.1.0
-  url_launcher: ^6.2.6
-  flutter_dropzone: ^4.2.1
-  flutter_typeahead: ^5.2.0
-  connectivity_plus: ^6.0.3
-  multi_select_flutter: ^4.1.3
-  cached_network_image: ^3.3.0
-  flutter_native_splash: ^2.4.0
-  smooth_page_indicator: ^1.1.0
-  uuid: ^3.0.7
-  csv: ^5.0.0
-  window_manager: ^0.2.7
-  synchronized: ^3.0.0
-  pdf: ^3.11.1
-  file_picker: ^9.0.2
+  # clipboard: ^0.1.3
+  # image_picker: ^1.1.0
+  # url_launcher: ^6.2.6
+  # flutter_dropzone: ^4.2.1
+  # flutter_typeahead: ^5.2.0
+  # connectivity_plus: ^6.0.3
+  # multi_select_flutter: ^4.1.3
+  cached_network_image: ^3.4.1
+  # flutter_native_splash: ^2.4.0
+  # smooth_page_indicator: ^1.1.0
+  window_manager: ^0.4.3
+  # synchronized: ^3.0.0
+  rxdart: ^0.28.0
+  xterm: ^4.0.0
+  visibility_detector: ^0.4.0+2
 
   # Web Specific
-  # web: ^0.5.1
-  # http: ^1.2.1
-  # html: ^0.15.4
+  web: ^1.1.1
   # fl_chart: ^0.67.0
   # url_strategy: ^0.2.0
   # universal_html: ^2.2.4
 
   # State Management
-  get: ^4.6.6
-  get_storage: ^2.1.1
+  get: ^4.7.2
+  # get_storage: ^2.1.1
 
-  # Firebase
-  firebase_core: ^3.3.0
-  cloud_firestore: ^5.2.1
-  # firebase_crashlytics: ^4.3.4
-  # firebase_analytics: ^11.4.4
 
-  rxdart: ^0.27.0
 
-  # Random Shit
-  xterm: ^4.0.0
-  http: any # dart fix says I need this
-  visibility_detector: ^0.2.2
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
 
 
 flutter:

@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../constants/enums.dart';
 
@@ -139,12 +138,13 @@ class BessHelperFunctions {
     return wrappedList;
   }
 
-  static DateTime parseDate(dynamic value) {
-    if (value is Timestamp) {
-      return value.toDate();
-    } else if (value is String) {
-      return DateTime.parse(value);
-    }
-    throw Exception("Invalid date type: ${value.runtimeType}");
+  static Map<V, K> transposeMap<K, V>(Map<K, V> originalMap) {
+    final transposedMap = <V, K>{};
+    originalMap.forEach((key, value) {
+      // Be cautious: If the original map has duplicate values,
+      // only the last key associated with that value will be kept in the transposed map.
+      transposedMap[value] = key;
+    });
+    return transposedMap;
   }
 }

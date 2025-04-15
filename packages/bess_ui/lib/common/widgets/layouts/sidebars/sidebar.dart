@@ -8,6 +8,7 @@ import '../../../constants//colors.dart';
 import '../../../constants//image_strings.dart';
 import '../../../constants//sizes.dart';
 import '../../../utils/device/device_utility.dart';
+import '../../context_switcher/context_display.dart';
 import 'menu/menu_item.dart';
 
 class BessSidebar extends StatelessWidget {
@@ -20,57 +21,88 @@ class BessSidebar extends StatelessWidget {
       shape: BessDeviceUtils.isDesktopScreen(context)
           ? const BeveledRectangleBorder()
           : null,
-      child: Container(
-        decoration: BoxDecoration(
-          color: BessColors.core,
-          border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const BessCircularImage(
-                width: 150,
-                height: 150,
-                image: BessImages.lightAppLogo,
-                backgroundColor: Colors.transparent,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: BessSizes.md, left: BessSizes.md, right: BessSizes.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                  Text(
-                    'MENU',
-                    style: BessTextStyles.lightHeader,
-                    overflow: TextOverflow.clip,
-                    maxLines: 1,
+      child: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            color: BessColors.core,
+            border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(BessSizes.md),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight - (BessSizes.md * 2)),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const BessCircularImage(
+                              width: 150,
+                              height: 150,
+                              image: BessImages.lightAppLogo,
+                              backgroundColor: Colors.transparent,
+                            ),
+                            const SizedBox(height: BessSizes.spaceBtwSections),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'MENU',
+                                  style: BessTextStyles.lightHeader,
+                                  overflow: TextOverflow.clip,
+                                  maxLines: 1,
+                                ),
+                                const SizedBox(height: BessSizes.sm),
+                                const BessMenuItem(
+                                    route: BessRoutes.home,
+                                    icon: LucideIcons.house,
+                                    itemName: 'Home'),
+                                const BessMenuItem(
+                                    route: BessRoutes.sessionRoster,
+                                    icon: LucideIcons.bookUser,
+                                    itemName: 'Session Roster'),
+                                const BessMenuItem(
+                                    route: BessRoutes.activityPreferencesCabins,
+                                    icon: LucideIcons.listOrdered,
+                                    itemName: 'Activity Preferences'),
+                                const BessMenuItem(
+                                    route: BessRoutes.console,
+                                    icon: LucideIcons.columns3,
+                                    itemName: 'Schedule'),
+                                const BessMenuItem(
+                                    route: BessRoutes.sessionManager,
+                                    icon: LucideIcons.calendarCog,
+                                    itemName: 'Session Manager'),
+                                const BessMenuItem(
+                                    route: BessRoutes.console,
+                                    icon: LucideIcons.flameKindling,
+                                    itemName: 'Branch Manager'),
+                                const BessMenuItem(
+                                    route: BessRoutes.responsiveDesignExample,
+                                    icon: LucideIcons.layoutPanelLeft,
+                                    itemName: 'Widgets'),
+                                const BessMenuItem(
+                                    route: BessRoutes.console,
+                                    icon: LucideIcons.squareTerminal,
+                                    itemName: 'Console'),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        ContextDisplay(top: '2025', bottom: 'Session A'),
+                      ],
+                    ),
                   ),
-                    // Menu Items
-                    const BessMenuItem(
-                        route: BessRoutes.home,
-                        icon: LucideIcons.house,
-                        itemName: 'Home'),
-                    const BessMenuItem(
-                        route: BessRoutes.sessionRoster,
-                        icon: LucideIcons.bookUser,
-                        itemName: 'Session Roster'),
-                    const BessMenuItem(
-                        route: BessRoutes.activityPreferencesCabins,
-                        icon: LucideIcons.listOrdered,
-                        itemName: 'Camper Activity Preferences'),
-                    const BessMenuItem(
-                        route: BessRoutes.responsiveDesignExample,
-                        icon: LucideIcons.layoutPanelLeft,
-                        itemName: 'Widgets'),
-                    const BessMenuItem(
-                        route: BessRoutes.console,
-                        icon: LucideIcons.squareTerminal,
-                        itemName: 'Console'),
-                  ],
                 ),
-              )
-            ],
+              );
+            },
           ),
         ),
       ),

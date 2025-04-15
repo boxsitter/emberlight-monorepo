@@ -25,9 +25,10 @@ class BessShadTheme {
           end: 1.0,
           curve: Curves.easeOut,
         ),
-
       ]
     ),
+
+    selectTheme: ShadSelectTheme(decoration: ShadDecoration()),
 
     textTheme: ShadTextTheme(
       family: 'Inter',
@@ -37,7 +38,7 @@ class BessShadTheme {
 
   static ShadColorScheme bessShadColorScheme = ShadColorScheme(
       background: BessColors.core,
-      foreground: Colors.red,
+      foreground: BessColors.textPrimary,
       card: Colors.orange,
       cardForeground: Colors.yellow,
       popover: BessColors.core,
@@ -47,14 +48,14 @@ class BessShadTheme {
       secondary: BessColors.background,
       secondaryForeground: BessColors.textPrimary,
       muted: Colors.greenAccent,
-      mutedForeground: Colors.lime,
+      mutedForeground: BessColors.textSubtle,
       accent: BessColors.secondary,
       accentForeground: Colors.brown,
       destructive: Colors.black,
       destructiveForeground: Colors.grey,
       border: BessColors.borderPrimary,
-      input: Colors.amberAccent,
-      ring: Colors.teal,
-      selection: Colors.lightGreenAccent,
+      input: BessColors.borderPrimary,
+      ring: BessColors.green,
+      selection: BessColors.primary,
   );
 }

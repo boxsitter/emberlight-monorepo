@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:bessie/common/constants/colors.dart';
 import 'package:bessie/common/constants/sizes.dart';
+import 'package:bessie/common/styles/shadows.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:bessie/common/widgets/roster_table/widgets/column_header.dart';
 import 'package:bessie/common/widgets/roster_table/widgets/data_row.dart';
@@ -25,19 +28,22 @@ class BessRosterTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // Create the data list synchronously.
-      final data = controller.campers.values.map((camper) {
-        return [
-          camper.fullName,
-          camper.preferredName,
-          camper.gender,
-          camper.age.toString(),
-          camper.cabinName ?? 'none',
-        ];
-      }).toList();
+      // Ensure widths are calculated and match column count
+      if (controller.columnWidths.isEmpty ||
+          controller.columnWidths.length != columns.length) {
+        if (controller.columnWidths.isEmpty && columns.isNotEmpty) {
+          // Initialize with minimums if empty but headers exist
+          controller.columnWidths.assignAll(List.filled(columns.length, RosterTableController.minColumnWidth));
+        } else {
+          // Or return a loading state if critical info is missing
+          return const Center(child: CircularProgressIndicator(key: ValueKey('loading')));
+        }
+      }
+
+      // Calculate the total minimum width required by the content
+      final double totalContentWidth = controller.columnWidths.reduce((a, b) => a + b);
 
       return BessRoundedContainer(
-        height: double.infinity,
         showShadow: false,
         showBorder: true,
         borderThickness: BessSizes.borderThicknessMd,
@@ -45,53 +51,59 @@ class BessRosterTable extends StatelessWidget {
         padding: EdgeInsets.zero,
         clipContent: true,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TableHeader(tableTitle: tableTitle, controller: controller),
             Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: columns.length * 250,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: columns
-                              .map((String column) => ColumnHeader(
-                            columnLabel: column,
-                            width: columnWidth,
-                          ))
-                              .toList(),
-                        ),
-                        Divider(
-                          height: 1,
-                          color: BessColors.borderPrimary,
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              return BessDataRow(
-                                data: data[index],
-                                cellWidth: columnWidth,
-                              );
-                            },
+              child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double availableWidth = constraints.maxWidth;
+                    final double layoutWidth = max(totalContentWidth, availableWidth);
+
+                    return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: layoutWidth,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: BessColors.background,
+                                ),
+                                child: Row(
+                                  children: List.generate(columns.length, (index) {
+                                    final width = index < controller.columnWidths.length ? controller.columnWidths[index] : RosterTableController.minColumnWidth;
+                                    return ColumnHeader(
+                                      columnLabel: columns[index],
+                                      width: width,
+                                    );
+                                  }),
+                                ),
+                              ),
+
+                              Divider(height: 1, color: BessColors.borderPrimary,),
+
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: controller.processedCampersData.length,
+                                  itemBuilder: (context, rowIndex) {
+                                    return BessDataRow(
+                                      data: controller.processedCampersData[rowIndex], // Data for this specific row
+                                      columnWidths: controller.columnWidths, // Pass the *entire* list of widths
+                                      even: rowIndex % 2 == 0,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                        ));
+                  }),
             ),
           ],
         ),
       );
     });
   }
-
 }
-

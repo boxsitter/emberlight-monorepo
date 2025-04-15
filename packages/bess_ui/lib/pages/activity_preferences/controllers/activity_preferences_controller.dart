@@ -1,20 +1,14 @@
-import 'package:bessie/common/services/cabins_service.dart';
-import 'package:bessie/common/services/session_roster_service.dart';
-import 'package:bessie/data/repositories/bess_object_repository.dart';
+import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
-import 'package:bessie/common/services/client_context_service.dart';
 
 import '../../../common/routes/routes.dart';
-import '../../../data/models/cabin.dart';
-import '../../../data/models/camper.dart';
-import '../../../data/models/camper_preference.dart';
-import '../../../data/models/schedule/assigned_multi_activity_block.dart';
 
+typedef CabinId = String;
 
 class ActivityPreferencesController extends GetxController {
-  final BessObjectRepository bessObjectRepo = Get.find<BessObjectRepository>();
   final ClientContextService contextService = Get.find<ClientContextService>();
-  final CabinsService cabinsService = Get.find<CabinsService>();
+  final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   final RxMap<CabinId, String> cabinNames = <CabinId, String>{}.obs;
@@ -27,7 +21,7 @@ class ActivityPreferencesController extends GetxController {
   final RxMap<CamperId, bool> camperIsCompleted = <CamperId, bool>{}.obs;
 
   CabinId? selectedCamperId;
-  final RxMap<ActivityId, String> activityNames = <ActivityId, String>{}.obs;
+  final RxMap<ActivityDependentId, String> activityNames = <ActivityDependentId, String>{}.obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -36,16 +30,16 @@ class ActivityPreferencesController extends GetxController {
   Future<void> populateCabinMaps() async {
     isCabinDataLoaded.value = false;
     print('POPULATING CABIN MAPS');
-    final Set<Cabin> cabinsInUseIds = await cabinsService.cabins;
+    final Set<CabinDependent> cabinsInUseIds = await cabinsService.cabinsInUse;
 
     final names = <CabinId, String>{};
     final counts = <CabinId, int>{};
     final preferences = <CabinId, int>{};
 
-    for (final Cabin cabin in cabinsInUseIds) {
+    for (final CabinDependent cabin in cabinsInUseIds) {
       names[cabin.id] = cabin.name;
-      counts[cabin.id] = cabin.camperIds.length;
-      preferences[cabin.id] = cabin.campersWithPreferencesCount;
+      counts[cabin.id] = cabin.camperRefs.length;
+      preferences[cabin.id] = cabin.campersWithPreferences.length;
     }
 
     cabinNames.value = names;
