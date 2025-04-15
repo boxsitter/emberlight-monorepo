@@ -38,61 +38,48 @@ class BessSidebar extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const BessCircularImage(
-                              width: 150,
-                              height: 150,
-                              image: BessImages.lightAppLogo,
-                              backgroundColor: Colors.transparent,
+                            Text(
+                              'MENU',
+                              style: BessTextStyles.lightHeader,
+                              overflow: TextOverflow.clip,
+                              maxLines: 1,
                             ),
-                            const SizedBox(height: BessSizes.spaceBtwSections),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'MENU',
-                                  style: BessTextStyles.lightHeader,
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 1,
-                                ),
-                                const SizedBox(height: BessSizes.sm),
-                                const BessMenuItem(
-                                    route: BessRoutes.home,
-                                    icon: LucideIcons.house,
-                                    itemName: 'Home'),
-                                const BessMenuItem(
-                                    route: BessRoutes.sessionRoster,
-                                    icon: LucideIcons.bookUser,
-                                    itemName: 'Session Roster'),
-                                const BessMenuItem(
-                                    route: BessRoutes.activityPreferencesCabins,
-                                    icon: LucideIcons.listOrdered,
-                                    itemName: 'Activity Preferences'),
-                                const BessMenuItem(
-                                    route: BessRoutes.console,
-                                    icon: LucideIcons.columns3,
-                                    itemName: 'Schedule'),
-                                const BessMenuItem(
-                                    route: BessRoutes.sessionManager,
-                                    icon: LucideIcons.calendarCog,
-                                    itemName: 'Session Manager'),
-                                const BessMenuItem(
-                                    route: BessRoutes.console,
-                                    icon: LucideIcons.flameKindling,
-                                    itemName: 'Branch Manager'),
-                                const BessMenuItem(
-                                    route: BessRoutes.responsiveDesignExample,
-                                    icon: LucideIcons.layoutPanelLeft,
-                                    itemName: 'Widgets'),
-                                const BessMenuItem(
-                                    route: BessRoutes.console,
-                                    icon: LucideIcons.squareTerminal,
-                                    itemName: 'Console'),
-                              ],
-                            ),
+                            const SizedBox(height: BessSizes.sm),
+                            const BessMenuItem(
+                                route: BessRoutes.home,
+                                icon: LucideIcons.house,
+                                itemName: 'Home'),
+                            const BessMenuItem(
+                                route: BessRoutes.sessionRoster,
+                                icon: LucideIcons.bookUser,
+                                itemName: 'Session Roster'),
+                            const BessMenuItem(
+                                route: BessRoutes.activityPreferencesCabins,
+                                icon: LucideIcons.listOrdered,
+                                itemName: 'Activity Preferences'),
+                            const BessMenuItem(
+                                route: BessRoutes.console,
+                                icon: LucideIcons.columns3,
+                                itemName: 'Schedule'),
+                            const BessMenuItem(
+                                route: BessRoutes.sessionManager,
+                                icon: LucideIcons.calendarCog,
+                                itemName: 'Session Manager'),
+                            const BessMenuItem(
+                                route: BessRoutes.console,
+                                icon: LucideIcons.flameKindling,
+                                itemName: 'Branch Manager'),
+                            const BessMenuItem(
+                                route: BessRoutes.responsiveDesignExample,
+                                icon: LucideIcons.layoutPanelLeft,
+                                itemName: 'Widgets'),
+                            const BessMenuItem(
+                                route: BessRoutes.console,
+                                icon: LucideIcons.squareTerminal,
+                                itemName: 'Console'),
                           ],
                         ),
                         const Spacer(),
