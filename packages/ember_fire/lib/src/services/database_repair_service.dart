@@ -15,7 +15,7 @@ class DatabaseRepairService extends GetxService{
   static const Set<String> specialFields = {'name', 'firstName'};
   static const double specialFieldPresenceWeight = 0.15;
   static const double specialValueEqualityWeight = 0.40;
-  static const Set<String> alwaysIgnore = {'id', 'createdAt', 'updatedAt'};
+  static const Set<String> alwaysIgnore = {'id', 'createdAt', 'updatedAt', 'principalPar'};
 
 
   PullRepository pullRepo = Get.find<PullRepository>();
