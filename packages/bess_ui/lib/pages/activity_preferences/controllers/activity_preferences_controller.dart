@@ -30,14 +30,14 @@ class ActivityPreferencesController extends GetxController {
   Future<void> populateCabinMaps() async {
     isCabinDataLoaded.value = false;
     print('POPULATING CABIN MAPS');
-    final Set<CabinDependent> cabinsInUse = await cabinsService.cabinDependents;
+    final Map<CabinDependent, PrincipalCabin> cabinsInUse = await cabinsService.getCabinDependentToPrincipalCabins();
 
     final names = <CabinId, String>{};
     final counts = <CabinId, int>{};
     final preferences = <CabinId, int>{};
 
-    for (final CabinDependent cabin in cabinsInUse) {
-      names[cabin.id] = cabin.name;
+    for (final CabinDependent cabin in cabinsInUse.keys) {
+      names[cabin.id] = cabinsInUse[cabin]!.name;
       counts[cabin.id] = cabin.camperRefs.length;
       preferences[cabin.id] = cabin.campersWithPreferences.length;
     }
