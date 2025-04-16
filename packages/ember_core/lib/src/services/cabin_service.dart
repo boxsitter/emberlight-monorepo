@@ -35,11 +35,22 @@ class CabinService extends GetxService {
   Future<Map<CabinDependent, PrincipalCabin>> getCabinDependentToPrincipalCabins() async {
     Set<CabinDependent> cabinDependents = await this.cabinDependents;
     Set<PrincipalCabin> principalCabins = await this.principalCabins;
-    Map<CabinDependent, PrincipalCabin> output;
+    Map<CabinDependent, PrincipalCabin> output = {};
 
-    for (CabinDependent cabinDependent in cabinDependents) {
-      output[cabinDependent] = principalCabins[cabinDependent.principalPar];
+    Map<String, PrincipalCabin> principalCabinsById = {
+      for (var principal in principalCabins) principal.id: principal
+    };
+
+    for (var dependent in cabinDependents) {
+      PrincipalCabin? matchingPrincipal = principalCabinsById[dependent.principalPar];
+
+      if (matchingPrincipal != null) {
+        output[dependent] = matchingPrincipal;
+      }
     }
+
+    // Return the resulting map
+    return output;
   }
 
   Future<Set<String>> getRegisteredPrincipalCabinIds() async {

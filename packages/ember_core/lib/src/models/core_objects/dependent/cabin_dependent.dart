@@ -1,8 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
-import '../domain/session.dart';
-
 class CabinDependent extends CoreObject implements Dependent{
   @override
   final String principalPar;
