@@ -1,11 +1,13 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
+import '../../abstract/domain.dart';
+
 typedef CamperPreferenceId = String;
 typedef DependentId = String;
 typedef PrincipalId = String;
 
-class Session extends CoreObject {
+class Session extends CoreObject implements Domain{
   final String name;
   final DateTime startDate;
   final DateTime endDate;

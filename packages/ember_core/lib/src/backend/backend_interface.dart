@@ -1,5 +1,10 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import '../models/core_objects/domain/branch.dart';
+import '../models/core_objects/domain/organization.dart';
+import '../models/core_objects/domain/season.dart';
+import '../models/core_objects/domain/session.dart';
+
 typedef FromJson<T> = T Function(Map<String, dynamic> json);
 
 abstract class BackendInterface {

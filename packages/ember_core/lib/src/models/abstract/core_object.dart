@@ -1,6 +1,10 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 import '../../../ember_core_models.dart';
+import '../core_objects/domain/branch.dart';
+import '../core_objects/domain/organization.dart';
+import '../core_objects/domain/season.dart';
+import '../core_objects/domain/session.dart';
 
 typedef CoreObjectObjId = String;
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);

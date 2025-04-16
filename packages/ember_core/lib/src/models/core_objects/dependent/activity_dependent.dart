@@ -1,17 +1,15 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import '../../../../ember_core_utils.dart';
+
 class ActivityDependent extends CoreObject implements Dependent{
   @override
   final String principalPar;
-  final String name;
-  final int capacity;
   final Set<String> camperRefs;
   final String blockRef;
 
   ActivityDependent({
     required this.principalPar,
-    required this.name,
-    required this.capacity,
     required this.blockRef,
     Set<String>? camperRefs,
     super.id,
@@ -21,12 +19,12 @@ class ActivityDependent extends CoreObject implements Dependent{
         super(
           domain: 'ses',
           type: 'activity_dependent',
-          idTag: name,
+          idTag: IdFunctions.getIdPart(principalPar, 0), // inherits tag from parent
         );
 
   @override
   String coreToString() {
-    return 'Activity: $name, Capacity: $capacity';
+    return id;
   }
 
   @override
@@ -34,8 +32,6 @@ class ActivityDependent extends CoreObject implements Dependent{
     final json = toJsonSuper();
     json.addAll({
       'principalPar': principalPar,
-      'name': name,
-      'capacity': capacity,
       'camperRefs': camperRefs.toList(),
       'blockRef': blockRef,
     });
@@ -45,8 +41,6 @@ class ActivityDependent extends CoreObject implements Dependent{
   factory ActivityDependent.fromJson(Map<String, dynamic> json) {
     ActivityDependent activity = ActivityDependent(
       principalPar: json['principalPar'] as String,
-      name: json['name'] as String,
-      capacity: json['capacity'] as int,
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
       blockRef: json['blockRef'] as String,
     );

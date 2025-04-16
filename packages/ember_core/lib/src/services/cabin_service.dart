@@ -72,8 +72,8 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  Future<void> addCamperToCabin(PushRequest pushRequest, String cabinDependentId, Camper camperToAdd) async {
-    CabinDependent cabinDependent = pushRequest.getObject(id: cabinDependentId) ?? await backend.getObject(cabinDependentId);
+  Future<void> addCamperToCabin(PushRequest pushRequest, CabinDependent cabinDependent, PrincipalCabin principalCabin, Camper camperToAdd) async {
+    CabinDependent cabinDependent = pushRequest.getObject(id: cabinDependent.id) ?? await backend.getObject(cabinDependentId);
     if((cabinDependent.camperRefs.length + 1) > cabinDependent.capacity) {
       //TODO: Over capacity conflict
       throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinDependent.name} because it will put it over capacity');

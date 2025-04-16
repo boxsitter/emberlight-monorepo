@@ -2,24 +2,25 @@
 
 import 'package:ember_core/ember_core_models.dart';
 
-class Branch extends CoreObject {
-  final String name;
-   // TODO: refactor to session, ensure only principal objects are above session, handle their deletion differently
+import '../../abstract/domain.dart';
 
-  Branch({
+class Organization extends CoreObject implements Domain{
+  final String name;
+
+  Organization({
     required this.name,
     super.id,
     super.createdAt,
     super.updatedAt,
   })  : super(
-          domain: 'org',
-          type: 'branch',
+          domain: 'rot',
+          type: 'organization',
           idTag: name,
         );
 
   @override
   String coreToString() {
-    return 'Branch: $name';
+    return 'Organization: $name';
   }
 
   @override
@@ -37,11 +38,14 @@ class Branch extends CoreObject {
     return json;
   }
 
-  factory Branch.fromJson(Map<String, dynamic> json) {
-    final branch = Branch(
+  factory Organization.fromJson(Map<String, dynamic> json,
+      [bool clone = false]) {
+    final org = Organization(
       name: json['name'] as String,
     );
-    branch.overwriteCoreObjectFromJson(json);
-    return branch;
+    org.overwriteCoreObjectFromJson(json);
+    return org;
   }
+
+
 }

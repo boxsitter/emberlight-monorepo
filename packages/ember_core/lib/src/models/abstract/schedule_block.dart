@@ -1,16 +1,4 @@
-import 'package:ember_core/ember_core_models.dart';
-
-abstract class ScheduleBlock extends CoreObject {
-  final String name;
-
-  ScheduleBlock({
-    required this.name,
-    required super.domain,
-    required super.type,
-    required super.idTag,
-    super.id,
-    super.createdAt,
-    super.updatedAt,
-  }) : super();
-
+abstract class ScheduleBlock {
+  String get name;
+  bool get isTemplate;
 }

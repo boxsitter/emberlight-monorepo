@@ -3,6 +3,7 @@ import 'package:ember_core/user_houck_leyton.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core_backend.dart';
+import '../models/core_objects/domain/session.dart';
 
 
 class ClientContext extends GetxService {

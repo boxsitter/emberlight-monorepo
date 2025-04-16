@@ -1,6 +1,8 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class PrincipalCabin extends CoreObject {
+import '../../abstract/principal.dart';
+
+class PrincipalCabin extends CoreObject implements Principal{
   final String name;
   final int capacity;
 
@@ -10,11 +12,11 @@ class PrincipalCabin extends CoreObject {
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  :  super(
-          domain: 'brn',
-          type: 'principal_cabin',
-          idTag: name,
-        );
+  }) : super(
+    domain: 'brn',
+    type: 'principal_cabin',
+    idTag: name,
+  );
 
   @override
   String coreToString() {

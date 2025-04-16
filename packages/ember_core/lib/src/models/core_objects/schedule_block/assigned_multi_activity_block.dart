@@ -1,11 +1,16 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class AssignedMultiActivityBlock extends ScheduleBlock {
+class AssignedMultiActivityBlock extends CoreObject implements ScheduleBlock {
+  @override
+  final String name;
+  @override
+  final bool isTemplate;
   final Set<String> activityDependentCmps;
 
   AssignedMultiActivityBlock({
+    required this.name,
+    required this.isTemplate,
     Set<String>? activityDependentCmps,
-    required super.name,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -26,6 +31,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
     final json = toJsonSuper();
     json.addAll({
       'name': name,
+      'isTemplate': isTemplate,
       'activityDependentCmps': activityDependentCmps.toList(),
     });
     return json;
@@ -34,6 +40,7 @@ class AssignedMultiActivityBlock extends ScheduleBlock {
   factory AssignedMultiActivityBlock.fromJson(Map<String, dynamic> json) {
     final block = AssignedMultiActivityBlock(
       name: json['name'] as String,
+      isTemplate: json['isTemplate'],
       activityDependentCmps: (json['activityDependentCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     block.overwriteCoreObjectFromJson(json);

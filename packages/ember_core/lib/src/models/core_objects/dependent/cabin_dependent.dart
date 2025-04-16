@@ -1,18 +1,16 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
+import '../domain/session.dart';
+
 class CabinDependent extends CoreObject implements Dependent{
   @override
   final String principalPar;
-  final String name;
-  final int capacity;
   final Set<CamperId> camperRefs;
   final Map<CamperId, CamperPreferenceId> campersWithPreferences;
 
   CabinDependent({
     required this.principalPar,
-    required this.name,
-    required this.capacity,
     Set<String>? camperRefs,
     Map<CamperId, CamperPreferenceId>? campersWithPreferences ,
     super.id,
@@ -23,12 +21,12 @@ class CabinDependent extends CoreObject implements Dependent{
         super(
           domain: 'ses',
           type: 'cabin_dependent',
-          idTag: name,
+          idTag: IdFunctions.getIdPart(principalPar, 0), // inherits tag from parent
         );
 
   @override
   String coreToString() {
-    return 'Cabin: $name, Capacity: $capacity}';
+    return id;
   }
 
   @override
@@ -50,8 +48,6 @@ class CabinDependent extends CoreObject implements Dependent{
     final json = toJsonSuper();
     json.addAll({
       'principalPar': principalPar,
-      'name': name,
-      'capacity': capacity,
       'camperRefs': camperRefs.toList(),
       'campersWithPreferences': campersWithPreferences,
     });
@@ -61,8 +57,6 @@ class CabinDependent extends CoreObject implements Dependent{
   factory CabinDependent.fromJson(Map<String, dynamic> json) {
     final cabinDependent = CabinDependent(
       principalPar: json['principalPar'] as String,
-      name: json['name'] as String,
-      capacity: json['capacity'] as int,
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
       campersWithPreferences: (json['campersWithPreferences'] as Map?)?.cast<String, String>() ?? {},
     );

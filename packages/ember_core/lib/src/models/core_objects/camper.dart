@@ -98,11 +98,20 @@ class Camper extends CoreObject {
 
   @override
   void purgeRef(String id) {
+    // no need to handle principal cabin since the dependant will be in the delete chain anyway
     if (IdFunctions.getIdPart(id, 1) == 'cabin_dependent') {
       if (cabinRef == id) {
         cabinRef == null;
         cabinName == null;
       }
+    }
+
+    if (IdFunctions.getIdPart(id, 1) == 'AMA_Block') {
+      activityAssignmentRefs.remove(id);
+    }
+
+    if (IdFunctions.getIdPart(id, 1) == 'activity_dependent') {
+      activityAssignmentRefs.removeWhere((key, value) => value == id);
     }
   }
 }

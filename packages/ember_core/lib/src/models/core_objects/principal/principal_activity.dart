@@ -1,8 +1,11 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import '../../abstract/elevated.dart';
+import '../../abstract/principal.dart';
+
 typedef ActivityTypeId = String;
 
-class PrincipalActivity extends CoreObject {
+class PrincipalActivity extends CoreObject implements Principal{
   final String name;
   final int capacity;
   final String description;

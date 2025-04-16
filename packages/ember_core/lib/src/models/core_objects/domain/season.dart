@@ -1,6 +1,8 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class Season extends CoreObject {
+import '../../abstract/domain.dart';
+
+class Season extends CoreObject implements Domain{
   final String name;
   final DateTime startDate;
   final DateTime endDate;
