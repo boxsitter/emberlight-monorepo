@@ -3,9 +3,9 @@ import 'package:ember_core/ember_core_models.dart';
 import '../../abstract/elevated.dart';
 import '../../abstract/principal.dart';
 
-typedef ActivityTypeId = String;
+typedef PrincipalActivityId = String;
 
-class PrincipalActivity extends CoreObject implements Principal{
+class PrincipalActivity extends CoreObject implements Principal, Elevated{
   final String name;
   final int capacity;
   final String description;
@@ -51,6 +51,6 @@ class PrincipalActivity extends CoreObject implements Principal{
 
   @override
   void purgeRef(String id) {
-    // TODO: implement purgeRef
+    print('unnecessary purge');
   }
 }

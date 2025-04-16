@@ -50,7 +50,8 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     pushRequest.addObject(camperToAdd);
 
     if (cabinRef != null) {
-      await cabinsService.addCamperToCabin(pushRequest, cabinRef, camperToAdd);
+      CabinDependent cabinDependent = await backend.getObject(cabinRef);
+      await cabinsService.addCamperToCabin(pushRequest, cabinDependent, camperToAdd);
     }
   }
 
@@ -59,7 +60,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     camper.camperPreferenceCmp = camperPreference.id;
     Schedule schedule = pushRequest.getObjectOfType() ?? await clientContextService.schedule;
 
-    for (ActivityTypeId uniqueActivityTypeRef in schedule.uniqueActivityTypeRefs) {
+    for (PrincipalActivityId uniqueActivityTypeRef in schedule.principalActivityRefs) {
       camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
       camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }

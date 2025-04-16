@@ -3,10 +3,10 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../abstract/domain.dart';
+import '../../abstract/elevated.dart';
 
-class Branch extends CoreObject implements Domain{
+class Branch extends CoreObject implements Domain, Elevated{
   final String name;
-   // TODO: refactor to session, ensure only principal objects are above session, handle their deletion differently
 
   Branch({
     required this.name,

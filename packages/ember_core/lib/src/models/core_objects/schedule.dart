@@ -1,20 +1,19 @@
 import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/src/models/core_objects/principal/principal_activity.dart';
 
 typedef BlockId = String;
 
 class Schedule extends CoreObject {
   List<BlockId> blockCmps;
-  Set<ActivityTypeId> uniqueActivityTypeRefs;
+  Set<PrincipalActivityId> principalActivityRefs;
 
   Schedule({
     List<BlockId>? blockCmps,
-    Set<ActivityTypeId>? uniqueActivityTypeRefs,
+    Set<PrincipalActivityId>? principalActivityRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
   })  : blockCmps = blockCmps ?? [],
-        uniqueActivityTypeRefs = uniqueActivityTypeRefs ?? {},
+        principalActivityRefs = principalActivityRefs ?? {},
         super(
           domain: 'ses',
           type: 'schedule',
@@ -31,7 +30,7 @@ class Schedule extends CoreObject {
     final json = toJsonSuper();
     json.addAll({
       'blockCmps': blockCmps,
-      'uniqueActivityTypeRefs': uniqueActivityTypeRefs.toList(),
+      'principalActivityRefs': principalActivityRefs.toList(),
     });
     return json;
   }
@@ -39,7 +38,7 @@ class Schedule extends CoreObject {
   factory Schedule.fromJson(Map<String, dynamic> json) {
     final schedule = Schedule(
       blockCmps: (json['blockCmps'] as List?)?.cast<BlockId>() ?? <BlockId>[],
-      uniqueActivityTypeRefs: (json['uniqueActivityTypeRefs'] as List?)?.cast<ActivityTypeId>().toSet() ?? <ActivityTypeId>{},
+      principalActivityRefs: (json['principalActivityRefs'] as List?)?.cast<PrincipalActivityId>().toSet() ?? <PrincipalActivityId>{},
     );
     schedule.overwriteCoreObjectFromJson(json);
     return schedule;
@@ -47,6 +46,6 @@ class Schedule extends CoreObject {
 
   @override
   void purgeRef(String id) {
-    // TODO: implement purgeRef
+    principalActivityRefs.remove(id);
   }
 }

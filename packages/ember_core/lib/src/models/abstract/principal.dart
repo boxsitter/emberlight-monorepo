@@ -1,6 +1,6 @@
 
 import 'elevated.dart';
 
-abstract class Principal implements Elevated{
+abstract class Principal{
   // just a label for now
 }

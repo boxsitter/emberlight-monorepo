@@ -2,12 +2,13 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
 import '../../abstract/domain.dart';
+import '../../abstract/elevated.dart';
 
 typedef CamperPreferenceId = String;
 typedef DependentId = String;
 typedef PrincipalId = String;
 
-class Session extends CoreObject implements Domain{
+class Session extends CoreObject implements Domain, Elevated{
   final String name;
   final DateTime startDate;
   final DateTime endDate;
@@ -40,17 +41,6 @@ class Session extends CoreObject implements Domain{
   }
 
   @override
-  void purgeRef(String id) {
-    if (IdFunctions.getIdPart(id, 1) == 'camper') {
-      if(camperRefToPreferenceRef.remove(id) == null) {
-        print('unnecessary purge');
-      }
-    } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
-      camperRefToPreferenceRef.removeWhere((key, value) => value == id);
-    }
-  }
-
-  @override
   Map<String, dynamic> toJson() {
     final json = toJsonSuper();
     json.addAll({
@@ -75,5 +65,28 @@ class Session extends CoreObject implements Domain{
     );
     session.overwriteCoreObjectFromJson(json);
     return session;
+  }
+
+  @override
+  void purgeRef(String id) {
+    if (IdFunctions.getIdPart(id, 1) == 'camper') {
+      if(camperRefToPreferenceRef.remove(id) == null) {
+        print('unnecessary purge');
+      }
+    } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
+      camperRefToPreferenceRef.removeWhere((key, value) => value == id);
+    }
+
+    refTracker.remove(id);
+
+    for (Set<String> set in refTracker.values) {
+      set.remove(id);
+    }
+
+    principalDependentLinkTracker.remove(id);
+
+    for (Set<String> set in principalDependentLinkTracker.values) {
+      set.remove(id);
+    }
   }
 }

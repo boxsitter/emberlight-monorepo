@@ -8,8 +8,8 @@ class CabinService extends GetxService {
   BackendInterface backend = BackendManager.instance;
   RequestService requestService = Get.find<RequestService>();
 
-  Future<Set<CabinDependent>> get cabinsInUse async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
-  Future<Set<PrincipalCabin>> get branchCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
+  Future<Set<CabinDependent>> get cabinDependents async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
+  Future<Set<PrincipalCabin>> get principalCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
 
   Future<String?> getCabinDependentIdByName(String name) async {
     return await backend.queryField('cabin_dependent', 'ses', 'name', name);
@@ -30,6 +30,16 @@ class CabinService extends GetxService {
     final rawData = await backend.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
     Map<String, String> valuesToString = rawData.map((key, value) => MapEntry(key, value as String));
     return valuesToString;
+  }
+
+  Future<Map<CabinDependent, PrincipalCabin>> getCabinDependentToPrincipalCabins() async {
+    Set<CabinDependent> cabinDependents = await this.cabinDependents;
+    Set<PrincipalCabin> principalCabins = await this.principalCabins;
+    Map<CabinDependent, PrincipalCabin> output;
+
+    for (CabinDependent cabinDependent in cabinDependents) {
+      output[cabinDependent] = principalCabins[cabinDependent.principalPar];
+    }
   }
 
   Future<Set<String>> getRegisteredPrincipalCabinIds() async {
@@ -59,7 +69,7 @@ class CabinService extends GetxService {
       print('This cabin is already registered to this session');
       return;
     }
-    CabinDependent cabinToRegister = CabinDependent(principalPar: principalCabin.id, name: principalCabin.name, capacity: principalCabin.capacity);
+    CabinDependent cabinToRegister = CabinDependent(principalPar: principalCabin.id);
     pushRequest.addObject(cabinToRegister);
   }
 
@@ -72,20 +82,20 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  Future<void> addCamperToCabin(PushRequest pushRequest, CabinDependent cabinDependent, PrincipalCabin principalCabin, Camper camperToAdd) async {
-    CabinDependent cabinDependent = pushRequest.getObject(id: cabinDependent.id) ?? await backend.getObject(cabinDependentId);
-    if((cabinDependent.camperRefs.length + 1) > cabinDependent.capacity) {
+  Future<void> addCamperToCabin(PushRequest pushRequest, CabinDependent cabinDependent, Camper camperToAdd) async {
+    PrincipalCabin principalCabin = await backend.getObject(cabinDependent.principalPar);
+    if((cabinDependent.camperRefs.length + 1) > principalCabin.capacity) {
       //TODO: Over capacity conflict
-      throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${cabinDependent.name} because it will put it over capacity');
+      throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.name} because it will put it over capacity');
     } else if (camperToAdd.cabinRef == null) {
       cabinDependent.camperRefs.add(camperToAdd.id);
       camperToAdd.cabinRef = cabinDependent.id;
-      camperToAdd.cabinName = cabinDependent.name;
+      camperToAdd.cabinName = principalCabin.name;
       pushRequest.addObject(cabinDependent);
       pushRequest.addObject(camperToAdd);
     } else {
       removeCamperFromCabin(pushRequest, cabinDependent, camperToAdd);
-      addCamperToCabin(pushRequest, cabinDependentId, camperToAdd);
+      addCamperToCabin(pushRequest, cabinDependent, camperToAdd);
     }
   }
 

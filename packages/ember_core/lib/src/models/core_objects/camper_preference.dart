@@ -10,8 +10,8 @@ typedef CamperId = String;
 class CamperPreference extends CoreObject {
   final CamperId camperRef;
   final String camperName;
-  final Map<ActivityTypeId, double?> preferencesRefs; // A map of every unique activity type in the schedule to the camper's preference
-  final Map<ActivityTypeId, double> preferenceWeightRefs; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
+  final Map<PrincipalActivityId, double?> preferencesRefs; // A map of every unique activity type in the schedule to the camper's preference
+  final Map<PrincipalActivityId, double> preferenceWeightRefs; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
   int preferencesCompletedCount;
   // true when the camper has indicated their preference for every activity in the block
   bool completed;
@@ -19,8 +19,8 @@ class CamperPreference extends CoreObject {
   CamperPreference({
     required this.camperRef,
     required this.camperName,
-    Map<ActivityTypeId, double?>? preferencesRefs,
-    Map<ActivityTypeId, double>? preferenceWeightRefs,
+    Map<PrincipalActivityId, double?>? preferencesRefs,
+    Map<PrincipalActivityId, double>? preferenceWeightRefs,
     this.preferencesCompletedCount = 0,
     this.completed = false,
     super.id,
@@ -38,19 +38,6 @@ class CamperPreference extends CoreObject {
   String coreToString() {
     // TODO: implement coreToString
     throw UnimplementedError();
-  }
-
-  @override
-  void purgeRef(String id) {
-    if (IdFunctions.getIdPart(id, 1) == 'activity_type') {
-      if(preferencesRefs.remove(id) == null) {
-        print('unnecessary purge');
-      }
-
-      if(preferenceWeightRefs.remove(id) == null) {
-        print('unnecessary purge');
-      }
-    }
   }
 
   @override
@@ -80,5 +67,25 @@ class CamperPreference extends CoreObject {
     return preference;
   }
 
+  @override
+  void purgeRef(String id) {
+    if (IdFunctions.getIdPart(id, 1) == 'principal_activity') {
+      if (preferencesRefs.containsKey(id)) {
+        preferencesCompletedCount - 1;
+      }
+
+      if (preferencesRefs.remove(id) == null) {
+        print('unnecessary purge');
+      }
+
+      if (preferenceWeightRefs.remove(id) == null) {
+        print('unnecessary purge');
+      }
+
+      if (preferencesRefs.isEmpty) {
+        completed = false;
+      }
+    }
+  }
 
 }
