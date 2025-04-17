@@ -3,7 +3,9 @@ library;
 // abstract
 export 'src/models/abstract/core_object.dart';
 export 'src/models/abstract/dependent.dart';
+export 'src/models/abstract/principal.dart';
 export 'src/models/abstract/schedule_block.dart';
+export 'src/models/abstract/domain.dart';
 
 // core_objects
 // dependent

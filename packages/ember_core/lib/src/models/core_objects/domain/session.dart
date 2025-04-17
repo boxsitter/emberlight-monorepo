@@ -1,7 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
-import '../../abstract/domain.dart';
 import '../../abstract/elevated.dart';
 
 typedef CamperPreferenceId = String;
@@ -13,7 +12,7 @@ class Session extends CoreObject implements Domain, Elevated{
   final DateTime startDate;
   final DateTime endDate;
   final Map<CamperId, CamperPreferenceId> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
-  Map<String, Set<String>> refTracker; // TODO: Still track who is referencing a principal in here. If the principal is deleted or found missing, call purge on everyone referencing it and delete the entry.
+  Map<String, Set<String>> refTracker;
   Map<PrincipalId, Set<DependentId>> principalDependentLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependents and purge references to it
 
   Session({
@@ -81,12 +80,18 @@ class Session extends CoreObject implements Domain, Elevated{
 
     for (Set<String> set in refTracker.values) {
       set.remove(id);
+      if (set.isEmpty) {
+        refTracker.removeWhere((key, value) => value == set);
+      }
     }
 
     principalDependentLinkTracker.remove(id);
 
     for (Set<String> set in principalDependentLinkTracker.values) {
       set.remove(id);
+      if (set.isEmpty) {
+        principalDependentLinkTracker.removeWhere((key, value) => value == set);
+      }
     }
   }
 }

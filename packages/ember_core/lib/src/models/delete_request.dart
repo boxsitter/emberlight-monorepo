@@ -2,12 +2,13 @@ import 'package:ember_core/ember_core_models.dart';
 
 class DeleteRequest {
   bool _armed;
-  final int disarmRequirementsLevel;
-  Set<CoreObject> objectsToDelete;
-  Set<CoreObject> objectsToPurge;
+  final int _disarmRequirementsLevel;
+  Map<String, CoreObject> objectsToDelete = {};
+  Map<String, CoreObject> objectsToPush = {};
   String confirmationMessage;
 
   bool get armed => _armed;
+  int get disarmRequirementsLevel => _disarmRequirementsLevel;
 
   void disarm() {
     if (disarmRequirementsLevel > 2) {
@@ -19,12 +20,54 @@ class DeleteRequest {
 
   // Constructor for initialization
   DeleteRequest({
-    required this.disarmRequirementsLevel,
-    Set<CoreObject>? objectsToDelete,
-    Set<CoreObject>? objectsToPurge,
+    required int disarmRequirementsLevel,
     this.confirmationMessage = '',
-    Set<CoreObject>? objectsToPush,
   })  : _armed = disarmRequirementsLevel > 0,
-        objectsToDelete = objectsToDelete ?? {},
-        objectsToPurge = objectsToPurge ?? {};
+        _disarmRequirementsLevel = disarmRequirementsLevel;
+
+
+  void addObjectToDelete(CoreObject object) {
+    objectsToDelete[object.id] = object;
+  }
+
+  void addObjectToPurge(CoreObject object) {
+    objectsToDelete[object.id] = object;
+  }
+
+  T? getObject<T>({CoreObject? object, String? id}) {
+    if (object != null) {
+      CoreObject? objectToReturn = objectsToDelete[object.id];
+      objectToReturn = objectsToPush[object.id];
+      if (objectToReturn != null && objectToReturn is T) {
+        return objectToReturn as T;
+      } else {
+        return null;
+      }
+    } else if (id != null) {
+      CoreObject? objectToReturn = objectsToDelete[id];
+      objectToReturn = objectsToPush[id];
+      if (objectToReturn != null && objectToReturn is T) {
+        return objectToReturn as T;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  T? getObjectOfType<T>() {
+    for (var value in objectsToPush.values) {
+      if (value is T) {
+        return value as T;
+      }
+    }
+
+    for (var value in objectsToDelete.values) {
+      if (value is T) {
+        return value as T;
+      }
+    }
+    return null;
+  }
 }
