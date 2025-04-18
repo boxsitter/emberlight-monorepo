@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import 'common/routes/app_routes.dart';
 import 'common/routes/route_observer.dart';
 import 'common/constants//text_strings.dart';
+import 'common/routes/routes.dart';
 import 'common/theme/shad_theme.dart';
 import 'common/theme/theme.dart';
 import 'common/utils/device/web_material_scroll.dart';

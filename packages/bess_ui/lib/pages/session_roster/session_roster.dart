@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../common/widgets/layouts/templates/site_layout.dart';
 import '../../common/widgets/roster_table/controllers/roster_table_controller.dart';

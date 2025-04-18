@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import '../../../constants//sizes.dart';
 
 class DesktopLayout extends StatelessWidget {
-  const DesktopLayout({super.key, this.body});
+  const DesktopLayout({super.key, this.body, this.usePadding = true});
 
   final Widget? body;
+  final bool usePadding;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class DesktopLayout extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: const EdgeInsets.all(BessSizes.lg),
+                      padding: usePadding ? const EdgeInsets.all(BessSizes.lg) : const EdgeInsets.all(0),
                       child: body ?? const SizedBox(),
                     ),
                   ),

@@ -61,7 +61,7 @@ class BessSidebar extends StatelessWidget {
                                 icon: LucideIcons.listOrdered,
                                 itemName: 'Activity Preferences'),
                             const BessMenuItem(
-                                route: BessRoutes.console,
+                                route: BessRoutes.schedulePage,
                                 icon: LucideIcons.columns3,
                                 itemName: 'Schedule'),
                             const BessMenuItem(

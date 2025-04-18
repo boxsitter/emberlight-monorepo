@@ -7,10 +7,11 @@ import '../../responsive/screens/desktop_layout.dart';
 
 /// Template for overall site layout, responsive to different screen sizes
 class BessSiteTemplate extends StatelessWidget {
-  const BessSiteTemplate({super.key, this.desktop, this.tablet, this.mobile, this.useLayout = true});
+  const BessSiteTemplate({super.key, this.desktop, this.tablet, this.mobile, this.useLayout = true, this.desktopPadding = true});
 
   /// Widget for desktop layout
   final Widget? desktop;
+  final bool desktopPadding;
 
   /// Widget for tablet layout
   final Widget? tablet;
@@ -25,7 +26,7 @@ class BessSiteTemplate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BessResponsiveWidget(
-          desktop: useLayout ? DesktopLayout(body: desktop) : desktop ?? Container(),
+          desktop: useLayout ? DesktopLayout(body: desktop, usePadding: desktopPadding) : desktop ?? Container(),
           tablet: useLayout ? TabletLayout(body: tablet ?? desktop) : tablet ?? desktop ?? Container(),
           mobile: useLayout ? MobileLayout(body: mobile ?? desktop) : mobile ?? desktop ?? Container(),
       ),
