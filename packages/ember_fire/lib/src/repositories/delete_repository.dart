@@ -28,27 +28,27 @@ class DeleteRepository {
     }
   }
 
-  Future<void> commit(DeleteRequest deleteRequest) async{
-    Set<CoreObject> objectsToDelete = deleteRequest.objectsToDelete.values.toSet();
-
-    if (objectsToDelete.isEmpty) {
-      print('Nothing to commit!');
-      return;
-    }
-
-    if (!await requestService.disarmRequest(pushRequest)) {
-    print('Operation cannot proceed');
-    return;
-    }
-
-    Session newSession = pushRequest.getObjectOfType() ?? await pullRepo.getObject(clientContextService.sessionId);
-    await Future.wait([
-    Future(() => _updateRefTracker(newSession.refTracker, objectsToPush)),
-    Future(() => _updatePrincipalDependentLinkTracker(newSession.principalDependentLinkTracker, objectsToPush)),
-    ]);
-
-
-  }
+  // Future<void> commit(DeleteRequest deleteRequest) async{
+  //   Set<CoreObject> objectsToDelete = deleteRequest.objectsToDelete.values.toSet();
+  //
+  //   if (objectsToDelete.isEmpty) {
+  //     print('Nothing to commit!');
+  //     return;
+  //   }
+  //
+  //   if (!await requestService.disarmRequest(pushRequest)) {
+  //   print('Operation cannot proceed');
+  //   return;
+  //   }
+  //
+  //   Session newSession = pushRequest.getObjectOfType() ?? await pullRepo.getObject(clientContextService.sessionId);
+  //   await Future.wait([
+  //   Future(() => _updateRefTracker(newSession.refTracker, objectsToPush)),
+  //   Future(() => _updatePrincipalDependentLinkTracker(newSession.principalDependentLinkTracker, objectsToPush)),
+  //   ]);
+  //
+  //
+  // }
 
 
 

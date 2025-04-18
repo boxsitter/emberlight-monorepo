@@ -41,13 +41,13 @@ class EmberFire implements BackendInterface {
     Get.put(PathService());
     pullRepo = Get.put(PullRepository());
     liveDataRepo = Get.put(LiveDataRepository());
-    deleteRepo = Get.put(DeleteRepository());
     databaseRepairService = Get.put(DatabaseRepairService());
   }
 
   @override
   void initLate() {
     pushRepo = Get.put(PushRepository());
+    deleteRepo = Get.put(DeleteRepository());
     //Get.put(DeletionService);
   }
 
