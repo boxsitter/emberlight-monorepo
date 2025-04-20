@@ -14,7 +14,7 @@ class DumbPushRepository {
       await FirebaseFirestore.instance.doc(path).set(object.toJson());
       print('Document pushed successfully to $path');
     } catch (e) {
-      print('Error pushing document: $e');
+      print('Error pushing document to $path: $e');
     }
   }
 }
