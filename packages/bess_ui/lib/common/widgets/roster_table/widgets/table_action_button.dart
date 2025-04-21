@@ -17,30 +17,10 @@ class TableActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (toolTip.trim().isEmpty) {
-      return buildShadIconButton();
-    } else {
-      return ShadTooltip(
-        waitDuration: const Duration(milliseconds: 200),
-        showDuration: const Duration(milliseconds: 200),
-        builder: (context) => Text(toolTip),
-        child: buildShadIconButton(),
-      );
-    }
-  }
-
-  ShadIconButton buildShadIconButton() {
-    return ShadIconButton.secondary(
-        hoverBackgroundColor: BessColors.element1,
-        pressedBackgroundColor: BessColors.element3,
-        height: 30,
-        decoration: ShadDecoration(
-            descriptionPadding: EdgeInsets.zero,
-            border: ShadBorder(radius: BorderRadius.circular(100))
-        ),
-
-        icon: icon,
-        onPressed: onPressed,
-      );
+    return IconButton(
+      onPressed: onPressed,
+      icon: icon,
+      tooltip: toolTip,
+    );
   }
 }

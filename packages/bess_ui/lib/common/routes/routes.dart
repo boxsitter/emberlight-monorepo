@@ -2,6 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
 import '../../pages/activity_preferences/views/activity_preferences_campers.dart';
+import '../../pages/activity_rosters/activity_rosters.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
@@ -22,6 +23,7 @@ class BessRoutes {
   static const sessionRoster = '/session-roster';
   static const schedulePage = '/schedule-page';
   static const sessionManager = '/session-manager';
+  static const activityRosters = '/activity-rosters';
 
   static const activityPreferencesCabins = '/activity-preferences-cabins';
   static const activityPreferencesCampers = '/activity-preferences-campers';
@@ -31,6 +33,7 @@ class BessRoutes {
     sessionRoster,
     home,
     activityPreferencesCabins,
+    activityRosters,
     responsiveDesignExample,
     sessionManager,
     schedulePage,
@@ -49,6 +52,7 @@ class BessAppRoute {
     GetPage(name: BessRoutes.sessionRoster, page: () => const SessionRoster()),
     GetPage(name: BessRoutes.schedulePage, page: () => const SchedulePage()),
     GetPage(name: BessRoutes.sessionManager, page: () => const SessionManager()),
+    GetPage(name: BessRoutes.activityRosters, page: () => const ActivityRosters()),
 
     GetPage(name: BessRoutes.activityPreferencesCabins, page: () => const ActivityPreferencesCabins()),
     GetPage(name: BessRoutes.activityPreferencesCampers, page: () => const ActivityPreferencesCampers()),
