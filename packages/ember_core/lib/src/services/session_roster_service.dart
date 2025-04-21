@@ -32,7 +32,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     String? cabinRef;
     // need to fetch cabin by name from the active cabins for the selected session
     if (cabinName.isNotEmpty) {
-      cabinRef = await cabinsService.getCabinDependentIdByName(cabinName);
+      cabinRef = await cabinsService.getCabinDependentIdByName(cabinName, pushRequest);
     }
 
     // TODO: Error checking here, validate stuff

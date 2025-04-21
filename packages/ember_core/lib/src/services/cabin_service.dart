@@ -11,8 +11,26 @@ class CabinService extends GetxService {
   Future<Set<CabinDependent>> get cabinDependents async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
   Future<Set<PrincipalCabin>> get principalCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
 
-  Future<String?> getCabinDependentIdByName(String name) async {
-    return await backend.queryField('cabin_dependent', 'ses', 'name', name);
+  Future<String?> getCabinDependentIdByName(String name, PushRequest pushRequest) async {
+    Set<CabinDependent> principalCabinsInRequest = pushRequest.getObjectsOfType();
+    String? principalId = pushRequest.queryField(principalCabinsInRequest, 'name', name);
+    if (principalId != null) {
+      return pushRequest.queryField(principalCabinsInRequest, 'principalPar', principalId);
+    }
+
+    // TODO: The code for caching cabins in the push request is rough, clean it up
+    principalId = await backend.queryField('principal_cabin', 'brn', 'name', name);
+    String? output;
+    if (principalId != null) {
+      pushRequest.addObject(await backend.getObject(principalId));
+      output =  await backend.queryField('cabin_dependent', 'ses', 'principalPar', principalId);
+    }
+
+    if (output != null) {
+      pushRequest.addObject(await backend.getObject(output));
+    }
+
+    return output;
   }
 
   Future<Set<Camper>> getCampersInCabin(String id) async {

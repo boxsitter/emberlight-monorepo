@@ -81,4 +81,17 @@ class PushRequest {
     });
     return returnSet;
   }
+
+  String? queryField(Set<CoreObject> objects, String field, String value) {
+    final Set<Map<String, dynamic>> jsons = {};
+    for (CoreObject object in objects) {
+      Map<String, dynamic> json = object.toJson();
+      for (dynamic valueToCheck in json.values) {
+        if (valueToCheck is String && valueToCheck == value) {
+          return object.id;
+        }
+      }
+    }
+    return null;
+  }
 }
