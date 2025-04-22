@@ -30,5 +30,4 @@ export 'src/models/core_objects/schedule.dart';
 export 'src/models/core_objects/user.dart';
 
 
-export 'src/models/delete_request.dart';
-export 'src/models/push_request.dart';
+export 'src/models/commit.dart';

@@ -20,7 +20,7 @@ abstract class BackendInterface {
   Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain);
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value);
   Future<String> getActiveObjectId(String collectionName, String domain);
-  Future<void> commit(PushRequest pushRequest);
+  Future<void> commit(Commit commit);
   Future<void> deleteObject(String key);
   Stream<Map<String, T>> watchCollection<T>({
     required String collectionName,
@@ -28,7 +28,7 @@ abstract class BackendInterface {
     bool updateDataInRealtime = true,
   });
   Future<void> mergeObjectsWithDatabase({
-    required PushRequest pushRequest,
+    required Commit commit,
     required Set<CoreObject> objects,
     required bool prioritizeAFields,
     required bool prioritizeAValues,

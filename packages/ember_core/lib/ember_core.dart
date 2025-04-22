@@ -40,16 +40,16 @@ class EmberCore {
 
   static Future<void> repairHardcodedObjects() async {
     BackendInterface backend = BackendManager.instance;
-    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    Commit commit = Commit(disarmRequirementsLevel: 0);
     await backend.mergeObjectsWithDatabase(
-      pushRequest: pushRequest,
+      commit: commit,
       objects: HardcodedObjects.hardcodedObjects,
       prioritizeAFields: true,
       prioritizeAValues: true,
       overwriteWithEmptyAValues: false,
       aFieldsToIgnore: {'createdAt'},
     );
-    await backend.commit(pushRequest);
+    await backend.commit(commit);
   }
 }
 

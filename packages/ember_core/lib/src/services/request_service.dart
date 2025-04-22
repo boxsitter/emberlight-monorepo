@@ -5,25 +5,25 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
 
 class RequestService extends GetxService{
-  Future<bool> disarmRequest(PushRequest pushRequest) async {
-    if (!pushRequest.armed) {
+  Future<bool> disarmRequest(Commit commit) async {
+    if (!commit.armed) {
       return true;
     }
-    if (pushRequest.disarmRequirementsLevel == 0) {
-      pushRequest.disarm();
+    if (commit.disarmRequirementsLevel == 0) {
+      commit.disarm();
       return true;
     }
-    if (pushRequest.disarmRequirementsLevel == 1) {
+    if (commit.disarmRequirementsLevel == 1) {
       // TODO: Give the user details about operation
       bool confirmed = (await MessageBus.poseInquiry(
         CoreInquiry(
             type: InquiryType.confirmation,
             title: 'Confirm Action',
-            content: pushRequest.confirmationMessage
+            content: commit.confirmationMessage
         ))).userConfirmed!;
 
       if (confirmed) {
-        pushRequest.disarm();
+        commit.disarm();
         return true;
       } else {
         return false;

@@ -50,6 +50,7 @@ class ActivityDependent extends CoreObject implements Dependent{
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     // TODO: implement purgeRef
   }
 }

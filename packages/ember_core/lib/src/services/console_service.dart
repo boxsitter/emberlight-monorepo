@@ -20,15 +20,12 @@ class ConsoleService extends GetxService {
       case 'clear':
         return CommandResult(log: '\x1B[2J\x1B[H');
 
-      // case 'addcamper':
-      //   return await addCamper(arguments);
-
       case 'importcsv':
         CommandResult commandResult = await importCsv();
         return commandResult;
 
-      // case 'deleteallcampers':
-      //   return await deleteAllCampers();
+      case 'deleteallcampers':
+        return await deleteAllCampers();
 
       default:
         return CommandResult(error: 'Command not found, type "help" for a list of commands');
@@ -49,9 +46,9 @@ class ConsoleService extends GetxService {
   // }
 
   Future<CommandResult> importCsv() async {
-    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    Commit commit = Commit(disarmRequirementsLevel: 0);
     await sessionRosterService.importFromCsv(
-      pushRequest: pushRequest,
+      commit: commit,
       firstNameHeader: 'First Name',
       lastNameHeader: 'Last Name',
       preferredNameHeader: 'Preferred Name',
@@ -59,22 +56,24 @@ class ConsoleService extends GetxService {
       ageHeader: 'Age',
       cabinHeader: 'Cabin',
     );
-    backend.commit(pushRequest);
+    backend.commit(commit);
     return CommandResult();
   }
 
 
-  // Future<CommandResult> deleteAllCampers() async {
-  //   await sessionRosterService.deleteAllCampersInSession();
-  //   return CommandResult(success: "All campers deleted.");
-  // }
+  Future<CommandResult> deleteAllCampers() async {
+    Commit commit = Commit(disarmRequirementsLevel: 1);
+    commit.addObjectsToDelete(await sessionRosterService.registeredCampers);
+    backend.commit(commit);
+    return CommandResult(success: "All campers deleted.");
+  }
 }
 
 class CommandResult {
   final String? log;
   final String? error;
   final String? success;
-  final PushRequest? pushRequest;
+  final Commit? request;
 
-  CommandResult({this.log, this.error, this.success, this.pushRequest});
+  CommandResult({this.log, this.error, this.success, this.request});
 }

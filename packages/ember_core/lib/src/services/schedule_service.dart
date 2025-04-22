@@ -14,7 +14,7 @@ class ScheduleService extends GetxService {
   //   AssignedMultiActivityBlock blockToCreate = AssignedMultiActivityBlock(name: name);
   //   Schedule schedule = await clientContextService.schedule;
   //   schedule.blockCmps.add(blockToCreate.id);
-  //   return PushRequest(disarmRequirementsLevel: 0, initialObjects: {blockToCreate, schedule});
+  //   return Request(disarmRequirementsLevel: 0, initialObjects: {blockToCreate, schedule});
   // }
   //
   // // Future<DeleteRequest> deleteAssignableActivityBlock(String blockToDeleteId) async {
@@ -27,7 +27,7 @@ class ScheduleService extends GetxService {
   // Future<void> createActivityType(String name, int capacity, String description) async {
   //   // TODO: Check with a query to make sure name is unique
   //   PrincipalActivity activityTypeToCreate = PrincipalActivity(name: name, capacity: capacity, description: description);
-  //   return PushRequest(disarmRequirementsLevel: 0, initialObjects: {activityTypeToCreate});
+  //   return Request(disarmRequirementsLevel: 0, initialObjects: {activityTypeToCreate});
   // }
 
   // Future<DeleteRequest> deleteActivityType(String id) async { //TODO: ensure that delete is called on every scheduled activity of this type, which involves removing it from campers activity map

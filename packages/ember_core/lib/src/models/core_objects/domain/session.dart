@@ -68,10 +68,9 @@ class Session extends CoreObject implements Domain, Elevated{
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     if (IdFunctions.getIdPart(id, 1) == 'camper') {
-      if(camperRefToPreferenceRef.remove(id) == null) {
-        print('unnecessary purge');
-      }
+      camperRefToPreferenceRef.remove(id);
     } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
       camperRefToPreferenceRef.removeWhere((key, value) => value == id);
     }

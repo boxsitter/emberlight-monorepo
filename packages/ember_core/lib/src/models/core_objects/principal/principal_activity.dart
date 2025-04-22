@@ -51,6 +51,7 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated{
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     print('unnecessary purge');
   }
 }

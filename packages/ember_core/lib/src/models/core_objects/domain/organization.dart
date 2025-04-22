@@ -26,6 +26,7 @@ class Organization extends CoreObject implements Domain, Elevated{
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     print('unnecessary purge');
     return;
   }

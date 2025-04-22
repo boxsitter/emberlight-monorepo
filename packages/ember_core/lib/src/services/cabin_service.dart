@@ -9,25 +9,24 @@ class CabinService extends GetxService {
   RequestService requestService = Get.find<RequestService>();
 
   Future<Set<CabinDependent>> get cabinDependents async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
-  Future<Set<PrincipalCabin>> get principalCabins async => await backend.getObjectsInCollection('branch_cabin', 'brn');
+  Future<Set<PrincipalCabin>> get principalCabins async => await backend.getObjectsInCollection('principal_cabin', 'brn');
 
-  Future<String?> getCabinDependentIdByName(String name, PushRequest pushRequest) async {
-    Set<CabinDependent> principalCabinsInRequest = pushRequest.getObjectsOfType();
-    String? principalId = pushRequest.queryField(principalCabinsInRequest, 'name', name);
+  Future<String?> getCabinDependentIdByName(String name, Commit commit) async {
+    String? principalId = commit.queryFieldByType(PrincipalCabin, 'name', name);
     if (principalId != null) {
-      return pushRequest.queryField(principalCabinsInRequest, 'principalPar', principalId);
+      return commit.queryFieldByType(CabinDependent, 'principalPar', principalId);
     }
 
     // TODO: The code for caching cabins in the push request is rough, clean it up
     principalId = await backend.queryField('principal_cabin', 'brn', 'name', name);
     String? output;
     if (principalId != null) {
-      pushRequest.addObject(await backend.getObject(principalId));
+      commit.addObjectToPush(await backend.getObject(principalId));
       output =  await backend.queryField('cabin_dependent', 'ses', 'principalPar', principalId);
     }
 
     if (output != null) {
-      pushRequest.addObject(await backend.getObject(output));
+      commit.addObjectToPush(await backend.getObject(output));
     }
 
     return output;
@@ -81,38 +80,38 @@ class CabinService extends GetxService {
     return stringSet;
   }
 
-  void createPrincipalCabin(PushRequest pushRequest, String name, int capacity) {
+  void createPrincipalCabin(Commit commit, String name, int capacity) {
     PrincipalCabin cabinToCreate = PrincipalCabin(
       name: name,
       capacity: capacity,
     );
-    pushRequest.addObject(cabinToCreate);
+    commit.addObjectToPush(cabinToCreate);
   }
 
   // Future<DeleteRequest> deleteBranchCabin() {
   //   // TODO: implement this
   // }
 
-  Future<void> registerCabinToSession(PushRequest pushRequest, PrincipalCabin principalCabin) async {
+  Future<void> registerCabinToSession(Commit commit, PrincipalCabin principalCabin) async {
     if ((await getRegisteredPrincipalCabinIds()).contains(principalCabin.id)) {
       print('This cabin is already registered to this session');
       return;
     }
     CabinDependent cabinToRegister = CabinDependent(principalPar: principalCabin.id);
-    pushRequest.addObject(cabinToRegister);
+    commit.addObjectToPush(cabinToRegister);
   }
 
-  Future<void> registerCabinToSessionFromId(PushRequest pushRequest, String principalCabinId) async {
-    PrincipalCabin principalCabin = await backend.getObject(principalCabinId);
-    await registerCabinToSession(pushRequest, principalCabin);
+  Future<void> registerCabinToSessionFromId(Commit commit, String principalCabinId) async {
+    PrincipalCabin principalCabin = commit.getObject(principalCabinId) ?? await backend.getObject(principalCabinId);
+    await registerCabinToSession(commit, principalCabin);
   }
 
   // Future<DeleteRequest> unregisterCabinDependent() {
   //   // TODO: implement this
   // }
 
-  Future<void> addCamperToCabin(PushRequest pushRequest, CabinDependent cabinDependent, Camper camperToAdd) async {
-    PrincipalCabin principalCabin = await backend.getObject(cabinDependent.principalPar);
+  Future<void> addCamperToCabin(Commit commit, CabinDependent cabinDependent, Camper camperToAdd) async {
+    PrincipalCabin principalCabin = commit.getObject(cabinDependent.principalPar) ?? await backend.getObject(cabinDependent.principalPar);
     if((cabinDependent.camperRefs.length + 1) > principalCabin.capacity) {
       //TODO: Over capacity conflict
       throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.name} because it will put it over capacity');
@@ -120,20 +119,20 @@ class CabinService extends GetxService {
       cabinDependent.camperRefs.add(camperToAdd.id);
       camperToAdd.cabinRef = cabinDependent.id;
       camperToAdd.cabinName = principalCabin.name;
-      pushRequest.addObject(cabinDependent);
-      pushRequest.addObject(camperToAdd);
+      commit.addObjectToPush(cabinDependent);
+      commit.addObjectToPush(camperToAdd);
     } else {
-      removeCamperFromCabin(pushRequest, cabinDependent, camperToAdd);
-      addCamperToCabin(pushRequest, cabinDependent, camperToAdd);
+      removeCamperFromCabin(commit, cabinDependent, camperToAdd);
+      addCamperToCabin(commit, cabinDependent, camperToAdd);
     }
   }
 
-  void removeCamperFromCabin(PushRequest pushRequest, CabinDependent cabinDependent, Camper camperToRemove) {
+  void removeCamperFromCabin(Commit commit, CabinDependent cabinDependent, Camper camperToRemove) {
     cabinDependent.camperRefs.remove(camperToRemove.id);
     camperToRemove.cabinRef = null;
     camperToRemove.cabinName = null;
-    pushRequest.addObject(cabinDependent);
-    pushRequest.addObject(camperToRemove);
+    commit.addObjectToPush(cabinDependent);
+    commit.addObjectToPush(camperToRemove);
   }
 
 

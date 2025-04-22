@@ -6,7 +6,7 @@ import '../../ember_core_backend.dart';
 class FrontendCommitService extends GetxService {
   BackendInterface backend = BackendManager.instance;
 
-  void commitPushRequest(PushRequest pushRequest) {
-    backend.commit(pushRequest);
+  void commitRequest(Commit commit) {
+    backend.commit(commit);
   }
 }

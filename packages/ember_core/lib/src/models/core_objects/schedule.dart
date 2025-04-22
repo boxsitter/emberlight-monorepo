@@ -46,6 +46,7 @@ class Schedule extends CoreObject {
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     principalActivityRefs.remove(id);
   }
 }

@@ -25,6 +25,6 @@ class CoreHelperFunctions {
 
   static void updateDocumentTimestamp(Map<String, dynamic> json) {
     // For "updatedAt", we store an ISO 8601 string
-    json['updatedAt'] = DateTime.now().toUtc().toIso8601String();
+    json['updatedAt'] = DateTime.now().toUtc();
   }
 }

@@ -49,6 +49,7 @@ class AssignedMultiActivityBlock extends CoreObject implements ScheduleBlock {
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     // TODO: implement purgeRef
   }
 

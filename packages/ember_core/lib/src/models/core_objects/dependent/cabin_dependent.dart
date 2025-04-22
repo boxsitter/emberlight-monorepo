@@ -29,13 +29,10 @@ class CabinDependent extends CoreObject implements Dependent{
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     if (IdFunctions.getIdPart(id, 1) == 'camper') {
-      if(camperRefs.remove(id) == false) { // TODO: remove this once the delete logic is bug free
-        print('unnecessary purge');
-      }
-      if(campersWithPreferences.remove(id) == null) {
-        print('unnecessary purge');
-      }
+      camperRefs.remove(id);
+      campersWithPreferences.remove(id);
     } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
       campersWithPreferences.removeWhere((key, value) => value == id);
     }

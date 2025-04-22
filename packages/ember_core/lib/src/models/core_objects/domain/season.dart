@@ -27,6 +27,7 @@ class Season extends CoreObject implements Domain{
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     print('unnecessary purge');
     return;
   }

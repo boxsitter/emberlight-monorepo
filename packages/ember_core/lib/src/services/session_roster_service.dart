@@ -20,7 +20,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
 
 
   Future<void> registerCamper({
-    required PushRequest pushRequest,
+    required Commit commit,
     required String firstName,
     required String lastName,
     String preferredName = '',
@@ -32,7 +32,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     String? cabinRef;
     // need to fetch cabin by name from the active cabins for the selected session
     if (cabinName.isNotEmpty) {
-      cabinRef = await cabinsService.getCabinDependentIdByName(cabinName, pushRequest);
+      cabinRef = await cabinsService.getCabinDependentIdByName(cabinName, commit);
     }
 
     // TODO: Error checking here, validate stuff
@@ -45,31 +45,31 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       note: note,
     );
 
-    initCamperPreference(pushRequest,camperToAdd);
+    initCamperPreference(commit,camperToAdd);
     print('Camper: ${camperToAdd.fullName} added');
-    pushRequest.addObject(camperToAdd);
+    commit.addObjectToPush(camperToAdd);
 
     if (cabinRef != null) {
-      CabinDependent cabinDependent = await backend.getObject(cabinRef);
-      await cabinsService.addCamperToCabin(pushRequest, cabinDependent, camperToAdd);
+      CabinDependent cabinDependent = commit.getObject(cabinRef) ?? await backend.getObject(cabinRef);
+      await cabinsService.addCamperToCabin(commit, cabinDependent, camperToAdd);
     }
   }
 
-  Future<void> initCamperPreference(PushRequest pushRequest, Camper camper) async {
+  Future<void> initCamperPreference(Commit commit, Camper camper) async {
     CamperPreference camperPreference = CamperPreference(camperRef: camper.id, camperName: camper.name);
     camper.camperPreferenceCmp = camperPreference.id;
-    Schedule schedule = pushRequest.getObjectOfType() ?? await clientContextService.schedule;
+    Schedule schedule = commit.getObjectOfType() ?? await clientContextService.schedule;
 
     for (PrincipalActivityId uniqueActivityTypeRef in schedule.principalActivityRefs) {
       camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
       camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }
-    Session session = pushRequest.getObjectOfType() ?? await clientContextService.session;
+    Session session = commit.getObjectOfType() ?? await clientContextService.session;
 
     session.camperRefToPreferenceRef[camper.id] = camperPreference.id;
-    pushRequest.addObject(schedule);
-    pushRequest.addObject(session);
-    pushRequest.addObject(camperPreference);
+    commit.addObjectToPush(schedule);
+    commit.addObjectToPush(session);
+    commit.addObjectToPush(camperPreference);
   }
 
   // Future<void> deleteCamper(String id) async{
@@ -102,7 +102,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   }
 
   Future<void> importFromCsv({
-    required PushRequest pushRequest,
+    required Commit commit,
     required String firstNameHeader,
     required String lastNameHeader,
     required String ageHeader,
@@ -152,7 +152,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
         // Check for duplicates against already registered AND newly added ones
         final Set<Camper> potentialDuplicates = {
           ...alreadyRegistered,
-          ...pushRequest.getObjectsOfType(),
+          ...commit.getObjectsOfType(),
         };
         final bool isDuplicate = await isCamperDuplicate(
           camperData['firstName'],
@@ -166,10 +166,10 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
           continue;
         }
 
-        // 6. Create Camper PushRequest and Update State
+        // 6. Create Camper Request and Update State
         try {
           await registerCamper(
-            pushRequest: pushRequest,
+            commit: commit,
             firstName: camperData['firstName'],
             lastName: camperData['lastName'],
             preferredName: camperData['preferredName'],

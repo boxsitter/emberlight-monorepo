@@ -69,17 +69,18 @@ class CamperPreference extends CoreObject {
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     if (IdFunctions.getIdPart(id, 1) == 'principal_activity') {
       if (preferencesRefs.containsKey(id)) {
         preferencesCompletedCount - 1;
       }
 
       if (preferencesRefs.remove(id) == null) {
-        print('unnecessary purge');
+        print('unnecessary purge of preference ref in $camperName');
       }
 
       if (preferenceWeightRefs.remove(id) == null) {
-        print('unnecessary purge');
+        print('unnecessary purge of preference weight ref in $camperName');
       }
 
       if (preferencesRefs.isEmpty) {

@@ -98,6 +98,7 @@ class Camper extends CoreObject {
 
   @override
   void purgeRef(String id) {
+    print('Purging $id from ${this.id}');
     // no need to handle principal cabin since the dependant will be in the delete chain anyway
     if (IdFunctions.getIdPart(id, 1) == 'cabin_dependent') {
       if (cabinRef == id) {
