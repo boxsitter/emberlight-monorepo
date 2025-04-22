@@ -21,7 +21,9 @@ class ActivityPreferencesController extends GetxController {
   final RxMap<CamperId, bool> camperIsCompleted = <CamperId, bool>{}.obs;
 
   CabinId? selectedCamperId;
-  final RxMap<ActivityDependentId, String> activityNames = <ActivityDependentId, String>{}.obs;
+  String? selectedCamperName;
+  final RxMap<PrincipalActivityId, String> activityNames = <PrincipalActivityId, String>{}.obs;
+  final RxList<ActivityDependentId> orderedActivityIds = <ActivityDependentId>[].obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -70,12 +72,103 @@ class ActivityPreferencesController extends GetxController {
   }
 
   Future<void> populateActivityMaps() async {
+    // Ensure state is ready before proceeding
     if (selectedCamperId == null) {
+      print('No camper selected, cannot populate activities.');
+      activityNames.clear();
+      orderedActivityIds.clear(); // Clear order too
+      isActivityDataLoaded.value = false;
       return;
     }
-    isActivityDataLoaded.value = false;
-    print('POPULATING ACTIVITY MAPS');
+    isActivityDataLoaded.value = false; // Trigger loading indicator
+    activityNames.clear(); // Clear previous data
+    orderedActivityIds.clear(); // Clear previous order
+    print('POPULATING ACTIVITY MAPS for camper: $selectedCamperId');
+
+    try {
+      // --- TODO: Replace with your actual data fetching logic ---
+      // Fetch activities WITH an order (e.g., default, previous ranking)
+      // Your fetch should ideally return List<ActivityObject> or List<MapEntry<ID, Name>>
+      final List<MapEntry<ActivityDependentId, String>> fetchedData = [
+        MapEntry('act-swimming-${selectedCamperId}', 'Swimming'), // Example IDs
+        MapEntry('act-archery-${selectedCamperId}', 'Archery'),
+        MapEntry('act-crafts-${selectedCamperId}', 'Crafts'),
+        MapEntry('act-hiking-${selectedCamperId}', 'Hiking'),
+      ];
+      // --- End Fetching Logic ---
+
+      final names = <ActivityDependentId, String>{};
+      final idsInOrder = <ActivityDependentId>[];
+      for (var entry in fetchedData) {
+        names[entry.key] = entry.value;
+        idsInOrder.add(entry.key);
+      }
+      activityNames.value = names;
+      orderedActivityIds.value = idsInOrder; // Update the reactive list
+
+    } catch (e) {
+      print("Error fetching activities: $e");
+      Get.snackbar("Error", "Could not load activities.");
+      // Ensure lists are cleared on error
+      activityNames.clear();
+      orderedActivityIds.clear();
+    } finally {
+      isActivityDataLoaded.value = true; // Set loading complete
+      print('Finished POPULATING ACTIVITY MAPS for camper: $selectedCamperId');
+    }
   }
+
+  // *** ADDED: Method to handle list reordering ***
+  void onReorderActivities(int oldIndex, int newIndex) {
+    // This logic correctly handles moving items up or down in the list
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    // Remove the item ID from the old position
+    final ActivityDependentId movedItemId = orderedActivityIds.removeAt(oldIndex);
+    // Insert the item ID into the new position
+    orderedActivityIds.insert(newIndex, movedItemId);
+
+    print("Reordered activities: ${orderedActivityIds.toList()}");
+    // You might want to trigger a save state or indicate unsaved changes here
+  }
+
+  // *** ADDED: Method to save the current ranking ***
+  Future<void> saveActivityRanking() async {
+    if (selectedCamperId == null) {
+      Get.snackbar('Error', 'No camper selected.');
+      return;
+    }
+    if (orderedActivityIds.isEmpty) {
+      Get.snackbar('Info', 'No activities to rank.');
+      return;
+    }
+
+    print("Saving activity ranking for $selectedCamperId:");
+    final currentRanking = orderedActivityIds.toList(); // Get current order
+    print("Order: $currentRanking");
+
+    // --- TODO: Implement actual saving logic to your backend/service ---
+    try {
+      // Show loading indicator? Maybe disable save button?
+      // await activityService.saveRanking(selectedCamperId!, currentRanking);
+      await Future.delayed(const Duration(seconds: 1)); // Simulate save
+      Get.snackbar('Success', 'Activity ranking saved!');
+      // Optionally update completion status and refresh relevant parts
+      // camperIsCompleted[selectedCamperId!] = true;
+      // camperIsCompleted.refresh();
+    } catch (e) {
+      print("Error saving ranking: $e");
+      Get.snackbar('Error', 'Failed to save ranking: $e');
+    } finally {
+      // Hide loading indicator? Re-enable save button?
+    }
+    // --- End Saving Logic ---
+  }
+
+
+
+
 
   void navigateToCampers(String cabinId, String cabinName) {
     selectedCabinId = cabinId;
@@ -83,10 +176,20 @@ class ActivityPreferencesController extends GetxController {
     Get.toNamed(BessRoutes.activityPreferencesCampers);
   }
 
-  // void navigateToSelection(String camperId) {
-  //   selectedCabinId = cabinId;
-  //   selectedCabinName = cabinName;
-  //   Get.toNamed(BessRoutes.activityPreferencesCampers);
-  // }
+  void navigateToSelection(String camperId, String camperName) {
+    selectedCamperId = camperId;
+    selectedCamperName = camperName;
+    Get.toNamed(BessRoutes.activityPreferencesSelector);
+  }
+
+  // selectCamper method (ensure it calls populateActivityMaps)
+  void selectCamper(String camperId, String camperName) {
+    selectedCamperId = camperId;
+    selectedCamperName = camperName;
+    saveActivityRanking();
+    print('Selected Camper: $selectedCamperName ($selectedCamperId)');
+    populateActivityMaps(); // Fetch activities for the new camper
+    update(); // Trigger GetBuilder updates (for title etc.)
+  }
 
 }

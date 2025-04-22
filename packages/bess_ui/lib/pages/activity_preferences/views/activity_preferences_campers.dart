@@ -64,7 +64,7 @@ class ActivityPreferencesCampersDesktop extends StatelessWidget {
                     title: name,
                     height: 70,
                     width: 200,
-                    onTap: () => print('Navigate to next page!'),
+                    onTap: () => controller.navigateToSelection(camperId, name),
                   );
                 }).toList(),
               ),

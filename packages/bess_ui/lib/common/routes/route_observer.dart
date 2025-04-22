@@ -43,6 +43,9 @@ class RouteObservers extends GetObserver {
     if (topRoute.settings.name == BessRoutes.activityPreferencesCampers && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCampers) {
       activityPreferencesController.populateCamperMaps();
     }
+    if (topRoute.settings.name == BessRoutes.activityPreferencesSelector && previousTopRoute?.settings.name != BessRoutes.activityPreferencesSelector) {
+      activityPreferencesController.populateActivityMaps();
+    }
 
     SessionManagerController sessionManagerController = Get.find<SessionManagerController>();
     if (topRoute.settings.name == BessRoutes.sessionManager && previousTopRoute?.settings.name != BessRoutes.sessionManager) {

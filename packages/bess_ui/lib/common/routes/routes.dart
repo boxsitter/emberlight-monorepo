@@ -2,6 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
 import '../../pages/activity_preferences/views/activity_preferences_campers.dart';
+import '../../pages/activity_preferences/views/activity_preferences_selector.dart';
 import '../../pages/activity_rosters/activity_rosters.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
@@ -27,6 +28,7 @@ class BessRoutes {
 
   static const activityPreferencesCabins = '/activity-preferences-cabins';
   static const activityPreferencesCampers = '/activity-preferences-campers';
+  static const activityPreferencesSelector = '/activity-preferences-selector';
 
   static List sideMenuItems = [
     console,
@@ -56,6 +58,7 @@ class BessAppRoute {
 
     GetPage(name: BessRoutes.activityPreferencesCabins, page: () => const ActivityPreferencesCabins()),
     GetPage(name: BessRoutes.activityPreferencesCampers, page: () => const ActivityPreferencesCampers()),
+    GetPage(name: BessRoutes.activityPreferencesSelector, page: () => const ActivityPreferencesSelector()),
 
     GetPage(name: BessRoutes.login, page: () => const LoginScreen()),
     GetPage(name: BessRoutes.forgotPassword, page: () => const ForgotPasswordScreen()),

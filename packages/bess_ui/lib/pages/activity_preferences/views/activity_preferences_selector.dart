@@ -1,22 +1,26 @@
+import 'package:bessie/common/constants/colors.dart';
+import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
+import '../widgets/small_card_button.dart';
 
-class ActivityPreferencesCampers extends StatelessWidget {
-  const ActivityPreferencesCampers({super.key});
+class ActivityPreferencesSelector extends StatelessWidget {
+  const ActivityPreferencesSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const BessSiteTemplate(desktop: ActivityPreferencesCampersDesktop());
+    return const BessSiteTemplate(desktop: ActivityPreferencesSelectorDesktop());
   }
 }
 
-class ActivityPreferencesCampersDesktop extends StatelessWidget {
-  const ActivityPreferencesCampersDesktop({super.key});
+class ActivityPreferencesSelectorDesktop extends StatelessWidget {
+  const ActivityPreferencesSelectorDesktop({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,40 +37,137 @@ class ActivityPreferencesCampersDesktop extends StatelessWidget {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Obx(() {
-            if (!controller.isCamperDataLoaded.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return GetBuilder<ActivityPreferencesController>(
+      builder: (controller) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Ranking activities for ${controller.selectedCamperName}',
+              style: BessTextStyles.lightTitle,
+              overflow: TextOverflow.clip,
+              maxLines: 1,
+            ),
 
-            return Placeholder();
-          }),
-        ),
+            const SizedBox(height: BessSizes.spaceBtwItems),
 
-        const SizedBox(height: BessSizes.spaceBtwItems),
+            Obx(() {
+              if (!controller.isCamperDataLoaded.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-        Text(
-          'Ranking activities for ${controller.selectedCabinName}',
-          style: BessTextStyles.lightTitle,
-          overflow: TextOverflow.clip,
-          maxLines: 1,
-        ),
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: controller.camperNames.keys.map((camperId) {
+                    final name = controller.camperNames[camperId] ?? 'Unknown';
+                    final bool isSelected = controller.selectedCamperId == camperId;
 
-        const SizedBox(height: BessSizes.spaceBtwSections),
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: BessSizes.spaceBtwItems, horizontal: BessSizes.spaceBtwItems / 2),
+                      child: SmallCardButton(
+                        title: name,
+                        height: 20,
+                        width: 120,
+                        isSelected: isSelected,
+                        onTap: () => controller.selectCamper(camperId, name),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              );
+            }),
 
-        Expanded(
-          child: Obx(() {
-            if (!controller.isCamperDataLoaded.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
+            const SizedBox(height: BessSizes.spaceBtwItems), // Space before activity list
 
-            return Placeholder();
-          }),
-        ),
-      ],
+            // --- Section for Activity Ranking ---
+            // This part updates based on the selected camper
+            Expanded( // Use Expanded if this list should fill remaining space
+              child: Obx(() { // Use Obx to react to activity loading state/data
+                if (controller.selectedCamperId == null) {
+                  return const Center(child: Text('Select a camper above.'));
+                }
+                if (!controller.isActivityDataLoaded.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                // Use orderedActivityIds for checking emptiness now
+                if (controller.orderedActivityIds.isEmpty) {
+                  return const Center(child: Text('No activities found for this camper.'));
+                }
+
+                // Example:
+                return Column( // Column to hold the list and the save button
+                  children: [
+                    Expanded( // Let the list take available space
+                      child: SizedBox(
+                        width: 400,
+                        child: ReorderableListView.builder(
+                          buildDefaultDragHandles: false,
+                          shrinkWrap: true,
+
+
+                          itemCount: controller.orderedActivityIds.length,
+
+                          itemBuilder: (context, index) {
+                            final activityId = controller.orderedActivityIds[index];
+                            // Lookup name from the map
+                            final activityName = controller.activityNames[activityId] ?? 'Unknown Activity';
+
+
+                            // *** Each item MUST have a unique Key ***
+                            return BessRoundedContainer(
+                              key: ValueKey(activityId),
+                              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              width: 400,
+                              height: 40,
+                              borderThickness: 2,
+                              showBorder: true,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text( // Display rank number
+                                    '#${index + 1}    $activityName',
+                                    style: BessTextStyles.standard,
+                                  ),
+
+                                  ReorderableDragStartListener(
+                                    index: index, // Required for the listener
+                                    child: const Tooltip(
+                                      mouseCursor: SystemMouseCursors.grab,
+                                      message: 'Drag to reorder',
+                                      child: Icon(LucideIcons.gripVertical),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            );
+                          },
+                          // *** Callback when item is reordered ***
+                          onReorder: controller.onReorderActivities,
+                          // Optional: Improve appearance while dragging
+                          proxyDecorator: (Widget child, int index, Animation<double> animation) {
+                            return Material( // Ensures elevation shadow is drawn correctly
+                              color: Colors.transparent, // Keep card visuals during drag
+                              child: child,
+                            );
+                          },
+                          footer: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton(
+                              onPressed: controller.saveActivityRanking,
+                              child: const Text('Save Ranking'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ],
+        );
+      }
     );
   }
 }

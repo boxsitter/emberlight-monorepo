@@ -1,25 +1,26 @@
-import 'package:bessie/common/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/constants/colors.dart';
+import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
 
-class CardButton extends StatelessWidget {
-  const CardButton({
+class SmallCardButton extends StatelessWidget {
+  const SmallCardButton({
     super.key,
     required this.title,
-    this.subtitle,
     required this.height,
     this.width,
     required this.onTap,
+    this.isSelected = false,
   });
 
 
   final String title;
-  final String? subtitle;
   final double? height;
   final double? width;
   final Function()? onTap;
+  final bool isSelected;
 
 
 
@@ -31,29 +32,23 @@ class CardButton extends StatelessWidget {
         color: Colors.transparent,
         child: BessRoundedContainer(
           showBorder: true,
-          borderThickness: 2,
+          borderThickness: isSelected ? 0 : 1,
           height: height,
           width: width,
           clipContent: false,
           onTap: onTap,
           showShadow: true,
+          backgroundColor: isSelected ? BessColors.primary : null,
           child: Column(
-            crossAxisAlignment: subtitle == null ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 title,
-                style: BessTextStyles.boldCardTitle,
+                style: isSelected ? BessTextStyles.standardInverted : BessTextStyles.standard,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              if (subtitle != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  subtitle!,
-                  style: BessTextStyles.largerLabel,
-                ),
-              ],
             ],
           ),
         ),
