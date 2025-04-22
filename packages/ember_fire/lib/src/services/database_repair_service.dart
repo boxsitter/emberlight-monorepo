@@ -15,7 +15,7 @@ class DatabaseRepairService extends GetxService{
   static const Set<String> specialFields = {'name', 'firstName'};
   static const double specialFieldPresenceWeight = 0.15;
   static const double specialValueEqualityWeight = 0.40;
-  static const Set<String> alwaysIgnore = {'id', 'createdAt', 'updatedAt', 'principalPar'};
+  static const Set<String> alwaysIgnore = {'id', 'updatedAt'};
 
 
   PullRepository pullRepo = Get.find<PullRepository>();
@@ -40,7 +40,7 @@ class DatabaseRepairService extends GetxService{
   }
 
   Future<void> mergeObjectsWithDatabase({
-    required PushRequest pushRequest,
+    required Commit commit,
     required Set<CoreObject> objects,
     required bool prioritizeAFields,
     required bool prioritizeAValues,
@@ -49,7 +49,7 @@ class DatabaseRepairService extends GetxService{
   }) async {
     for (CoreObject object in objects) {
       await mergeObjectWithDatabase(
-        pushRequest: pushRequest,
+        commit: commit,
         objectToMerge: object,
         prioritizeAFields: prioritizeAFields,
         prioritizeAValues: prioritizeAValues,
@@ -60,7 +60,7 @@ class DatabaseRepairService extends GetxService{
   }
 
   Future<void> mergeObjectWithDatabase({
-    required PushRequest pushRequest,
+    required Commit commit,
     required CoreObject objectToMerge,
     required bool prioritizeAFields,
     required bool prioritizeAValues,
@@ -83,7 +83,7 @@ class DatabaseRepairService extends GetxService{
     }
 
     if (jsonB == null) {
-      pushRequest.addObject(CoreObject.fromJson(jsonA));
+      commit.addObjectToPush(CoreObject.fromJson(jsonA));
       return;
     }
 
@@ -143,7 +143,7 @@ class DatabaseRepairService extends GetxService{
     mergedJson['id'] = (jsonB != null && jsonB.containsKey('id')) ? jsonB['id'] : idA;
 
     CoreObject mergedObject = CoreObject.fromJson(mergedJson);
-    pushRequest.addObject(mergedObject);
+    commit.addObjectToPush(mergedObject);
   }
 
   bool _isEmptyValue(dynamic value) {

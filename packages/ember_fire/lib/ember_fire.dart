@@ -2,11 +2,10 @@ library;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_fire/src/repositories/delete_repository.dart';
 import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:ember_fire/src/repositories/live_data_repository.dart';
 import 'package:ember_fire/src/repositories/pull_repository.dart';
-import 'package:ember_fire/src/repositories/push_repository.dart';
+import 'package:ember_fire/src/repositories/commit_repository.dart';
 import 'package:ember_fire/src/services/database_repair_service.dart';
 import 'package:ember_fire/src/services/path_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,9 +18,8 @@ const _backendDescription = 'Firebase backend for EmberCore.';
 
 class EmberFire implements BackendInterface {
   late final PullRepository pullRepo;
-  late final PushRepository pushRepo;
+  late final CommitRepository commitRepo;
   late final LiveDataRepository liveDataRepo;
-  late final DeleteRepository deleteRepo;
   late final DatabaseRepairService databaseRepairService;
 
   final bool isReleaseMode;
@@ -46,8 +44,7 @@ class EmberFire implements BackendInterface {
 
   @override
   void initLate() {
-    pushRepo = Get.put(PushRepository());
-    deleteRepo = Get.put(DeleteRepository());
+    commitRepo = Get.put(CommitRepository());
     //Get.put(DeletionService);
   }
 
@@ -59,8 +56,8 @@ class EmberFire implements BackendInterface {
   String get backendName => _backendDescription;
 
   @override
-  Future<void> commit(PushRequest pushRequest) async {
-    pushRepo.commit(pushRequest);
+  Future<void> commit(Commit request) async {
+    commitRepo.commit(request);
   }
 
   @override
@@ -118,8 +115,8 @@ class EmberFire implements BackendInterface {
   }
 
   @override
-  Future<void> mergeObjectsWithDatabase({required PushRequest pushRequest, required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) async {
-    await databaseRepairService.mergeObjectsWithDatabase(pushRequest: pushRequest, objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
+  Future<void> mergeObjectsWithDatabase({required Commit commit, required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) async {
+    await databaseRepairService.mergeObjectsWithDatabase(commit: commit, objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
   }
 
   @override
