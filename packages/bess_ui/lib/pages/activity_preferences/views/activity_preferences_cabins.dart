@@ -56,7 +56,7 @@ class ActivityPreferencesCabinsDesktop extends StatelessWidget {
                     subtitle: '$preferencesCount/$count campers completed',
                     height: 90,
                     width: 250,
-                    onTap: () => controller.navigateToCampers(cabinId, name),
+                    onTap: () => controller.navigateToSelection(cabinId, name ),
                   );
                 }).toList(),
               ),
@@ -111,7 +111,7 @@ class ActivityPreferencesCabinsMobile extends StatelessWidget {
                       subtitle: '$preferencesCount/$count campers completed',
                       height: 90,
                       width: double.infinity,
-                      onTap: () => controller.navigateToCampers(cabinId, name),
+                      onTap: () => controller.navigateToSelection(cabinId, name ),
                     );
                   }).toList(),
                 ),

@@ -24,9 +24,11 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ActivityPreferencesController controller = Get.find<ActivityPreferencesController>();
+    final ActivityPreferencesController controller = Get.find<
+        ActivityPreferencesController>();
 
-    if (controller.selectedCabinName == null || controller.selectedCabinId == null) {
+    if (controller.selectedCabinName == null ||
+        controller.selectedCabinId == null) {
       // Show an error widget instead of crashing
       return const Center(
         child: Text(
@@ -39,32 +41,36 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
     return GetBuilder<ActivityPreferencesController>(
       builder: (controller) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Ranking activities for ${controller.selectedCamperName}',
-              style: BessTextStyles.lightTitle,
-              overflow: TextOverflow.clip,
-              maxLines: 1,
-            ),
+        return Obx(() {
+          if (!controller.isCamperDataLoaded.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            const SizedBox(height: BessSizes.spaceBtwItems),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Ranking activities for ${controller.selectedCamperName}',
+                style: BessTextStyles.lightTitle,
+                overflow: TextOverflow.clip,
+                maxLines: 1,
+              ),
 
-            Obx(() {
-              if (!controller.isCamperDataLoaded.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
+              const SizedBox(height: BessSizes.spaceBtwItems),
 
-              return SingleChildScrollView(
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: controller.camperNames.keys.map((camperId) {
-                    final name = controller.camperNames[camperId] ?? 'Unknown';
-                    final bool isSelected = controller.selectedCamperId == camperId;
+                    final name = controller.camperNames[camperId] ??
+                        'Unknown';
+                    final bool isSelected = controller.selectedCamperId ==
+                        camperId;
 
                     return Padding(
-                      padding: EdgeInsets.symmetric(vertical: BessSizes.spaceBtwItems, horizontal: BessSizes.spaceBtwItems / 2),
+                      padding: EdgeInsets.symmetric(
+                          vertical: BessSizes.spaceBtwItems,
+                          horizontal: BessSizes.spaceBtwItems / 2),
                       child: SmallCardButton(
                         title: name,
                         height: 20,
@@ -75,99 +81,111 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-              );
-            }),
+              ),
 
-            const SizedBox(height: BessSizes.spaceBtwItems), // Space before activity list
+              const SizedBox(height: BessSizes.spaceBtwItems),
+              // Space before activity list
 
-            // --- Section for Activity Ranking ---
-            // This part updates based on the selected camper
-            Expanded( // Use Expanded if this list should fill remaining space
-              child: Obx(() { // Use Obx to react to activity loading state/data
-                if (controller.selectedCamperId == null) {
-                  return const Center(child: Text('Select a camper above.'));
-                }
-                if (!controller.isActivityDataLoaded.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                // Use orderedActivityIds for checking emptiness now
-                if (controller.orderedActivityIds.isEmpty) {
-                  return const Center(child: Text('No activities found for this camper.'));
-                }
+              // --- Section for Activity Ranking ---
+              // This part updates based on the selected camper
+              Expanded( // Use Expanded if this list should fill remaining space
+                child: Obx(() { // Use Obx to react to activity loading state/data
+                  if (controller.selectedCamperId == null) {
+                    return const Center(child: Text(
+                        'Select a camper above.'));
+                  }
+                  if (!controller.isActivityDataLoaded.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  // Use orderedActivityIds for checking emptiness now
+                  if (controller.orderedActivityIds.isEmpty) {
+                    return const Center(child: Text(
+                        'No activities found for this camper.'));
+                  }
 
-                // Example:
-                return Column( // Column to hold the list and the save button
-                  children: [
-                    Expanded( // Let the list take available space
-                      child: SizedBox(
-                        width: 400,
-                        child: ReorderableListView.builder(
-                          buildDefaultDragHandles: false,
-                          shrinkWrap: true,
-
-
-                          itemCount: controller.orderedActivityIds.length,
-
-                          itemBuilder: (context, index) {
-                            final activityId = controller.orderedActivityIds[index];
-                            // Lookup name from the map
-                            final activityName = controller.activityNames[activityId] ?? 'Unknown Activity';
+                  // Example:
+                  return Column( // Column to hold the list and the save button
+                    children: [
+                      Expanded( // Let the list take available space
+                        child: SizedBox(
+                          width: 400,
+                          child: ReorderableListView.builder(
+                            buildDefaultDragHandles: false,
+                            shrinkWrap: true,
 
 
-                            // *** Each item MUST have a unique Key ***
-                            return BessRoundedContainer(
-                              key: ValueKey(activityId),
-                              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              width: 400,
-                              height: 40,
-                              borderThickness: 2,
-                              showBorder: true,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text( // Display rank number
-                                    '#${index + 1}    $activityName',
-                                    style: BessTextStyles.standard,
-                                  ),
+                            itemCount: controller.orderedActivityIds.length,
 
-                                  ReorderableDragStartListener(
-                                    index: index, // Required for the listener
-                                    child: const Tooltip(
-                                      mouseCursor: SystemMouseCursors.grab,
-                                      message: 'Drag to reorder',
-                                      child: Icon(LucideIcons.gripVertical),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            );
-                          },
-                          // *** Callback when item is reordered ***
-                          onReorder: controller.onReorderActivities,
-                          // Optional: Improve appearance while dragging
-                          proxyDecorator: (Widget child, int index, Animation<double> animation) {
-                            return Material( // Ensures elevation shadow is drawn correctly
-                              color: Colors.transparent, // Keep card visuals during drag
-                              child: child,
-                            );
-                          },
-                          footer: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton(
-                              onPressed: controller.saveActivityRanking,
-                              child: const Text('Save Ranking'),
+                            itemBuilder: (context, index) {
+                              final activityId = controller
+                                  .orderedActivityIds[index];
+                              // Lookup name from the map
+                              final activityName = controller
+                                  .activityNames[activityId] ??
+                                  'Unknown Activity';
+
+
+                              // *** Each item MUST have a unique Key ***
+                              return BessRoundedContainer(
+                                  key: ValueKey(activityId),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  width: 400,
+                                  height: 40,
+                                  borderThickness: 2,
+                                  showBorder: true,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceBetween,
+                                    children: [
+                                      Text( // Display rank number
+                                        '#${index + 1}    $activityName',
+                                        style: BessTextStyles.standard,
+                                      ),
+
+                                      ReorderableDragStartListener(
+                                        index: index,
+                                        // Required for the listener
+                                        child: const Tooltip(
+                                          mouseCursor: SystemMouseCursors
+                                              .grab,
+                                          message: 'Drag to reorder',
+                                          child: Icon(
+                                              LucideIcons.gripVertical),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              );
+                            },
+                            // *** Callback when item is reordered ***
+                            onReorder: controller.onReorderActivities,
+                            // Optional: Improve appearance while dragging
+                            proxyDecorator: (Widget child, int index,
+                                Animation<double> animation) {
+                              return Material( // Ensures elevation shadow is drawn correctly
+                                color: Colors.transparent,
+                                // Keep card visuals during drag
+                                child: child,
+                              );
+                            },
+                            footer: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ElevatedButton(
+                                onPressed: controller.saveActivityRanking,
+                                child: const Text('Save Ranking'),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              }),
-            ),
-          ],
-        );
-      }
-    );
+                    ],
+                  );
+                }),
+              ),
+            ],
+          );
+        });
+      });
   }
 }

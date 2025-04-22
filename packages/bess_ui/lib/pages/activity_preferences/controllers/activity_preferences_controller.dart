@@ -68,6 +68,8 @@ class ActivityPreferencesController extends GetxController {
 
     camperNames.value = names;
     camperIsCompleted.value = completed;
+    selectedCamperId = camperNames.keys.first;
+    selectedCamperName = camperNames[selectedCamperId];
     isCamperDataLoaded.value = true;
   }
 
@@ -166,19 +168,18 @@ class ActivityPreferencesController extends GetxController {
     // --- End Saving Logic ---
   }
 
-
-
-
-
   void navigateToCampers(String cabinId, String cabinName) {
     selectedCabinId = cabinId;
     selectedCabinName = cabinName;
     Get.toNamed(BessRoutes.activityPreferencesCampers);
   }
 
-  void navigateToSelection(String camperId, String camperName) {
-    selectedCamperId = camperId;
-    selectedCamperName = camperName;
+  Future<void> navigateToSelection(String cabinId, String cabinName) async {
+    selectedCabinId = cabinId;
+    selectedCabinName = cabinName;
+    populateCamperMaps();
+    selectedCamperName = '';
+    selectedCamperId = '';
     Get.toNamed(BessRoutes.activityPreferencesSelector);
   }
 
