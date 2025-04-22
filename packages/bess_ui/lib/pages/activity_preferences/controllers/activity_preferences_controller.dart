@@ -22,8 +22,9 @@ class ActivityPreferencesController extends GetxController {
 
   CabinId? selectedCamperId;
   String? selectedCamperName;
+  int? uniqueActivityCount;
   final RxMap<PrincipalActivityId, String> activityNames = <PrincipalActivityId, String>{}.obs;
-  final RxList<ActivityDependentId> orderedActivityIds = <ActivityDependentId>[].obs;
+  final RxList<PrincipalActivityId> orderedActivityIds = <PrincipalActivityId>[].obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -97,7 +98,6 @@ class ActivityPreferencesController extends GetxController {
         MapEntry('act-crafts-${selectedCamperId}', 'Crafts'),
         MapEntry('act-hiking-${selectedCamperId}', 'Hiking'),
       ];
-      // --- End Fetching Logic ---
 
       final names = <ActivityDependentId, String>{};
       final idsInOrder = <ActivityDependentId>[];
@@ -120,51 +120,35 @@ class ActivityPreferencesController extends GetxController {
     }
   }
 
-  // *** ADDED: Method to handle list reordering ***
   void onReorderActivities(int oldIndex, int newIndex) {
-    // This logic correctly handles moving items up or down in the list
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
-    // Remove the item ID from the old position
     final ActivityDependentId movedItemId = orderedActivityIds.removeAt(oldIndex);
-    // Insert the item ID into the new position
     orderedActivityIds.insert(newIndex, movedItemId);
-
-    print("Reordered activities: ${orderedActivityIds.toList()}");
-    // You might want to trigger a save state or indicate unsaved changes here
   }
 
-  // *** ADDED: Method to save the current ranking ***
-  Future<void> saveActivityRanking() async {
-    if (selectedCamperId == null) {
-      Get.snackbar('Error', 'No camper selected.');
-      return;
-    }
-    if (orderedActivityIds.isEmpty) {
-      Get.snackbar('Info', 'No activities to rank.');
-      return;
-    }
+    Future<void> saveActivityRanking() async {
+      if (selectedCamperId == null) {
+        throw ArgumentError('No camper selected.');
+      }
+      if (orderedActivityIds.isEmpty) {
+        throw ArgumentError('No activities to rank.');
+      }
 
-    print("Saving activity ranking for $selectedCamperId:");
-    final currentRanking = orderedActivityIds.toList(); // Get current order
-    print("Order: $currentRanking");
+      print("Saving activity ranking for $selectedCamperId:");
+      final currentRanking = orderedActivityIds.toList();
+      print("Order: $currentRanking");
 
-    // --- TODO: Implement actual saving logic to your backend/service ---
-    try {
-      // Show loading indicator? Maybe disable save button?
-      // await activityService.saveRanking(selectedCamperId!, currentRanking);
-      await Future.delayed(const Duration(seconds: 1)); // Simulate save
-      Get.snackbar('Success', 'Activity ranking saved!');
-      // Optionally update completion status and refresh relevant parts
-      // camperIsCompleted[selectedCamperId!] = true;
-      // camperIsCompleted.refresh();
-    } catch (e) {
-      print("Error saving ranking: $e");
-      Get.snackbar('Error', 'Failed to save ranking: $e');
-    } finally {
-      // Hide loading indicator? Re-enable save button?
-    }
+      // --- TODO: Implement actual saving logic to your backend/service ---
+      try {
+        // Show loading indicator? Maybe disable save button?
+        // await activityService.saveRanking(selectedCamperId!, currentRanking);
+      } catch (e) {
+        print("Error saving ranking: $e");
+      } finally {
+        // Hide loading indicator? Re-enable save button?
+      }
     // --- End Saving Logic ---
   }
 

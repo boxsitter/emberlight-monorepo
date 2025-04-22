@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:bessie/common/widgets/popups/confirmation.dart';
+import 'package:bessie/common/widgets/popups/depreciated.dart';
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
@@ -29,7 +29,7 @@ class MessageListener extends GetxService {
   }
 
   void _handleInquiry(CoreInquiry inquiry) async {
-    bool confirmed = await showConfirmationDialog(inquiry);
+    bool confirmed = await depreciated(inquiry);
     respondToConfirmationInquiry(inquiry, confirmed);
   }
 

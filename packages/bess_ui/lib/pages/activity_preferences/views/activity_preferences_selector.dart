@@ -147,11 +147,9 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                                         index: index,
                                         // Required for the listener
                                         child: const Tooltip(
-                                          mouseCursor: SystemMouseCursors
-                                              .grab,
+                                          mouseCursor: SystemMouseCursors.grab,
                                           message: 'Drag to reorder',
-                                          child: Icon(
-                                              LucideIcons.gripVertical),
+                                          child: Icon(LucideIcons.gripVertical),
                                         ),
                                       ),
                                     ],
@@ -169,11 +167,17 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                                 child: child,
                               );
                             },
+
+                            header: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text('Choice Activities', style: BessTextStyles.boldCardTitle),
+                              ),
+
                             footer: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: ElevatedButton(
                                 onPressed: controller.saveActivityRanking,
-                                child: const Text('Save Ranking'),
+                                child: Text('Save Ranking', style: BessTextStyles.standardInverted),
                               ),
                             ),
                           ),
