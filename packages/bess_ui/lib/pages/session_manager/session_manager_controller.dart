@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:bessie/common/utils/helpers/helper_functions.dart';
+import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
@@ -48,23 +50,23 @@ class SessionManagerController extends GetxController {
 
   Future<void> commitSelection() async {
     Set<String> registeredPrinCabinIds = await cabinsService.getRegisteredPrincipalCabinIds();
-    PushRequest pushRequest = PushRequest(disarmRequirementsLevel: 0);
+    Commit commit = Commit(disarmRequirementsLevel: 0);
 
     for (String selectedCabinPrinId in selectedCabinPrinIds) {
       if (!registeredPrinCabinIds.contains(selectedCabinPrinId)) {
-        await cabinsService.registerCabinToSessionFromId(pushRequest, selectedCabinPrinId);
+        await cabinsService.registerCabinToSessionFromId(commit, selectedCabinPrinId);
       }
     }
 
     // for each current registered cabin prin id
     for (String registeredPrinCabinId in registeredPrinCabinIds) {
       if (!selectedCabinPrinIds.contains(registeredPrinCabinId)) {
-        // deregister the dependent cabin associated with this principal
-        print('Deregister: $registeredPrinCabinId');
+        final Map<String, String> cabinPrincipalIdsToDependentIds = BessHelperFunctions.transposeMap(await cabinsService.getCabinDependentIdsToPrincipalIds());
+        commit.addObjectToDelete(commit.getObject(cabinPrincipalIdsToDependentIds[registeredPrinCabinId]) ?? await BackendManager.instance.getObject(cabinPrincipalIdsToDependentIds[registeredPrinCabinId]!));
       }
     }
 
-    commitService.commitPushRequest(pushRequest);
+    commitService.commitRequest(commit);
   }
 
 // Add any other methods needed, like saving the state

@@ -2,6 +2,8 @@ import 'package:ember_core/ember_core_frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../styles/text_styles.dart';
+
 Future<bool> showConfirmationDialog(CoreInquiry inquiry) async {
   if (inquiry.type != InquiryType.confirmation) {
     throw ArgumentError('Inquiry must be of type "confirmation"');
@@ -16,9 +18,9 @@ Future<bool> showConfirmationDialog(CoreInquiry inquiry) async {
           onPressed: () => Get.back(result: false), // Return false on cancel
           child: const Text('Cancel'),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: () => Get.back(result: true), // Return true on confirm
-          child: const Text('Confirm'),
+          child: Text('Confirm'),
         ),
       ],
     ),
