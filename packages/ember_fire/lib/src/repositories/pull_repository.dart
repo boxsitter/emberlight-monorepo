@@ -329,15 +329,15 @@ class PullRepository {
 
 
   /// Queries for the first active document in the collection (specified by [collectionName] and [domain]).
-  /// An active document is defined as one with a 'startDate' less than or equal to the current time
-  /// and an 'endDate' greater than or equal to the current time.
+  /// An active document is defined as one with a 'start' less than or equal to the current time
+  /// and an 'end' greater than or equal to the current time.
   /// Returns the ID of the active document, or throws an error if none is found.
   // TODO: Handle no active sessions/seasons!!!
   Future<String> getActiveObjectId(String collectionName, String domain) async {
     final now = DateTime.now().toUtc();
     final conditions = {
-      'startDate': {'isLessThanOrEqualTo': now},
-      'endDate': {'isGreaterThanOrEqualTo': now},
+      'start': {'isLessThanOrEqualTo': now},
+      'end': {'isGreaterThanOrEqualTo': now},
     };
 
     try {

@@ -14,7 +14,7 @@ class CommitRepository {
   final PullRepository pullRepo = Get.find<PullRepository>();
   final ClientContextService clientContextService = Get.find<ClientContextService>();
   final PathService pathService = Get.find<PathService>();
-  RequestService requestService = Get.find<RequestService>();
+  CommitService requestService = Get.find<CommitService>();
 
   get db => _db;
 
@@ -133,7 +133,7 @@ class CommitRepository {
       return false;
     }
 
-    if (!await requestService.disarmRequest(commit)) {
+    if (!await requestService.disarmCommit(commit)) {
       print('Operation cannot proceed');
       return false;
     }
