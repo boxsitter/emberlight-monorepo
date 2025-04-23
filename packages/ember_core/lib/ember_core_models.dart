@@ -23,11 +23,10 @@ export 'src/models/core_objects/principal/principal_activity.dart';
 export 'src/models/core_objects/principal/principal_cabin.dart';
 
 
-export 'src/models/core_objects/schedule_block/assigned_multi_activity_block.dart';
+export 'src/models/core_objects/schedule_block/ama_block.dart';
 export 'src/models/core_objects/camper.dart';
 export 'src/models/core_objects/camper_preference.dart';
 export 'src/models/core_objects/schedule.dart';
-export 'src/models/core_objects/user.dart';
 
 
 export 'src/models/commit.dart';

@@ -1,15 +1,21 @@
 import 'package:ember_core/ember_core_models.dart';
 
-class AssignedMultiActivityBlock extends CoreObject implements ScheduleBlock {
+class AMABlock extends CoreObject implements ScheduleBlock {
   @override
   final String name;
   @override
   final bool isTemplate;
+  @override
+  DateTime start;
+  @override
+  DateTime end;
   final Set<String> activityDependentCmps;
 
-  AssignedMultiActivityBlock({
+  AMABlock({
     required this.name,
     required this.isTemplate,
+    required this.start,
+    required this.end,
     Set<String>? activityDependentCmps,
     super.id,
     super.createdAt,
@@ -23,7 +29,7 @@ class AssignedMultiActivityBlock extends CoreObject implements ScheduleBlock {
 
   @override
   String coreToString() {
-    return 'AssignedMultiActivityBlock: $name, Activities: ${activityDependentCmps.length}';
+    return 'AMABlock: $name, Activities: ${activityDependentCmps.length}';
   }
 
   @override
@@ -32,15 +38,19 @@ class AssignedMultiActivityBlock extends CoreObject implements ScheduleBlock {
     json.addAll({
       'name': name,
       'isTemplate': isTemplate,
+      'start': start,
+      'end': end,
       'activityDependentCmps': activityDependentCmps.toList(),
     });
     return json;
   }
 
-  factory AssignedMultiActivityBlock.fromJson(Map<String, dynamic> json) {
-    final block = AssignedMultiActivityBlock(
+  factory AMABlock.fromJson(Map<String, dynamic> json) {
+    final block = AMABlock(
       name: json['name'] as String,
       isTemplate: json['isTemplate'],
+      start: json['start'] as DateTime,
+      end: json['end'] as DateTime,
       activityDependentCmps: (json['activityDependentCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     block.overwriteCoreObjectFromJson(json);

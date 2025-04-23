@@ -10,7 +10,7 @@ typedef CamperId = String;
 class CamperPreference extends CoreObject {
   final CamperId camperRef;
   final String camperName;
-  final Map<PrincipalActivityId, double?> preferencesRefs; // A map of every unique activity type in the schedule to the camper's preference
+  final Map<PrincipalActivityId, double?> preferenceRefs; // A map of every unique activity type in the schedule to the camper's preference
   final Map<PrincipalActivityId, double> preferenceWeightRefs; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
   int preferencesCompletedCount;
   // true when the camper has indicated their preference for every activity in the block
@@ -19,14 +19,14 @@ class CamperPreference extends CoreObject {
   CamperPreference({
     required this.camperRef,
     required this.camperName,
-    Map<PrincipalActivityId, double?>? preferencesRefs,
+    Map<PrincipalActivityId, double?>? preferenceRefs,
     Map<PrincipalActivityId, double>? preferenceWeightRefs,
     this.preferencesCompletedCount = 0,
     this.completed = false,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : preferencesRefs = preferencesRefs ?? {},
+  })  : preferenceRefs = preferenceRefs ?? {},
         preferenceWeightRefs = preferenceWeightRefs ?? {},
         super(
           domain: 'ses',
@@ -46,7 +46,7 @@ class CamperPreference extends CoreObject {
     json.addAll({
       'camperRef': camperRef,
       'camperName': camperName,
-      'preferencesRefs': preferencesRefs.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
+      'preferenceRefs': preferenceRefs.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
       'preferenceWeightRefs': preferenceWeightRefs.map((key, value) => MapEntry(key, value.clamp(0.0, 1.0))),
       'preferencesCompletedCount': preferencesCompletedCount,
       'completed': completed,
@@ -58,7 +58,7 @@ class CamperPreference extends CoreObject {
     final preference = CamperPreference(
       camperRef: json['camperRef'] ?? '',
       camperName: json['camperName'] ?? '',
-      preferencesRefs: (json['preferencesRefs'] as Map?)?.cast<String, double?>() ?? {},
+      preferenceRefs: (json['preferenceRefs'] as Map?)?.cast<String, double?>() ?? {},
       preferenceWeightRefs: (json['preferenceWeightRefs'] as Map?)?.cast<String, double>() ?? {},
       preferencesCompletedCount: json['preferencesCompletedCount'] ?? 0,
       completed: json['completed'] ?? false,
@@ -69,21 +69,12 @@ class CamperPreference extends CoreObject {
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
     if (IdFunctions.getIdPart(id, 1) == 'principal_activity') {
-      if (preferencesRefs.containsKey(id)) {
+      if (preferenceRefs.containsKey(id)) {
         preferencesCompletedCount - 1;
       }
 
-      if (preferencesRefs.remove(id) == null) {
-        print('unnecessary purge of preference ref in $camperName');
-      }
-
-      if (preferenceWeightRefs.remove(id) == null) {
-        print('unnecessary purge of preference weight ref in $camperName');
-      }
-
-      if (preferencesRefs.isEmpty) {
+      if (preferenceRefs.isEmpty) {
         completed = false;
       }
     }

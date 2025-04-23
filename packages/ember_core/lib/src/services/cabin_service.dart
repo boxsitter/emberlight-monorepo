@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class CabinService extends GetxService {
   BackendInterface backend = BackendManager.instance;
-  RequestService requestService = Get.find<RequestService>();
+  CommitService requestService = Get.find<CommitService>();
 
   Future<Set<CabinDependent>> get cabinDependents async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
   Future<Set<PrincipalCabin>> get principalCabins async => await backend.getObjectsInCollection('principal_cabin', 'brn');

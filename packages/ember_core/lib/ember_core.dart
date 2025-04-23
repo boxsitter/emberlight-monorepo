@@ -19,7 +19,7 @@ class EmberCore {
     BackendManager.setBackend(backendInterface);
     BackendInterface backend = BackendManager.instance;
     Get.put(ClientContext());
-    Get.put(RequestService());
+    Get.put(CommitService());
     await backend.init();
     if (EmberCoreConfig.doDumbDomainSetup) {
       await backend.dumbDomainSetup(HardcodedObjects.ygs, HardcodedObjects.colman, HardcodedObjects.season, HardcodedObjects.session);

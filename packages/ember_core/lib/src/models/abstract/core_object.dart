@@ -35,8 +35,8 @@ abstract class CoreObject{
   @override
   int get hashCode => id.hashCode;
 
-  String get formattedCreatedAt => Formatter.formatDate(createdAt.toLocal());
-  String get formattedUpdatedAt => Formatter.formatDate(updatedAt.toLocal());
+  String get formattedCreatedAt => CoreFormatter.formatDate(createdAt.toLocal());
+  String get formattedUpdatedAt => CoreFormatter.formatDate(updatedAt.toLocal());
 
   String coreToString();
   Map<String, dynamic> toJson();
@@ -76,7 +76,7 @@ abstract class CoreObject{
     'principal_activity': (json) => PrincipalActivity.fromJson(json),
     'principal_cabin': (json) => PrincipalCabin.fromJson(json),
 
-    'AMA_Block': (json) => AssignedMultiActivityBlock.fromJson(json),
+    'AMA_Block': (json) => AMABlock.fromJson(json),
     'camper': (json) => Camper.fromJson(json),
     'camper_preference': (json) => CamperPreference.fromJson(json),
     'schedule': (json) => Schedule.fromJson(json),

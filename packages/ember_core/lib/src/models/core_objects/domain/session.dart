@@ -1,5 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_core/src/models/abstract/time_interval.dart';
 
 import '../../abstract/elevated.dart';
 
@@ -7,18 +8,20 @@ typedef CamperPreferenceId = String;
 typedef DependentId = String;
 typedef PrincipalId = String;
 
-class Session extends CoreObject implements Domain, Elevated{
+class Session extends CoreObject implements Domain, Elevated, TimeInterval{
   final String name;
-  final DateTime startDate;
-  final DateTime endDate;
+  @override
+  final DateTime start;
+  @override
+  final DateTime end;
   final Map<CamperId, CamperPreferenceId> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
   Map<String, Set<String>> refTracker;
   Map<PrincipalId, Set<DependentId>> principalDependentLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependents and purge references to it
 
   Session({
     required this.name,
-    required this.startDate,
-    required this.endDate,
+    required this.start,
+    required this.end,
     Map<CamperId, CamperPreferenceId>? camperIdToPreferenceId,
     Map<String, Set<String>>? refTracker,
     Map<String, Set<String>>? principalDependentLinkTracker,
@@ -44,8 +47,8 @@ class Session extends CoreObject implements Domain, Elevated{
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'startDate': startDate,
-      'endDate': endDate,
+      'start': start,
+      'end': end,
       'camperIdToPreferenceId': camperRefToPreferenceRef,
       'refTracker': refTracker.map((key, value) => MapEntry(key, value.toList())),
       'principalDependentLinkTracker': principalDependentLinkTracker.map((key, value) => MapEntry(key, value.toList())),
@@ -56,8 +59,8 @@ class Session extends CoreObject implements Domain, Elevated{
   factory Session.fromJson(Map<String, dynamic> json) {
     final session = Session(
       name: json['name'] as String,
-      startDate: json['startDate'] as DateTime,
-      endDate: json['endDate'] as DateTime,
+      start: json['start'] as DateTime,
+      end: json['end'] as DateTime,
       camperIdToPreferenceId: (json['camperIdToPreferenceId'] as Map?)?.cast<String, String>() ?? {},
       refTracker: (json['refTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
       principalDependentLinkTracker: (json['principalDependentLinkTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},

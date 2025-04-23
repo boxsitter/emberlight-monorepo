@@ -13,7 +13,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   static BackendInterface backend = BackendManager.instance;
   CabinService cabinsService = Get.find<CabinService>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
-  RequestService requestService = Get.find<RequestService>();
+  CommitService requestService = Get.find<CommitService>();
 
   Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses');
   Stream<Map<String, Camper>> get camperStream => backend.watchCollection(collectionName: 'camper', domain: 'ses');
@@ -61,7 +61,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     Schedule schedule = commit.getObjectOfType() ?? await clientContextService.schedule;
 
     for (PrincipalActivityId uniqueActivityTypeRef in schedule.principalActivityRefs) {
-      camperPreference.preferencesRefs[uniqueActivityTypeRef] = null;
+      camperPreference.preferenceRefs[uniqueActivityTypeRef] = null;
       camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }
     Session session = commit.getObjectOfType() ?? await clientContextService.session;
@@ -71,26 +71,6 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     commit.addObjectToPush(session);
     commit.addObjectToPush(camperPreference);
   }
-
-  // Future<void> deleteCamper(String id) async{
-  //   Camper camperToDelete = await coreObjectRepo.getObject(id, Camper.fromJson);
-  //   if (camperToDelete.cabinId != null) {
-  //     coreObjectRepo._purgeReferencesTo(camperToDelete.cabinId!, camperToDelete.id);
-  //   }
-  //   coreObjectRepo._purgeReferencesTo(clientContextService.sessionId, camperToDelete.id);
-  //   if (camperToDelete.camperPreferenceId != null) {
-  //     coreObjectRepo.deleteDocument(camperToDelete.camperPreferenceId!);
-  //   }
-  //   coreObjectRepo.deleteDocument(id);
-  //   // TODO: Remove them from all activity rosters!
-  // }
-
-  // Future<void> deleteAllCampersInSession() async {
-  //   // TODO: THERE NEEDS TO BE A BIG FAT WARNING FOR THIS
-  //   for (String id in await sessionRoster) {
-  //     deleteCamper(id);
-  //   }
-  // }
 
   Future<bool> isCamperDuplicate(String firstName, String lastName, int age, Set<Camper> checkAgainst) async {
     for (Camper camper in checkAgainst) {

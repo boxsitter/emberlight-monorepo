@@ -1,7 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../abstract/elevated.dart';
-import '../../abstract/principal.dart';
 
 typedef PrincipalActivityId = String;
 
@@ -9,11 +8,13 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated{
   final String name;
   final int capacity;
   final String description;
+  final bool isSkillsRec;
 
   PrincipalActivity({
     required this.name,
     required this.capacity,
     required this.description,
+    required this.isSkillsRec,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -35,6 +36,7 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated{
       'name': name,
       'capacity': capacity,
       'description': description,
+      'isSkillsRec': isSkillsRec,
     });
     return json;
   }
@@ -44,6 +46,7 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated{
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       description: json['description'] as String,
+      isSkillsRec: json['isSkillsRec'] as bool,
     );
     activity.overwriteCoreObjectFromJson(json);
     return activity;

@@ -4,7 +4,7 @@ import '../../../ember_core_utils.dart';
 
 
 typedef CabinId = String;
-typedef AssignedMultiActivityBlockId = String;
+typedef AMABlockId = String;
 typedef ActivityDependentId = String;
 
 class Camper extends CoreObject {
@@ -16,11 +16,10 @@ class Camper extends CoreObject {
   String note;
   CabinId? cabinRef;
   String? cabinName;
-
   CamperPreferenceId? camperPreferenceCmp;
   bool camperPreferenceCompleted;
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
-  Map<AssignedMultiActivityBlockId, ActivityDependentId?> activityAssignmentRefs; // TODO: Make sure maps of references are handled correctly and that entries are purged whether the id being purged is a key or a value
+  Map<AMABlockId, ActivityDependentId?> activityAssignmentRefs;
 
   Camper({
     required this.firstName,
@@ -33,7 +32,7 @@ class Camper extends CoreObject {
     this.cabinName,
     this.camperPreferenceCmp,
     this.camperPreferenceCompleted = false,
-    Map<AssignedMultiActivityBlockId, ActivityDependentId>? activityAssignmentRefs,
+    Map<AMABlockId, ActivityDependentId>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -98,8 +97,6 @@ class Camper extends CoreObject {
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
-    // no need to handle principal cabin since the dependant will be in the delete chain anyway
     if (IdFunctions.getIdPart(id, 1) == 'cabin_dependent') {
       if (cabinRef == id) {
         cabinRef == null;

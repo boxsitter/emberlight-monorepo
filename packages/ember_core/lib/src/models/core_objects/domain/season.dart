@@ -1,16 +1,17 @@
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/src/models/abstract/time_interval.dart';
 
-import '../../abstract/domain.dart';
-
-class Season extends CoreObject implements Domain{
+class Season extends CoreObject implements Domain, TimeInterval{
   final String name;
-  final DateTime startDate;
-  final DateTime endDate;
+  @override
+  final DateTime start;
+  @override
+  final DateTime end;
 
   Season({
     required this.name,
-    required this.startDate,
-    required this.endDate,
+    required this.start,
+    required this.end,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -22,7 +23,7 @@ class Season extends CoreObject implements Domain{
 
   @override
   String coreToString() {
-    return 'Season: $name, Start: $startDate, End: $endDate';
+    return 'Season: $name, Start: $start, End: $end';
   }
 
   @override
@@ -37,8 +38,8 @@ class Season extends CoreObject implements Domain{
     final json = toJsonSuper();
     json.addAll({
       'name': name,
-      'startDate': startDate,
-      'endDate': endDate,
+      'start': start,
+      'end': end,
     });
     return json;
   }
@@ -47,8 +48,8 @@ class Season extends CoreObject implements Domain{
     final season = Season(
       name: json['name'] ?? '',
       // Just cast the values as DateTime now:
-      startDate: json['startDate'] as DateTime,
-      endDate: json['endDate'] as DateTime,
+      start: json['start'] as DateTime,
+      end: json['end'] as DateTime,
     );
     season.overwriteCoreObjectFromJson(json);
     return season;

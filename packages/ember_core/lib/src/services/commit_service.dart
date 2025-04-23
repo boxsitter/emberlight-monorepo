@@ -4,8 +4,8 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
 
-class RequestService extends GetxService{
-  Future<bool> disarmRequest(Commit commit) async {
+class CommitService extends GetxService{
+  Future<bool> disarmCommit(Commit commit) async {
     if (!commit.armed) {
       return true;
     }
