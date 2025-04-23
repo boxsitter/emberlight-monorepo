@@ -50,7 +50,7 @@ class SessionManagerController extends GetxController {
 
   Future<void> commitSelection() async {
     Set<String> registeredPrinCabinIds = await cabinsService.getRegisteredPrincipalCabinIds();
-    Commit commit = Commit(disarmRequirementsLevel: 0);
+    Commit commit = Commit(disarmRequirementsLevel: 1, confirmationMessage: 'Warning: Deregistering cabins will delete them and remove campers from those cabins. This cannot be undone!');
 
     for (String selectedCabinPrinId in selectedCabinPrinIds) {
       if (!registeredPrinCabinIds.contains(selectedCabinPrinId)) {

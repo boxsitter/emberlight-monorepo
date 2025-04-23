@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+
+import '../../services/popup_service.dart';
+import '../../theme/shad_theme.dart';
 
 const frameworks = {
   'sessiona': 'Session A',
@@ -8,29 +13,26 @@ const frameworks = {
 };
 
 
-Future<dynamic> buildShowShadDialog(BuildContext context, ShadThemeData theme) {
-  return showShadDialog(
-    context: context,
-    builder: (context) => ShadDialog(
-      title: const Text('Change active session'),
-      description: const Text("Any unsaved changes or data will be discarded"),
-      actions: const [ShadButton(child: Text('Switch'))],
-      child: Container(
-        width: 375,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Session',
-              textAlign: TextAlign.end,
-              style: theme.textTheme.small,
-            ),
-            const SizedBox(width: 16),
-            SessionSelectWithSearch(),
-          ],
-        ),
+Future<dynamic> showContextSwitcher() {
+  return Get.find<PopupService>().showFullScreenDialog(
+    title: 'Change active session',
+    description: 'Any unsaved changes or data will be discarded',
+    actions: const [ShadButton(child: Text('Switch'))],
+    child: Container(
+      width: 375,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Session',
+            textAlign: TextAlign.end,
+            style: BessShadTheme.shadThemeData.textTheme.small,
+          ),
+          const SizedBox(width: 16),
+          SessionSelectWithSearch(),
+        ],
       ),
     ),
   );

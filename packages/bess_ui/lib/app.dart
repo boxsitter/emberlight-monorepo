@@ -40,8 +40,7 @@ class App extends StatelessWidget {
           defaultTransition: AppConfig.defaultTransitionAnimation,
           getPages: BessAppRoute.pages,
           builder: (context, child) {
-            // Wrap with ShadToaster to support shadcn‑ui toast notifications (if you use them)
-            return ShadToaster(child: child!);
+            return ShadSonner(visibleToastsAmount: 3, child: child!);
           },
         );
       },

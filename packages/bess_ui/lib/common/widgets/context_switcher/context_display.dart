@@ -22,7 +22,7 @@ class ContextDisplay extends StatelessWidget {
       backgroundColor: BessColors.crust,
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       height: 55,
-      onTap: () => buildShowShadDialog(context, BessShadTheme.shadThemeData),
+      onTap: () => showContextSwitcher(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

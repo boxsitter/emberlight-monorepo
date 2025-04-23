@@ -1,3 +1,4 @@
+import 'package:bessie/common/services/popup_service.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ class ActivityPreferencesController extends GetxController {
   final ClientContextService contextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  final PopupService popupService = Get.find<PopupService>();
 
   final RxMap<CabinId, String> cabinNames = <CabinId, String>{}.obs;
   final RxMap<CabinId, int> camperCounts = <CabinId, int>{}.obs;
@@ -128,28 +130,30 @@ class ActivityPreferencesController extends GetxController {
     orderedActivityIds.insert(newIndex, movedItemId);
   }
 
-    Future<void> saveActivityRanking() async {
-      if (selectedCamperId == null) {
-        throw ArgumentError('No camper selected.');
-      }
-      if (orderedActivityIds.isEmpty) {
-        throw ArgumentError('No activities to rank.');
-      }
+  Future<void> saveActivityRanking() async {
+    if (selectedCamperId == null) {
+      throw ArgumentError('No camper selected.');
+    }
+    if (orderedActivityIds.isEmpty) {
+      throw ArgumentError('No activities to rank.');
+    }
 
-      print("Saving activity ranking for $selectedCamperId:");
-      final currentRanking = orderedActivityIds.toList();
-      print("Order: $currentRanking");
+    print("Saving activity ranking for $selectedCamperId:");
+    final currentRanking = orderedActivityIds.toList();
+    print("Order: $currentRanking");
 
-      // --- TODO: Implement actual saving logic to your backend/service ---
-      try {
-        // Show loading indicator? Maybe disable save button?
-        // await activityService.saveRanking(selectedCamperId!, currentRanking);
-      } catch (e) {
-        print("Error saving ranking: $e");
-      } finally {
-        // Hide loading indicator? Re-enable save button?
-      }
-    // --- End Saving Logic ---
+    popupService.showToast(title: 'Activity ranking saved!');
+
+
+    // --- TODO: Implement actual saving logic to your backend/service ---
+    try {
+      // Show loading indicator? Maybe disable save button?
+      // await activityService.saveRanking(selectedCamperId!, currentRanking);
+    } catch (e) {
+      print("Error saving ranking: $e");
+    } finally {
+      // Hide loading indicator? Re-enable save button?
+    }
   }
 
   void navigateToCampers(String cabinId, String cabinName) {
