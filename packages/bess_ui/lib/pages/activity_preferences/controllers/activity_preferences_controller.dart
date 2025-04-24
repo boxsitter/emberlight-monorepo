@@ -23,7 +23,7 @@ class ActivityPreferencesController extends GetxController {
   CabinId? selectedCamperId;
   String? selectedCamperName;
   final RxMap<PrincipalActivityId, String> activityNames = <PrincipalActivityId, String>{}.obs;
-  final RxList<ActivityDependentId> orderedActivityIds = <ActivityDependentId>[].obs;
+  final RxList<PrincipalActivityId> orderedActivityIds = <PrincipalActivityId>[].obs;
 
   final RxBool isCabinDataLoaded = false.obs;
   final RxBool isCamperDataLoaded = false.obs;
@@ -85,7 +85,6 @@ class ActivityPreferencesController extends GetxController {
     isActivityDataLoaded.value = false; // Trigger loading indicator
     activityNames.clear(); // Clear previous data
     orderedActivityIds.clear(); // Clear previous order
-    print('POPULATING ACTIVITY MAPS for camper: $selectedCamperId');
 
     try {
       // --- TODO: Replace with your actual data fetching logic ---
