@@ -1,5 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core_utils.dart';
 import 'package:get/get.dart';
 
 import '../../../common/routes/routes.dart';
@@ -7,7 +8,7 @@ import '../../../common/routes/routes.dart';
 typedef CabinId = String;
 
 class ActivityPreferencesController extends GetxController {
-  final ClientContextService contextService = Get.find<ClientContextService>();
+  final ClientContextService clientContextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
@@ -57,13 +58,14 @@ class ActivityPreferencesController extends GetxController {
     isCamperDataLoaded.value = false;
     print('POPULATING CAMPER MAPS');
     final Set<Camper> campers = await cabinsService.getCampersInCabin(selectedCabinId!);
+    final Schedule schedule = await clientContextService.schedule;
 
     final names = <CamperId, String>{};
     final completed = <CamperId, bool>{};
 
     for (final Camper camper in campers) {
       names[camper.id] = camper.fullName;
-      completed[camper.id] = camper.camperPreferenceCompleted;
+      completed[camper.id] = ModelHelperFunctions.preferenceCompleted(camper, schedule);
     }
 
     camperNames.value = names;
