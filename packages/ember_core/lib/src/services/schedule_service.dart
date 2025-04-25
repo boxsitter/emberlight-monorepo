@@ -1,6 +1,7 @@
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
+import 'package:ember_core/src/utils/model_helper_functions.dart';
 import 'package:get/get.dart';
 import '../../ember_core_services.dart';
 
@@ -9,6 +10,25 @@ class ScheduleService extends GetxService {
   BackendInterface backend = BackendManager.instance;
   ClientContextService clientContextService = Get.find<ClientContextService>();
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+
+  Future<Map<PrincipalActivityId, String>> getScheduledPrincipalActivity() async {
+    Schedule schedule = await clientContextService.schedule;
+    Set<String> scheduledPrincipalActivityIds = schedule.principalActivityRefs;
+    Set<PrincipalActivity> scheduledPrincipalActivities = await backend.getObjects(scheduledPrincipalActivityIds);
+    Map<PrincipalActivityId, String> scheduledPrincipalActivityMap = {};
+    for (PrincipalActivity activity in scheduledPrincipalActivities) {
+      scheduledPrincipalActivityMap[activity.id] = activity.name;
+    }
+    return scheduledPrincipalActivityMap;
+  }
+
+  // Future<List<PrincipalActivityId>> orderActivities(CamperId camperId, Set<PrincipalActivityId> principalActivityIds) async {
+  //   Camper camper = await backend.getObject(camperId);
+  //   CamperPreference? camperPreference = camper.camperPreferenceCmp != null ? await backend.getObject(camper.camperPreferenceCmp!) : null;
+  //   if (camperPreference != null && ModelHelperFunctions.preferenceCompleted(camperPreference, schedule) ) {
+  //
+  //   }
+  // }
 
   Future<void> addBlockToDay(Commit commit, String scheduleDayToAddToId, ScheduleBlock blockToAdd) async {
     ScheduleDay day = commit.getObject(scheduleDayToAddToId) ?? await backend.getObject(scheduleDayToAddToId);

@@ -44,7 +44,6 @@ class ActivitySignupService extends GetxService {
       position++;
     }
 
-    camperPreference.completed = true;
     camper.camperPreferenceCompleted = true;
     camperCabin.campersWithPreferences[camper.id] = camperPreference.id;
 
@@ -61,7 +60,6 @@ class ActivitySignupService extends GetxService {
       camperPreference.preferenceWeightRefs[key] = 0;
     });
 
-    camperPreference.completed = false;
     camper.camperPreferenceCompleted = false;
     camperCabin.campersWithPreferences.remove(camperId);
 
@@ -82,7 +80,6 @@ class ActivitySignupService extends GetxService {
       }
       Camper camper = commit.getObject(camperPreference.camperRef) ?? await backend.getObject(camperPreference.camperRef);
       CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await backend.getObject(camper.cabinRef!);
-      camperPreference.completed = true;
       camper.camperPreferenceCompleted = true;
       camperCabin.campersWithPreferences[camper.id] = camperPreference.id;
       commit.addObjectsToPush({camperPreference, camper, camperCabin});

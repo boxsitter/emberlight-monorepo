@@ -35,5 +35,14 @@ class ClientContextService extends GetxService {
 
     // Retrieve the unique active Session.
     clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
+
+
+  }
+
+  Future<void> asyncTasks() async {
+    Commit commit = Commit(disarmRequirementsLevel: 0);
+    backend.cleanOrphanedDependents(commit);
+    commit.disarm(); // not good practice but this operation needs to happen regardless if the user confirms or not since it is an extension of an already confirmed action
+    backend.commit(commit);
   }
 }

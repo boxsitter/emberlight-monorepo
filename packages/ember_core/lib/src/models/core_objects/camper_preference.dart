@@ -12,17 +12,12 @@ class CamperPreference extends CoreObject {
   final String camperName;
   final Map<PrincipalActivityId, double?> preferenceRefs; // A map of every unique activity type in the schedule to the camper's preference
   final Map<PrincipalActivityId, double> preferenceWeightRefs; // For every unique activity, there is also a weight that gets modified when the camper participates in that activity
-  int preferencesCompletedCount;
-  // true when the camper has indicated their preference for every activity in the block
-  bool completed;
 
   CamperPreference({
     required this.camperRef,
     required this.camperName,
     Map<PrincipalActivityId, double?>? preferenceRefs,
     Map<PrincipalActivityId, double>? preferenceWeightRefs,
-    this.preferencesCompletedCount = 0,
-    this.completed = false,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -33,6 +28,8 @@ class CamperPreference extends CoreObject {
           type: 'camper_preference',
           idTag: camperName,
         );
+
+
 
   @override
   String coreToString() {
@@ -48,8 +45,6 @@ class CamperPreference extends CoreObject {
       'camperName': camperName,
       'preferenceRefs': preferenceRefs.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
       'preferenceWeightRefs': preferenceWeightRefs.map((key, value) => MapEntry(key, value.clamp(0.0, 1.0))),
-      'preferencesCompletedCount': preferencesCompletedCount,
-      'completed': completed,
     });
     return json;
   }
@@ -60,8 +55,6 @@ class CamperPreference extends CoreObject {
       camperName: json['camperName'] ?? '',
       preferenceRefs: (json['preferenceRefs'] as Map?)?.cast<String, double?>() ?? {},
       preferenceWeightRefs: (json['preferenceWeightRefs'] as Map?)?.cast<String, double>() ?? {},
-      preferencesCompletedCount: json['preferencesCompletedCount'] ?? 0,
-      completed: json['completed'] ?? false,
     );
     preference.overwriteCoreObjectFromJson(json);
     return preference;
@@ -70,13 +63,8 @@ class CamperPreference extends CoreObject {
   @override
   void purgeRef(String id) {
     if (IdFunctions.getIdPart(id, 1) == 'principal_activity') {
-      if (preferenceRefs.containsKey(id)) {
-        preferencesCompletedCount - 1;
-      }
-
-      if (preferenceRefs.isEmpty) {
-        completed = false;
-      }
+      preferenceRefs.remove(id);
+      preferenceWeightRefs.remove(id);
     }
   }
 

@@ -5,7 +5,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class Commit {
   bool _armed;
-  final int _disarmRequirementsLevel;
+  int _disarmRequirementsLevel;
   final Map<String, CoreObject> objectsToPush = {};
   final Map<String, CoreObject> objectsToDelete = {};
   String confirmationMessage;
