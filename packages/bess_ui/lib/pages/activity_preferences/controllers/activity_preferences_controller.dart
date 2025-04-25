@@ -87,23 +87,13 @@ class ActivityPreferencesController extends GetxController {
     orderedActivityIds.clear(); // Clear previous order
 
     try {
-      // --- TODO: Replace with your actual data fetching logic ---
-      // Fetch activities WITH an order (e.g., default, previous ranking)
-      // Your fetch should ideally return List<ActivityObject> or List<MapEntry<ID, Name>>
-      final List<MapEntry<ActivityDependentId, String>> fetchedData = [
-        MapEntry('act-swimming-${selectedCamperId}', 'Swimming'), // Example IDs
-        MapEntry('act-archery-${selectedCamperId}', 'Archery'),
-        MapEntry('act-crafts-${selectedCamperId}', 'Crafts'),
-        MapEntry('act-hiking-${selectedCamperId}', 'Hiking'),
-      ];
-      // --- End Fetching Logic ---
 
       final names = <ActivityDependentId, String>{};
       final idsInOrder = <ActivityDependentId>[];
-      for (var entry in fetchedData) {
-        names[entry.key] = entry.value;
-        idsInOrder.add(entry.key);
-      }
+      // for (var entry in fetchedData) {
+      //   names[entry.key] = entry.value;
+      //   idsInOrder.add(entry.key);
+      // }
       activityNames.value = names;
       orderedActivityIds.value = idsInOrder; // Update the reactive list
 
