@@ -21,10 +21,8 @@ class DatabaseRepairService extends GetxService{
 
   PullRepository pullRepo = Get.find<PullRepository>();
   DumbPushRepository dumbRepo = Get.find<DumbPushRepository>();
-  ClientContextService clientContextService = Get.find<ClientContextService>();
 
-  Future<void> cleanOrphanedDependents(Commit commit) async {
-    Session session = await clientContextService.session;
+  Future<void> cleanOrphanedDependents(Commit commit, Session session) async {
     final Map<String, Set<String>>principalDependentLinkTracker = session.principalDependentLinkTracker;
     Set<String> deletedPrincipalIds = await pullRepo.findMissingKeys(principalDependentLinkTracker.keys.toSet());
     for (String principalId in deletedPrincipalIds) {
@@ -148,8 +146,8 @@ class DatabaseRepairService extends GetxService{
     // If there's a known doc ID from B, we keep that. Otherwise, fallback to A's ID.
     mergedJson['id'] = (jsonB != null && jsonB.containsKey('id')) ? jsonB['id'] : idA;
 
-    CoreObject mergedObject = CoreObject.fromJson(mergedJson);
-    commit.addObjectToPush(mergedObject);
+    dynamic mergedObject = CoreObject.fromJson(mergedJson);
+    commit.addObjectToPush(mergedObject as CoreObject);
   }
 
   bool _isEmptyValue(dynamic value) {

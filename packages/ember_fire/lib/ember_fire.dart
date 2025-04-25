@@ -130,8 +130,8 @@ class EmberFire implements BackendInterface {
   }
 
   @override
-  Future<void> cleanOrphanedDependents(Commit commit) {
-    return databaseRepairService.cleanOrphanedDependents(commit);
+  Future<void> cleanOrphanedDependents(Commit commit, Session session) {
+    return databaseRepairService.cleanOrphanedDependents(commit, session);
   }
 
 }

@@ -258,8 +258,7 @@ class PullRepository {
   /// Throws an error if the document is not found.
   Future<T> getObject<T>(String id) async {
     final data = await getDoc(id);
-    String objectType = IdFunctions.getIdPart(id, 1);
-    return CoreObject.fromJsons[objectType]!(data) as T;
+    return CoreObject.fromJson(data) as T;
   }
 
   /// Retrieves multiple documents specified by the set of [ids] and converts each into an object of type [T]
@@ -273,8 +272,7 @@ class PullRepository {
       if (data == null) {
         throw StateError('No document found for ID: $id');
       }
-      String objectType = IdFunctions.getIdPart(id, 1);
-      return CoreObject.fromJsons[objectType]!(data) as T;
+      return CoreObject.fromJson(data) as T;
     }).toSet();
   }
 
@@ -285,7 +283,7 @@ class PullRepository {
   Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain) async {
     final documentMap = await getDocsInCollection(collectionName, domain);
     return documentMap.entries.map((entry) {
-      return CoreObject.fromJsons[collectionName]!(entry.value) as T;
+      return CoreObject.fromJson(entry.value) as T;
     }).toSet();
   }
 
