@@ -1,4 +1,3 @@
-import 'package:bessie/common/services/popup_service.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
@@ -11,7 +10,6 @@ class ActivityPreferencesController extends GetxController {
   final ClientContextService contextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
-  final PopupService popupService = Get.find<PopupService>();
 
   final RxMap<CabinId, String> cabinNames = <CabinId, String>{}.obs;
   final RxMap<CabinId, int> camperCounts = <CabinId, int>{}.obs;
@@ -24,7 +22,6 @@ class ActivityPreferencesController extends GetxController {
 
   CabinId? selectedCamperId;
   String? selectedCamperName;
-  int? uniqueActivityCount;
   final RxMap<PrincipalActivityId, String> activityNames = <PrincipalActivityId, String>{}.obs;
   final RxList<PrincipalActivityId> orderedActivityIds = <PrincipalActivityId>[].obs;
 
@@ -88,25 +85,15 @@ class ActivityPreferencesController extends GetxController {
     isActivityDataLoaded.value = false; // Trigger loading indicator
     activityNames.clear(); // Clear previous data
     orderedActivityIds.clear(); // Clear previous order
-    print('POPULATING ACTIVITY MAPS for camper: $selectedCamperId');
 
     try {
-      // --- TODO: Replace with your actual data fetching logic ---
-      // Fetch activities WITH an order (e.g., default, previous ranking)
-      // Your fetch should ideally return List<ActivityObject> or List<MapEntry<ID, Name>>
-      final List<MapEntry<ActivityDependentId, String>> fetchedData = [
-        MapEntry('act-swimming-${selectedCamperId}', 'Swimming'), // Example IDs
-        MapEntry('act-archery-${selectedCamperId}', 'Archery'),
-        MapEntry('act-crafts-${selectedCamperId}', 'Crafts'),
-        MapEntry('act-hiking-${selectedCamperId}', 'Hiking'),
-      ];
 
       final names = <ActivityDependentId, String>{};
       final idsInOrder = <ActivityDependentId>[];
-      for (var entry in fetchedData) {
-        names[entry.key] = entry.value;
-        idsInOrder.add(entry.key);
-      }
+      // for (var entry in fetchedData) {
+      //   names[entry.key] = entry.value;
+      //   idsInOrder.add(entry.key);
+      // }
       activityNames.value = names;
       orderedActivityIds.value = idsInOrder; // Update the reactive list
 
@@ -122,38 +109,52 @@ class ActivityPreferencesController extends GetxController {
     }
   }
 
+  // *** ADDED: Method to handle list reordering ***
   void onReorderActivities(int oldIndex, int newIndex) {
+    // This logic correctly handles moving items up or down in the list
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
+    // Remove the item ID from the old position
     final ActivityDependentId movedItemId = orderedActivityIds.removeAt(oldIndex);
+    // Insert the item ID into the new position
     orderedActivityIds.insert(newIndex, movedItemId);
+
+    print("Reordered activities: ${orderedActivityIds.toList()}");
+    // You might want to trigger a save state or indicate unsaved changes here
   }
 
+  // *** ADDED: Method to save the current ranking ***
   Future<void> saveActivityRanking() async {
     if (selectedCamperId == null) {
-      throw ArgumentError('No camper selected.');
+      Get.snackbar('Error', 'No camper selected.');
+      return;
     }
     if (orderedActivityIds.isEmpty) {
-      throw ArgumentError('No activities to rank.');
+      Get.snackbar('Info', 'No activities to rank.');
+      return;
     }
 
     print("Saving activity ranking for $selectedCamperId:");
-    final currentRanking = orderedActivityIds.toList();
+    final currentRanking = orderedActivityIds.toList(); // Get current order
     print("Order: $currentRanking");
-
-    popupService.showToast(title: 'Activity ranking saved!');
-
 
     // --- TODO: Implement actual saving logic to your backend/service ---
     try {
       // Show loading indicator? Maybe disable save button?
       // await activityService.saveRanking(selectedCamperId!, currentRanking);
+      await Future.delayed(const Duration(seconds: 1)); // Simulate save
+      Get.snackbar('Success', 'Activity ranking saved!');
+      // Optionally update completion status and refresh relevant parts
+      // camperIsCompleted[selectedCamperId!] = true;
+      // camperIsCompleted.refresh();
     } catch (e) {
       print("Error saving ranking: $e");
+      Get.snackbar('Error', 'Failed to save ranking: $e');
     } finally {
       // Hide loading indicator? Re-enable save button?
     }
+    // --- End Saving Logic ---
   }
 
   void navigateToCampers(String cabinId, String cabinName) {
