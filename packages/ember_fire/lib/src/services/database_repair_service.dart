@@ -2,6 +2,7 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:get/get.dart';
@@ -20,11 +21,16 @@ class DatabaseRepairService extends GetxService{
 
   PullRepository pullRepo = Get.find<PullRepository>();
   DumbPushRepository dumbRepo = Get.find<DumbPushRepository>();
+  ClientContextService clientContextService = Get.find<ClientContextService>();
 
-  // TODO: Implement
-  // void cleanOrphanedDependents() {
-  //   // the reference tracker tracks all ids that reference the master
-  // }
+  Future<void> cleanOrphanedDependents(Commit commit) async {
+    Session session = await clientContextService.session;
+    final Map<String, Set<String>>principalDependentLinkTracker = session.principalDependentLinkTracker;
+    Set<String> deletedPrincipalIds = await pullRepo.findMissingKeys(principalDependentLinkTracker.keys.toSet());
+    for (String principalId in deletedPrincipalIds) {
+      commit.addObjectsToDelete(await pullRepo.getObjects(principalDependentLinkTracker[principalId]!));
+    }
+  }
 
   // TODO: Do something better to solve this please
   Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session) async {

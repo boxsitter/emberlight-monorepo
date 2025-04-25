@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/ember_core_validators.dart';
@@ -346,6 +347,181 @@ class PullRepository {
       print('Error fetching active objects: $e');
       rethrow;
     }
+  }
+
+  /// Finds which of the provided keys do not correspond to existing Firestore documents.
+  ///
+  /// Handles keys potentially resolving to different collections via the provided [pathService].
+  /// Optimizes reads by grouping keys by collection and using batched `whereIn` queries,
+  /// executed concurrently across different collections using Future.wait.
+  ///
+  /// Args:
+  ///   keysToCheck: The set of original keys (e.g., 'user1', 'orderABC') to check for existence.
+  ///   db: The FirebaseFirestore instance.
+  ///   pathService: The service used to resolve keys to full paths and extract collection paths.
+  ///
+  /// Returns:
+  ///   A Future resolving to a Set containing the *original keys* from [keysToCheck]
+  ///   that were determined to be missing in Firestore, considering only keys for which
+  ///   path resolution was successful.
+  Future<Set<String>> findMissingKeys(Set<String> keysToCheck) async {
+    // --- 1. Handle Empty Input ---
+    if (keysToCheck.isEmpty) {
+      print("[findMissingKeys] Input key set is empty. Returning empty set.");
+      return {};
+    }
+
+    print("[findMissingKeys] Starting check for ${keysToCheck.length} keys.");
+
+    // --- 2. Resolve Paths and Group by Collection ---
+    // Map: collectionPath -> Set<originalKey>
+    final Map<String, Set<String>> keysByCollection = {};
+    // Map: originalKey -> fullPath (needed to map results back)
+    final Map<String, String> originalKeyToFullPath = {};
+
+    for (final key in keysToCheck) {
+      String? fullPath;
+      String? collectionPath;
+      try {
+        fullPath = pathService.getDocPathFromId(key);
+        if (fullPath.trim().isEmpty) {
+          print("[findMissingKeys] Warning: Resolved path for key '$key' is empty. Skipping.");
+          continue; // Skip keys that don't resolve to a non-empty path
+        }
+
+        collectionPath = pathService.getCollectionPathFromId(key);
+        if (collectionPath.trim().isEmpty) {
+          print("[findMissingKeys] Warning: Could not determine collection path for '$fullPath' (from key '$key'). Skipping grouping for this key.");
+          // Key is still in originalKeyToFullPath, will be treated as missing if not found later
+          continue; // Skip grouping if collection path can't be determined
+        }
+
+        // Add key to the set for its collection path
+        (keysByCollection[collectionPath] ??= {}).add(key);
+
+      } catch (e) {
+        // Catch errors during path resolution or collection path extraction
+        print("[findMissingKeys] Error processing key '$key' (Path: '$fullPath'): $e. Skipping key.");
+        // Ensure key is not left in map if resolution failed partway
+        originalKeyToFullPath.remove(key);
+      }
+    }
+
+    // Check if any keys could be successfully resolved and grouped
+    if (keysByCollection.isEmpty) {
+      print("[findMissingKeys] No keys could be grouped by collection (check path resolution logs).");
+      // Decide what to return: maybe all originally checked keys, or only those resolvable?
+      // Let's return keys that *could* be resolved but maybe not grouped or found
+      print("[findMissingKeys] Assuming all keys (${originalKeyToFullPath.length}) with resolved paths are missing.");
+      return originalKeyToFullPath.keys.toSet();
+    }
+
+    print("[findMissingKeys] Grouped ${originalKeyToFullPath.length} resolvable keys into ${keysByCollection.length} collections.");
+
+    // --- 3. Prepare Batched `whereIn` Queries ---
+    final List<Future<QuerySnapshot<Map<String, dynamic>>>> queryFutures = [];
+    // Firestore limit for items in 'whereIn' or 'arrayContainsAny'
+    const int firestoreWhereInLimit = 30;
+
+    keysByCollection.forEach((collectionPath, keysInCollection) {
+      if (keysInCollection.isNotEmpty) {
+        // For the 'whereIn' query, we need the actual Firestore document IDs,
+        // which are typically the last part of the full path.
+        final List<String> docIdsInCollectionBatch = keysInCollection
+        // Get the full path stored earlier for this original key
+            .map((key) => originalKeyToFullPath[key])
+        // Filter out nulls just in case (shouldn't happen with above logic)
+            .nonNulls
+        // Extract the last segment as the document ID
+            .map((path) => path.contains('/') ? path.split('/').last : path)
+        // Filter out potentially empty IDs if path splitting failed unexpectedly
+            .where((id) => id.isNotEmpty)
+            .toList();
+
+        if (docIdsInCollectionBatch.isEmpty) {
+          print("[findMissingKeys] Warning: No valid document IDs extracted for collection '$collectionPath'. Skipping query.");
+          return; // Continue to next collection path
+        }
+
+        // Use '.slices()' from 'package:collection/collection.dart' for easy batching
+        final List<List<String>> batches = docIdsInCollectionBatch.slices(firestoreWhereInLimit).toList();
+
+        print("[findMissingKeys] Collection '$collectionPath': ${keysInCollection.length} keys -> ${batches.length} Firestore query batch(es).");
+
+        // Create a query Future for each batch
+        for (final batch in batches) {
+          if (batch.isNotEmpty) {
+            // Prepare the query targeting the specific collection and batch of IDs
+            final query = db
+                .collection(collectionPath)
+                .where(FieldPath.documentId, whereIn: batch)
+                .get();
+            queryFutures.add(query);
+          }
+        }
+      } else {
+        print("[findMissingKeys] Info: Collection '$collectionPath' had no keys associated after resolution/grouping. Skipping query.");
+      }
+    });
+
+    // Check if any queries were actually prepared
+    if (queryFutures.isEmpty) {
+      print("[findMissingKeys] No Firestore queries were prepared (check grouping/ID extraction logs).");
+      print("[findMissingKeys] Assuming all keys (${originalKeyToFullPath.length}) with resolved paths are missing.");
+      return originalKeyToFullPath.keys.toSet();
+    }
+
+    // --- 4. Execute Queries Concurrently ---
+    print("[findMissingKeys] Executing ${queryFutures.length} Firestore queries concurrently via Future.wait...");
+    List<QuerySnapshot<Map<String, dynamic>>> queryResults;
+    try {
+      // Wait for all the prepared query Futures to complete
+      queryResults = await Future.wait(queryFutures);
+      print("[findMissingKeys] All ${queryFutures.length} queries completed.");
+    } catch (e, stackTrace) {
+      print("[findMissingKeys] CRITICAL: Error during Future.wait executing Firestore queries: $e");
+      print(stackTrace);
+      // Strategy on error: rethrow, return partial, assume all missing?
+      // Rethrowing is often best, letting the caller handle the failure state.
+      rethrow;
+    }
+
+    // --- 5. Collect Found Document Full Paths ---
+    // Using full paths obtained from doc.reference.path is reliable
+    final Set<String> foundFullPaths = {};
+    int foundDocsCount = 0;
+    for (final querySnapshot in queryResults) {
+      for (final doc in querySnapshot.docs) {
+        // Double-check existence (though whereIn should only return existing)
+        if (doc.exists) {
+          foundFullPaths.add(doc.reference.path);
+          foundDocsCount++;
+        }
+      }
+    }
+    print("[findMissingKeys] Found $foundDocsCount existing documents across all queries (unique paths: ${foundFullPaths.length}).");
+
+
+    // --- 6. Map Found Paths Back to Original Keys ---
+    // Determine which original keys correspond to the paths found
+    final Set<String> foundOriginalKeys = {};
+    originalKeyToFullPath.forEach((originalKey, fullPath) {
+      if (foundFullPaths.contains(fullPath)) {
+        foundOriginalKeys.add(originalKey);
+      }
+    });
+
+    // --- 7. Calculate Missing Keys ---
+    // Compare the set of keys for which we successfully got a path
+    // against the set of those keys that were actually found.
+    final Set<String> checkableKeys = originalKeyToFullPath.keys.toSet();
+    final Set<String> missingKeys = checkableKeys.difference(foundOriginalKeys);
+
+    print("[findMissingKeys] Determined ${missingKeys.length} missing keys out of ${checkableKeys.length} successfully resolved keys.");
+    // For debugging: print(missingKeys);
+
+    // --- 8. Return Missing Keys ---
+    return missingKeys;
   }
 
 }

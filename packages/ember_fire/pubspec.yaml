@@ -14,6 +14,7 @@ dependencies:
     path: ../ember_core
 
   rxdart: ^0.28.0
+  collection: ^1.19.1
 
   # State Management
   get: ^4.7.2

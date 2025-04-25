@@ -129,4 +129,9 @@ class EmberFire implements BackendInterface {
     return pullRepo.getFieldFromCollection(collectionName, domain, field);
   }
 
+  @override
+  Future<void> cleanOrphanedDependents(Commit commit) {
+    return databaseRepairService.cleanOrphanedDependents(commit);
+  }
+
 }
