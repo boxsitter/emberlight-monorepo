@@ -13,7 +13,6 @@ class Session extends CoreObject implements Domain, Elevated, TimeInterval{
   final DateTime start;
   @override
   final DateTime end;
-  final Map<CamperId, CamperPreferenceId> camperRefToPreferenceRef; // TODO: Make sure this map counts as referencing both camper and preference
   Map<String, Set<String>> refTracker;
   Map<PrincipalId, Set<DependentId>> principalDependentLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependents and purge references to it
 
@@ -21,14 +20,12 @@ class Session extends CoreObject implements Domain, Elevated, TimeInterval{
     required this.name,
     required this.start,
     required this.end,
-    Map<CamperId, CamperPreferenceId>? camperIdToPreferenceId,
     Map<String, Set<String>>? refTracker,
     Map<String, Set<String>>? principalDependentLinkTracker,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : camperRefToPreferenceRef = camperIdToPreferenceId ?? {},
-        refTracker = refTracker ?? {},
+  })  : refTracker = refTracker ?? {},
         principalDependentLinkTracker = principalDependentLinkTracker ?? {},
         super(
           domain: 'sea',
@@ -48,7 +45,6 @@ class Session extends CoreObject implements Domain, Elevated, TimeInterval{
       'name': name,
       'start': start,
       'end': end,
-      'camperIdToPreferenceId': camperRefToPreferenceRef,
       'refTracker': refTracker.map((key, value) => MapEntry(key, value.toList())),
       'principalDependentLinkTracker': principalDependentLinkTracker.map((key, value) => MapEntry(key, value.toList())),
     });
@@ -60,7 +56,6 @@ class Session extends CoreObject implements Domain, Elevated, TimeInterval{
       name: json['name'] as String,
       start: json['start'] as DateTime,
       end: json['end'] as DateTime,
-      camperIdToPreferenceId: (json['camperIdToPreferenceId'] as Map?)?.cast<String, String>() ?? {},
       refTracker: (json['refTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
       principalDependentLinkTracker: (json['principalDependentLinkTracker'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, Set<String>.from(value ?? [])),) ?? {},
     );
@@ -71,12 +66,6 @@ class Session extends CoreObject implements Domain, Elevated, TimeInterval{
   @override
   void purgeRef(String id) {
     print('Purging $id from ${this.id}');
-    if (IdFunctions.getIdPart(id, 1) == 'camper') {
-      camperRefToPreferenceRef.remove(id);
-    } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
-      camperRefToPreferenceRef.removeWhere((key, value) => value == id);
-    }
-
     refTracker.remove(id);
 
     for (Set<String> set in refTracker.values) {

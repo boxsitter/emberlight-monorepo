@@ -34,7 +34,7 @@ class CabinDependent extends CoreObject implements Dependent{
       camperRefs.remove(id);
       campersWithPreferences.remove(id);
     } else if (IdFunctions.getIdPart(id, 1) == 'camper_preference') {
-      campersWithPreferences.removeWhere((key, value) => value == id);
+      campersWithPreferences.remove(id);
     }
   }
 
@@ -53,7 +53,7 @@ class CabinDependent extends CoreObject implements Dependent{
     final cabinDependent = CabinDependent(
       principalPar: json['principalPar'] as String,
       camperRefs: (json['camperRefs'] as List?)?.cast<String>().toSet() ?? <String>{},
-      campersWithPreferences: (json['campersWithPreferences'] as Map?)?.cast<String, String>() ?? {},
+      campersWithPreferences: (json['campersWithPreferences'] as List?)?.cast<String>().toSet() ?? <String>{},
     );
     cabinDependent.overwriteCoreObjectFromJson(json);
     return cabinDependent;

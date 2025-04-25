@@ -64,27 +64,25 @@ abstract class CoreObject{
     updatedAt = DateTime.now().toUtc();
   }
 
-  static final Map<String, JsonFactory> fromJsons = {
-    'cabin_dependent': (json) => CabinDependent.fromJson(json),
-    'activity_dependent': (json) => ActivityDependent.fromJson(json),
+  static final Map<Type, JsonFactory> fromJsons = {
+    CabinDependent: (json) => CabinDependent.fromJson(json),
+    ActivityDependent: (json) => ActivityDependent.fromJson(json),
 
-    'branch': (json) => Branch.fromJson(json),
-    'organization': (json) => Organization.fromJson(json),
-    'season': (json) => Season.fromJson(json),
-    'session': (json) => Session.fromJson(json),
+    Branch: (json) => Branch.fromJson(json),
+    Organization: (json) => Organization.fromJson(json),
+    Season: (json) => Season.fromJson(json),
+    Session: (json) => Session.fromJson(json),
 
-    'principal_activity': (json) => PrincipalActivity.fromJson(json),
-    'principal_cabin': (json) => PrincipalCabin.fromJson(json),
+    PrincipalActivity: (json) => PrincipalActivity.fromJson(json),
+    PrincipalCabin: (json) => PrincipalCabin.fromJson(json),
 
-    'AMA_Block': (json) => AMABlock.fromJson(json),
-    'camper': (json) => Camper.fromJson(json),
-    'camper_preference': (json) => CamperPreference.fromJson(json),
-    'schedule': (json) => Schedule.fromJson(json),
-    // Add other types as needed.
+    AMABlock: (json) => AMABlock.fromJson(json),
+    Camper: (json) => Camper.fromJson(json),
+    Schedule: (json) => Schedule.fromJson(json),
   };
 
   static T fromJson<T>(Map<String, dynamic> json) {
-    JsonFactory<dynamic>? fromJsonFunction = fromJsons[IdFunctions.getIdPart(json['id'], 1)];
+    JsonFactory<dynamic>? fromJsonFunction = fromJsons[T];
     if (fromJsonFunction == null) {
       throw StateError('NEED TO ADD ${json['id']} TO FROMJSONS LIST IN COREOBJECT!');
     }

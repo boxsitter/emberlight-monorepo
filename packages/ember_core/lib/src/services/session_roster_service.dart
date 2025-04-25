@@ -56,20 +56,15 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
   }
 
   Future<void> initCamperPreference(Commit commit, Camper camper) async {
-    CamperPreference camperPreference = CamperPreference(camperRef: camper.id, camperName: camper.name);
-    camper.camperPreferenceCmp = camperPreference.id;
     Schedule schedule = commit.getObjectOfType() ?? await clientContextService.schedule;
 
     for (PrincipalActivityId uniqueActivityTypeRef in schedule.principalActivityRefs) {
-      camperPreference.preferenceRefs[uniqueActivityTypeRef] = null;
-      camperPreference.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
+      camper.preferenceRefs[uniqueActivityTypeRef] = null;
+      camper.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
     }
     Session session = commit.getObjectOfType() ?? await clientContextService.session;
 
-    session.camperRefToPreferenceRef[camper.id] = camperPreference.id;
-    commit.addObjectToPush(schedule);
-    commit.addObjectToPush(session);
-    commit.addObjectToPush(camperPreference);
+    commit.addObjectsToPush({schedule, session});
   }
 
   Future<bool> isCamperDuplicate(String firstName, String lastName, int age, Set<Camper> checkAgainst) async {

@@ -26,25 +26,23 @@ class ActivitySignupService extends GetxService {
       position++;
     }
 
-    camperCabin.campersWithPreferences[camper.id] = camperPreference.id;
+    camperCabin.campersWithPreferences.add(camper.id);
 
-    commit.addObjectsToPush({camperPreference, camper, camperCabin});
+    commit.addObjectsToPush({camper, camperCabin});
   }
 
   Future<void> clearPreference(Commit commit, CamperId camperId) async {
     Camper camper = commit.getObject(camperId) ?? await backend.getObject(camperId);
-    CamperPreference camperPreference = commit.getObject(camper.camperPreferenceCmp!) ?? await backend.getObject(camper.camperPreferenceCmp!);
     CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await backend.getObject(camper.cabinRef!);
 
-    camperPreference.preferenceRefs.forEach((key, value) {
-      camperPreference.preferenceRefs[key] = null;
-      camperPreference.preferenceWeightRefs[key] = 0;
+    camper.preferenceRefs.forEach((key, value) {
+      camper.preferenceRefs[key] = null;
+      camper.preferenceWeightRefs[key] = 0;
     });
 
-    camper.camperPreferenceCompleted = false;
     camperCabin.campersWithPreferences.remove(camperId);
 
-    commit.addObjectsToPush({camperPreference, camper, camperCabin});
+    commit.addObjectsToPush({camper, camperCabin});
 
   }
 
@@ -52,18 +50,6 @@ class ActivitySignupService extends GetxService {
   // for testing
   Future<void> rankRandom(Commit commit) async {
     final random = Random();
-    Set<CamperPreference> camperPreferences = await getCamperPreferences();
-
-    for (CamperPreference camperPreference in camperPreferences) {
-      for (PrincipalActivityId principalActivityId in camperPreference.preferenceRefs.keys) {
-        double randomValue = random.nextDouble();
-        camperPreference.preferenceRefs[principalActivityId] = randomValue;
-      }
-      Camper camper = commit.getObject(camperPreference.camperRef) ?? await backend.getObject(camperPreference.camperRef);
-      CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await backend.getObject(camper.cabinRef!);
-      camper.camperPreferenceCompleted = true;
-      camperCabin.campersWithPreferences[camper.id] = camperPreference.id;
-      commit.addObjectsToPush({camperPreference, camper, camperCabin});
-    }
+    Set<Camper> campers = await sessionRosterService.registeredCampers;
   }
 }
