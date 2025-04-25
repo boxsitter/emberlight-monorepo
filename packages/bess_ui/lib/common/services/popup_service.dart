@@ -27,7 +27,7 @@ class PopupService extends GetxService {
 
   void showToast({
     String? title,
-    String? description,
+    String? message,
     Widget? action,
   }){
     final sonner = ShadSonner.of(Get.context!);
@@ -38,7 +38,7 @@ class PopupService extends GetxService {
         duration: const Duration(milliseconds: 2000),
         id: id,
         title: title != null ? Text(title ?? '') : null,
-        description: description != null ? Text(description) : null,
+        description: message != null ? Text(message) : null,
         action: action,
       ),
     );

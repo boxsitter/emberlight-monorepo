@@ -1,3 +1,4 @@
+import 'package:bessie/common/services/popup_service.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
@@ -11,6 +12,8 @@ class ActivityPreferencesController extends GetxController {
   final ClientContextService clientContextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  final ScheduleService scheduleService = Get.find<ScheduleService>();
+  final PopupService popupService = Get.find<PopupService>();
 
   final RxMap<CabinId, String> cabinNames = <CabinId, String>{}.obs;
   final RxMap<CabinId, int> camperCounts = <CabinId, int>{}.obs;
@@ -89,19 +92,11 @@ class ActivityPreferencesController extends GetxController {
     orderedActivityIds.clear(); // Clear previous order
 
     try {
-
-      final names = <ActivityDependentId, String>{};
-      final idsInOrder = <ActivityDependentId>[];
-      // for (var entry in fetchedData) {
-      //   names[entry.key] = entry.value;
-      //   idsInOrder.add(entry.key);
-      // }
-      activityNames.value = names;
-      orderedActivityIds.value = idsInOrder; // Update the reactive list
-
+      final names = scheduleService.getScheduledPrincipalActivitiesToNames();
+      final idsInOrder = scheduleService.getOrderedActivities(selectedCamperId!);
     } catch (e) {
       print("Error fetching activities: $e");
-      Get.snackbar("Error", "Could not load activities.");
+      popupService.showToast(title: 'Error', message: 'Could not load activities for $selectedCabinName'); // TODO: This should be handled by simply throwing an error
       // Ensure lists are cleared on error
       activityNames.clear();
       orderedActivityIds.clear();
@@ -129,11 +124,11 @@ class ActivityPreferencesController extends GetxController {
   // *** ADDED: Method to save the current ranking ***
   Future<void> saveActivityRanking() async {
     if (selectedCamperId == null) {
-      Get.snackbar('Error', 'No camper selected.');
+      popupService.showToast(title: 'Error', message: 'No camper selected'); // TODO: throw an error
       return;
     }
     if (orderedActivityIds.isEmpty) {
-      Get.snackbar('Info', 'No activities to rank.');
+      popupService.showToast(title: 'Info', message: 'No activities have been scheduled for this session');
       return;
     }
 
@@ -146,13 +141,13 @@ class ActivityPreferencesController extends GetxController {
       // Show loading indicator? Maybe disable save button?
       // await activityService.saveRanking(selectedCamperId!, currentRanking);
       await Future.delayed(const Duration(seconds: 1)); // Simulate save
-      Get.snackbar('Success', 'Activity ranking saved!');
+      popupService.showToast(title: 'Success', message: 'Activity ranking saved!');
       // Optionally update completion status and refresh relevant parts
       // camperIsCompleted[selectedCamperId!] = true;
       // camperIsCompleted.refresh();
     } catch (e) {
       print("Error saving ranking: $e");
-      Get.snackbar('Error', 'Failed to save ranking: $e');
+      popupService.showToast(title: 'Error', message: 'Failed to save ranking: $e');
     } finally {
       // Hide loading indicator? Re-enable save button?
     }

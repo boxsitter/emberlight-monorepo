@@ -92,7 +92,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                 child: Obx(() { // Use Obx to react to activity loading state/data
                   if (controller.selectedCamperId == null) {
                     return const Center(child: Text(
-                        'Select a camper above.'));
+                        'Select a camper above'));
                   }
                   if (!controller.isActivityDataLoaded.value) {
                     return const Center(child: CircularProgressIndicator());
@@ -100,7 +100,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                   // Use orderedActivityIds for checking emptiness now
                   if (controller.orderedActivityIds.isEmpty) {
                     return const Center(child: Text(
-                        'No activities found for this camper.'));
+                        'No activities scheduled for this session'));
                   }
 
                   // Example:
