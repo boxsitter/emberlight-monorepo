@@ -1,4 +1,5 @@
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 
 
 class HardcodedObjects {
@@ -110,6 +111,20 @@ class HardcodedObjects {
     capacity: 20,
     description: 'Grab a deck of cards and gather around a table with friends for some fun games!',
     isSkillsRec: true,
+  );
+
+  static final ScheduleDay day1 = ScheduleDay(
+    start: DateTime.now(),
+    end: DateTime.now(),
+    dayIndex: 0,
+  );
+
+  static final AMABlock choiceActivity = AMABlock(
+    name: 'Choice Activity 1',
+    isTemplate: false,
+    start: DateTime.now(),
+    end: DateTime.now(),
+    isSkillsRec: false,
   );
 
   static final Set<CoreObject> hardcodedObjects = {

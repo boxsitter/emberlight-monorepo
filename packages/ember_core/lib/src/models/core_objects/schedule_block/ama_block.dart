@@ -10,6 +10,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
   @override
   DateTime end;
   final Set<String> activityDependentCmps;
+  bool isSkillsRec;
 
   AMABlock({
     required this.name,
@@ -17,6 +18,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
     required this.start,
     required this.end,
     Set<String>? activityDependentCmps,
+    required this.isSkillsRec,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -41,6 +43,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
       'start': start,
       'end': end,
       'activityDependentCmps': activityDependentCmps.toList(),
+      'isSkillsRec': isSkillsRec,
     });
     return json;
   }
@@ -52,6 +55,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
       start: json['start'] as DateTime,
       end: json['end'] as DateTime,
       activityDependentCmps: (json['activityDependentCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
+      isSkillsRec: json['isSkillsRec'] as bool,
     );
     block.overwriteCoreObjectFromJson(json);
     return block;

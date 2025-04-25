@@ -1,10 +1,6 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 import '../../../ember_core_models.dart';
-import '../core_objects/domain/branch.dart';
-import '../core_objects/domain/organization.dart';
-import '../core_objects/domain/season.dart';
-import '../core_objects/domain/session.dart';
 
 typedef CoreObjectObjId = String;
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
@@ -64,25 +60,26 @@ abstract class CoreObject{
     updatedAt = DateTime.now().toUtc();
   }
 
-  static final Map<Type, JsonFactory> fromJsons = {
-    CabinDependent: (json) => CabinDependent.fromJson(json),
-    ActivityDependent: (json) => ActivityDependent.fromJson(json),
+  static final Map<String, JsonFactory> _fromJsons = {
+    'cabin_dependent': (json) => CabinDependent.fromJson(json),
+    'activity_dependent': (json) => ActivityDependent.fromJson(json),
 
-    Branch: (json) => Branch.fromJson(json),
-    Organization: (json) => Organization.fromJson(json),
-    Season: (json) => Season.fromJson(json),
-    Session: (json) => Session.fromJson(json),
+    'branch': (json) => Branch.fromJson(json),
+    'organization': (json) => Organization.fromJson(json),
+    'season': (json) => Season.fromJson(json),
+    'session': (json) => Session.fromJson(json),
 
-    PrincipalActivity: (json) => PrincipalActivity.fromJson(json),
-    PrincipalCabin: (json) => PrincipalCabin.fromJson(json),
+    'principal_activity': (json) => PrincipalActivity.fromJson(json),
+    'principal_cabin': (json) => PrincipalCabin.fromJson(json),
 
-    AMABlock: (json) => AMABlock.fromJson(json),
-    Camper: (json) => Camper.fromJson(json),
-    Schedule: (json) => Schedule.fromJson(json),
+    'AMA_Block': (json) => AMABlock.fromJson(json),
+    'camper': (json) => Camper.fromJson(json),
+    'schedule': (json) => Schedule.fromJson(json),
+    // Add other types as needed.
   };
 
   static T fromJson<T>(Map<String, dynamic> json) {
-    JsonFactory<dynamic>? fromJsonFunction = fromJsons[T];
+    JsonFactory<dynamic>? fromJsonFunction = _fromJsons[IdFunctions.getIdPart(json['id'], 1)];
     if (fromJsonFunction == null) {
       throw StateError('NEED TO ADD ${json['id']} TO FROMJSONS LIST IN COREOBJECT!');
     }
