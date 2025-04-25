@@ -5,12 +5,12 @@ class CabinDependent extends CoreObject implements Dependent{
   @override
   final String principalPar;
   final Set<CamperId> camperRefs;
-  final Map<CamperId, CamperPreferenceId> campersWithPreferences;
+  final Set<CamperId> campersWithPreferences;
 
   CabinDependent({
     required this.principalPar,
     Set<String>? camperRefs,
-    Map<CamperId, CamperPreferenceId>? campersWithPreferences ,
+    Set<CamperId>? campersWithPreferences,
     super.id,
     super.createdAt,
     super.updatedAt,

@@ -10,23 +10,6 @@ class ActivitySignupService extends GetxService {
   BackendInterface backend = BackendManager.instance;
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
-  Future<Set<CamperPreference>> getCamperPreferences() async {
-    Set<Camper> campers = await sessionRosterService.registeredCampers;
-    Set<CamperPreference> output = {};
-
-    for (Camper camper in campers) {
-      try {
-        CamperPreference preference = await backend.getObject(camper.camperPreferenceCmp!);
-        output.add(preference);
-      } catch (error) {
-        print("Error fetching preference for camper ${camper.id /* or other identifier */}: $error");
-      }
-    }
-
-    // Return the populated set (implicitly wrapped in a Future by the async keyword)
-    return output;
-  }
-
   // follows the rules of the simple assignment algorithm
   Future<void> setRanking ({
     required Commit commit,
@@ -34,17 +17,15 @@ class ActivitySignupService extends GetxService {
     required List<PrincipalActivityId> orderedPrincipalActivityIds,
   }) async {
     Camper camper = commit.getObject(camperId) ?? await backend.getObject(camperId);
-    CamperPreference camperPreference = commit.getObject(camper.camperPreferenceCmp!) ?? await backend.getObject(camper.camperPreferenceCmp!);
     CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await backend.getObject(camper.cabinRef!);
 
     int position = 0;
     int totalPositions = orderedPrincipalActivityIds.length - 1;
     for (PrincipalActivityId principalActivityId in orderedPrincipalActivityIds) {
-      camperPreference.preferenceRefs[principalActivityId] = position / totalPositions;
+      camper.preferenceRefs[principalActivityId] = position / totalPositions;
       position++;
     }
 
-    camper.camperPreferenceCompleted = true;
     camperCabin.campersWithPreferences[camper.id] = camperPreference.id;
 
     commit.addObjectsToPush({camperPreference, camper, camperCabin});

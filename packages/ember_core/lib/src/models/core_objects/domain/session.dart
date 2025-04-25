@@ -4,7 +4,6 @@ import 'package:ember_core/src/models/abstract/time_interval.dart';
 
 import '../../abstract/elevated.dart';
 
-typedef CamperPreferenceId = String;
 typedef DependentId = String;
 typedef PrincipalId = String;
 

@@ -6,6 +6,7 @@ import '../../../ember_core_utils.dart';
 typedef CabinId = String;
 typedef AMABlockId = String;
 typedef ActivityDependentId = String;
+typedef CamperId = String;
 
 class Camper extends CoreObject {
   String firstName;
@@ -16,8 +17,8 @@ class Camper extends CoreObject {
   String note;
   CabinId? cabinRef;
   String? cabinName;
-  CamperPreferenceId? camperPreferenceCmp;
-  bool camperPreferenceCompleted;
+  final Map<PrincipalActivityId, double?> preferenceRefs; // A map of every unique activity type in the schedule to the camper's preference
+  final Map<PrincipalActivityId, double> preferenceWeightRefs;
   // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
   Map<AMABlockId, ActivityDependentId?> activityAssignmentRefs;
 
@@ -30,18 +31,20 @@ class Camper extends CoreObject {
     this.note = '',
     this.cabinRef,
     this.cabinName,
-    this.camperPreferenceCmp,
-    this.camperPreferenceCompleted = false,
+    Map<PrincipalActivityId, double?>? preferenceRefs,
+    Map<PrincipalActivityId, double>? preferenceWeightRefs,
     Map<AMABlockId, ActivityDependentId>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : activityAssignmentRefs = activityAssignmentRefs ?? {},
+  })  : preferenceRefs = preferenceRefs ?? {},
+        preferenceWeightRefs = preferenceWeightRefs ?? {},
+        activityAssignmentRefs = activityAssignmentRefs ?? {},
         super(
-          domain: 'ses',
-          type: 'camper',
-          idTag: '${firstName}_${lastName[0]}',
-        );
+        domain: 'ses',
+        type: 'camper',
+        idTag: '${firstName}_${lastName[0]}',
+      );
 
   /// returns preferred name if set, first name if not
   String get name => preferredName.isNotEmpty ? preferredName : firstName;
@@ -50,12 +53,8 @@ class Camper extends CoreObject {
 
   @override
   String coreToString() {
-    String idField = toStringSuper();
-    String nameField = fullName;
-    String ageField = 'Age: $age';
-    String cabinField = 'cabinRef: ${cabinRef ?? "none"}';
-
-    return '$idField $nameField, $ageField, $cabinField';
+    // TODO: implement coreToString
+    throw UnimplementedError();
   }
 
   @override
@@ -70,8 +69,8 @@ class Camper extends CoreObject {
       'note': note,
       'cabinRef': cabinRef,
       'cabinName': cabinName,
-      'camperPreferenceCmp': camperPreferenceCmp,
-      'camperPreferenceCompleted': camperPreferenceCompleted,
+      'preferenceRefs': preferenceRefs.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
+      'preferenceWeightRefs': preferenceWeightRefs.map((key, value) => MapEntry(key, value.clamp(0.0, 1.0))),
       'activityAssignmentRefs': activityAssignmentRefs,
     });
     return json;
@@ -87,8 +86,8 @@ class Camper extends CoreObject {
       note: json['note'] ?? '',
       cabinRef: json['cabinRef'],
       cabinName: json['cabinName'],
-      camperPreferenceCmp: json['camperPreferenceCmp'] ?? '',
-      camperPreferenceCompleted: json['camperPreferenceCompleted'] ?? false,
+      preferenceRefs: (json['preferenceRefs'] as Map?)?.cast<String, double?>() ?? {},
+      preferenceWeightRefs: (json['preferenceWeightRefs'] as Map?)?.cast<String, double>() ?? {},
       activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String>() ?? {},
     );
     camper.overwriteCoreObjectFromJson(json);
@@ -112,4 +111,6 @@ class Camper extends CoreObject {
       activityAssignmentRefs.removeWhere((key, value) => value == id);
     }
   }
+
+
 }
