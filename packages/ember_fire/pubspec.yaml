@@ -1,6 +1,6 @@
 name: ember_fire
 description: A starting point for Dart libraries or applications.
-version: 1.0.0
+version: 0.1.0
 publish_to: none
 # repository: https://github.com/my_org/my_repo
 
@@ -22,8 +22,8 @@ dependencies:
   # Firebase
   firebase_core: ^3.13.0
   cloud_firestore: ^5.6.6
-  # firebase_crashlytics: ^4.3.4
-  # firebase_analytics: ^11.4.4
+  firebase_crashlytics: ^4.3.5
+  firebase_analytics: ^11.4.5
 
 
 dev_dependencies:

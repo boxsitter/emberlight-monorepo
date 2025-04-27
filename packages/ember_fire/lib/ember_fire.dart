@@ -16,7 +16,7 @@ import 'firebase_options.dart';
 const _backendName = 'EmberFire';
 const _backendDescription = 'Firebase backend for EmberCore.';
 
-class EmberFire implements BackendInterface {
+class EmberFire implements CoreBackend {
   late final PullRepository pullRepo;
   late final CommitRepository commitRepo;
   late final LiveDataRepository liveDataRepo;
@@ -27,33 +27,36 @@ class EmberFire implements BackendInterface {
   EmberFire({this.isReleaseMode = false});
 
   @override
-  Future<void> init() async {
+  Future<void> initCritical() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  }
+
+  @override
+  void init() {
     if (isReleaseMode) {
       print("Using Remote Firestore Database");
     } else {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       print("Using Firestore Emulator");
     }
-    Get.put(DumbPushRepository());
-    Get.put(PathService());
-    pullRepo = Get.put(PullRepository());
-    liveDataRepo = Get.put(LiveDataRepository());
-    databaseRepairService = Get.put(DatabaseRepairService());
+    Get.put(DumbPushRepository(), permanent: true);
+    Get.put(PathService(), permanent: true);
+    pullRepo = Get.put(PullRepository(), permanent: true);
+    liveDataRepo = Get.put(LiveDataRepository(), permanent: true);
+    databaseRepairService = Get.put(DatabaseRepairService(), permanent: true);
   }
 
   @override
   void initLate() {
-    commitRepo = Get.put(CommitRepository());
-    //Get.put(DeletionService);
+    commitRepo = Get.put(CommitRepository(), permanent: true);
   }
 
   @override
-  String get backendDescription => _backendName;
+  // TODO: implement backendName
+  String get backendName => _backendName;
 
   @override
-  // TODO: implement backendName
-  String get backendName => _backendDescription;
+  String get backendDescription => _backendDescription;
 
   @override
   Future<void> commit(Commit request) async {
