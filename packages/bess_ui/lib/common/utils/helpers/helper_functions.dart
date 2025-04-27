@@ -147,4 +147,39 @@ class BessHelperFunctions {
     });
     return transposedMap;
   }
+
+  static Color blendColors(Color color1, Color color2, int alpha) {
+    final int effectiveAlphaInt = alpha.clamp(0, 255);
+    final double foregroundOpacity = effectiveAlphaInt / 255.0; // Opacity 0.0-1.0
+
+    // Use the doubles directly, assuming they are [0.0, 1.0]
+    final double backgroundAlpha = color1.a;
+    final double backgroundRed = color1.r;
+    final double backgroundGreen = color1.g;
+    final double backgroundBlue = color1.b;
+
+    final double foregroundRed = color2.r;
+    final double foregroundGreen = color2.g;
+    final double foregroundBlue = color2.b;
+
+    // Blend using [0.0, 1.0] doubles
+    final double resultRedNorm = foregroundRed * foregroundOpacity + backgroundRed * (1.0 - foregroundOpacity);
+    final double resultGreenNorm = foregroundGreen * foregroundOpacity + backgroundGreen * (1.0 - foregroundOpacity);
+    final double resultBlueNorm = foregroundBlue * foregroundOpacity + backgroundBlue * (1.0 - foregroundOpacity);
+    final double resultAlphaNorm = foregroundOpacity + backgroundAlpha * (1.0 - foregroundOpacity);
+
+    // Convert results [0.0, 1.0] back to ints [0, 255]
+    final int resultAlphaInt = (resultAlphaNorm * 255.0).round().clamp(0, 255);
+    final int resultRedInt = (resultRedNorm * 255.0).round().clamp(0, 255);
+    final int resultGreenInt = (resultGreenNorm * 255.0).round().clamp(0, 255);
+    final int resultBlueInt = (resultBlueNorm * 255.0).round().clamp(0, 255);
+
+    // Construct color using ints
+    return Color.fromARGB(
+      resultAlphaInt,
+      resultRedInt,
+      resultGreenInt,
+      resultBlueInt,
+    );
+  }
 }

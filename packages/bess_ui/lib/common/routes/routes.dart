@@ -19,7 +19,7 @@ class BessRoutes {
 
   //static const secondScreen = '/second-screen';
   //static const secondScreenWithUID = '/second-screen/:userId';
-  static const responsiveDesignExample = '/responsive-design/';
+  static const responsiveDesignExample = '/responsive-design';
   static const console = '/console';
   static const sessionRoster = '/session-roster';
   static const schedulePage = '/schedule-page';

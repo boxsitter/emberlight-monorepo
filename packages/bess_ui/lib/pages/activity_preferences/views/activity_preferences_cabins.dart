@@ -50,10 +50,14 @@ class ActivityPreferencesCabinsDesktop extends StatelessWidget {
                   final name = controller.cabinNames[cabinId] ?? 'Unknown';
                   final count = controller.camperCounts[cabinId] ?? 0;
                   final preferencesCount = controller.campersWithPreferencesCounts[cabinId] ?? 0;
+                  final bool isCompleted = preferencesCount >= count;
+                  final bool isInProgress = preferencesCount > 0 && preferencesCount < count;
 
                   return CardButton(
                     title: name,
                     subtitle: '$preferencesCount/$count campers completed',
+                    isCompleted: isCompleted,
+                    isInProgress: isInProgress,
                     height: 90,
                     width: 250,
                     onTap: () => controller.navigateToSelection(cabinId, name ),

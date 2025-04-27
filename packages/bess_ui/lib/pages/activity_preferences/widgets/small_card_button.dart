@@ -1,3 +1,4 @@
+import 'package:bessie/common/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/constants/colors.dart';
@@ -13,6 +14,7 @@ class SmallCardButton extends StatelessWidget {
     this.width,
     required this.onTap,
     this.isSelected = false,
+    this.isCompleted = false,
   });
 
 
@@ -21,24 +23,45 @@ class SmallCardButton extends StatelessWidget {
   final double? width;
   final Function()? onTap;
   final bool isSelected;
+  final bool isCompleted;
 
 
 
   @override
   Widget build(BuildContext context) {
+    Color? backgroundColor;
+    if (isSelected) {
+      backgroundColor = BessColors.primary;
+    } else if (isCompleted) {
+      backgroundColor = BessHelperFunctions.blendColors(BessColors.core, BessColors.green, 60);
+    } else {
+      backgroundColor = null;
+    }
+
+    Color? boarderColor;
+    if (isSelected) {
+      boarderColor = BessColors.primary;
+    } else if (isCompleted) {
+      boarderColor = BessHelperFunctions.blendColors(BessColors.borderPrimary, BessColors.green, 150);
+    } else {
+      boarderColor = null;
+    }
+
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Material(
         color: Colors.transparent,
         child: BessRoundedContainer(
           showBorder: true,
-          borderThickness: isSelected ? 0 : 1,
+          borderThickness: 1,
+          borderColor: boarderColor,
           height: height,
           width: width,
           clipContent: false,
           onTap: onTap,
           showShadow: true,
-          backgroundColor: isSelected ? BessColors.primary : null,
+          backgroundColor: backgroundColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +69,7 @@ class SmallCardButton extends StatelessWidget {
               Text(
                 title,
                 style: isSelected ? BessTextStyles.standardInverted : BessTextStyles.standard,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ],

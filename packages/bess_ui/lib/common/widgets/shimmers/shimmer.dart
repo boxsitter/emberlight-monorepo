@@ -4,12 +4,12 @@ import 'package:shimmer/shimmer.dart';
 import '../../constants//colors.dart';
 import '../../utils/helpers/helper_functions.dart';
 
-class TShimmerEffect extends StatelessWidget {
-  const TShimmerEffect({
+class BessShimmerEffect extends StatelessWidget {
+  const BessShimmerEffect({
     super.key,
     required this.width,
     required this.height,
-    this.radius = 15,
+    this.radius = 0,
     this.color,
   });
 
@@ -18,18 +18,42 @@ class TShimmerEffect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = BessHelperFunctions.isDarkMode(context);
     return Shimmer.fromColors(
-      baseColor: dark ? Colors.grey[850]! : Colors.grey[300]!,
-      highlightColor: dark ? Colors.grey[700]! : Colors.grey[100]!,
+      baseColor: BessColors.overlay1,
+      highlightColor: BessColors.element1,
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: color ?? (dark ? BessColors.semiHigh : BessColors.low),
+          color: BessColors.overlay1,
           borderRadius: BorderRadius.circular(radius),
         ),
       ),
     );
   }
 }
+
+class BessShimmerWrapper extends StatelessWidget {
+  const BessShimmerWrapper({
+    super.key,
+    required this.child,
+    this.baseColor,
+    this.highlightColor,
+    this.period = const Duration(milliseconds: 1500),
+  });
+
+  final Widget child;
+  final Color? baseColor, highlightColor;
+  final Duration period;
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      period: period,
+      baseColor: baseColor ?? BessColors.overlay1,
+      highlightColor: highlightColor ?? BessColors.element1,
+      child: child,
+    );
+  }
+}
+

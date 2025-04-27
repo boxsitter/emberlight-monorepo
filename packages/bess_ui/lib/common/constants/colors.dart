@@ -1,6 +1,7 @@
 import 'package:bessie/common/constants/catppuccin_base.dart';
-import 'package:bessie/app_config.dart';
 import 'package:flutter/material.dart';
+
+import '../../main.dart';
 
 class BessColors {
   static Flavor flavor = AppConfig.theme;
@@ -15,7 +16,7 @@ class BessColors {
   static Color textSecondary = flavor.subtext0;
   static Color textSubtle = flavor.overlay1;
   static Color textLink = flavor.blue;
-  static Color textInverted = flavor.crust;
+  static Color textInverted = flavor.mantle;
 
   // Background colors
   static Color background = flavor.mantle;

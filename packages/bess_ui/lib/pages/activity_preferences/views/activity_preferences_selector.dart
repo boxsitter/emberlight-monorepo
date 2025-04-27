@@ -1,4 +1,5 @@
 import 'package:bessie/common/constants/colors.dart';
+import 'package:bessie/common/widgets/buttons/action_initiator.dart';
 import 'package:bessie/common/widgets/containers/rounded_container.dart';
 import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +65,8 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                   children: controller.camperNames.keys.map((camperId) {
                     final name = controller.camperNames[camperId] ??
                         'Unknown';
-                    final bool isSelected = controller.selectedCamperId ==
-                        camperId;
+                    final bool isSelected = controller.selectedCamperId == camperId;
+                    final bool isCompleted = controller.camperIsCompleted.contains(camperId);
 
                     return Padding(
                       padding: EdgeInsets.symmetric(
@@ -73,9 +74,10 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                           horizontal: BessSizes.spaceBtwItems / 2),
                       child: SmallCardButton(
                         title: name,
-                        height: 20,
+                        height: 35,
                         width: 120,
                         isSelected: isSelected,
+                        isCompleted: isCompleted,
                         onTap: () => controller.selectCamper(camperId, name),
                       ),
                     );
@@ -128,20 +130,26 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                               // *** Each item MUST have a unique Key ***
                               return BessRoundedContainer(
                                   key: ValueKey(activityId),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                   width: 400,
                                   height: 40,
                                   borderThickness: 2,
                                   showBorder: true,
+                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text( // Display rank number
                                         '#${index + 1}    $activityName',
                                         style: BessTextStyles.standard,
                                       ),
+
+                                    Spacer(),
+
+                                    IconButton(
+                                      onPressed: () => controller.showActivityInfo(activityId),
+                                      icon: const Icon(LucideIcons.info),
+                                    ),
 
                                       ReorderableDragStartListener(
                                         index: index,
@@ -175,9 +183,11 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
                             footer: Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: ElevatedButton(
+                              child: ActionInitiator(
+                                enabled: !controller.saveInProgress.value,
                                 onPressed: controller.saveActivityRanking,
-                                child: Text('Save Ranking', style: BessTextStyles.standardInverted),
+                                enabledText: 'Save Ranking',
+                                disabledText: 'Saving...',
                               ),
                             ),
                           ),

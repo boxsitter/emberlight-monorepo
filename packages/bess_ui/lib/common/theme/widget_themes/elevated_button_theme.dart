@@ -1,3 +1,4 @@
+import 'package:bessie/common/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
@@ -10,7 +11,7 @@ class BessieElevatedButtonTheme {
   /* -- Light Theme -- */
   static final elevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      elevation: 0,
+      elevation: BessSizes.buttonElevation,
       foregroundColor: BessColors.element1,
       backgroundColor: BessColors.primary,
       disabledForegroundColor: BessColors.semiHigh,
@@ -19,11 +20,7 @@ class BessieElevatedButtonTheme {
       padding: const EdgeInsets.symmetric(vertical: BessSizes.buttonHeight),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
-      textStyle: TextStyle(
-          fontSize: 16,
-          color: BessColors.textInverted,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Inter'),
-    ),
+      textStyle: BessTextStyles.standardInverted,
+    )
   );
 }

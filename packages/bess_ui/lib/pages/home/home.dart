@@ -34,9 +34,9 @@ class HomeScreenDesktop extends StatelessWidget {
 
         const SizedBox(height: BessSizes.spaceBtwItems),
 
-        const Row(
+        Row(
           children: [
-            Expanded(
+            const Expanded(
               child: HomeScreenNavCard(
                   title: 'Session Roster',
                   icon: LucideIcons.layoutPanelLeft,
@@ -44,14 +44,21 @@ class HomeScreenDesktop extends StatelessWidget {
               ),
             ),
 
-            SizedBox(width: BessSizes.md),
+            const SizedBox(width: BessSizes.md),
 
-            Expanded(
+            const Expanded(
               child: HomeScreenNavCard(
                   title: 'Console',
                   icon: LucideIcons.squareTerminal,
                   description: 'Developer terminal with tools for testing and debugging'
               ),
+            ),
+
+            const SizedBox(width: BessSizes.md),
+
+            TextButton(
+              onPressed: () => throw Exception(),
+              child: const Text("Throw Test Exception"),
             ),
           ],
         ),

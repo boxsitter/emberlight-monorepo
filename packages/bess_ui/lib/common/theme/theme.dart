@@ -1,4 +1,5 @@
 import 'package:bessie/common/constants/sizes.dart';
+import 'package:bessie/common/theme/widget_themes/progress_indicator_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
@@ -30,6 +31,7 @@ class BessieAppTheme {
     elevatedButtonTheme: BessieElevatedButtonTheme.elevatedButtonTheme,
     outlinedButtonTheme: BessieOutlinedButtonTheme.outlinedButtonTheme,
     inputDecorationTheme: BessieTextFormFieldTheme.inputDecorationTheme,
+    progressIndicatorTheme: BessieProgressIndicatorTheme.progressIndicatorTheme,
     iconTheme: IconThemeData(color: BessColors.semiHigh, size: BessSizes.bg),
   );
 

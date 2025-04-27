@@ -66,7 +66,7 @@ class SessionManagerController extends GetxController {
       }
     }
 
-    commitService.commitRequest(commit);
+    commitService.commit(commit);
   }
 
 // Add any other methods needed, like saving the state

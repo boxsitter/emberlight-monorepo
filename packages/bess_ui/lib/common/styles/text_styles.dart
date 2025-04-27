@@ -23,6 +23,7 @@ class BessTextStyles {
     fontSize: 14.0,
     color: BessColors.textInverted,
     fontWeight: FontWeight.w400,
+    height: 1.2,
   );
 
   static final TextStyle standardLink = TextStyle(

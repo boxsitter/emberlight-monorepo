@@ -38,13 +38,10 @@ class RouteObservers extends GetObserver {
 
     ActivityPreferencesController activityPreferencesController = Get.find<ActivityPreferencesController>();
     if (topRoute.settings.name == BessRoutes.activityPreferencesCabins && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCabins) {
-      activityPreferencesController.populateCabinMaps();
+      activityPreferencesController.onCabinsLoad();
     }
-    if (topRoute.settings.name == BessRoutes.activityPreferencesCampers && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCampers) {
-      activityPreferencesController.populateCamperMaps();
-    }
-    if (topRoute.settings.name == BessRoutes.activityPreferencesSelector && previousTopRoute?.settings.name != BessRoutes.activityPreferencesSelector) {
-      activityPreferencesController.populateActivityMaps();
+    if (topRoute.settings.name == BessRoutes.activityPreferencesSelector && previousTopRoute?.settings.name != BessRoutes.activityPreferencesSelector && previousTopRoute?.settings.name != null) {
+      activityPreferencesController.onSelectorLoad();
     }
 
     SessionManagerController sessionManagerController = Get.find<SessionManagerController>();

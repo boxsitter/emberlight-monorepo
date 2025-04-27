@@ -1,5 +1,3 @@
-import 'package:bessie/app_config.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -10,9 +8,10 @@ import 'common/routes/routes.dart';
 import 'common/theme/shad_theme.dart';
 import 'common/theme/theme.dart';
 import 'common/utils/device/web_material_scroll.dart';
+import 'main.dart';
 
-class App extends StatelessWidget {
-  const App({super.key});
+class BessieApp extends StatelessWidget {
+  const BessieApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class App extends StatelessWidget {
           //darkTheme: BessieAppTheme.darkTheme,
           debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
-          initialRoute: AppConfig.homePage,
+          initialRoute: BessRoutes.home,
           unknownRoute: GetPage(
             name: '/page-not-found',
             page: () => const Scaffold(

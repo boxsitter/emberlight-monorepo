@@ -92,7 +92,7 @@ class BessRoundedImage extends StatelessWidget {
         imageUrl: image!,
         errorWidget: (context, url, error) => const Icon(Icons.error),
         progressIndicatorBuilder: (context, url, downloadProgress) =>
-            TShimmerEffect(width: width, height: height),
+            BessShimmerEffect(width: width, height: height),
       );
     } else {
       // Return an empty container if no image is provided
