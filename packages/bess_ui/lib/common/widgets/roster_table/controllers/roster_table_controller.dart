@@ -104,8 +104,9 @@ class RosterTableController extends GetxController {
 
 
   // --- Stream Handling Methods ---
-  void _startListening() {
-    _campersSubscription = sessionRosterService.camperStream.listen((camperMap) {
+  Future<void> _startListening() async {
+    final camperStream = await sessionRosterService.camperStream;
+    _campersSubscription = camperStream.listen((camperMap) {
       campers.assignAll(camperMap); // This triggers the 'ever' listener below
     });
   }

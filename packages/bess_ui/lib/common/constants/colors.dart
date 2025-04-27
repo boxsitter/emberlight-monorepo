@@ -1,7 +1,6 @@
 import 'package:bessie/common/constants/catppuccin_base.dart';
+import 'package:bessie/main.dart';
 import 'package:flutter/material.dart';
-
-import '../../main.dart';
 
 class BessColors {
   static Flavor flavor = AppConfig.theme;
