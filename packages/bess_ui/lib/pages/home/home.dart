@@ -53,13 +53,6 @@ class HomeScreenDesktop extends StatelessWidget {
                   description: 'Developer terminal with tools for testing and debugging'
               ),
             ),
-
-            const SizedBox(width: BessSizes.md),
-
-            TextButton(
-              onPressed: () => throw Exception(),
-              child: const Text("Throw Test Exception"),
-            ),
           ],
         ),
       ],
