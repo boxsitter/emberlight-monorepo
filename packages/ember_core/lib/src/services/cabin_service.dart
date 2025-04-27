@@ -5,7 +5,7 @@ import 'package:ember_core/ember_core_utils.dart';
 import 'package:get/get.dart';
 
 class CabinService extends GetxService {
-  BackendInterface backend = BackendManager.instance;
+  CoreBackend backend = BackendManager.instance;
   CommitService requestService = Get.find<CommitService>();
 
   Future<Set<CabinDependent>> get cabinDependents async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
@@ -50,8 +50,10 @@ class CabinService extends GetxService {
   }
 
   Future<Map<CabinDependent, PrincipalCabin>> getCabinDependentToPrincipalCabins() async {
-    Set<CabinDependent> cabinDependents = await this.cabinDependents;
-    Set<PrincipalCabin> principalCabins = await this.principalCabins;
+    final results = await Future.wait([this.cabinDependents, this.principalCabins]);
+
+    Set<CabinDependent> cabinDependents = results[0] as Set<CabinDependent>;
+    Set<PrincipalCabin> principalCabins = results[1] as Set<PrincipalCabin>;
     Map<CabinDependent, PrincipalCabin> output = {};
 
     Map<String, PrincipalCabin> principalCabinsById = {

@@ -6,8 +6,8 @@ import '../../ember_core_backend.dart';
 import '../../ember_core_models.dart';
 
 
-class ActivitySignupService extends GetxService {
-  BackendInterface backend = BackendManager.instance;
+class ActivityPreferenceService extends GetxService {
+  CoreBackend backend = BackendManager.instance;
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   // follows the rules of the simple assignment algorithm
@@ -21,7 +21,8 @@ class ActivitySignupService extends GetxService {
 
     int position = 0;
     int totalPositions = orderedPrincipalActivityIds.length - 1;
-    for (PrincipalActivityId principalActivityId in orderedPrincipalActivityIds) {
+    List<PrincipalActivityId> invertedList = orderedPrincipalActivityIds.reversed.toList();
+    for (PrincipalActivityId principalActivityId in invertedList) {
       camper.preferenceRefs[principalActivityId] = position / totalPositions;
       position++;
     }

@@ -1,6 +1,7 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 import '../../../ember_core_models.dart';
+import '../core_objects/schedule_day.dart';
 
 typedef CoreObjectObjId = String;
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
@@ -72,10 +73,10 @@ abstract class CoreObject{
     'principal_activity': (json) => PrincipalActivity.fromJson(json),
     'principal_cabin': (json) => PrincipalCabin.fromJson(json),
 
-    'AMA_Block': (json) => AMABlock.fromJson(json),
+    'ama_block': (json) => AMABlock.fromJson(json),
     'camper': (json) => Camper.fromJson(json),
     'schedule': (json) => Schedule.fromJson(json),
-    // Add other types as needed.
+    'schedule_day': (json) => ScheduleDay.fromJson(json),
   };
 
   static T fromJson<T>(Map<String, dynamic> json) {

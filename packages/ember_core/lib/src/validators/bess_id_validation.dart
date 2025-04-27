@@ -1,7 +1,7 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 class CoreIdValidation {
-  static const String validCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.~';
+  static const String validCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   static const Set<String> validDomains = {'rot', 'org', 'brn', 'sea', 'ses'};
   static final RegExp potentialIdPattern = RegExp(r'^[^-]+-[^-]+-(rot|org|brn|sea|ses)(?:-|$)');
   
@@ -40,8 +40,8 @@ class CoreIdValidation {
     if (!validDomains.contains(idParts[2])) {
       throw ArgumentError("ID '$id' has an invalid domain '${idParts[2]}'.");
     }
-    if (idParts.last.length != 6) {
-      throw ArgumentError("ID '$id' has a random part of length ${idParts.last.length}, expected 6.");
+    if (idParts.last.length != 7) {
+      throw ArgumentError("ID '$id' has a random part of length ${idParts.last.length}, expected 7.");
     }
   }
 

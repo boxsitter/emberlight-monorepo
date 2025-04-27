@@ -23,14 +23,8 @@ class IdFunctions {
     }
     final cleanType = clean(objectType);
     final cleanTag = clean(tag);
-    String randomPart = List.generate(6, (_) => CoreIdValidation.validCharacters[_secureRandom.nextInt(CoreIdValidation.validCharacters.length)]).join();
+    String randomPart = List.generate(7, (_) => CoreIdValidation.validCharacters[_secureRandom.nextInt(CoreIdValidation.validCharacters.length)]).join();
     return '$cleanTag-$cleanType-$domain-$randomPart';
-  }
-
-  static String generateSimpleId(String tag) {
-    final cleanTag = clean(tag);
-    String randomPart = List.generate(6, (_) => CoreIdValidation.validCharacters[_secureRandom.nextInt(CoreIdValidation.validCharacters.length)]).join();
-    return '$cleanTag-$randomPart';
   }
 
   /// Returns the specified part of a Core ID.

@@ -9,7 +9,7 @@ import '../../ember_core_services.dart';
 
 
 class ScheduleService extends GetxService {
-  BackendInterface backend = BackendManager.instance;
+  CoreBackend backend = BackendManager.instance;
   ClientContextService clientContextService = Get.find<ClientContextService>();
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
@@ -25,8 +25,13 @@ class ScheduleService extends GetxService {
   }
 
   Future<List<PrincipalActivityId>> getOrderedActivities(CamperId camperId) async {
-    Camper camper = await backend.getObject(camperId);
-    Schedule schedule = await clientContextService.schedule;
+    final results = await Future.wait([
+      backend.getObject(camperId),
+      clientContextService.schedule,
+    ]);
+    Camper camper = results[0] as Camper;
+    Schedule schedule = results[1] as Schedule;
+
     if (ModelHelperFunctions.preferenceCompleted(camper, schedule)) {
       final List<MapEntry<PrincipalActivityId, double?>> entries = camper.preferenceRefs.entries.toList();
       entries.sort((entryA, entryB) {

@@ -5,13 +5,13 @@ import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 class HardcodedObjects {
 
   static final Organization ygs = Organization(
-    id: 'ymca_of_greater_seattle-organization-rot-iezboj',
+    id: 'ymca_of_greater_seattle-organization-rot-iezbojy',
     name: 'YMCA Of Greater Seattle',
     createdAt: DateTime.parse('2025-03-17T04:58:08.000Z').toUtc(),
   );
 
   static final Branch colman = Branch(
-    id: 'colman-branch-org-ewuc68',
+    id: 'colman-branch-org-ewuc68e',
     name: 'Colman',
     createdAt: DateTime.parse('2025-03-17T05:10:29.000Z').toUtc(),
   );

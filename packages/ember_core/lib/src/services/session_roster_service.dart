@@ -10,7 +10,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
 class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
-  static BackendInterface backend = BackendManager.instance;
+  static CoreBackend backend = BackendManager.instance;
   CabinService cabinsService = Get.find<CabinService>();
   ClientContextService clientContextService = Get.find<ClientContextService>();
   CommitService requestService = Get.find<CommitService>();

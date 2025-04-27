@@ -1,5 +1,5 @@
 library;
 
 // frontend
-export 'src/frontend/core_messages.dart';
-export 'src/frontend/message_bus.dart';
+export 'src/frontend/frontend_interface.dart';
+export 'src/frontend/frontend_manager.dart';

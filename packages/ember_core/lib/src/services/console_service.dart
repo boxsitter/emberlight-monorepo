@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class ConsoleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
-  static BackendInterface backend = BackendManager.instance;
+  static CoreBackend backend = BackendManager.instance;
 
   Future<CommandResult> runCommand(String input) async {
     if (input.trim().isEmpty) return CommandResult();

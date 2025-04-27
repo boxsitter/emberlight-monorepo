@@ -1,4 +1,5 @@
 import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/src/hard_coded_objects.dart';
@@ -16,34 +17,50 @@ import 'package:get/get.dart';
 /// Import this package in your UI layer to access business logic and service methods.
 
 class EmberCore {
-  static Future<void> initializeEmberCore (BackendInterface backendInterface) async {
+  static void initializeComponents(CoreBackend backendInterface, CoreFrontend frontendInterface) {
     BackendManager.setBackend(backendInterface);
-    BackendInterface backend = BackendManager.instance;
-    Get.put(ClientContext());
-    Get.put(CommitService());
-    await backend.init();
-    if (EmberCoreConfig.doDumbDomainSetup) {
-      await backend.dumbDomainSetup(HardcodedObjects.ygs, HardcodedObjects.colman, HardcodedObjects.season, HardcodedObjects.session);
-    }
+    FrontendManager.setFrontend(frontendInterface);
+  }
+
+  static void initializeEmberCore () {
+    CoreBackend backend = BackendManager.instance;
+    Get.put(ClientContext(), permanent: true);
+    Get.put(CommitService(), permanent: true);
+    backend.init();
+    Get.put( ClientContextService());
+    backend.initLate();
+    Get.put(CabinService(), permanent: true);
+    Get.put(SessionRosterService(), permanent: true);
+    Get.put(ActivityPreferenceService(), permanent: true);
+    Get.put(ConsoleService(), permanent: true);
+    Get.put(ScheduleService(), permanent: true);
+    Get.put(FrontendCommitService(), permanent: true);
+  }
+
+  static Future<void> recoverEmberCore (CoreBackend backendInterface, CoreFrontend frontendInterface) async {
+    BackendManager.setBackend(backendInterface);
+    FrontendManager.setFrontend(frontendInterface);
+    CoreBackend backend = BackendManager.instance;
+    Get.put(ClientContext(), permanent: true);
+    Get.put(CommitService(), permanent: true);
+    backend.init();
+    await backend.dumbDomainSetup(HardcodedObjects.ygs, HardcodedObjects.colman, HardcodedObjects.season, HardcodedObjects.session);
     ClientContextService clientContextService = ClientContextService();
     await clientContextService.setDefaultContext();
     Get.put( clientContextService);
     backend.initLate();
-    if (EmberCoreConfig.repairHardcodedObjects) {
-      await repairHardcodedObjects();
-    }
-    Get.put(CabinService());
-    Get.put(SessionRosterService());
-    Get.put(ConsoleService());
-    Get.put(ScheduleService());
-    Get.put(FrontendCommitService());
-    if (EmberCoreConfig.initializeTestSchedule) {
-
-    }
+    Get.put(CabinService(), permanent: true);
+    Get.put(SessionRosterService(), permanent: true);
+    Get.put(ActivityPreferenceService(), permanent: true);
+    Get.put(ConsoleService(), permanent: true);
+    Get.put(ScheduleService(), permanent: true);
+    Get.put(FrontendCommitService(), permanent: true);
+    await repairHardcodedObjects();
+    await initializeTestSchedule();
   }
 
   static Future<void> repairHardcodedObjects() async {
-    BackendInterface backend = BackendManager.instance;
+    CoreBackend backend = BackendManager.instance;
     Commit commit = Commit(disarmRequirementsLevel: 0);
     await backend.mergeObjectsWithDatabase(
       commit: commit,
@@ -57,7 +74,7 @@ class EmberCore {
   }
 
   static Future<void> initializeTestSchedule() async {
-    BackendInterface backend = BackendManager.instance;
+    CoreBackend backend = BackendManager.instance;
     Commit commit = Commit(disarmRequirementsLevel: 0);
     ScheduleDay day1 = HardcodedObjects.day1;
     ScheduleService scheduleService = Get.find<ScheduleService>();
@@ -69,19 +86,19 @@ class EmberCore {
     commit.addObjectToPush(day1);
     commit.addObjectToPush(schedule);
     scheduleService.addBlockToDay(
-        commit, commit.getObjectOfType(), HardcodedObjects.choiceActivity);
+        commit, commit.getObjectOfType<ScheduleDay>()!.id, HardcodedObjects.choiceActivity);
     scheduleService.scheduleActivity(
-        commit, HardcodedObjects.gagaBall.id, commit.getObjectOfType());
+        commit, HardcodedObjects.gagaBall.id, commit.getObjectOfType<ScheduleBlock>()!.id);
     scheduleService.scheduleActivity(
-        commit, HardcodedObjects.boating.id, commit.getObjectOfType());
+        commit, HardcodedObjects.boating.id, commit.getObjectOfType<ScheduleBlock>()!.id);
     scheduleService.scheduleActivity(
-        commit, HardcodedObjects.climbing.id, commit.getObjectOfType());
+        commit, HardcodedObjects.climbing.id, commit.getObjectOfType<ScheduleBlock>()!.id);
     scheduleService.scheduleActivity(
-        commit, HardcodedObjects.artsAndCrafts.id, commit.getObjectOfType());
+        commit, HardcodedObjects.artsAndCrafts.id, commit.getObjectOfType<ScheduleBlock>()!.id);
     scheduleService.scheduleActivity(
-        commit, HardcodedObjects.tieDye.id, commit.getObjectOfType());
+        commit, HardcodedObjects.tieDye.id, commit.getObjectOfType<ScheduleBlock>()!.id);
     scheduleService.scheduleActivity(
-        commit, HardcodedObjects.archery.id, commit.getObjectOfType());
+        commit, HardcodedObjects.archery.id, commit.getObjectOfType<ScheduleBlock>()!.id);
 
     await backend.mergeObjectsWithDatabase(
       commit: commit,
@@ -93,10 +110,4 @@ class EmberCore {
     );
     await backend.commit(commit);
   }
-}
-
-class EmberCoreConfig {
-  static bool repairHardcodedObjects = false;
-  static bool doDumbDomainSetup = false;
-  static bool initializeTestSchedule = true;
 }

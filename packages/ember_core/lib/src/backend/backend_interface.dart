@@ -7,11 +7,12 @@ import '../models/core_objects/domain/session.dart';
 
 typedef FromJson<T> = T Function(Map<String, dynamic> json);
 
-abstract class BackendInterface {
+abstract class CoreBackend {
   String get backendName;
   String get backendDescription;
 
-  Future<void> init();
+  Future<void> initCritical();
+  void init();
   void initLate();
   Future<T> getFieldValue<T>(String ref, String field);
   Future<Set<T>> getSetFieldValue<T>(String ref, String field);
