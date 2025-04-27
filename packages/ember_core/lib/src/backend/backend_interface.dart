@@ -23,7 +23,7 @@ abstract class CoreBackend {
   Future<String> getActiveObjectId(String collectionName, String domain);
   Future<void> commit(Commit commit);
   Future<void> deleteObject(String key);
-  Stream<Map<String, T>> watchCollection<T>({
+  Future<Stream<Map<String, T>>> watchCollection<T>({
     required String collectionName,
     required String domain,
     bool updateDataInRealtime = true,

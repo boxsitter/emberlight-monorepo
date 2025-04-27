@@ -24,10 +24,11 @@ class EmberCore {
 
   static void initializeEmberCore () {
     CoreBackend backend = BackendManager.instance;
-    Get.put(ClientContext(), permanent: true);
     Get.put(CommitService(), permanent: true);
+    Get.put( ClientContext());
     backend.init();
-    Get.put( ClientContextService());
+    ClientContextService clientContextService = Get.put(ClientContextService());
+    clientContextService.setDefaultContext();
     backend.initLate();
     Get.put(CabinService(), permanent: true);
     Get.put(SessionRosterService(), permanent: true);
@@ -37,17 +38,14 @@ class EmberCore {
     Get.put(FrontendCommitService(), permanent: true);
   }
 
-  static Future<void> recoverEmberCore (CoreBackend backendInterface, CoreFrontend frontendInterface) async {
-    BackendManager.setBackend(backendInterface);
-    FrontendManager.setFrontend(frontendInterface);
+  static Future<void> recoverEmberCore () async {
     CoreBackend backend = BackendManager.instance;
-    Get.put(ClientContext(), permanent: true);
     Get.put(CommitService(), permanent: true);
     backend.init();
     await backend.dumbDomainSetup(HardcodedObjects.ygs, HardcodedObjects.colman, HardcodedObjects.season, HardcodedObjects.session);
-    ClientContextService clientContextService = ClientContextService();
-    await clientContextService.setDefaultContext();
-    Get.put( clientContextService);
+    Get.put( ClientContext());
+    ClientContextService clientContextService = Get.put(ClientContextService());
+    clientContextService.setDefaultContext();
     backend.initLate();
     Get.put(CabinService(), permanent: true);
     Get.put(SessionRosterService(), permanent: true);
