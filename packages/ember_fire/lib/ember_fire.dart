@@ -29,12 +29,15 @@ class EmberFire implements CoreBackend {
   @override
   Future<void> initCritical() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    final FirebaseFirestore db = FirebaseFirestore.instance;
     if (isReleaseMode) {
       print("Using Remote Firestore Database");
     } else {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       print("Using Firestore Emulator");
     }
+    db.settings = const Settings(persistenceEnabled: true);
+    db.enablePersistence(const PersistenceSettings(synchronizeTabs: true));
   }
 
   @override
