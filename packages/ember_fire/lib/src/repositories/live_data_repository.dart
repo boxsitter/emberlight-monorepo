@@ -47,15 +47,15 @@ class LiveDataRepository {
   ///   are added or removed (membership changes). The data for the documents
   ///   in the Map is fetched once at the time of the membership change and
   ///   will not update in real-time if the document content changes later.
-  Stream<Map<String, T>> watchCollection<T>({
+  Future<Stream<Map<String, T>>> watchCollection<T>({
     required String collectionName,
     required String domain,
     bool updateDataInRealtime = true,
     // Optional: Re-add if you need custom queries beyond the base collection path
     // Query<Map<String, dynamic>> Function(Query<Map<String, dynamic>> query)? queryBuilder,
-  }) {
+  }) async {
     // Resolve the collection path using the provided service
-    final String resolvedPath = pathService.getCollectionPath(collectionName, domain);
+    final String resolvedPath = await pathService.getCollectionPath(collectionName, domain);
     Query<Map<String, dynamic>> query = _db.collection(resolvedPath);
 
     // Optional: Apply custom query modifications if queryBuilder is used

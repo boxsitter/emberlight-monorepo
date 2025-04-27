@@ -14,7 +14,7 @@ class PullRepository {
   FirebaseFirestore get db => _db;
 
   Future<bool> docExists(String id) async {
-    final resolvedPath = pathService.getDocPathFromId(id);
+    final resolvedPath = await pathService.getDocPathFromId(id);
     print('Getting doc: $id');
 
     try {
@@ -39,7 +39,7 @@ class PullRepository {
   /// Returns a map of the document data if it exists, or null if it doesn't.
   /// Throws an error if there is an issue during retrieval.
   Future<Map<String, dynamic>> getDoc(String id) async {
-    final resolvedPath = pathService.getDocPathFromId(id);
+    final resolvedPath = await pathService.getDocPathFromId(id);
     print('Getting doc: $id');
 
     try {
@@ -75,7 +75,7 @@ class PullRepository {
 
     // Validate that all IDs share the same collection path
     CoreIdValidation.validateIdsShareCollection(ids);
-    final collection = pathService.getCollectionPathFromId(ids.first);
+    final collection = await pathService.getCollectionPathFromId(ids.first);
     final idList = ids.toList();
 
     print('Getting docs: [${ids.join('\n')}]');
@@ -126,7 +126,7 @@ class PullRepository {
   /// Returns a map of document IDs to their data.
   /// Throws an error if the retrieval fails.
   Future<Map<String, Map<String, dynamic>>> getDocsInCollection(String collectionName, String domain,) async {
-    final collectionPath = pathService.getCollectionPath(collectionName, domain);
+    final collectionPath = await pathService.getCollectionPath(collectionName, domain);
     print('Fetching all documents from collection: $collectionPath');
     try {
       final querySnapshot = await _db.collection(collectionPath).get();
@@ -292,7 +292,7 @@ class PullRepository {
   /// Limits the query to one result and returns the ID of the first matching document.
   /// Throws an error if no matching document is found.
   Future<String> _queryCollection(String collectionName, String domain, Map<String, dynamic> conditions,) async {
-    Query query = _db.collection(pathService.getCollectionPath(collectionName, domain));
+    Query query = _db.collection(await pathService.getCollectionPath(collectionName, domain));
     conditions.forEach((field, value) {
       if (value is Map<String, dynamic>) {
         // Handle inequality operators (example for two operators)
@@ -381,13 +381,13 @@ class PullRepository {
       String? fullPath;
       String? collectionPath;
       try {
-        fullPath = pathService.getDocPathFromId(key);
+        fullPath = await pathService.getDocPathFromId(key);
         if (fullPath.trim().isEmpty) {
           print("[findMissingKeys] Warning: Resolved path for key '$key' is empty. Skipping.");
           continue; // Skip keys that don't resolve to a non-empty path
         }
 
-        collectionPath = pathService.getCollectionPathFromId(key);
+        collectionPath = await pathService.getCollectionPathFromId(key);
         if (collectionPath.trim().isEmpty) {
           print("[findMissingKeys] Warning: Could not determine collection path for '$fullPath' (from key '$key'). Skipping grouping for this key.");
           // Key is still in originalKeyToFullPath, will be treated as missing if not found later

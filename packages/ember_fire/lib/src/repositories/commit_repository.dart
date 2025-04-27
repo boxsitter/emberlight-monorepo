@@ -62,7 +62,7 @@ class CommitRepository {
       while (hasMorePushes && opsInCurrentBatch < maxBatchSize) {
         final CoreObject currentPushObject = pushIterator.current;
         try {
-          final String resolvedPath = pathService.getDocPathFromId(currentPushObject.id);
+          final String resolvedPath = await pathService.getDocPathFromId(currentPushObject.id);
           // Basic path validation
           if (resolvedPath.isNotEmpty && !resolvedPath.contains('//') && resolvedPath.split('/').length % 2 == 0) {
             final docRef = _db.doc(resolvedPath);
@@ -88,7 +88,7 @@ class CommitRepository {
       while (hasMoreDeletes && opsInCurrentBatch < maxBatchSize) {
         final CoreObject currentDeleteObject = deleteIterator.current;
         try {
-          final String resolvedPath = pathService.getDocPathFromId(currentDeleteObject.id);
+          final String resolvedPath = await pathService.getDocPathFromId(currentDeleteObject.id);
           // Basic path validation
           if (resolvedPath.isNotEmpty && !resolvedPath.contains('//') && resolvedPath.split('/').length % 2 == 0) {
             final docRef = _db.doc(resolvedPath);
@@ -145,7 +145,7 @@ class CommitRepository {
       ignore.add(object);
     }
 
-    Session newSession = commit.getObjectOfType() ?? await pullRepo.getObject(clientContextService.sessionId);
+    Session newSession = commit.getObjectOfType() ?? await clientContextService.session;
     await Future.wait([
       Future(() => _updateRefTracker(newSession.refTracker, commit.objectsToPush.values.toSet())),
       Future(() => _updatePrincipalDependentLinkTracker(newSession.principalDependentLinkTracker, commit.objectsToPush.values.toSet())),

@@ -29,16 +29,16 @@ class EmberFire implements CoreBackend {
   @override
   Future<void> initCritical() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  }
-
-  @override
-  void init() {
     if (isReleaseMode) {
       print("Using Remote Firestore Database");
     } else {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       print("Using Firestore Emulator");
     }
+  }
+
+  @override
+  void init() {
     Get.put(DumbPushRepository(), permanent: true);
     Get.put(PathService(), permanent: true);
     pullRepo = Get.put(PullRepository(), permanent: true);
@@ -100,7 +100,7 @@ class EmberFire implements CoreBackend {
   }
 
   @override
-  Stream<Map<String, T>> watchCollection<T>({
+  Future<Stream<Map<String, T>>> watchCollection<T>({
     required String collectionName,
     required String domain,
     bool updateDataInRealtime = true,

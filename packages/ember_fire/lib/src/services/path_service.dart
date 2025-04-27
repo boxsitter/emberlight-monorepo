@@ -6,9 +6,10 @@ import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
 
 class PathService extends GetxService {
-  ClientContext context = Get.find<ClientContext>();
+  ClientContext clientContext = Get.find<ClientContext>();
 
-  String _getPath(String collectionName, String domain, String? id) {
+  Future<String> _getPath(String collectionName, String domain, String? id,  [bool? bypassContextSafety]) async {
+
     if (!CoreIdValidation.isValidDomain(domain)) {
       throw ArgumentError('Error getting path, invalid domain');
     }
@@ -30,30 +31,30 @@ class PathService extends GetxService {
 
     // TODO: Make this less horrible, but also work when seasonId and sessionId aren't set yet
     if (domain == 'org') {
-      outputPath += context.organizationId;
+      outputPath += await clientContext.getOrganizationId();
     } else if (domain == 'brn') {
-      outputPath += '${context.organizationId}/branch/${context.branchId}';
+      outputPath += '${await clientContext.getOrganizationId()}/branch/${await clientContext.getBranchId()}';
     } else if (domain == 'sea') {
-      outputPath += '${context.organizationId}/branch/${context.branchId}' '/season/${context.seasonId}';
+      outputPath += '${await clientContext.getOrganizationId()}/branch/${await clientContext.getBranchId()}' '/season/${await clientContext.getSeasonId()}';
     } else if (domain == 'ses') {
-      outputPath += '${context.organizationId}/branch/${context.branchId}' '/season/${context.seasonId}' '/session/${context.sessionId}';
+      outputPath += '${await clientContext.getOrganizationId()}/branch/${await clientContext.getBranchId()}' '/season/${await clientContext.getSeasonId()}' '/session/${await clientContext.getSessionId()}';
     }
     
     return '$outputPath/$suffix';
   }
 
-  String getDocPathFromId(String id) {
+  Future<String> getDocPathFromId(String id) async {
     List<String> idParts = IdFunctions.getIdParts(id);
-    return _getPath(idParts[1], idParts[2], id);
+    return await _getPath(idParts[1], idParts[2], id);
   }
 
-  String getCollectionPathFromId(String id) {
+  Future<String> getCollectionPathFromId(String id) async {
     List<String> idParts = IdFunctions.getIdParts(id);
-    return _getPath(idParts[1], idParts[2], null);
+    return await _getPath(idParts[1], idParts[2], null);
   }
 
-  String getCollectionPath(String collectionName, String domain) {
-    return _getPath(collectionName, domain, null);
+  Future<String> getCollectionPath(String collectionName, String domain) async {
+    return await _getPath(collectionName, domain, null);
   }
 
 }
