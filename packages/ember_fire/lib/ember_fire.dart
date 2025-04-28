@@ -152,11 +152,14 @@ class FirebaseStarter {
       print('Persistence failed: $e');
     }
     db.settings = const Settings(persistenceEnabled: true);
-    if (isReleaseMode) {
-      print("Using Remote Firestore Database");
-    } else {
-      db.useFirestoreEmulator('localhost', 8080);
-      print("Using Firestore Emulator");
-    }
+    print("Using Remote Firestore Database");
+
+    // TODO: Fix emulator
+    // if (isReleaseMode) {
+    //   print("Using Remote Firestore Database");
+    // } else {
+    //   db.useFirestoreEmulator('localhost', 8080);
+    //   print("Using Firestore Emulator");
+    // }
   }
 }
