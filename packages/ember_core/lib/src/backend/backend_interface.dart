@@ -11,7 +11,6 @@ abstract class CoreBackend {
   String get backendName;
   String get backendDescription;
 
-  Future<void> initCritical();
   void init();
   void initLate();
   Future<T> getFieldValue<T>(String ref, String field);

@@ -41,9 +41,9 @@ class EmberCore {
   static Future<void> recoverEmberCore () async {
     CoreBackend backend = BackendManager.instance;
     Get.put(CommitService(), permanent: true);
+    Get.put( ClientContext());
     backend.init();
     await backend.dumbDomainSetup(HardcodedObjects.ygs, HardcodedObjects.colman, HardcodedObjects.season, HardcodedObjects.session);
-    Get.put( ClientContext());
     ClientContextService clientContextService = Get.put(ClientContextService());
     clientContextService.setDefaultContext();
     backend.initLate();
