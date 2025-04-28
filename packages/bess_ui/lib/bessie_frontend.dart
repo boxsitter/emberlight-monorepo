@@ -7,8 +7,6 @@ const _frontendName = 'Bessie';
 const _frontendDescription = 'Cross-platform app interface for managing summer camp logistics with EmberCore';
 
 class BessieFrontend implements CoreFrontend {
-  final PopupService popupService = Get.find<PopupService>();
-
   @override
   String get frontendName => _frontendName;
 
@@ -17,16 +15,19 @@ class BessieFrontend implements CoreFrontend {
 
   @override
   void displayError({String? title, String? message}) {
+    final PopupService popupService = Get.find<PopupService>();
     popupService.showToast(title: title, message: message); // TODO: Make a separate toast design for errors
   }
 
   @override
   void displayInfo({String? title, String? message}) {
+    final PopupService popupService = Get.find<PopupService>();
     popupService.showToast(title: title, message: message);
   }
 
   @override
   Future<bool> getConfirmation({required String title, String? message, Map<String, List<String>>? foldedSubcontent}) {
+    final PopupService popupService = Get.find<PopupService>();
     return popupService.showConfirmationDialog(title: title, message: message);
   }
 

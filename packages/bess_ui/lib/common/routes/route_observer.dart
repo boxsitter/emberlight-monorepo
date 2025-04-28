@@ -40,7 +40,7 @@ class RouteObservers extends GetObserver {
     if (topRoute.settings.name == BessRoutes.activityPreferencesCabins && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCabins) {
       activityPreferencesController.onCabinsLoad();
     }
-    if (topRoute.settings.name == BessRoutes.activityPreferencesSelector && previousTopRoute?.settings.name != BessRoutes.activityPreferencesSelector && previousTopRoute?.settings.name != null) {
+    if (topRoute.settings.name == BessRoutes.activityPreferencesSelector) {
       activityPreferencesController.onSelectorLoad();
     }
 

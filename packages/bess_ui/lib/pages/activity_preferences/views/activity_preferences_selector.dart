@@ -154,11 +154,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                                       ReorderableDragStartListener(
                                         index: index,
                                         // Required for the listener
-                                        child: const Tooltip(
-                                          mouseCursor: SystemMouseCursors.grab,
-                                          message: 'Drag to reorder',
-                                          child: Icon(LucideIcons.gripVertical),
-                                        ),
+                                        child: Icon(LucideIcons.gripVertical),
                                       ),
                                     ],
                                   )
