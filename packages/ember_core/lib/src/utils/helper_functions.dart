@@ -1,3 +1,7 @@
+import '../exception_handling/logable.dart';
+
+/// Defines ANSI escape codes for text colors.
+
 class CoreHelperFunctions {
   static DateTime parseDate(dynamic value) {
     if (value == null) {
@@ -27,4 +31,5 @@ class CoreHelperFunctions {
     // For "updatedAt", we store an ISO 8601 string
     json['updatedAt'] = DateTime.now().toUtc();
   }
+
 }

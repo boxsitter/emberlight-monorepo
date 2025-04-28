@@ -43,7 +43,7 @@ class LogHandler {
     FrontendManager.instance.displayError(title: exception.userMessage, message: exception.userMessage);
 
     // Sentry forwarding
-    if (exception.severity == ErrorSeverity.error || exception.severity == ErrorSeverity.critical) {
+    if (exception.logType == LogType.error || exception.logType == LogType.critical) {
       Future.microtask(() {
         if (stackTrace != null) Error.throwWithStackTrace(exception, stackTrace);
         throw exception;
@@ -84,10 +84,10 @@ class LogHandler {
     _controller.add(entry); // notify listeners
   }
 
-  void _devPrint(Logable entry, [StackTrace? st]) {
+  void _devPrint(Logable entry, [StackTrace? stackTrace]) {
     if (debugMode) {
-      print(entry); // TODO: Pretty print this with colors
-      if (st != null) print(st);
+      print(entry);
+      if (stackTrace != null) print(stackTrace);
     }
   }
 
