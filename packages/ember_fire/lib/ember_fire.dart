@@ -9,6 +9,7 @@ import 'package:ember_fire/src/repositories/commit_repository.dart';
 import 'package:ember_fire/src/services/database_repair_service.dart';
 import 'package:ember_fire/src/services/path_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import 'firebase_options.dart';
@@ -25,20 +26,6 @@ class EmberFire implements CoreBackend {
   final bool isReleaseMode;
 
   EmberFire({this.isReleaseMode = false});
-
-  @override
-  Future<void> initCritical() async {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    final FirebaseFirestore db = FirebaseFirestore.instance;
-    if (isReleaseMode) {
-      print("Using Remote Firestore Database");
-    } else {
-      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-      print("Using Firestore Emulator");
-    }
-    db.settings = const Settings(persistenceEnabled: true);
-    db.enablePersistence(const PersistenceSettings(synchronizeTabs: true));
-  }
 
   @override
   void init() {
@@ -140,4 +127,36 @@ class EmberFire implements CoreBackend {
     return databaseRepairService.cleanOrphanedDependents(commit, session);
   }
 
+}
+
+class FirebaseStarter {
+  static bool _didInit = false;
+
+  static Future<void> initCritical({required bool isReleaseMode}) async {
+    if (Firebase.apps.isNotEmpty) {
+      print('skipping firebase initialization');
+      return;
+    }
+    print('initializing firebase');
+    _didInit = true;
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    final db = FirebaseFirestore.instance;
+    try {
+      await db.enablePersistence(
+        const PersistenceSettings(synchronizeTabs: true),
+      );
+    } catch (e) {
+      print('Persistence failed: $e');
+    }
+    db.settings = const Settings(persistenceEnabled: true);
+    if (isReleaseMode) {
+      print("Using Remote Firestore Database");
+    } else {
+      db.useFirestoreEmulator('localhost', 8080);
+      print("Using Firestore Emulator");
+    }
+  }
 }
