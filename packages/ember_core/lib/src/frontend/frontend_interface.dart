@@ -1,4 +1,3 @@
-import 'package:ember_core/ember_core_models.dart';
 
 abstract class CoreFrontend {
   String get frontendName;

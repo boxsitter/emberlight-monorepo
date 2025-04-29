@@ -1,13 +1,11 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 enum LogType {
-  softFailure('Soft Failure', 'Action could not be completed', true, AnsiColor.yellow),
-  seriousFailure('Serious Failure', 'Action encountered an error', false, AnsiColor.yellow),
+  failure('Failure', 'Action could not be completed', true, AnsiColor.yellow),
   unknown('Undefined Error', 'Something went wrong', false, AnsiColor.brightRed),
   error('Error', 'Error', false, AnsiColor.brightRed),
   critical('Critical Error', 'Critical error', false, AnsiColor.red),
   info('Info', 'Info', true, AnsiColor.brightCyan),
-  quickLog('Log', 'Debug message', true, AnsiColor.brightCyan),
   success('Success', 'Success!', true, AnsiColor.brightGreen),
   warning('Warning', 'Warning', true, AnsiColor.brightYellow);
 
@@ -48,7 +46,7 @@ abstract class Logable {
     String moduleString = CoreFormatter.formatAnsi(text: '[${module.name}]', color: AnsiColor.cyan);
 
     String secondPart = CoreFormatter.formatAnsi(
-      text: logType != LogType.quickLog ? ' ${logType.devString}: $devMessage' : ' $devMessage',
+      text: logType != LogType.info ? ' ${logType.devString}: $devMessage' : ' $devMessage',
       color: logType.ansiColor,
       style: AnsiStyle.bold,
     );
@@ -65,7 +63,7 @@ abstract class Logable {
       color: logType.ansiColor,
     );
 
-    if (stackTrace == null || logType == LogType.softFailure) return '$moduleString$secondPart${formattedMeta.trim()}';
+    if (stackTrace == null || logType == LogType.failure) return '$moduleString$secondPart${formattedMeta.trim()}';
 
     String colorfulStackTrace = CoreFormatter.formatAnsi(
       text: stackTrace.toString(),

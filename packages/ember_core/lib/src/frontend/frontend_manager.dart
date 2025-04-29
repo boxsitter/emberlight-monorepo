@@ -1,3 +1,4 @@
+import '../../ember_core_debug.dart';
 import 'frontend_interface.dart';
 
 class FrontendManager {
@@ -6,13 +7,13 @@ class FrontendManager {
   /// Sets the frontend implementation (called during initialization).
   static void setFrontend(CoreFrontend frontend) {
     _frontend = frontend;
-    print("Frontend set to: ${frontend.runtimeType}");
+    Debug.logInfo("Frontend set to: ${frontend.frontendName}");
   }
 
   /// Gets the current frontend instance.
   static CoreFrontend get instance {
     if (_frontend == null) {
-      throw StateError('Frontend not initialized. Call setFrontend() first.');
+      throw CoreUninitializedError('Frontend not initialized. Call setFrontend() first');
     }
     return _frontend!;
   }

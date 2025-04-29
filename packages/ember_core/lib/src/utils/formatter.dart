@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../exception_handling/logable.dart';
+import '../debug/logable.dart';
 
 enum AnsiColor {
   // Standard colors

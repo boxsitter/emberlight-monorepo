@@ -1,4 +1,4 @@
-import '../../ember_core_exception_handling.dart';
+import 'ember_exception.dart';
 import 'logable.dart';
 
 class ExceptionTest extends EmberException {
@@ -17,5 +17,24 @@ class ExceptionTest extends EmberException {
       'string6': 'hello world',
       'string7': 'hello world',
     }
+  );
+}
+
+class CoreUninitializedError extends EmberException {
+  CoreUninitializedError(String devMessage) : super(
+      timestamp: DateTime.now(),
+      module: Module.core,
+    logType: LogType.error,
+      devMessage: devMessage,
+
+  );
+}
+
+class CoreUnsupportedError extends EmberException {
+  CoreUnsupportedError(String devMessage) : super(
+    timestamp: DateTime.now(),
+    module: Module.core,
+    logType: LogType.error,
+    devMessage: devMessage,
   );
 }

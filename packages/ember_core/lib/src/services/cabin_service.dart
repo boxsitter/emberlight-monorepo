@@ -1,7 +1,6 @@
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
-import 'package:ember_core/ember_core_utils.dart';
 import 'package:get/get.dart';
 
 class CabinService extends GetxService {

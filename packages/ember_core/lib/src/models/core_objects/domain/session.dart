@@ -1,5 +1,4 @@
 import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/src/models/abstract/time_interval.dart';
 
 import '../../abstract/elevated.dart';

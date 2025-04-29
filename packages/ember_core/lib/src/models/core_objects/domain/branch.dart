@@ -1,6 +1,5 @@
 import 'package:ember_core/ember_core_models.dart';
 
-import '../../abstract/domain.dart';
 import '../../abstract/elevated.dart';
 
 class Branch extends CoreObject implements Domain, Elevated{

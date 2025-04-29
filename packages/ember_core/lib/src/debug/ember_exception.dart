@@ -1,6 +1,7 @@
 // lib/ember_core/src/error_handling/ember_exception.dart
 import 'package:ember_core/ember_core_utils.dart';
-import 'package:ember_core/src/exception_handling/logable.dart';
+
+import 'logable.dart';
 
 // warning: can be normally triggered by the user, doesn't cause issues, cancels action, user needs to be notified
 // error: something has gone wrong, won't cause issues

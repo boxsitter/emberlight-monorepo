@@ -50,7 +50,7 @@ class ActivityPreferenceService extends GetxService {
   // assigns all campers a random preference for each activity
   // for testing
   Future<void> rankRandom(Commit commit) async {
-    final random = Random();
+    final _ = Random();
     Set<Camper> campers = await sessionRosterService.registeredCampers;
   }
 }
