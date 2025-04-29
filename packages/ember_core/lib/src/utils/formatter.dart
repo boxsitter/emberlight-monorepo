@@ -61,48 +61,41 @@ class CoreFormatter {
   /// [style]: The desired text style (optional).
   ///
   /// Returns the formatted string with ANSI escape codes.
-  static String formatAnsi({required String text, AnsiColor? color, AnsiStyle? style,}) {
+  static String formatAnsi({
+    required String text,
+    AnsiColor? color,
+    AnsiStyle? style,
+  }) {
     final buffer = StringBuffer();
 
-    // Add style code if provided
+    final hasFormatting = (color != null && color != AnsiColor.reset) ||
+        (style != null && style != AnsiStyle.reset);
+
     if (style != null && style != AnsiStyle.reset) {
       buffer.write(style.code);
     }
-
-    // Add color code if provided
     if (color != null && color != AnsiColor.reset) {
       buffer.write(color.code);
     }
 
-    // Add the actual text
-    buffer.write(text);
-
-    // Add reset codes to ensure subsequent text is not affected
-    if (color != null && color != AnsiColor.reset) {
-      buffer.write(AnsiColor.reset.code);
+    if (hasFormatting) {
+      if (text.endsWith('\n')) {
+        // Insert reset *before* the newline
+        final withoutNewline = text.substring(0, text.length - 1);
+        buffer.write(withoutNewline);
+        buffer.write('\x1B[0m\n');
+      } else {
+        buffer.write(text);
+        buffer.write('\x1B[0m');
+      }
+    } else {
+      // No formatting applied, just write the text directly
+      buffer.write(text);
     }
-    if (style != null && style != AnsiStyle.reset) {
-      // Only add style reset if a style was applied.
-      // The color reset also resets style, but being explicit can be clearer.
-      // However, adding style reset *after* color reset is redundant.
-      // A single reset code (\x1B[0m) resets all attributes.
-      // Let's rely on the color reset or add a single reset at the end if no color was used.
-    } else if (color == null && style != null && style != AnsiStyle.reset) {
-      // If only style was applied, add a single reset
-      buffer.write(AnsiStyle.reset.code);
-    } else if (color != null || (style != null && style != AnsiStyle.reset)) {
-      // If either color or style (or both) were applied, a single reset is sufficient.
-      // The color reset code (\x1B[0m) resets all attributes (color and style).
-      // So, we only need to ensure a reset is added if any formatting was applied.
-      // The color reset check above already handles the case where color is used.
-      // If only style was used, we need to add the reset.
-      // Let's simplify: add reset if *any* formatting was applied.
-      buffer.write(AnsiColor.reset.code); // AnsiColor.reset.code is \x1B[0m
-    }
-
 
     return buffer.toString();
   }
+
 
   static Module extractModuleFromStackTrace(StackTrace stackTrace) {
     final traceString = stackTrace.toString();
@@ -122,8 +115,6 @@ class CoreFormatter {
         }
       }
     }
-
-    print(moduleDirName);
 
     switch (moduleDirName) {
       case 'bessie_app':

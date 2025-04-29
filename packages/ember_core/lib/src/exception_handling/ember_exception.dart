@@ -9,11 +9,9 @@ import 'package:ember_core/src/exception_handling/logable.dart';
 /// -------------  Base class -------------
 abstract class EmberException extends Logable implements Exception {
   final String? userMessage;
-  final bool reportToSentry;
 
   const EmberException({
     this.userMessage,
-    this.reportToSentry = false,
     required super.timestamp,
     required super.module,
     required super.devMessage,
@@ -35,5 +33,16 @@ class _UnknownEmberException extends EmberException {
     module: stackTrace != null ? CoreFormatter.extractModuleFromStackTrace(stackTrace) : Module.unknown,
     devMessage: original.toString(),
     logType: type,
+  );
+}
+
+class Unhandleable extends EmberException {
+  Unhandleable({
+    required super.module,
+    required super.devMessage,
+    super.metadata,
+    required super.logType
+  }) : super(
+    timestamp: DateTime.now(),
   );
 }

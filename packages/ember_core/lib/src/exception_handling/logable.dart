@@ -1,15 +1,15 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 enum LogType {
-  softFailure('Failure', 'Action could not be completed', false, AnsiColor.yellow),
-  seriousFailure('Failure', 'Action encountered an error', true, AnsiColor.yellow),
-  unknown('Error', 'Something went wrong', true, AnsiColor.brightRed),
-  error('Error', 'Error', true, AnsiColor.brightRed),
-  critical('Critical Error', 'Critical error', true, AnsiColor.red),
-  info('Info', 'Info', false, AnsiColor.brightCyan),
-  quickLog('Log', 'Debug message', false, AnsiColor.brightCyan),
-  success('Success', 'Success!', false, AnsiColor.brightGreen),
-  warning('Warning', 'Warning', false, AnsiColor.brightYellow);
+  softFailure('Soft Failure', 'Action could not be completed', true, AnsiColor.yellow),
+  seriousFailure('Serious Failure', 'Action encountered an error', false, AnsiColor.yellow),
+  unknown('Undefined Error', 'Something went wrong', false, AnsiColor.brightRed),
+  error('Error', 'Error', false, AnsiColor.brightRed),
+  critical('Critical Error', 'Critical error', false, AnsiColor.red),
+  info('Info', 'Info', true, AnsiColor.brightCyan),
+  quickLog('Log', 'Debug message', true, AnsiColor.brightCyan),
+  success('Success', 'Success!', true, AnsiColor.brightGreen),
+  warning('Warning', 'Warning', true, AnsiColor.brightYellow);
 
   final String devString;
   final String userString;
@@ -45,25 +45,27 @@ abstract class Logable {
   });
 
   String toStringColorful(StackTrace? stackTrace) {
-    String meta = '';
-    for (var entry in metadata.entries) {
-      meta += '- ${entry.key}: ${entry.value}\n';
-    }
-
     String moduleString = CoreFormatter.formatAnsi(text: '[${module.name}]', color: AnsiColor.cyan);
 
     String secondPart = CoreFormatter.formatAnsi(
-      text: ' ${logType.devString}: $devMessage\n',
+      text: logType != LogType.quickLog ? ' ${logType.devString}: $devMessage' : ' $devMessage',
       color: logType.ansiColor,
       style: AnsiStyle.bold,
     );
+
+    if (metadata.isEmpty) return moduleString + secondPart;
+
+    String meta = '\n';
+    for (var entry in metadata.entries) {
+      meta += '- ${entry.key}: ${entry.value}\n';
+    }
 
     String formattedMeta = CoreFormatter.formatAnsi(
       text: meta,
       color: logType.ansiColor,
     );
 
-    if (stackTrace == null) return moduleString + secondPart + meta;
+    if (stackTrace == null || logType == LogType.softFailure) return '$moduleString$secondPart${formattedMeta.trim()}';
 
     String colorfulStackTrace = CoreFormatter.formatAnsi(
       text: stackTrace.toString(),
@@ -75,12 +77,14 @@ abstract class Logable {
 
   @override
   String toString() {
+    if (metadata.isEmpty) return '[${module.name}] ${logType.devString}: $devMessage';
+
     String meta = '';
     for (var entry in metadata.entries) {
       meta += '- ${entry.key}: ${entry.value}\n';
     }
 
-    return '[$module] ${logType.devString}: $devMessage\n$meta';
+    return '[${module.name}] ${logType.devString}: $devMessage\n${meta.trim()}';
   }
 
 }

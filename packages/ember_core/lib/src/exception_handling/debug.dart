@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/src/exception_handling/logable.dart';
@@ -8,10 +9,10 @@ import 'ember_exception.dart';
 import 'ember_info.dart';
 
 
-class LogHandler {
-  LogHandler._internal();
-  static final LogHandler _singleton = LogHandler._internal();
-  static LogHandler get instance => _singleton;
+class Debug {
+  Debug._internal();
+  static final Debug _singleton = Debug._internal();
+  static Debug get instance => _singleton;
 
   int maxEntries = 400;
 
@@ -38,7 +39,12 @@ class LogHandler {
 
     if (DebugModeManager.debugMode) {
       if (!exception.logType.eatMe) {
-        throw exception;
+        throw Unhandleable(
+          logType: exception.logType,
+          devMessage: exception.devMessage,
+          module: exception.module,
+          metadata: exception.metadata,
+        );
       } else {
         return;
       }
@@ -85,7 +91,7 @@ class LogHandler {
   }
 
   void _devPrint(Logable entry, [StackTrace? stackTrace]) {
-    print(entry.toStringColorful(stackTrace));
+    print((entry.toStringColorful(stackTrace)).trim());
   }
 
   void dispose() => _controller.close();

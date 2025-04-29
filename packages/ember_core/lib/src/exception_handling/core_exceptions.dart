@@ -6,7 +6,7 @@ class ExceptionTest extends EmberException {
     timestamp: DateTime.now(),
     module: Module.core,
     devMessage: 'Minor failure exception',
-    logType: LogType.seriousFailure,
+    logType: LogType.error,
     userMessage: 'Operation failed',
     metadata: {
       'string1': 'hello world',
