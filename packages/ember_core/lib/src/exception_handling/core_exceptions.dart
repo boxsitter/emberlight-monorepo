@@ -4,10 +4,10 @@ import 'logable.dart';
 class ExceptionTest extends EmberException {
   ExceptionTest() : super(
     timestamp: DateTime.now(),
-    module: 'Core',
-    devMessage: 'OMG there was a fucking error!',
-    logType: LogType.failure,
-    userMessage: 'There was a fucking error!',
+    module: Module.core,
+    devMessage: 'Minor failure exception',
+    logType: LogType.seriousFailure,
+    userMessage: 'Operation failed',
     metadata: {
       'string1': 'hello world',
       'string2': 'hello world',

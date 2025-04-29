@@ -104,20 +104,39 @@ class CoreFormatter {
     return buffer.toString();
   }
 
-  static AnsiColor logTypeToAnsiColor(LogType type) {
-    switch (type) {
-      case LogType.failure:
-        return AnsiColor.yellow;
-      case LogType.error:
-        return AnsiColor.brightRed;
-      case LogType.critical:
-        return AnsiColor.red;
-      case LogType.info:
-        return AnsiColor.white;
-      case LogType.success:
-        return AnsiColor.brightGreen;
-      case LogType.warning:
-        return AnsiColor.brightYellow;
+  static Module extractModuleFromStackTrace(StackTrace stackTrace) {
+    final traceString = stackTrace.toString();
+    final linesBackwards = traceString.split('\n');
+    final lines = linesBackwards.reversed.toList();
+
+    String moduleDirName = '';
+    for (final line in lines) {
+      final trimmed = line.trim();
+
+      if (trimmed.startsWith('packages/')) {
+        final afterPackages = trimmed.substring('packages/'.length);
+        final parts = afterPackages.split('/');
+
+        if (parts.isNotEmpty) {
+          moduleDirName = parts.first;
+        }
+      }
+    }
+
+    print(moduleDirName);
+
+    switch (moduleDirName) {
+      case 'bessie_app':
+        return Module.bessie;
+      case 'ember_core':
+        return Module.core;
+      case 'ember_fire':
+        return Module.fire;
+      default:
+        return Module.unknown;
     }
   }
+
 }
+
+

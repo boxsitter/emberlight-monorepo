@@ -16,3 +16,12 @@ abstract class EmberInfo extends Logable{
   });
 
 }
+
+class QuickLog extends EmberInfo {
+  QuickLog(String message) : super(
+    module: Module.quickLog,
+    timestamp: DateTime.now(),
+    devMessage: message,
+    logType: LogType.quickLog,
+  );
+}

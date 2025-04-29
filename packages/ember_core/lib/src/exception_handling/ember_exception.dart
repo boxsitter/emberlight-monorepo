@@ -1,4 +1,5 @@
 // lib/ember_core/src/error_handling/ember_exception.dart
+import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/src/exception_handling/logable.dart';
 
 // warning: can be normally triggered by the user, doesn't cause issues, cancels action, user needs to be notified
@@ -7,39 +8,32 @@ import 'package:ember_core/src/exception_handling/logable.dart';
 
 /// -------------  Base class -------------
 abstract class EmberException extends Logable implements Exception {
-  static const String defaultUserMessage = 'Something went wrong, please try again';
-  final String? _userMessage;
+  final String? userMessage;
+  final bool reportToSentry;
 
   const EmberException({
-    String? userMessage,
+    this.userMessage,
+    this.reportToSentry = false,
     required super.timestamp,
     required super.module,
     required super.devMessage,
     super.metadata,
     required super.logType,
-  }) : _userMessage = userMessage;
-
-  String? get userMessage {
-    if (_userMessage != null) return _userMessage;
-    if (logType != LogType.failure) return null;
-    return defaultUserMessage;
-  }
+  });
 }
 
-/// -------------  Helper -------------
 extension UnknownExceptionWrapping on Object {
-  /// Turn an arbitrary `Object` (an Error, Exception, String, etc.)
-  /// into an `EmberException` so our handler can treat *everything* uniformly.
-  EmberException toEmberException({
-    LogType defaultSeverity = LogType.error,
-  }) {
+  EmberException toEmberException(StackTrace? stackTrace) {
     if (this is EmberException) return this as EmberException;
-    return _UnknownEmberException(this, defaultSeverity);
+    return _UnknownEmberException(this, LogType.unknown, stackTrace);
   }
 }
 
-/// Private fallback wrapper
 class _UnknownEmberException extends EmberException {
-  _UnknownEmberException(Object original, LogType sev)
-      : super(timestamp: DateTime.now(), module: 'Unknown Exception', devMessage: original.toString(), logType: sev);
+  _UnknownEmberException(Object original, LogType type, StackTrace? stackTrace) : super(
+    timestamp: DateTime.now(),
+    module: stackTrace != null ? CoreFormatter.extractModuleFromStackTrace(stackTrace) : Module.unknown,
+    devMessage: original.toString(),
+    logType: type,
+  );
 }
