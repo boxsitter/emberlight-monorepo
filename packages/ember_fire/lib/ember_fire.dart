@@ -9,7 +9,6 @@ import 'package:ember_fire/src/repositories/commit_repository.dart';
 import 'package:ember_fire/src/services/database_repair_service.dart';
 import 'package:ember_fire/src/services/path_service.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import 'firebase_options.dart';
@@ -152,14 +151,12 @@ class FirebaseStarter {
       print('Persistence failed: $e');
     }
     db.settings = const Settings(persistenceEnabled: true);
-    print("Using Remote Firestore Database");
 
-    // TODO: Fix emulator
-    // if (isReleaseMode) {
-    //   print("Using Remote Firestore Database");
-    // } else {
-    //   db.useFirestoreEmulator('localhost', 8080);
-    //   print("Using Firestore Emulator");
-    // }
+    if (isReleaseMode) {
+      print("Using Remote Firestore Database");
+    } else {
+      db.useFirestoreEmulator('localhost', 8080);
+      print("Using Firestore Emulator");
+    }
   }
 }
