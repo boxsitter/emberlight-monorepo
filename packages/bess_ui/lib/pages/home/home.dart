@@ -58,7 +58,7 @@ class HomeScreenDesktop extends StatelessWidget {
                   const SizedBox(width: BessSizes.md),
 
                   TextButton(
-                    onPressed: () => LogHandler.instance.handleException(ExceptionTest()),
+                    onPressed: () => throw ExceptionTest(),
                     child: const Text("Throw Test Exception"),
                   ),
                 ],
