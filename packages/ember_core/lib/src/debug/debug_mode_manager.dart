@@ -5,7 +5,7 @@ import 'package:ember_core/ember_core_debug.dart';
 class DebugModeManager {
   static const _overrideKey = 'debug_mode_override';
   /// true if in debug mode
-  static late bool _debugMode;
+  static bool _debugMode = false;
   static Verbosity _verbosity = Verbosity.excessive;
 
   static bool get debugMode => _debugMode;
