@@ -143,14 +143,14 @@ class FirebaseStarter {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     final db = FirebaseFirestore.instance;
-    try {
-      await db.enablePersistence(
-        const PersistenceSettings(synchronizeTabs: true),
-      );
-    } catch (e) {
-      print('Persistence failed: $e');
-    }
-    db.settings = const Settings(persistenceEnabled: true);
+    // try {
+    //   await db.enablePersistence(
+    //     const PersistenceSettings(synchronizeTabs: true),
+    //   );
+    // } catch (e) {
+    //   print('Persistence failed: $e');
+    // }
+    // db.settings = const Settings(persistenceEnabled: true);
 
     if (isReleaseMode) {
       print("Using Remote Firestore Database");
