@@ -129,31 +129,79 @@ class EmberFire implements CoreBackend {
 }
 
 class FirebaseStarter {
-static Future<void> initCritical({required bool isReleaseMode}) async {
-    if (Firebase.apps.isNotEmpty) {
-      print('skipping firebase initialization');
+  static bool _isInitialized = false; // Simple flag to track initialization
+
+  static Future<void> initialize({required bool isReleaseMode}) async {
+    // Prevent multiple initializations
+    if (_isInitialized) {
+      print('Firebase already initialized.');
       return;
     }
-    print('initializing firebase');
 
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    final db = FirebaseFirestore.instance;
-    // try {
-    //   await db.enablePersistence(
-    //     const PersistenceSettings(synchronizeTabs: true),
-    //   );
-    // } catch (e) {
-    //   print('Persistence failed: $e');
-    // }
-    // db.settings = const Settings(persistenceEnabled: true);
+    try {
+      print('Initializing Firebase...');
+      // Ensure WidgetsFlutterBinding is initialized BEFORE Firebase.initializeApp
+      // This is usually done in main(), but adding here for safety if called elsewhere.
+      // WidgetsFlutterBinding.ensureInitialized(); // Uncomment if needed, but best practice is in main()
 
-    if (isReleaseMode) {
-      print("Using Remote Firestore Database");
-    } else {
-      db.useFirestoreEmulator('localhost', 8080);
-      print("Using Firestore Emulator");
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      _isInitialized = true; // Mark as initialized SUCCESSFULLY
+      print('Firebase initialized successfully.');
+
+      // --- Firestore specific setup ---
+      final db = FirebaseFirestore.instance;
+
+      // Firestore Emulator Setup (Consider platform differences)
+      // Emulator is typically not used in production or web deployment.
+      // `kIsWeb` helps differentiate web builds.
+      if (!isReleaseMode) {
+        try {
+          print("Attempting to use Firestore Emulator...");
+          // Ensure host is correct, especially if not running locally (e.g., Docker)
+          db.useFirestoreEmulator('localhost', 8080);
+          print("Using Firestore Emulator.");
+        } catch (e) {
+          print("WARNING: Failed to connect to Firestore emulator at localhost:8080. "
+              "Ensure it's running. Falling back to cloud Firestore. Error: $e");
+          // Decide if this error should prevent app startup or just log a warning.
+        }
+      } else if (isReleaseMode) {
+        print("Using Remote Firestore Database (Release Mode).");
+      } else {
+        print("Using Remote Firestore Database (Web Debug Mode / Emulator Skipped).");
+      }
+
+      // Persistence Settings (Can have browser limitations)
+      // Consider enabling only if needed and test cross-browser compatibility.
+      // if (kIsWeb) {
+      //   try {
+      //     await db.enablePersistence(
+      //       const PersistenceSettings(synchronizeTabs: true),
+      //     );
+      //     print('Firestore persistence with tab synchronization enabled (Web).');
+      //   } catch (e) {
+      //     print('Firestore Web Persistence failed: $e');
+      //   }
+      // } else {
+      //    // Mobile persistence settings if needed
+      //    // db.settings = const Settings(persistenceEnabled: true, cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
+      //    print('Firestore persistence enabled (Mobile).');
+      // }
+      // --- End Firestore specific setup ---
+
+    } catch (e) {
+      print('-----------------------------------------');
+      print('FATAL: Error initializing Firebase: $e');
+      print('-----------------------------------------');
+      // Depending on your app, you might want to rethrow the error
+      // or show a user-friendly error message and prevent app continuation.
+      _isInitialized = false; // Ensure it's marked as not initialized on failure
+      rethrow; // Rethrow to indicate critical failure
     }
   }
+
+  // Optional: Getter to check status from outside
+  static bool get isInitialized => _isInitialized;
 }
