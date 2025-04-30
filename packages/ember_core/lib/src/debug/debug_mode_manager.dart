@@ -1,5 +1,4 @@
 import 'package:ember_core/ember_core_debug.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Manages a global debugMode flag, defaulting to !kReleaseMode but
 /// overrideable via URL query-param or in-app toggle and persisted.
@@ -28,8 +27,6 @@ class DebugModeManager {
 
   /// Clear any override and revert to default (!kReleaseMode).
   static Future<void> clearOverride(bool isReleaseMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_overrideKey);
     _debugMode = !isReleaseMode;
   }
 }
