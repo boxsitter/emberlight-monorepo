@@ -48,7 +48,6 @@ abstract class Logable {
     String secondPart = CoreFormatter.formatAnsi(
       text: logType != LogType.info ? ' ${logType.devString}: $devMessage' : ' $devMessage',
       color: logType.ansiColor,
-      style: AnsiStyle.bold,
     );
 
     if (metadata.isEmpty) return moduleString + secondPart;

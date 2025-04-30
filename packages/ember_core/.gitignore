@@ -111,3 +111,4 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+/devtools_options.yaml
