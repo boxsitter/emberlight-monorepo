@@ -129,15 +129,12 @@ class EmberFire implements CoreBackend {
 }
 
 class FirebaseStarter {
-  static bool _didInit = false;
-
-  static Future<void> initCritical({required bool isReleaseMode}) async {
+static Future<void> initCritical({required bool isReleaseMode}) async {
     if (Firebase.apps.isNotEmpty) {
       print('skipping firebase initialization');
       return;
     }
     print('initializing firebase');
-    _didInit = true;
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
