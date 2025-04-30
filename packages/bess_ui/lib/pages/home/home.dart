@@ -1,6 +1,5 @@
 import 'package:bessie/common/constants/sizes.dart';
 import 'package:bessie/pages/home/widgets/home_screen_nav_card.dart';
-import 'package:ember_core/ember_core_exception_handling.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -53,13 +52,6 @@ class HomeScreenDesktop extends StatelessWidget {
                         icon: LucideIcons.squareTerminal,
                         description: 'Developer terminal with tools for testing and debugging'
                     ),
-                  ),
-
-                  const SizedBox(width: BessSizes.md),
-
-                  TextButton(
-                    onPressed: () => throw ExceptionTest(),
-                    child: const Text("Throw Test Exception"),
                   ),
                 ],
               ),
