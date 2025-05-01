@@ -1,4 +1,4 @@
-name: bessie
+name: Bessie
 description: "Camp logistics manager"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -86,8 +86,6 @@ flutter:
     - assets/logos/
     - assets/images/content/
     - assets/images/animations/
-    - assets/icons/payment_methods/
-
   #--------------- LOCAL FONTS ------------------#
   fonts:
     - family: Inter
@@ -127,11 +125,11 @@ flutter_native_splash:
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
   # see the Android 12 section below.
-  branding: assets/logos/ember-core-branding.png
+  # branding: assets/logos/ember-core-branding.png
 
   # Set the branding padding from the bottom of the screen.  The default value is 0
   # (Not supported on web yet)
-  branding_bottom_padding: 24
+  # branding_bottom_padding: 24
 
   # The color_dark, background_image_dark, image_dark, branding_dark are parameters that set the background
   # and image when the device is in dark mode.
