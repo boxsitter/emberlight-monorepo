@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../../../common/routes/routes.dart';
 import '../../../../../common/constants//image_strings.dart';
@@ -22,7 +22,7 @@ class ResetPasswordWidget extends StatelessWidget {
           children: [
             IconButton(
                 onPressed: () => Get.offAllNamed(BessRoutes.login),
-                icon: const Icon(CupertinoIcons.clear)),
+                icon: Icon(LucideIcons.x)),
           ],
         ),
         const SizedBox(height: BessSizes.spaceBtwItems),
