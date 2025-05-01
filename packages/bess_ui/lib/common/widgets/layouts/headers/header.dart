@@ -17,11 +17,8 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: BessColors.core,
-          border: Border(bottom: BorderSide(color: BessColors.semiLow, width: 1))),
-      padding: const EdgeInsets.symmetric(
-          horizontal: BessSizes.md, vertical: BessSizes.sm),
+      decoration: BoxDecoration(color: BessColors.core, border: Border(bottom: BorderSide(color: BessColors.semiLow, width: 1))),
+      padding: const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: BessSizes.sm),
       child: AppBar(
         backgroundColor: Colors.transparent,
         // Mobile menu button

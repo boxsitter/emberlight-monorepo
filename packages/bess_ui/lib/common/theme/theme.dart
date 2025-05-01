@@ -16,12 +16,13 @@ class BessieAppTheme {
   BessieAppTheme._();
 
   static ThemeData theme = ThemeData(
-
     useMaterial3: true,
+    visualDensity: VisualDensity.compact,
     fontFamily: 'Inter',
+
     disabledColor: BessColors.disabled,
     brightness: Brightness.light,
-    primaryColor: BessColors.primary,
+    primaryColor: BessColors.core,
     textTheme: BessTextTheme.textTheme,
     chipTheme: BessieChipTheme.chipTheme,
     appBarTheme: BessieAppBarTheme.appBarTheme,
@@ -40,7 +41,7 @@ class BessieAppTheme {
   //   fontFamily: 'Inter',
   //   disabledColor: BessColors.grey,
   //   brightness: Brightness.dark,
-  //   primaryColor: BessColors.primary,
+  //   primaryColor: BessColors.core,
   //   textTheme: BessieTextTheme.darkTextTheme,
   //   chipTheme: BessieChipTheme.darkChipTheme,
   //   appBarTheme: BessieAppBarTheme.darkAppBarTheme,

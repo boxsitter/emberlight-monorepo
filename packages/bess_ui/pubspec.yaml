@@ -32,7 +32,7 @@ dependencies:
     path: ../ember_fire
 
   # UI
-  shadcn_ui: ^0.24.0
+  shadcn_ui: ^0.25.0
 
   # Utility Packages
   # intl: ^0.19.0
@@ -53,6 +53,7 @@ dependencies:
   rxdart: ^0.28.0
   xterm: ^4.0.0
   visibility_detector: ^0.4.0+2
+  flutter_native_splash: ^2.4.6
 
   # Web Specific
   web: ^1.1.1
@@ -111,3 +112,39 @@ flutter:
       fonts:
         - asset: assets/fonts/fira_code_mono/FiraCodeNerdFontMono-Retina.ttf
           weight: 400
+
+flutter_native_splash:
+  # color or background_image is the only required parameter.  Use color to set the background
+  # of your splash screen to a solid color.  Use background_image to set the background of your
+  # splash screen to a png image.
+  color: "#eff1f5"
+  #background_image: "assets/background.png"
+
+  # The image parameter allows you to specify an image used in the splash screen.  It must be a
+  # png file and should be sized for 4x pixel density.
+  image: assets/logos/splash-logo.png
+
+  # The branding property allows you to specify an image used as branding in the splash screen.
+  # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
+  # see the Android 12 section below.
+  branding: assets/logos/ember-core-branding.png
+
+  # Set the branding padding from the bottom of the screen.  The default value is 0
+  # (Not supported on web yet)
+  branding_bottom_padding: 24
+
+  # The color_dark, background_image_dark, image_dark, branding_dark are parameters that set the background
+  # and image when the device is in dark mode.
+  # color_dark and background_image_dark cannot both be set.
+  #color_dark: "#042a49"
+  #background_image_dark: "assets/dark-background.png"
+  #image_dark: assets/splash-invert.png
+  #branding_dark: assets/dart_dark.png
+
+  android_12:
+   color: "#eff1f5"
+   image: assets/logos/splash-logo.png
+   branding: assets/logos/ember-core-branding.png
+   branding_bottom_padding: 24
+
+  fullscreen: true
