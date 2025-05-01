@@ -11,6 +11,21 @@ class Debug {
   static final Debug _singleton = Debug._internal();
   static Debug get instance => _singleton;
 
+  // State
+  bool _debugMode = false;
+  Verbosity _verbosity = Verbosity.excessive;
+
+  static bool get debugMode => instance._debugMode;
+  static Verbosity get verbosity => instance._verbosity;
+
+  static Future<void> setDebugMode(bool value) async {
+    instance._debugMode = value;
+  }
+
+  static void setVerbosity(Verbosity verbosity) {
+    instance._verbosity = verbosity;
+  }
+
   int maxEntries = 400;
 
   final List<Logable> _events = <Logable>[];
