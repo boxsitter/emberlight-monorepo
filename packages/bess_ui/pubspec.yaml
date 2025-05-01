@@ -112,6 +112,8 @@ flutter:
           weight: 400
 
 flutter_native_splash:
+  # dart run flutter_native_splash:create
+
   # color or background_image is the only required parameter.  Use color to set the background
   # of your splash screen to a solid color.  Use background_image to set the background of your
   # splash screen to a png image.

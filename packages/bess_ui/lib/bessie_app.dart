@@ -1,4 +1,6 @@
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -36,9 +38,10 @@ class BessieApp extends StatelessWidget {
             ),
           ),
           navigatorObservers: [RouteObservers()],
-          defaultTransition: AppConfig.defaultTransitionAnimation,
+          defaultTransition: Transition.noTransition,
           getPages: BessAppRoute.pages,
           builder: (context, child) {
+            FlutterNativeSplash.remove();
             return ShadSonner(visibleToastsAmount: 3, child: child!);
           },
         );
