@@ -1,6 +1,7 @@
 library;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:ember_fire/src/repositories/live_data_repository.dart';
@@ -22,9 +23,7 @@ class EmberFire implements CoreBackend {
   late final LiveDataRepository liveDataRepo;
   late final DatabaseRepairService databaseRepairService;
 
-  final bool isReleaseMode;
-
-  EmberFire({this.isReleaseMode = false});
+  EmberFire();
 
   @override
   void init() {
@@ -131,7 +130,7 @@ class EmberFire implements CoreBackend {
 class FirebaseStarter {
   static bool _isInitialized = false; // Simple flag to track initialization
 
-  static Future<void> initialize({required bool isReleaseMode}) async {
+  static Future<void> initialize() async {
     // Prevent multiple initializations
     if (_isInitialized) {
       print('Firebase already initialized.');
@@ -156,7 +155,7 @@ class FirebaseStarter {
       // Firestore Emulator Setup (Consider platform differences)
       // Emulator is typically not used in production or web deployment.
       // `kIsWeb` helps differentiate web builds.
-      if (!isReleaseMode) {
+      if (Debug.useFirestoreEmulator) {
         try {
           print("Attempting to use Firestore Emulator...");
           // Ensure host is correct, especially if not running locally (e.g., Docker)
@@ -167,10 +166,6 @@ class FirebaseStarter {
               "Ensure it's running. Falling back to cloud Firestore. Error: $e");
           // Decide if this error should prevent app startup or just log a warning.
         }
-      } else if (isReleaseMode) {
-        print("Using Remote Firestore Database (Release Mode).");
-      } else {
-        print("Using Remote Firestore Database (Web Debug Mode / Emulator Skipped).");
       }
 
       // Persistence Settings (Can have browser limitations)
