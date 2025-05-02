@@ -1,6 +1,6 @@
 import 'package:ember_core/ember_core_utils.dart';
 
-import '../../ember_core_debug.dart';
+import '../../../ember_core_debug.dart';
 
 enum LogType {
   failure('Failure', 'Action could not be completed', AnsiColor.yellow),

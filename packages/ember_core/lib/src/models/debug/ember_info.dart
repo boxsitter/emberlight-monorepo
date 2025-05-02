@@ -1,4 +1,4 @@
-import 'logable.dart';
+import '../abstract/logable.dart';
 
 enum Verbosity {
   none(0, 'None'),

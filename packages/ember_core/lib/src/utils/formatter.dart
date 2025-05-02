@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../debug/logable.dart';
+import '../models/abstract/logable.dart';
 
 enum AnsiColor {
   // Standard colors
