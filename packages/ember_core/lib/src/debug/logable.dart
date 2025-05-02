@@ -1,19 +1,20 @@
 import 'package:ember_core/ember_core_utils.dart';
 
+import '../../ember_core_debug.dart';
+
 enum LogType {
-  failure('Failure', 'Action could not be completed', true, AnsiColor.yellow),
-  unknown('Undefined Error', 'Something went wrong', false, AnsiColor.brightRed),
-  error('Error', 'Error', false, AnsiColor.brightRed),
-  critical('Critical Error', 'Critical error', false, AnsiColor.red),
-  info('Info', 'Info', true, AnsiColor.brightCyan),
-  success('Success', 'Success!', true, AnsiColor.brightGreen),
-  warning('Warning', 'Warning', true, AnsiColor.brightYellow);
+  failure('Failure', 'Action could not be completed', AnsiColor.yellow),
+  unknown('Undefined Error', 'Something went wrong', AnsiColor.brightRed),
+  error('Error', 'Error', AnsiColor.brightRed),
+  critical('Critical Error', 'Critical error', AnsiColor.red),
+  info('Info', 'Info', AnsiColor.brightCyan),
+  success('Success', 'Success!', AnsiColor.brightGreen),
+  warning('Warning', 'Warning', AnsiColor.brightYellow);
 
   final String devString;
   final String userString;
-  final bool eatMe;
   final AnsiColor ansiColor;
-  const LogType(this.devString, this.userString, this.eatMe, this.ansiColor);
+  const LogType(this.devString, this.userString, this.ansiColor);
 }
 
 enum Module {
@@ -34,54 +35,83 @@ abstract class Logable {
   final Map<String, String> metadata;
   final LogType logType;
 
-  const Logable({
-    required this.timestamp,
+  Logable({
     required this.module,
     required this.devMessage,
     this.metadata = const{},
     required this.logType,
-  });
+  }) : timestamp = DateTime.now();
 
-  String toStringColorful(StackTrace? stackTrace) {
-    String moduleString = CoreFormatter.formatAnsi(text: '[${module.name}]', color: AnsiColor.cyan);
+  String toStringFormatted(StackTrace? stackTrace) {
+    String output = '';
 
-    String secondPart = CoreFormatter.formatAnsi(
-      text: logType != LogType.info ? ' ${logType.devString}: $devMessage' : ' $devMessage',
-      color: logType.ansiColor,
-    );
-
-    if (metadata.isEmpty) return moduleString + secondPart;
-
-    String meta = '\n';
-    for (var entry in metadata.entries) {
-      meta += '- ${entry.key}: ${entry.value}\n';
+    // [Module Name]
+    final String moduleName = '[${module.name}]';
+    if (Debug.colorfulLogs) {
+      output += CoreFormatter.formatAnsi(
+          text: moduleName, color: AnsiColor.cyan
+      );
+    } else {
+      output += moduleName;
     }
 
-    String formattedMeta = CoreFormatter.formatAnsi(
-      text: meta,
-      color: logType.ansiColor,
-    );
+    // [Module Name] Main Content
+    final String mainContent = logType != LogType.info ? ' ${logType.devString}: $devMessage' : ' $devMessage';
+    if (Debug.colorfulLogs) {
+      output += CoreFormatter.formatAnsi(
+        text: mainContent,
+        color: logType.ansiColor,
+      );
+    } else {
+      output += mainContent;
+    }
 
-    if (stackTrace == null || logType == LogType.failure) return '$moduleString$secondPart${formattedMeta.trim()}';
+    // [Module Name] Main Content
+    // - Meta
 
-    String colorfulStackTrace = CoreFormatter.formatAnsi(
-      text: stackTrace.toString(),
-      color: logType.ansiColor,
-    );
+    if (metadata.isNotEmpty) {
+      String meta = '';
+      meta += '\n';
+      for (var entry in metadata.entries) {
+        meta += '- ${entry.key}: ${entry.value}\n';
+      }
 
-    return moduleString + secondPart + formattedMeta + colorfulStackTrace;
+      if (Debug.colorfulLogs) {
+        output += CoreFormatter.formatAnsi(
+          text: meta,
+          color: logType.ansiColor,
+        );
+      } else {
+        output += meta;
+      }
+    }
+
+    // [Module Name] Main Content
+    // - Meta
+    // Stack Trace
+    if (stackTrace != null) {
+      String formattedStackTrace;
+      if (Debug.simplifyStackTraces) {
+        formattedStackTrace = CoreFormatter.simplifyStackTrace(stackTrace);
+      } else {
+        formattedStackTrace = stackTrace.toString();
+      }
+
+      if (Debug.colorfulLogs) {
+        output += CoreFormatter.formatAnsi(
+          text: formattedStackTrace,
+          color: logType.ansiColor,
+        );
+      } else {
+        output += formattedStackTrace;
+      }
+    }
+
+    return  output;
   }
 
   @override
   String toString() {
-    if (metadata.isEmpty) return '[${module.name}] ${logType.devString}: $devMessage';
-
-    String meta = '';
-    for (var entry in metadata.entries) {
-      meta += '- ${entry.key}: ${entry.value}\n';
-    }
-
-    return '[${module.name}] ${logType.devString}: $devMessage\n${meta.trim()}';
+    return toStringFormatted(null);
   }
-
 }

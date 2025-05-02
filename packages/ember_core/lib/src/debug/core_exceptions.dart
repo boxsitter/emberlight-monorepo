@@ -3,7 +3,6 @@ import 'logable.dart';
 
 class ExceptionTest extends EmberException {
   ExceptionTest() : super(
-    timestamp: DateTime.now(),
     module: Module.core,
     devMessage: 'Minor failure exception',
     logType: LogType.error,
@@ -22,7 +21,6 @@ class ExceptionTest extends EmberException {
 
 class CoreUninitializedError extends EmberException {
   CoreUninitializedError(String devMessage) : super(
-      timestamp: DateTime.now(),
       module: Module.core,
     logType: LogType.error,
       devMessage: devMessage,
@@ -32,7 +30,6 @@ class CoreUninitializedError extends EmberException {
 
 class CoreUnsupportedError extends EmberException {
   CoreUnsupportedError(String devMessage) : super(
-    timestamp: DateTime.now(),
     module: Module.core,
     logType: LogType.error,
     devMessage: devMessage,

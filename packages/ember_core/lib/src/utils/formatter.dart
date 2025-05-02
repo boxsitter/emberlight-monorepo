@@ -61,15 +61,10 @@ class CoreFormatter {
   /// [style]: The desired text style (optional).
   ///
   /// Returns the formatted string with ANSI escape codes.
-  static String formatAnsi({
-    required String text,
-    AnsiColor? color,
-    AnsiStyle? style,
-  }) {
+  static String formatAnsi({required String text, AnsiColor? color, AnsiStyle? style}) {
     final buffer = StringBuffer();
 
-    final hasFormatting = (color != null && color != AnsiColor.reset) ||
-        (style != null && style != AnsiStyle.reset);
+    final hasFormatting = (color != null && color != AnsiColor.reset) || (style != null && style != AnsiStyle.reset);
 
     if (style != null && style != AnsiStyle.reset) {
       buffer.write(style.code);
@@ -93,9 +88,8 @@ class CoreFormatter {
       buffer.write(text);
     }
 
-    return buffer.toString();
+    return buffer.toString().trim();
   }
-
 
   static Module extractModuleFromStackTrace(StackTrace stackTrace) {
     final traceString = stackTrace.toString();
@@ -128,6 +122,103 @@ class CoreFormatter {
     }
   }
 
+  /// Masks an email address for logging or display purposes, showing only the
+  /// first character of the local part and the full domain.
+  ///
+  /// Examples:
+  /// - 'john.doe@example.com' -> 'j*******@example.com'
+  /// - 'a@domain.net' -> '*@domain.net'
+  /// - 'invalid-email' -> '***'
+  /// - null -> '***'
+  static String maskEmail(String? email) {
+    const String defaultMask = '***';
+
+    if (email == null || email.isEmpty || !email.contains('@')) {
+      return defaultMask;
+    }
+
+    final parts = email.split('@');
+    // Ensure there's exactly one '@' symbol
+    if (parts.length != 2) {
+      return defaultMask;
+    }
+
+    final String localPart = parts[0];
+    final String domain = parts[1];
+
+    if (localPart.isEmpty) {
+      // Handle emails starting with '@' (though unusual)
+      return '$defaultMask@$domain';
+    }
+
+    if (localPart.length == 1) {
+      // If local part is only one character, mask it
+      return '*@$domain';
+    }
+
+    // Keep the first character, replace the rest with '*'
+    final String maskedLocalPart = localPart[0] + ('*' * (localPart.length - 1));
+
+    return '$maskedLocalPart@$domain';
+  }
+
+  static String simplifyStackTrace(StackTrace? stackTrace) {
+    List<String> userPackagePrefixes = const ['package\\'];
+
+    const String placeholder = '[No stack trace available]';
+    if (stackTrace == null) {
+      return placeholder;
+    }
+
+    final String fullTrace = stackTrace.toString();
+    if (fullTrace.trim().isEmpty) {
+      return placeholder;
+    }
+
+    final List<String> lines = fullTrace.split('\n');
+    final List<String> formattedLines = [];
+    int externalLinesCount = 0;
+
+    bool isUserCodeLine(String line) {
+      // Check if the line contains any of the specified user package prefixes
+      // We look after the initial frame info (e.g., "#5 ")
+      final contentStartIndex = line.indexOf('(');
+      if (contentStartIndex != -1) {
+        final relevantPart = line.substring(contentStartIndex);
+        for (final prefix in userPackagePrefixes) {
+          if (relevantPart.contains(prefix)) {
+            return true;
+          }
+        }
+      }
+      // Lines without typical package info might be internal/VM/async gaps
+      // Consider them external unless specifically needed otherwise.
+      return false;
+    }
+
+    for (final line in lines) {
+      final trimmedLine = line.trim();
+      if (trimmedLine.isEmpty) continue; // Skip empty lines
+
+      if (isUserCodeLine(trimmedLine)) {
+        // Found a user code line. First, add collapsed count if any.
+        if (externalLinesCount > 0) {
+          formattedLines.add('[... $externalLinesCount external lines collapsed ...]');
+          externalLinesCount = 0; // Reset counter
+        }
+        // Then, add the user code line itself
+        formattedLines.add(trimmedLine);
+      } else {
+        // It's an external line, just increment the counter
+        externalLinesCount++;
+      }
+    }
+
+    // Add any remaining collapsed count at the end
+    if (externalLinesCount > 0) {
+      formattedLines.add('[... $externalLinesCount external lines collapsed ...]');
+    }
+
+    return formattedLines.join('\n');
+  }
 }
-
-

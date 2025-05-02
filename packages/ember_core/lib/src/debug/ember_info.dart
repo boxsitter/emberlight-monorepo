@@ -1,12 +1,14 @@
 import 'logable.dart';
 
 enum Verbosity {
-  essential(0),
-  verbose(1),
-  excessive(2);
+  none(0, 'None'),
+  essential(1, 'Essential'),
+  verbose(2, 'Verbose'),
+  excessive(3, 'Excessive');
 
   final int level;
-  const Verbosity(this.level);
+  final String name;
+  const Verbosity(this.level, this.name);
 }
 
 abstract class EmberInfo extends Logable{
@@ -15,11 +17,10 @@ abstract class EmberInfo extends Logable{
   final String? userMessage;
   final Verbosity verbosity;
 
-  const EmberInfo({
+  EmberInfo({
     this.userTitle,
     this.userMessage,
     Verbosity? verbosity,
-    required super.timestamp,
     required super.module,
     required super.devMessage,
     super.metadata,
@@ -35,7 +36,6 @@ class Info extends EmberInfo {
     Map<String, String>? metadata,
   }) : super(
     devMessage: devMessage,
-    timestamp: DateTime.now(),
     module: Module.core,
     logType: LogType.info,
     metadata: metadata ?? {},
@@ -49,7 +49,6 @@ class Success extends EmberInfo {
     Map<String, String>? metadata,
   }) : super(
     devMessage: devMessage,
-    timestamp: DateTime.now(),
     module: Module.core,
     logType: LogType.success,
     metadata: metadata ?? {},
@@ -63,7 +62,6 @@ class Warning extends EmberInfo {
     Map<String, String>? metadata,
   }) : super(
     devMessage: devMessage,
-    timestamp: DateTime.now(),
     module: Module.core,
     logType: LogType.warning,
     metadata: metadata ?? {},

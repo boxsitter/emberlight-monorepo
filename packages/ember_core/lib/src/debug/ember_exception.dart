@@ -10,10 +10,10 @@ import 'logable.dart';
 /// -------------  Base class -------------
 abstract class EmberException extends Logable implements Exception {
   final String? userMessage;
+  bool isHandled = false;
 
-  const EmberException({
+  EmberException({
     this.userMessage,
-    required super.timestamp,
     required super.module,
     required super.devMessage,
     super.metadata,
@@ -30,20 +30,8 @@ extension UnknownExceptionWrapping on Object {
 
 class _UnknownEmberException extends EmberException {
   _UnknownEmberException(Object original, LogType type, StackTrace? stackTrace) : super(
-    timestamp: DateTime.now(),
     module: stackTrace != null ? CoreFormatter.extractModuleFromStackTrace(stackTrace) : Module.unknown,
     devMessage: original.toString(),
     logType: type,
-  );
-}
-
-class Unhandleable extends EmberException {
-  Unhandleable({
-    required super.module,
-    required super.devMessage,
-    super.metadata,
-    required super.logType
-  }) : super(
-    timestamp: DateTime.now(),
   );
 }
