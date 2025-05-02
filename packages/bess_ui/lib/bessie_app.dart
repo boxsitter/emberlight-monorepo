@@ -41,7 +41,6 @@ class BessieApp extends StatelessWidget {
           defaultTransition: Transition.noTransition,
           getPages: BessAppRoute.pages,
           builder: (context, child) {
-            FlutterNativeSplash.remove();
             return ShadSonner(visibleToastsAmount: 3, child: child!);
           },
         );

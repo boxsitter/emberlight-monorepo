@@ -29,8 +29,7 @@ class BessRosterTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       // Ensure widths are calculated and match column count
-      if (controller.columnWidths.isEmpty ||
-          controller.columnWidths.length != columns.length) {
+      if (controller.columnWidths.isEmpty || controller.columnWidths.length != columns.length) {
         if (controller.columnWidths.isEmpty && columns.isNotEmpty) {
           // Initialize with minimums if empty but headers exist
           controller.columnWidths.assignAll(List.filled(columns.length, RosterTableController.minColumnWidth));
@@ -55,51 +54,53 @@ class BessRosterTable extends StatelessWidget {
           children: [
             TableHeader(tableTitle: tableTitle, controller: controller),
             Expanded(
-              child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final double availableWidth = constraints.maxWidth;
-                    final double layoutWidth = max(totalContentWidth, availableWidth);
+              child: LayoutBuilder(builder: (context, constraints) {
+                final double availableWidth = constraints.maxWidth;
+                final double layoutWidth = max(totalContentWidth, availableWidth);
 
-                    return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: SizedBox(
-                          width: layoutWidth,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: BessColors.background,
-                                ),
-                                child: Row(
-                                  children: List.generate(columns.length, (index) {
-                                    final width = index < controller.columnWidths.length ? controller.columnWidths[index] : RosterTableController.minColumnWidth;
-                                    return ColumnHeader(
-                                      columnLabel: columns[index],
-                                      width: width,
-                                    );
-                                  }),
-                                ),
-                              ),
-
-                              Divider(height: 1, color: BessColors.borderPrimary,),
-
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount: controller.processedCampersData.length,
-                                  itemBuilder: (context, rowIndex) {
-                                    return BessDataRow(
-                                      data: controller.processedCampersData[rowIndex], // Data for this specific row
-                                      columnWidths: controller.columnWidths, // Pass the *entire* list of widths
-                                      even: rowIndex % 2 == 0,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+                return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SizedBox(
+                      width: layoutWidth,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: BessColors.background,
+                            ),
+                            child: Row(
+                              children: List.generate(columns.length, (index) {
+                                final width = index < controller.columnWidths.length
+                                    ? controller.columnWidths[index]
+                                    : RosterTableController.minColumnWidth;
+                                return ColumnHeader(
+                                  columnLabel: columns[index],
+                                  width: width,
+                                );
+                              }),
+                            ),
                           ),
-                        ));
-                  }),
+                          Divider(
+                            height: 1,
+                            color: BessColors.borderPrimary,
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: controller.processedCampersData.length,
+                              itemBuilder: (context, rowIndex) {
+                                return BessDataRow(
+                                  data: controller.processedCampersData[rowIndex], // Data for this specific row
+                                  columnWidths: controller.columnWidths, // Pass the *entire* list of widths
+                                  even: rowIndex % 2 == 0,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ));
+              }),
             ),
           ],
         ),
