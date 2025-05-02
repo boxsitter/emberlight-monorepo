@@ -56,8 +56,8 @@ class ClientContextService extends GetxService {
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
-    clientContext.organizationId = User.organizationId;
-    clientContext.branchId = User.branchId;
+    clientContext.organizationId = TestUser.organizationId;
+    clientContext.branchId = TestUser.branchId;
 
     // Retrieve the unique active Season.
     clientContext.seasonId = await backend.getActiveObjectId('season', 'brn');

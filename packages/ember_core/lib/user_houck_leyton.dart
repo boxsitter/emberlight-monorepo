@@ -1,4 +1,4 @@
-class User {
+class TestUser {
   static const String firstName = 'Leyton';
   static const String lastName = 'Houck';
   static const String preferredName = 'Ice Pop';
