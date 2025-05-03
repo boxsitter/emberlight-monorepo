@@ -1,0 +1,147 @@
+name: bessie
+description: "Camp logistics manager"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  ember_core:
+    path: ../ember_core
+
+  ember_fire:
+    path: ../ember_fire
+
+  # UI
+  shadcn_ui: ^0.24.0
+
+  # Utility Packages
+  lottie: ^3.3.1
+  shimmer: ^3.0.0
+  # clipboard: ^0.1.3
+  # image_picker: ^1.1.0
+  # url_launcher: ^6.2.6
+  # flutter_dropzone: ^4.2.1
+  # flutter_typeahead: ^5.2.0
+  # connectivity_plus: ^6.0.3
+  # multi_select_flutter: ^4.1.3
+  cached_network_image: ^3.4.1
+  # flutter_native_splash: ^2.4.0
+  # smooth_page_indicator: ^1.1.0
+  window_manager: ^0.4.3
+  # synchronized: ^3.0.0
+  rxdart: ^0.28.0
+  xterm: ^4.0.0
+  visibility_detector: ^0.4.0+2
+  flutter_native_splash: ^2.4.6
+
+  # Web Specific
+  web: ^1.1.1
+
+  # State Management
+  get: ^4.7.2
+  # get_storage: ^2.1.1
+
+  sentry_flutter: ^8.14.2
+
+
+dependency_overrides:
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+
+flutter:
+  uses-material-design: true
+
+
+  #--------------- LOCAL ASSETS ------------------#
+  assets:
+    - assets/logos/
+    - assets/images/content/
+    - assets/images/animations/
+  #--------------- LOCAL FONTS ------------------#
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter_18pt-Light.ttf
+          weight: 300
+        - asset: assets/fonts/inter/Inter_18pt-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter_24pt-Italic.ttf
+          style: italic
+        - asset: assets/fonts/inter/Inter_28pt-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter/Inter_28pt-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/inter/Inter_24pt-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter_24pt-Black.ttf
+          weight: 900
+
+    - family: FiraCodeMono
+      fonts:
+        - asset: assets/fonts/fira_code_mono/FiraCodeNerdFontMono-Retina.ttf
+          weight: 400
+
+flutter_native_splash:
+  # dart run flutter_native_splash:create
+
+  # color or background_image is the only required parameter.  Use color to set the background
+  # of your splash screen to a solid color.  Use background_image to set the background of your
+  # splash screen to a png image.
+  color: "#eff1f5"
+  #background_image: "assets/background.png"
+
+  # The image parameter allows you to specify an image used in the splash screen.  It must be a
+  # png file and should be sized for 4x pixel density.
+  image: assets/logos/splash-logo.png
+
+  # The branding property allows you to specify an image used as branding in the splash screen.
+  # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
+  # see the Android 12 section below.
+  # branding: assets/logos/ember-core-branding.png
+
+  # Set the branding padding from the bottom of the screen.  The default value is 0
+  # (Not supported on web yet)
+  # branding_bottom_padding: 24
+
+  # The color_dark, background_image_dark, image_dark, branding_dark are parameters that set the background
+  # and image when the device is in dark mode.
+  # color_dark and background_image_dark cannot both be set.
+  #color_dark: "#042a49"
+  #background_image_dark: "assets/dark-background.png"
+  #image_dark: assets/splash-invert.png
+  #branding_dark: assets/dart_dark.png
+
+  android_12:
+   color: "#eff1f5"
+   image: assets/logos/splash-logo.png
+   branding: assets/logos/ember-core-branding.png
+   branding_bottom_padding: 24
+
+  fullscreen: true
