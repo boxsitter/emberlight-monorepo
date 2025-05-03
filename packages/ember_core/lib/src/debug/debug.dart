@@ -66,7 +66,7 @@ class Debug {
   };
 
   // ?DEBUG=#### in url
-  // --dart-define=DEBUG=####
+  // --dart-define=DEBUG=#####
   // enableSentry (0 or 1)
   // useFirestoreEmulator (0 or 1)
   // maxVerbosityToPrint (0: no console output, 1: essential, 2: verbose, 3: excessive)

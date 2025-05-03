@@ -28,6 +28,9 @@ dependencies:
 dev_dependencies:
   lints: ^5.1.1
 
+flutter:
+  uses-material-design: true
+
 flutter_native_splash:
   # dart run flutter_native_splash:create
 

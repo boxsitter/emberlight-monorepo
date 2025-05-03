@@ -1,8 +1,6 @@
 import 'package:bess_ui/common/constants/catppuccin_base.dart';
 import 'package:flutter/material.dart';
 
-import 'catppuccin_base.dart';
-
 class BessColors {
   static Flavor flavor = catppuccin.latte;
 
