@@ -1,5 +1,5 @@
-import 'package:bessie/common/constants/colors.dart';
-import 'package:bessie/common/widgets/shimmers/shimmer.dart';
+import 'package:bess_ui/common/constants/colors.dart';
+import 'package:bess_ui/common/widgets/shimmers/shimmer.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/sizes.dart';

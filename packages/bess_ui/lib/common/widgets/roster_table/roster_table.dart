@@ -1,12 +1,12 @@
 import 'dart:math';
 
-import 'package:bessie/common/constants/colors.dart';
-import 'package:bessie/common/constants/sizes.dart';
-import 'package:bessie/common/styles/shadows.dart';
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/common/widgets/roster_table/widgets/column_header.dart';
-import 'package:bessie/common/widgets/roster_table/widgets/data_row.dart';
-import 'package:bessie/common/widgets/roster_table/widgets/table_header.dart';
+import 'package:bess_ui/common/constants/colors.dart';
+import 'package:bess_ui/common/constants/sizes.dart';
+import 'package:bess_ui/common/styles/shadows.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/common/widgets/roster_table/widgets/column_header.dart';
+import 'package:bess_ui/common/widgets/roster_table/widgets/data_row.dart';
+import 'package:bess_ui/common/widgets/roster_table/widgets/table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

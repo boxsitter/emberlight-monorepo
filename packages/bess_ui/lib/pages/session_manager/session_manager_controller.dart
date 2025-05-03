@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:bessie/common/utils/helpers/helper_functions.dart';
+import 'package:bess_ui/common/utils/helpers/helper_functions.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';

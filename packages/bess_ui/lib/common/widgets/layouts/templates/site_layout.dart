@@ -1,6 +1,6 @@
-import 'package:bessie/common/widgets/responsive/responsive_design.dart';
-import 'package:bessie/common/widgets/responsive/screens/mobile_layout.dart';
-import 'package:bessie/common/widgets/responsive/screens/tablet_layout.dart';
+import 'package:bess_ui/common/widgets/responsive/responsive_design.dart';
+import 'package:bess_ui/common/widgets/responsive/screens/mobile_layout.dart';
+import 'package:bess_ui/common/widgets/responsive/screens/tablet_layout.dart';
 import 'package:flutter/material.dart';
 
 import '../../responsive/screens/desktop_layout.dart';

@@ -1,5 +1,5 @@
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/pages/schedule/schedule_page_controller.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/pages/schedule/schedule_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

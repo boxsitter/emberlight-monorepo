@@ -1,5 +1,5 @@
-import 'package:bessie/common/styles/text_styles.dart';
-import 'package:bessie/common/widgets/images/bess_circular_image.dart';
+import 'package:bess_ui/common/styles/text_styles.dart';
+import 'package:bess_ui/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

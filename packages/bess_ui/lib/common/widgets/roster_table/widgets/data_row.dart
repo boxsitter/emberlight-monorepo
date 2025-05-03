@@ -1,4 +1,4 @@
-import 'package:bessie/common/widgets/roster_table/widgets/string_cell.dart';
+import 'package:bess_ui/common/widgets/roster_table/widgets/string_cell.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';

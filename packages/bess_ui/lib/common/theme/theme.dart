@@ -1,5 +1,5 @@
-import 'package:bessie/common/constants/sizes.dart';
-import 'package:bessie/common/theme/widget_themes/progress_indicator_theme.dart';
+import 'package:bess_ui/common/constants/sizes.dart';
+import 'package:bess_ui/common/theme/widget_themes/progress_indicator_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';

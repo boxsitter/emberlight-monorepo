@@ -1,4 +1,4 @@
-import 'package:bessie/common/theme/widget_themes/text_theme.dart';
+import 'package:bess_ui/common/theme/widget_themes/text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:bessie/common/constants/palettes/frappe.dart';
-import 'package:bessie/common/constants/palettes/latte.dart';
-import 'package:bessie/common/constants/palettes/macchiato.dart';
-import 'package:bessie/common/constants/palettes/mocha.dart';
+import 'package:bess_ui/common/constants/palettes/frappe.dart';
+import 'package:bess_ui/common/constants/palettes/latte.dart';
+import 'package:bess_ui/common/constants/palettes/macchiato.dart';
+import 'package:bess_ui/common/constants/palettes/mocha.dart';
 
 typedef Flavor = ({
   Color rosewater,

@@ -3,9 +3,9 @@
 // to route push and pop events, it ensures the sidebar's highlighted
 // item always reflects the current screen.
 
-import 'package:bessie/common/routes/routes.dart';
-import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
-import 'package:bessie/pages/session_manager/session_manager_controller.dart';
+import 'package:bess_ui/common/routes/routes.dart';
+import 'package:bess_ui/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/pages/session_manager/session_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

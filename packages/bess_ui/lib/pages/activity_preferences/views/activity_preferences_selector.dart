@@ -1,7 +1,7 @@
-import 'package:bessie/common/constants/colors.dart';
-import 'package:bessie/common/widgets/buttons/action_initiator.dart';
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/common/constants/colors.dart';
+import 'package:bess_ui/common/widgets/buttons/action_initiator.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';

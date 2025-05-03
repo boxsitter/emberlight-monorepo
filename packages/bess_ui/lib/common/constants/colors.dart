@@ -1,9 +1,10 @@
-import 'package:bessie/common/constants/catppuccin_base.dart';
-import 'package:bessie/main.dart';
+import 'package:bess_ui/common/constants/catppuccin_base.dart';
 import 'package:flutter/material.dart';
 
+import 'catppuccin_base.dart';
+
 class BessColors {
-  static Flavor flavor = AppConfig.theme;
+  static Flavor flavor = catppuccin.latte;
 
   // Primary theme colors
   static Color primary = flavor.blue;

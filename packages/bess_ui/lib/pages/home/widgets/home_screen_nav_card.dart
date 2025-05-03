@@ -1,5 +1,5 @@
-import 'package:bessie/common/constants/sizes.dart';
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/common/constants/sizes.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/styles/text_styles.dart';

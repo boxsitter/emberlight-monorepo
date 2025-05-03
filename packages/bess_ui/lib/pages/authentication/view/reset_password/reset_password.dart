@@ -1,5 +1,5 @@
-import 'package:bessie/common/widgets/layouts/templates/center_box.dart';
-import 'package:bessie/pages/authentication/view/reset_password/widgets/reset_password_widget.dart';
+import 'package:bess_ui/common/widgets/layouts/templates/center_box.dart';
+import 'package:bess_ui/pages/authentication/view/reset_password/widgets/reset_password_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants//sizes.dart';

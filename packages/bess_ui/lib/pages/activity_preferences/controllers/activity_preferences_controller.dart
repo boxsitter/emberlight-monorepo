@@ -1,4 +1,4 @@
-import 'package:bessie/common/services/popup_service.dart';
+import 'package:bess_ui/common/services/popup_service.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';

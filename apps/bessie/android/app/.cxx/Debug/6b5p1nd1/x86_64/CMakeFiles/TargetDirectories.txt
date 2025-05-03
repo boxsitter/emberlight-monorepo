@@ -1,0 +1,2 @@
+C:/Users/Leyto/User Projects/bessie/android/app/.cxx/Debug/6b5p1nd1/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Leyto/User Projects/bessie/android/app/.cxx/Debug/6b5p1nd1/x86_64/CMakeFiles/rebuild_cache.dir

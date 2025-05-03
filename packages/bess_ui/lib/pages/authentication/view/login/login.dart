@@ -1,6 +1,6 @@
-import 'package:bessie/common/widgets/layouts/templates/center_box.dart';
-import 'package:bessie/pages/authentication/view/login/widgets/login_form.dart';
-import 'package:bessie/pages/authentication/view/login/widgets/login_header.dart';
+import 'package:bess_ui/common/widgets/layouts/templates/center_box.dart';
+import 'package:bess_ui/pages/authentication/view/login/widgets/login_form.dart';
+import 'package:bess_ui/pages/authentication/view/login/widgets/login_header.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants//sizes.dart';

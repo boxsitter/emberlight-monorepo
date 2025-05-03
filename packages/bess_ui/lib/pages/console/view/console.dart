@@ -1,4 +1,4 @@
-import 'package:bessie/pages/console/view/themes/console_theme.dart';
+import 'package:bess_ui/pages/console/view/themes/console_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xterm/ui.dart';

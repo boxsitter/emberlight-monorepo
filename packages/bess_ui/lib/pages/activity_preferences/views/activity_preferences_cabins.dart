@@ -1,4 +1,4 @@
-import 'package:bessie/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

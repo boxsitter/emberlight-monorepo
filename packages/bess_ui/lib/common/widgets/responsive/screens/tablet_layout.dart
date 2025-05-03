@@ -1,4 +1,4 @@
-import 'package:bessie/common/widgets/layouts/headers/header.dart';
+import 'package:bess_ui/common/widgets/layouts/headers/header.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants//sizes.dart';

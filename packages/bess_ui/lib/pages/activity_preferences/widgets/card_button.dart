@@ -1,4 +1,4 @@
-import 'package:bessie/common/constants/sizes.dart';
+import 'package:bess_ui/common/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/constants/colors.dart';

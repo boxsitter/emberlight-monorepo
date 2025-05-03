@@ -1,6 +1,5 @@
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -10,7 +9,6 @@ import 'common/routes/routes.dart';
 import 'common/theme/shad_theme.dart';
 import 'common/theme/theme.dart';
 import 'common/utils/device/web_material_scroll.dart';
-import 'main.dart';
 
 class BessieApp extends StatelessWidget {
   const BessieApp({super.key});

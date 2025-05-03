@@ -1,4 +1,4 @@
-import 'package:bessie/common/styles/text_styles.dart';
+import 'package:bess_ui/common/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

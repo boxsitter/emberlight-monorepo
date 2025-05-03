@@ -1,5 +1,5 @@
-import 'package:bessie/common/constants/sizes.dart';
-import 'package:bessie/pages/home/widgets/home_screen_nav_card.dart';
+import 'package:bess_ui/common/constants/sizes.dart';
+import 'package:bess_ui/pages/home/widgets/home_screen_nav_card.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

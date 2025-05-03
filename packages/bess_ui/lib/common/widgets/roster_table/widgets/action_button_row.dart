@@ -1,5 +1,5 @@
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/common/widgets/roster_table/widgets/table_action_button.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/common/widgets/roster_table/widgets/table_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

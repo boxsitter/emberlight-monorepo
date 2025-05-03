@@ -1,6 +1,6 @@
-import 'package:bessie/common/constants/sizes.dart';
-import 'package:bessie/common/styles/text_styles.dart';
-import 'package:bessie/pages/session_manager/session_manager_controller.dart';
+import 'package:bess_ui/common/constants/sizes.dart';
+import 'package:bess_ui/common/styles/text_styles.dart';
+import 'package:bess_ui/pages/session_manager/session_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

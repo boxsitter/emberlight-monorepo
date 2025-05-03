@@ -1,8 +1,8 @@
-import 'package:bessie/common/constants/colors.dart';
-import 'package:bessie/common/styles/text_styles.dart';
-import 'package:bessie/common/theme/shad_theme.dart';
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/common/widgets/context_switcher/context_switcher.dart';
+import 'package:bess_ui/common/constants/colors.dart';
+import 'package:bess_ui/common/styles/text_styles.dart';
+import 'package:bess_ui/common/theme/shad_theme.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/common/widgets/context_switcher/context_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

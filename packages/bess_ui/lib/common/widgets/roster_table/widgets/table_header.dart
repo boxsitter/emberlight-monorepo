@@ -1,6 +1,6 @@
-import 'package:bessie/common/widgets/containers/rounded_container.dart';
-import 'package:bessie/common/widgets/roster_table/controllers/roster_table_controller.dart';
-import 'package:bessie/common/widgets/roster_table/widgets/action_button_row.dart';
+import 'package:bess_ui/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/common/widgets/roster_table/controllers/roster_table_controller.dart';
+import 'package:bess_ui/common/widgets/roster_table/widgets/action_button_row.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
