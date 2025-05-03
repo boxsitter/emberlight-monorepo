@@ -1,0 +1,25 @@
+name: ember_core
+description: A starting point for Dart libraries or applications.
+version: 0.1.0
+publish_to: none
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  # State Management
+  get: ^4.7.2
+
+  # Utility Packages
+  intl: any
+  pdf: ^3.11.3
+  file_picker: ^10.1.2
+  csv: ^6.0.0
+  logger: ^2.5.0
+  shared_preferences: ^2.5.3
+
+
+dev_dependencies:
+  lints: ^5.1.1
+  test: ^1.25.15
