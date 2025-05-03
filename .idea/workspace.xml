@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Leyton Houck &lt;leyton.houck@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="SOFT" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="7ee647b6-3095-43eb-9a23-534a799ff4ee" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2wZir4ifhbG7zyfUp5hsJb6GqOI" />
+  <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="openDirectoriesWithSingleClick" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showScratchesAndConsoles" value="false" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Flutter.TEMP TEST.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Drive/Work/Emberlight/emberlight-monorepo/apps/bessie/lib&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Global Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.3632184&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;tasks.timeTracking&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Drive\Work\Emberlight\emberlight-monorepo\apps\bessie\lib" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Drive\Work\Emberlight\emberlight-monorepo" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Enable Material Design in flutter and clean up unused imports&#10;&#10;Added `uses-material-design: true` to the Flutter configuration for Bessie's app to improve UI consistency. Removed redundant import in `colors.dart` and corrected a debug comment format in `debug.dart`." />
+      <created>1733212281352</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746304097124</updated>
+      <workItem from="1733212282373" duration="133000" />
+      <workItem from="1733212439824" duration="38000" />
+      <workItem from="1733212484864" duration="2203000" />
+      <workItem from="1733214722688" duration="97000" />
+      <workItem from="1733216058978" duration="178000" />
+      <workItem from="1733216245043" duration="1039000" />
+      <workItem from="1733217678220" duration="14000" />
+      <workItem from="1733218411734" duration="117000" />
+      <workItem from="1733218645316" duration="79000" />
+      <workItem from="1733252893490" duration="910000" />
+      <workItem from="1733253925110" duration="1353000" />
+      <workItem from="1733256531676" duration="108000" />
+      <workItem from="1733256653456" duration="11000" />
+      <workItem from="1733256705208" duration="1388000" />
+      <workItem from="1733258178992" duration="941000" />
+      <workItem from="1733262610423" duration="4000" />
+      <workItem from="1733265858459" duration="334000" />
+      <workItem from="1733288359944" duration="2932000" />
+      <workItem from="1733360736576" duration="45000" />
+      <workItem from="1733360792944" duration="1610000" />
+      <workItem from="1733372159518" duration="10000" />
+      <workItem from="1733373168694" duration="305000" />
+      <workItem from="1733373481667" duration="846000" />
+      <workItem from="1733376257640" duration="8000" />
+      <workItem from="1733553844113" duration="1888000" />
+      <workItem from="1733862569027" duration="8000" />
+      <workItem from="1733862950801" duration="16000" />
+      <workItem from="1733864045141" duration="129000" />
+      <workItem from="1733864187776" duration="17000" />
+      <workItem from="1733864210060" duration="251000" />
+      <workItem from="1733864763568" duration="37000" />
+      <workItem from="1733864881651" duration="201000" />
+      <workItem from="1733865089449" duration="174000" />
+      <workItem from="1733865268186" duration="6536000" />
+      <workItem from="1733950517984" duration="4184000" />
+      <workItem from="1733958313614" duration="38000" />
+      <workItem from="1733958357474" duration="10553000" />
+      <workItem from="1733973404557" duration="2453000" />
+      <workItem from="1733979591181" duration="4944000" />
+      <workItem from="1733984583968" duration="396000" />
+      <workItem from="1734068901427" duration="5964000" />
+      <workItem from="1734133357042" duration="10453000" />
+      <workItem from="1734215720295" duration="14731000" />
+      <workItem from="1734298853785" duration="20619000" />
+      <workItem from="1734464863543" duration="318000" />
+      <workItem from="1734749433505" duration="216000" />
+      <workItem from="1735339338148" duration="1718000" />
+      <workItem from="1735342744744" duration="422000" />
+      <workItem from="1735343183445" duration="52000" />
+      <workItem from="1735343240188" duration="332000" />
+      <workItem from="1735343583133" duration="260000" />
+      <workItem from="1735343852041" duration="15997000" />
+      <workItem from="1735360587786" duration="1808000" />
+      <workItem from="1735363476816" duration="684000" />
+      <workItem from="1735420064749" duration="3523000" />
+      <workItem from="1735425158022" duration="850000" />
+      <workItem from="1735426305593" duration="7585000" />
+      <workItem from="1735544034157" duration="4699000" />
+      <workItem from="1735598587277" duration="9198000" />
+      <workItem from="1735609477110" duration="8599000" />
+      <workItem from="1735619526712" duration="4985000" />
+      <workItem from="1735687537738" duration="4189000" />
+      <workItem from="1735961411737" duration="10018000" />
+      <workItem from="1736025949661" duration="21620000" />
+      <workItem from="1736058710602" duration="320000" />
+      <workItem from="1736132802930" duration="15328000" />
+      <workItem from="1736199916379" duration="12274000" />
+      <workItem from="1736238215410" duration="6039000" />
+      <workItem from="1736303846086" duration="43000" />
+      <workItem from="1736303894225" duration="3709000" />
+      <workItem from="1736312305133" duration="1036000" />
+      <workItem from="1736456593577" duration="6285000" />
+      <workItem from="1736545993083" duration="621000" />
+      <workItem from="1737070748072" duration="51000" />
+      <workItem from="1737072351738" duration="610000" />
+      <workItem from="1737073395403" duration="531000" />
+      <workItem from="1739016147401" duration="271000" />
+      <workItem from="1739348812552" duration="626000" />
+      <workItem from="1739354374140" duration="201000" />
+      <workItem from="1739354588623" duration="582000" />
+      <workItem from="1739355190130" duration="13000" />
+      <workItem from="1740293873378" duration="6887000" />
+      <workItem from="1740468122187" duration="245000" />
+      <workItem from="1740468375490" duration="1234000" />
+      <workItem from="1740469624776" duration="326000" />
+      <workItem from="1740470064919" duration="1997000" />
+      <workItem from="1740518921612" duration="4139000" />
+      <workItem from="1740532477239" duration="4082000" />
+      <workItem from="1740736553871" duration="353000" />
+      <workItem from="1740789721468" duration="944000" />
+      <workItem from="1740796589928" duration="9000" />
+      <workItem from="1740869022625" duration="10254000" />
+      <workItem from="1740879385302" duration="677000" />
+      <workItem from="1740880391953" duration="13000" />
+      <workItem from="1740880447390" duration="1826000" />
+      <workItem from="1740891824174" duration="19000" />
+      <workItem from="1740907504456" duration="43000" />
+      <workItem from="1740907570073" duration="91000" />
+      <workItem from="1740907668203" duration="156000" />
+      <workItem from="1740907830047" duration="88000" />
+      <workItem from="1740964103396" duration="932000" />
+      <workItem from="1740965920496" duration="4799000" />
+      <workItem from="1740973722843" duration="17428000" />
+      <workItem from="1741050621131" duration="3000" />
+      <workItem from="1741077464563" duration="4311000" />
+      <workItem from="1741127263727" duration="106000" />
+      <workItem from="1741158498788" duration="1290000" />
+      <workItem from="1741159819360" duration="1229000" />
+      <workItem from="1741411871717" duration="3599000" />
+      <workItem from="1741468389065" duration="439000" />
+      <workItem from="1741480520615" duration="181000" />
+      <workItem from="1741480709204" duration="111000" />
+      <workItem from="1741480834381" duration="17046000" />
+      <workItem from="1741552675978" duration="9538000" />
+      <workItem from="1741580016493" duration="664000" />
+      <workItem from="1741582285104" duration="5670000" />
+      <workItem from="1741668405497" duration="9131000" />
+      <workItem from="1741760559066" duration="603000" />
+      <workItem from="1741813335799" duration="16812000" />
+      <workItem from="1741848904095" duration="6127000" />
+      <workItem from="1741892095436" duration="3851000" />
+      <workItem from="1741948807380" duration="35000" />
+      <workItem from="1742021740773" duration="2662000" />
+      <workItem from="1742095566669" duration="4269000" />
+      <workItem from="1742100030820" duration="9434000" />
+      <workItem from="1742179256769" duration="12681000" />
+      <workItem from="1742237109190" duration="9815000" />
+      <workItem from="1742249099416" duration="98000" />
+      <workItem from="1742351419839" duration="609000" />
+      <workItem from="1742431656221" duration="27000" />
+      <workItem from="1742456266580" duration="2680000" />
+      <workItem from="1742501482779" duration="21000" />
+      <workItem from="1742526105327" duration="562000" />
+      <workItem from="1742597041403" duration="261000" />
+      <workItem from="1742795512663" duration="4543000" />
+      <workItem from="1742842990965" duration="32253000" />
+      <workItem from="1742934262762" duration="25546000" />
+      <workItem from="1743027243329" duration="7102000" />
+      <workItem from="1743040892995" duration="19259000" />
+      <workItem from="1743109085741" duration="27977000" />
+      <workItem from="1743191208422" duration="19361000" />
+      <workItem from="1743214759602" duration="8222000" />
+      <workItem from="1743224051916" duration="679000" />
+      <workItem from="1743277341842" duration="427000" />
+      <workItem from="1743280715035" duration="17502000" />
+      <workItem from="1743310825433" duration="9935000" />
+      <workItem from="1743365941026" duration="30684000" />
+      <workItem from="1743447827879" duration="25989000" />
+      <workItem from="1743482112499" duration="253000" />
+      <workItem from="1743484531422" duration="3974000" />
+      <workItem from="1743489320112" duration="394000" />
+      <workItem from="1743490006204" duration="3596000" />
+      <workItem from="1743493724621" duration="29000" />
+      <workItem from="1743493834983" duration="185000" />
+      <workItem from="1743563456905" duration="385000" />
+      <workItem from="1743563851050" duration="6000" />
+      <workItem from="1743563864181" duration="771000" />
+      <workItem from="1743565300871" duration="7426000" />
+      <workItem from="1743573724234" duration="307000" />
+      <workItem from="1743599990524" duration="1448000" />
+      <workItem from="1743651967197" duration="595000" />
+      <workItem from="1743653669626" duration="2591000" />
+      <workItem from="1743659390473" duration="927000" />
+      <workItem from="1743660339506" duration="94000" />
+      <workItem from="1743660443240" duration="308000" />
+      <workItem from="1743660761680" duration="80000" />
+      <workItem from="1743660849631" duration="26000" />
+      <workItem from="1743660877032" duration="280000" />
+      <workItem from="1743661166317" duration="184000" />
+      <workItem from="1743661361367" duration="83000" />
+      <workItem from="1743662700036" duration="280000" />
+      <workItem from="1743662995493" duration="1420000" />
+      <workItem from="1743669704650" duration="610000" />
+      <workItem from="1743711948494" duration="205000" />
+      <workItem from="1743715314527" duration="16120000" />
+      <workItem from="1743736293139" duration="13136000" />
+      <workItem from="1743831167985" duration="54000" />
+      <workItem from="1743831530260" duration="2719000" />
+      <workItem from="1743834808958" duration="502000" />
+      <workItem from="1743876039919" duration="12345000" />
+      <workItem from="1743894310589" duration="23950000" />
+      <workItem from="1744000491020" duration="74000" />
+      <workItem from="1744002119769" duration="333000" />
+      <workItem from="1744002769808" duration="471000" />
+      <workItem from="1744049343962" duration="10719000" />
+      <workItem from="1744163424968" duration="13885000" />
+      <workItem from="1744266531805" duration="4875000" />
+      <workItem from="1744314217151" duration="51000" />
+      <workItem from="1744325459153" duration="4073000" />
+      <workItem from="1744330687112" duration="23198000" />
+      <workItem from="1744354998568" duration="787000" />
+      <workItem from="1744420606342" duration="123000" />
+      <workItem from="1744420737969" duration="4069000" />
+      <workItem from="1744429781153" duration="10615000" />
+      <workItem from="1744501866083" duration="16334000" />
+      <workItem from="1744520101580" duration="1734000" />
+      <workItem from="1744521874212" duration="11101000" />
+      <workItem from="1744781962627" duration="131000" />
+      <workItem from="1744783143356" duration="2658000" />
+      <workItem from="1744785834320" duration="138000" />
+      <workItem from="1744866773744" duration="1499000" />
+      <workItem from="1744868294932" duration="7351000" />
+      <workItem from="1744929721849" duration="2031000" />
+      <workItem from="1744932123411" duration="9835000" />
+      <workItem from="1745274418000" duration="56000" />
+      <workItem from="1745274495140" duration="19423000" />
+      <workItem from="1745298486446" duration="8447000" />
+      <workItem from="1745370527492" duration="126000" />
+      <workItem from="1745455358589" duration="1007000" />
+      <workItem from="1745474436346" duration="2744000" />
+      <workItem from="1745534884446" duration="118000" />
+      <workItem from="1745545587077" duration="18708000" />
+      <workItem from="1745636628445" duration="305000" />
+      <workItem from="1745639584405" duration="9809000" />
+      <workItem from="1745649646683" duration="2518000" />
+      <workItem from="1745652387786" duration="1284000" />
+      <workItem from="1745702684293" duration="30215000" />
+      <workItem from="1745734316547" duration="7108000" />
+      <workItem from="1745746524236" duration="2968000" />
+      <workItem from="1745782424314" duration="7238000" />
+      <workItem from="1745806115700" duration="18563000" />
+      <workItem from="1745828498276" duration="53000" />
+      <workItem from="1745894871465" duration="19274000" />
+      <workItem from="1745957770088" duration="1284000" />
+      <workItem from="1745991415441" duration="2124000" />
+      <workItem from="1745993908807" duration="4638000" />
+      <workItem from="1745999363304" duration="2558000" />
+      <workItem from="1746002652929" duration="571000" />
+      <workItem from="1746003297981" duration="1005000" />
+      <workItem from="1746044538105" duration="13475000" />
+      <workItem from="1746076973388" duration="4032000" />
+      <workItem from="1746081248218" duration="8000" />
+      <workItem from="1746081296451" duration="8621000" />
+      <workItem from="1746136677447" duration="832000" />
+      <workItem from="1746138236785" duration="7840000" />
+      <workItem from="1746146385432" duration="8334000" />
+      <workItem from="1746173025876" duration="337000" />
+      <workItem from="1746173409998" duration="337000" />
+      <workItem from="1746173948233" duration="32000" />
+      <workItem from="1746239964665" duration="3526000" />
+      <workItem from="1746244990099" duration="74000" />
+      <workItem from="1746245075643" duration="164000" />
+      <workItem from="1746245778777" duration="13000" />
+      <workItem from="1746304058185" duration="29000" />
+      <workItem from="1746304097469" duration="152000" />
+    </task>
+    <task id="LOCAL-00047" summary="fix bugs and improve ui">
+      <option name="closed" value="true" />
+      <created>1744519495712</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1744519495712</updated>
+    </task>
+    <task id="LOCAL-00048" summary="fix roster table">
+      <option name="closed" value="true" />
+      <created>1744534736471</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1744534736471</updated>
+    </task>
+    <task id="LOCAL-00049" summary="minor changes">
+      <option name="closed" value="true" />
+      <created>1744785948600</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1744785948600</updated>
+    </task>
+    <task id="LOCAL-00050" summary="work on deletion">
+      <option name="closed" value="true" />
+      <created>1744875340004</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1744875340005</updated>
+    </task>
+    <task id="LOCAL-00051" summary="work on schedule builder">
+      <option name="closed" value="true" />
+      <created>1744942171375</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1744942171375</updated>
+    </task>
+    <task id="LOCAL-00052" summary="finish delete system">
+      <option name="closed" value="true" />
+      <created>1745298512892</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1745298512892</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Refactor activity preferences to support camper-specific activity ranking with new selection and navigation logic">
+      <option name="closed" value="true" />
+      <created>1745306088834</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1745306088834</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Skip camper list and go straight to selector">
+      <option name="closed" value="true" />
+      <created>1745307032518</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1745307032518</updated>
+    </task>
+    <task id="LOCAL-00055" summary="small changes">
+      <option name="closed" value="true" />
+      <created>1745477193873</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1745477193874</updated>
+    </task>
+    <task id="LOCAL-00056" summary="add cleanup for orphaned dependants">
+      <option name="closed" value="true" />
+      <created>1745555164842</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1745555164842</updated>
+    </task>
+    <task id="LOCAL-00057" summary="work on refactoring to allow cmps">
+      <option name="closed" value="true" />
+      <created>1745565220621</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1745565220621</updated>
+    </task>
+    <task id="LOCAL-00058" summary="work on removing CamperPreference object">
+      <option name="closed" value="true" />
+      <created>1745565954220</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1745565954220</updated>
+    </task>
+    <task id="LOCAL-00059" summary="work on preferences and error handling">
+      <option name="closed" value="true" />
+      <created>1745734266729</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1745734266729</updated>
+    </task>
+    <task id="LOCAL-00060" summary="firebase hosting setup">
+      <option name="closed" value="true" />
+      <created>1745747056658</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1745747056658</updated>
+    </task>
+    <task id="LOCAL-00061" summary="firebase hosting setup">
+      <option name="closed" value="true" />
+      <created>1745747194480</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1745747194480</updated>
+    </task>
+    <task id="LOCAL-00062" summary="firebase hosting setup">
+      <option name="closed" value="true" />
+      <created>1745747592316</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1745747592316</updated>
+    </task>
+    <task id="LOCAL-00063" summary="deleted windows dir">
+      <option name="closed" value="true" />
+      <created>1745747714911</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1745747714911</updated>
+    </task>
+    <task id="LOCAL-00064" summary="deleted windows dir and firebase hosting setup">
+      <option name="closed" value="true" />
+      <created>1745747960932</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1745747960932</updated>
+    </task>
+    <task id="LOCAL-00065" summary="new web build">
+      <option name="closed" value="true" />
+      <created>1745748049207</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1745748049207</updated>
+    </task>
+    <task id="LOCAL-00066" summary="fix deploy action">
+      <option name="closed" value="true" />
+      <created>1745748490022</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1745748490022</updated>
+    </task>
+    <task id="LOCAL-00067" summary="fix web scaling hopefully">
+      <option name="closed" value="true" />
+      <created>1745749030604</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1745749030604</updated>
+    </task>
+    <task id="LOCAL-00068" summary="fix offline persistence">
+      <option name="closed" value="true" />
+      <created>1745783752096</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1745783752096</updated>
+    </task>
+    <task id="LOCAL-00069" summary="fix deploy action">
+      <option name="closed" value="true" />
+      <created>1745784532952</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1745784532952</updated>
+    </task>
+    <task id="LOCAL-00070" summary="fix deploy action">
+      <option name="closed" value="true" />
+      <created>1745787084342</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1745787084342</updated>
+    </task>
+    <task id="LOCAL-00071" summary="fix deploy action">
+      <option name="closed" value="true" />
+      <created>1745787236278</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1745787236278</updated>
+    </task>
+    <task id="LOCAL-00072" summary="fix deploy action">
+      <option name="closed" value="true" />
+      <created>1745787428045</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1745787428045</updated>
+    </task>
+    <task id="LOCAL-00073" summary="fix deploy action">
+      <option name="closed" value="true" />
+      <created>1745787463313</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1745787463313</updated>
+    </task>
+    <task id="LOCAL-00074" summary="fix firebase deploy with action">
+      <option name="closed" value="true" />
+      <created>1745788259268</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1745788259268</updated>
+    </task>
+    <task id="LOCAL-00075" summary="fix firebase deploy with action">
+      <option name="closed" value="true" />
+      <created>1745788784778</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1745788784778</updated>
+    </task>
+    <task id="LOCAL-00076" summary="work on error handling">
+      <option name="closed" value="true" />
+      <created>1745828516632</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1745828516632</updated>
+    </task>
+    <task id="LOCAL-00077" summary="add error and info handling">
+      <option name="closed" value="true" />
+      <created>1745907647568</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1745907647568</updated>
+    </task>
+    <task id="LOCAL-00078" summary="more error handling work">
+      <option name="closed" value="true" />
+      <created>1745957825896</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1745957825896</updated>
+    </task>
+    <task id="LOCAL-00079" summary="fixes for web app visuals, add icons">
+      <option name="closed" value="true" />
+      <created>1745993587673</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1745993587673</updated>
+    </task>
+    <task id="LOCAL-00080" summary="fix null error">
+      <option name="closed" value="true" />
+      <created>1745998545261</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1745998545261</updated>
+    </task>
+    <task id="LOCAL-00081" summary="fix null error">
+      <option name="closed" value="true" />
+      <created>1745999685699</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1745999685699</updated>
+    </task>
+    <task id="LOCAL-00082" summary="move firebase into sentry catch">
+      <option name="closed" value="true" />
+      <created>1746001085763</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1746001085763</updated>
+    </task>
+    <task id="LOCAL-00083" summary="disable offline caching to try to fix error">
+      <option name="closed" value="true" />
+      <created>1746001693030</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1746001693030</updated>
+    </task>
+    <task id="LOCAL-00084" summary="maybe fixed the error but added stupid print statements everywhere">
+      <option name="closed" value="true" />
+      <created>1746002966702</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1746002966702</updated>
+    </task>
+    <task id="LOCAL-00085" summary="potential fix for firebase error">
+      <option name="closed" value="true" />
+      <created>1746003677308</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1746003677308</updated>
+    </task>
+    <task id="LOCAL-00086" summary="add splash screen">
+      <option name="closed" value="true" />
+      <created>1746061660726</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1746061660726</updated>
+    </task>
+    <task id="LOCAL-00087" summary="fix pubspec error and remove embercore branding">
+      <option name="closed" value="true" />
+      <created>1746061933631</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1746061933631</updated>
+    </task>
+    <task id="LOCAL-00088" summary="fix another pubspec error">
+      <option name="closed" value="true" />
+      <created>1746062158184</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1746062158184</updated>
+    </task>
+    <task id="LOCAL-00089" summary="update icons">
+      <option name="closed" value="true" />
+      <created>1746076017720</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1746076017720</updated>
+    </task>
+    <task id="LOCAL-00090" summary="fix issue with icons">
+      <option name="closed" value="true" />
+      <created>1746078634013</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1746078634013</updated>
+    </task>
+    <task id="LOCAL-00091" summary="fix icon shadow, add debug state config, fix splash screen error">
+      <option name="closed" value="true" />
+      <created>1746146094621</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1746146094621</updated>
+    </task>
+    <task id="LOCAL-00092" summary="fix shad version">
+      <option name="closed" value="true" />
+      <created>1746146551738</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1746146551738</updated>
+    </task>
+    <task id="LOCAL-00093" summary="work on authentication">
+      <option name="closed" value="true" />
+      <created>1746169368018</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1746169368018</updated>
+    </task>
+    <task id="LOCAL-00094" summary="refactor debug models into models dir">
+      <option name="closed" value="true" />
+      <created>1746173444140</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1746173444140</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
+    <option name="clearContext" value="false" />
+    <option name="createChangelist" value="false" />
+    <option name="createBranch" value="false" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/main" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+        <entry key="Paths">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="dir:C:/Drive/Work/Emberlight/emberlight-monorepo/packages/ember_core" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="dir:C:/Drive/Work/Emberlight/emberlight-monorepo/packages/bess_ui" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="HIGHLIGHTERS">
+                <map>
+                  <entry key="CURRENT_BRANCH" value="true" />
+                  <entry key="MERGE_COMMITS" value="true" />
+                  <entry key="MY_COMMITS" value="true" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add entry point and clean up dependencies" />
+    <MESSAGE value="update gitignore" />
+    <MESSAGE value="delete ignored files" />
+    <MESSAGE value="Delete ignored files" />
+    <MESSAGE value="Enable Material Design in flutter and clean up unused imports&#10;&#10;Added `uses-material-design: true` to the Flutter configuration for Bessie's app to improve UI consistency. Removed redundant import in `colors.dart` and corrected a debug comment format in `debug.dart`." />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable Material Design in flutter and clean up unused imports&#10;&#10;Added `uses-material-design: true` to the Flutter configuration for Bessie's app to improve UI consistency. Removed redundant import in `colors.dart` and corrected a debug comment format in `debug.dart`." />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.gk646.codestats.settings.Save">
+    <option name="commitTimePoints">
+      <list>
+        <TimePoint>
+          <option name="timestamp" value="1746257797261" />
+          <option name="linesCode" value="41970" />
+          <option name="totalLines" value="91969" />
+          <option name="info" value="add entry point and clean up dependencies" />
+        </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746258348618" />
+          <option name="linesCode" value="41970" />
+          <option name="totalLines" value="92058" />
+          <option name="info" value="update gitignore" />
+        </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746259088673" />
+          <option name="linesCode" value="41970" />
+          <option name="totalLines" value="92058" />
+          <option name="info" value="delete ignored files" />
+        </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746259112482" />
+          <option name="linesCode" value="41970" />
+          <option name="totalLines" value="92058" />
+          <option name="info" value="Delete ignored files" />
+        </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746260286882" />
+          <option name="linesCode" value="41995" />
+          <option name="totalLines" value="1363298" />
+          <option name="info" value="Enable Material Design in flutter and clean up unu" />
+        </TimePoint>
+      </list>
+    </option>
+    <option name="genericTimePoints">
+      <list>
+        <TimePoint>
+          <option name="timestamp" value="1746260286882" />
+          <option name="linesCode" value="41995" />
+          <option name="totalLines" value="1363298" />
+          <option name="info" value="May 3, 2025" />
+        </TimePoint>
+      </list>
+    </option>
+  </component>
+</project>
