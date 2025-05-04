@@ -1,24 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bess_ui/bessie_app.dart';
-import 'package:bess_ui/bessie_frontend.dart';
-import 'package:bess_ui/common/services/popup_service.dart';
-import 'package:bess_ui/common/widgets/layouts/sidebars/sidebar_controller.dart';
-import 'package:bess_ui/common/widgets/roster_table/controllers/roster_table_controller.dart';
-import 'package:bess_ui/pages/activity_preferences/controllers/activity_preferences_controller.dart';
-import 'package:bess_ui/pages/console/controller/console_controller.dart';
-import 'package:bess_ui/pages/schedule/schedule_page_controller.dart';
-import 'package:bess_ui/pages/session_manager/session_manager_controller.dart';
 import 'package:ember_core/ember_core.dart';
+import 'package:bess_ui/bess_ui.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_fire/ember_fire.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get/get.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
+
+const recoveryMode = false;
 
 /// Entry point of Flutter App
 Future<void> main() async {
@@ -63,16 +56,17 @@ Future<void> initializeApp() async {
     }
     return false;
   };
+
   try {
     await FirebaseStarter.initialize();
   } catch (e) {
     throw Exception('Firebase not initialized!');
   }
 
-  Get.put(PopupService());
-  EmberCore.initializeComponents(EmberFire(), BessieFrontend());
+  BessUi.initEarly();
+  EmberCore.initializeComponents(EmberFire(), BessUi());
 
-  if (AppConfig.recoveryMode) {
+  if (recoveryMode) {
     await EmberCore.recoverEmberCore();
   } else {
     EmberCore.initializeEmberCore();
@@ -83,7 +77,6 @@ Future<void> initializeApp() async {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
       title: 'Bessie',
-      minimumSize: Size(AppConfig.minWindowWidth, AppConfig.minWindowHeight),
     );
     await windowManager.waitUntilReadyToShow(windowOptions);
     await windowManager.show();
@@ -92,23 +85,7 @@ Future<void> initializeApp() async {
   // TODO: Find the actual minimum screen dimensions and enforce slightly larger minimum dimensions on all platforms
   // TODO: Figure out how the upscaling on mobile factors in to this
 
-  Get.put(ConsoleController(), permanent: true);
-
-  Get.put(SidebarController(), permanent: true);
-  Get.put(RosterTableController(), permanent: true);
-  Get.put(SessionManagerController(), permanent: true);
-  Get.put(ActivityPreferencesController(), permanent: true);
-  Get.put(SchedulePageController(), permanent: true);
-
+  BessUi.init();
   FlutterNativeSplash.remove();
-  runApp(const BessieApp());
-}
-
-class AppConfig {
-  static bool recoveryMode = false;
-
-  static const double minWindowWidth = 640;
-  static const double minWindowHeight = 480;
-
-  static const Transition defaultTransitionAnimation = Transition.noTransition;
+  BessUi.launchFlutterApp();
 }
