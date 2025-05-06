@@ -1,3 +1,28 @@
+# Jetbrains
+.idea/
+
+# Now, unignore specific files and directories within .idea that you want to track
+!.idea/
+!.idea/*.iml
+!.idea/modules.xml
+!.idea/runConfigurations/
+
+# Explicitly ignore common device-specific files/directories within .idea
+.idea/workspace.xml
+.idea/tasks/
+.idea/libraries/
+.idea/shelf/
+.idea/caches/
+.idea/build.xml
+.idea/misc.xml
+.idea/gradle.xml # If you were using Gradle, which Flutter sometimes does for Android
+.idea/libraries/ # Sometimes libraries have absolute paths here
+
+
+# Any other specific file within .idea/ that you want to keep can be unignored here
+# For example, if you had a file named 'my_project_settings.xml' you wanted to share:
+# !.idea/my_project_settings.xml
+
 # ==> General Rules <==
 # Ignore OS generated files
 .DS_Store
@@ -114,5 +139,3 @@ coverage/
 
 # ==> Project Specific Ignores (Add below if needed) <==
 # e.g., /secrets/my_secret_config.json
-
-temp
