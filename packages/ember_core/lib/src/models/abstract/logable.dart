@@ -7,7 +7,7 @@ enum LogType {
   unknown('Undefined Error', 'Something went wrong', AnsiColor.brightRed),
   error('Error', 'Error', AnsiColor.brightRed),
   critical('Critical Error', 'Critical error', AnsiColor.red),
-  info('Info', 'Info', AnsiColor.brightCyan),
+  info('Info', 'Info', AnsiColor.none),
   success('Success', 'Success!', AnsiColor.brightGreen),
   warning('Warning', 'Warning', AnsiColor.brightYellow);
 

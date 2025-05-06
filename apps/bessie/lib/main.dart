@@ -11,7 +11,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
-const recoveryMode = true;
+const recoveryMode = false;
 
 /// Entry point of Flutter App
 Future<void> main() async {
@@ -58,7 +58,7 @@ Future<void> initializeApp() async {
   };
 
   try {
-    await FirebaseStarter.initialize();
+    await FireStarter.initialize();
   } catch (e) {
     throw Exception('Firebase not initialized!');
   }

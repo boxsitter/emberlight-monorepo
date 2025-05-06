@@ -127,7 +127,7 @@ class EmberFire implements CoreBackend {
 
 }
 
-class FirebaseStarter {
+class FireStarter {
   static bool _isInitialized = false; // Simple flag to track initialization
 
   static Future<void> initialize() async {
@@ -159,10 +159,10 @@ class FirebaseStarter {
         try {
           print("Attempting to use Firestore Emulator...");
           // Ensure host is correct, especially if not running locally (e.g., Docker)
-          db.useFirestoreEmulator('localhost', 8080);
+          db.useFirestoreEmulator('localhost', 6200);
           print("Using Firestore Emulator.");
         } catch (e) {
-          print("WARNING: Failed to connect to Firestore emulator at localhost:8080. "
+          print("WARNING: Failed to connect to Firestore emulator at localhost:6200. "
               "Ensure it's running. Falling back to cloud Firestore. Error: $e");
           // Decide if this error should prevent app startup or just log a warning.
         }

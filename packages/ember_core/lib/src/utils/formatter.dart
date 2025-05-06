@@ -23,7 +23,8 @@ enum AnsiColor {
   brightCyan('\x1B[96m'),
   brightWhite('\x1B[97m'),
 
-  reset('\x1B[0m'); // Reset code
+  reset('\x1B[0m'), // Reset code
+  none('');
 
   final String code;
   const AnsiColor(this.code);
@@ -88,7 +89,7 @@ class CoreFormatter {
       buffer.write(text);
     }
 
-    return buffer.toString().trim();
+    return buffer.toString();
   }
 
   static Module extractModuleFromStackTrace(StackTrace stackTrace) {
@@ -163,7 +164,9 @@ class CoreFormatter {
   }
 
   static String simplifyStackTrace(StackTrace? stackTrace) {
-    List<String> userPackagePrefixes = const ['package\\'];
+    List<String> userPackagePrefixes = const [
+      'package',
+    ];
 
     const String placeholder = '[No stack trace available]';
     if (stackTrace == null) {
@@ -180,45 +183,58 @@ class CoreFormatter {
     int externalLinesCount = 0;
 
     bool isUserCodeLine(String line) {
-      // Check if the line contains any of the specified user package prefixes
-      // We look after the initial frame info (e.g., "#5 ")
-      final contentStartIndex = line.indexOf('(');
+      final trimmedLine = line.trim();
+      if (trimmedLine.isEmpty) return false;
+
+      // Check 1: Standard format with parentheses
+      final contentStartIndex = trimmedLine.indexOf('(');
       if (contentStartIndex != -1) {
-        final relevantPart = line.substring(contentStartIndex);
+        final relevantPart = trimmedLine.substring(contentStartIndex);
         for (final prefix in userPackagePrefixes) {
           if (relevantPart.contains(prefix)) {
+            // print("DEBUG: Matched (parentheses) line: '$trimmedLine' with prefix '$prefix'");
             return true;
           }
         }
       }
-      // Lines without typical package info might be internal/VM/async gaps
-      // Consider them external unless specifically needed otherwise.
+
+      // Check 2: Line starts with a package indication (for lines without parentheses)
+      for (final prefix in userPackagePrefixes) {
+        // If userPackagePrefixes = ['package'], this will catch lines starting with "package:" or "packages/"
+        if (prefix == 'package' && (trimmedLine.startsWith('package:') || trimmedLine.startsWith('packages/'))) {
+          // print("DEBUG: Matched (direct start - general 'package') line: '$trimmedLine'");
+          return true;
+        }
+        // If userPackagePrefixes is specific, e.g., ['package:bessie/', 'package:ember_core/']
+        else if (trimmedLine.startsWith(prefix)) {
+          // print("DEBUG: Matched (direct start - specific prefix) line: '$trimmedLine' with prefix '$prefix'");
+          return true;
+        }
+      }
+
+      // print("DEBUG: No match for line: '$trimmedLine'");
       return false;
     }
 
     for (final line in lines) {
       final trimmedLine = line.trim();
-      if (trimmedLine.isEmpty) continue; // Skip empty lines
+      if (trimmedLine.isEmpty) continue;
 
       if (isUserCodeLine(trimmedLine)) {
-        // Found a user code line. First, add collapsed count if any.
         if (externalLinesCount > 0) {
           formattedLines.add('[... $externalLinesCount external lines collapsed ...]');
-          externalLinesCount = 0; // Reset counter
+          externalLinesCount = 0;
         }
-        // Then, add the user code line itself
         formattedLines.add(trimmedLine);
       } else {
-        // It's an external line, just increment the counter
         externalLinesCount++;
       }
     }
 
-    // Add any remaining collapsed count at the end
     if (externalLinesCount > 0) {
       formattedLines.add('[... $externalLinesCount external lines collapsed ...]');
     }
 
-    return formattedLines.join('\n');
+    return '\n${formattedLines.join('\n')}';
   }
 }
