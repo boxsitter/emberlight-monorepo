@@ -4,99 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Add configurations for Firebase emulators and Flutter run profiles">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Debug.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Debug.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Debug_w__Emulator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Debug_w__Emulator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Start_Firestore_Emu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Start_Firestore_Emu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/bessie/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/bessie/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/fira_code_mono/FiraCodeNerdFontMono-Retina.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-Black.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-BoldItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-ExtraBold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-ExtraLight.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-ExtraLightItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-Light.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-Medium.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-Thin.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_18pt-ThinItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-Black.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-ExtraBoldItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-Italic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-SemiBold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-Thin.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_24pt-ThinItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-BlackItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-ExtraLight.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-Italic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-Light.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-Medium.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-MediumItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-SemiBold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-SemiBoldItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-Thin.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/inter/Inter_28pt-ThinItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Black.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-BlackItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Bold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-BoldItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-ExtraBold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-ExtraBoldItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-ExtraLight.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-ExtraLightItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Italic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Light.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-LightItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Medium.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-MediumItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-SemiBold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-SemiBoldItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-Thin.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/fonts/urbanist/Urbanist-ThinItalic.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/104368-thank-you.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/110052-paper-plane.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/120978-payment-successful.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/136491-animation-lottie-car-rides.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/140429-pencil-drawing.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/141397-loading-juggle.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/141594-animation-of-docer.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/53207-empty-file.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/67263-security-icon-transparent.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/72462-check-register.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/72785-searching.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/98783-packaging-in-progress.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/cloud-uploading-animation.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/congratulation.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/creating-product.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/default-loader-animation.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/lady-adding-product-in-cart-animation.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/loader-animation.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/order-complete-car-delivery-animation.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/sammy-line-come-back-later.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/sammy-line-man-receives-a-mail.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/sammy-line-sale.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/sammy-line-success.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/sammy-line-travel-backpack-with-passport-and-air-ticket.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/sammy-line-workout.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/tick-confetti.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/uploading-document.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/uploading-done.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/animations/uploading-files-from-computer-to-cloud-storage.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/images/content/user.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/logos/ember-core-branding.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/logos/splash-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/assets/logos/t-store-splash-logo-white.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/image_strings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/image_strings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/ember_core/lib/src/models/abstract/logable.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/ember_core/lib/src/models/abstract/logable.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/ember_core/lib/src/utils/formatter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/ember_core/lib/src/utils/formatter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/ember_fire/lib/ember_fire.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/ember_fire/lib/ember_fire.dart" afterDir="false" />
-    </list>
+    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Fix formatter and refactor assets" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -461,15 +369,7 @@
       <workItem from="1746511177090" duration="4860000" />
       <workItem from="1746516106310" duration="98000" />
       <workItem from="1746516214241" duration="93000" />
-      <workItem from="1746516317161" duration="741000" />
-    </task>
-    <task id="LOCAL-00049" summary="minor changes">
-      <option name="closed" value="true" />
-      <created>1744785948600</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1744785948600</updated>
+      <workItem from="1746516317161" duration="886000" />
     </task>
     <task id="LOCAL-00050" summary="work on deletion">
       <option name="closed" value="true" />
@@ -855,7 +755,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746513104477</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="Fix formatter and refactor assets">
+      <option name="closed" value="true" />
+      <created>1746517204767</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1746517204767</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <option name="clearContext" value="false" />
     <option name="createChangelist" value="false" />
     <option name="createBranch" value="false" />
@@ -933,7 +841,9 @@
     <MESSAGE value="Add IntelliJ configuration files" />
     <MESSAGE value="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly" />
     <MESSAGE value="Add configurations for Firebase emulators and Flutter run profiles" />
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="Remove unused empty-file animation asset" />
+    <MESSAGE value="Fix formatter and refactor assets" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix formatter and refactor assets" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -990,6 +900,12 @@
           <option name="totalLines" value="2612188" />
           <option name="info" value="Add configurations for Firebase emulators and Flut" />
         </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746517204965" />
+          <option name="linesCode" value="42028" />
+          <option name="totalLines" value="2612207" />
+          <option name="info" value="Fix formatter and refactor assets" />
+        </TimePoint>
       </list>
     </option>
     <option name="genericTimePoints">
@@ -1011,6 +927,12 @@
           <option name="linesCode" value="42036" />
           <option name="totalLines" value="2612188" />
           <option name="info" value="May 5, 2025" />
+        </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746517204965" />
+          <option name="linesCode" value="42028" />
+          <option name="totalLines" value="2612207" />
+          <option name="info" value="May 6, 2025" />
         </TimePoint>
       </list>
     </option>
