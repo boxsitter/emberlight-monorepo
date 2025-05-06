@@ -11,7 +11,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
-const recoveryMode = false;
+const recoveryMode = true;
 
 /// Entry point of Flutter App
 Future<void> main() async {

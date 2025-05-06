@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "bessie": "bessie-camp-app",
+    "default": "bessie-camp-app"
+  },
+  "targets": {},
+  "etags": {}
+}

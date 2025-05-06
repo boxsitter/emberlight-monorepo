@@ -114,3 +114,5 @@ coverage/
 
 # ==> Project Specific Ignores (Add below if needed) <==
 # e.g., /secrets/my_secret_config.json
+
+temp

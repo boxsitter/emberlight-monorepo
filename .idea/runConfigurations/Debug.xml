@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TEMP TEST" type="FlutterRunConfigurationType" factoryName="Flutter">
+  <configuration default="false" name="Debug" type="FlutterRunConfigurationType" factoryName="Flutter">
     <option name="additionalArgs" value="--dart-define=DEBUG=debug" />
     <option name="filePath" value="$PROJECT_DIR$/apps/bessie/lib/main.dart" />
     <method v="2" />

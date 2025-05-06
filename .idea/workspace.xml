@@ -18,7 +18,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly" />
+    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly">
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Debug_w__Emulator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Profile.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Release.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Start_Firestore_Emu.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Flutter.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/_template__of_Shell_Script.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/start_firestore_emu.ps1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/TEMP_TEST.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Debug.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/bessie/.firebaserc" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/.firebaserc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/bessie/firebase.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/firebase.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/bessie/lib/firebase_options.dart" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/lib/firebase_options.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/bessie/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/lib/main.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,38 +75,42 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Flutter.TEMP TEST.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "NIXITCH_NIXPKGS_CONFIG": "",
-    "NIXITCH_NIX_CONF_DIR": "",
-    "NIXITCH_NIX_OTHER_STORES": "",
-    "NIXITCH_NIX_PATH": "",
-    "NIXITCH_NIX_PROFILES": "",
-    "NIXITCH_NIX_REMOTE": "",
-    "NIXITCH_NIX_USER_PROFILE_DIR": "",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "io.flutter.reload.alreadyRun": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Drive/Work/Emberlight/emberlight-monorepo/apps/bessie/lib",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.3632184",
-    "settings.editor.selected.configurable": "tasks.timeTracking",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Flutter.Debug w/ Emulator.executor&quot;: &quot;Run&quot;,
+    &quot;Flutter.TEMP TEST.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Shell Script.Start Firestore Emu.executor&quot;: &quot;Run&quot;,
+    &quot;Shell Script.Start Firestore Emulator.executor&quot;: &quot;Run&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/emberlight-monorepo&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.3632184&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Drive\Work\Emberlight\emberlight-monorepo\apps\bessie\lib" />
@@ -99,6 +119,15 @@
       <recent name="C:\Drive\Work\Emberlight\emberlight-monorepo\packages\bess_ui\lib\src" />
       <recent name="C:\Drive\Work\Emberlight\emberlight-monorepo" />
     </key>
+  </component>
+  <component name="RunManager" selected="Shell Script.Start Firestore Emu">
+    <list>
+      <item itemvalue="Flutter.Debug" />
+      <item itemvalue="Flutter.Debug w/ Emulator" />
+      <item itemvalue="Flutter.Profile" />
+      <item itemvalue="Flutter.Release" />
+      <item itemvalue="Shell Script.Start Firestore Emu" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -361,6 +390,9 @@
       <workItem from="1746304058185" duration="29000" />
       <workItem from="1746304097469" duration="845000" />
       <workItem from="1746321199091" duration="2591000" />
+      <workItem from="1746505430875" duration="2440000" />
+      <workItem from="1746508666379" duration="1980000" />
+      <workItem from="1746511177090" duration="1826000" />
     </task>
     <task id="LOCAL-00048" summary="fix roster table">
       <option name="closed" value="true" />
