@@ -127,9 +127,6 @@ storage-debug.log
 *.log
 firebase-debug.log
 *.sqlite
-# Ignore emulator exports unless explicitly needed for seeding
-.firebase/emu-storage/
-emulator_data/
 # Note: firebase.json and .firebaserc are often committed for CLI config,
 # only ignore them if they contain local secrets or should not be shared.
 # Note: firestore.indexes.json is usually committed.
