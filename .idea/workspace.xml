@@ -7,7 +7,7 @@
           <value>
             <AIAssistantStoredInstruction>
               <option name="actionId" value="AIAssistant.VCS.GenerateCommitMessage" />
-              <option name="content" value="Avoid overly verbose descriptions or unnecessary details. If the commit is small, do not write a description." />
+              <option name="content" value="Avoid overly verbose descriptions or unnecessary details. If the commit is small, do not write a description. Don't end with a period" />
             </AIAssistantStoredInstruction>
           </value>
         </entry>
@@ -18,119 +18,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Add IntelliJ configuration files">
-      <change afterPath="$PROJECT_DIR$/packages/bess_ui/lib/bess_ui.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/bessie/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/apps/bessie/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/bessie_app.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/bessie_flutter_app.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/bessie_frontend.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/animation_curves.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/animation_curves.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/api_constants.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/api_constants.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/catppuccin_base.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/catppuccin_base.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/colors.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/colors.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/durations.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/durations.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/enums.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/enums.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/image_strings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/image_strings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/palettes/frappe.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/palettes/frappe.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/palettes/latte.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/palettes/latte.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/palettes/macchiato.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/palettes/macchiato.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/palettes/mocha.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/palettes/mocha.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/sizes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/sizes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/constants/text_strings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/constants/text_strings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/routes/route_observer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/routes/route_observer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/routes/routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/routes/routes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/routes/routes_middleware.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/routes/routes_middleware.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/services/popup_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/services/popup_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/styles/shadows.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/styles/shadows.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/styles/spacing_styles.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/styles/spacing_styles.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/styles/text_styles.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/styles/text_styles.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/shad_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/shad_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/appbar_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/appbar_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/bottom_sheet_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/bottom_sheet_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/checkbox_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/checkbox_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/chip_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/chip_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/elevated_button_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/elevated_button_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/outlined_button_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/outlined_button_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/progress_indicator_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/progress_indicator_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/text_field_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/text_field_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/theme/widget_themes/text_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/theme/widget_themes/text_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/device/device_utility.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/device/device_utility.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/device/web_material_scroll.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/device/web_material_scroll.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/formatters/formatter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/formatters/formatter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/helpers/cloud_helper_functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/helpers/cloud_helper_functions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/helpers/helper_functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/helpers/helper_functions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/helpers/network_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/helpers/network_manager.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/helpers/pricing_calculator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/helpers/pricing_calculator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/utils/validators/validation.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/utils/validators/validation.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/appbar/appbar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/appbar/appbar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/buttons/action_initiator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/buttons/action_initiator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/buttons/inkwell_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/buttons/inkwell_button.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/chips/rounded_choice_chips.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/chips/rounded_choice_chips.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/containers/circular_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/containers/circular_container.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/containers/rounded_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/containers/rounded_container.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/context_switcher/context_display.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/context_switcher/context_display.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/context_switcher/context_switcher.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/context_switcher/context_switcher.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/context_switcher/controller/session_selector_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/context_switcher/controller/session_selector_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/icons/t_circular_icon.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/icons/t_circular_icon.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/icons/table_action_icon_buttons.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/icons/table_action_icon_buttons.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/images/bess_circular_image.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/images/bess_circular_image.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/images/bess_rounded_image.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/images/bess_rounded_image.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/images/image_uploader.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/images/image_uploader.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/layouts/headers/header.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/layouts/headers/header.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/layouts/sidebars/menu/menu_item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/layouts/sidebars/menu/menu_item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/layouts/sidebars/sidebar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/layouts/sidebars/sidebar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/layouts/sidebars/sidebar_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/layouts/sidebars/sidebar_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/layouts/templates/center_box.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/layouts/templates/center_box.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/layouts/templates/site_layout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/layouts/templates/site_layout.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/loaders/animation_loader.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/loaders/animation_loader.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/loaders/circular_loader.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/loaders/circular_loader.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/loaders/loader_animation.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/loaders/loader_animation.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/login_signup/form_divider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/login_signup/form_divider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/popovers/import_csv.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/popovers/import_csv.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/responsive/responsive_design.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/responsive/responsive_design.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/responsive/screens/desktop_layout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/responsive/screens/desktop_layout.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/responsive/screens/mobile_layout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/responsive/screens/mobile_layout.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/responsive/screens/tablet_layout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/responsive/screens/tablet_layout.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/controllers/roster_table_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/controllers/roster_table_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/roster_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/roster_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/widgets/action_button_row.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/widgets/action_button_row.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/widgets/column_header.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/widgets/column_header.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/widgets/data_row.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/widgets/data_row.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/widgets/string_cell.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/widgets/string_cell.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/widgets/table_action_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/widgets/table_action_button.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/roster_table/widgets/table_header.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/roster_table/widgets/table_header.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/common/widgets/shimmers/shimmer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/common/widgets/shimmers/shimmer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_preferences/controllers/activity_preferences_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_preferences/controllers/activity_preferences_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_preferences/views/activity_preferences_cabins.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_preferences/views/activity_preferences_cabins.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_preferences/views/activity_preferences_campers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_preferences/views/activity_preferences_campers.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_preferences/views/activity_preferences_selector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_preferences/views/activity_preferences_selector.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_preferences/widgets/card_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_preferences/widgets/card_button.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_preferences/widgets/small_card_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_preferences/widgets/small_card_button.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/activity_rosters/activity_rosters.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/activity_rosters/activity_rosters.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/forgot_password/forgot_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/forgot_password/forgot_password.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/forgot_password/widgets/header_and_form.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/forgot_password/widgets/header_and_form.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/login/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/login/login.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/login/widgets/login_form.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/login/widgets/login_form.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/login/widgets/login_header.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/login/widgets/login_header.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/reset_password/reset_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/reset_password/reset_password.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/authentication/view/reset_password/widgets/reset_password_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/authentication/view/reset_password/widgets/reset_password_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/console/controller/console_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/console/controller/console_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/console/view/console.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/console/view/console.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/console/view/themes/console_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/console/view/themes/console_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/console/view/widgets/bess_console.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/console/view/widgets/bess_console.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/console/view/widgets/bess_console_input.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/console/view/widgets/bess_console_input.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/home/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/home/home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/home/widgets/home_screen_nav_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/home/widgets/home_screen_nav_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/responsive_design_test/responsive_design.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/responsive_design_test/responsive_design.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/schedule/schedule_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/schedule/schedule_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/schedule/schedule_page_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/schedule/schedule_page_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/schedule/widgets/test_block.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/schedule/widgets/test_block.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/session_manager/session_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/session_manager/session_manager.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/session_manager/session_manager_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/session_manager/session_manager_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/bess_ui/lib/pages/session_roster/session_roster.dart" beforeDir="false" afterPath="$PROJECT_DIR$/packages/bess_ui/lib/src/pages/session_roster/session_roster.dart" afterDir="false" />
-    </list>
+    <list default="true" id="4c8142b9-097b-423a-8b4e-5d3100ee23ee" name="Changes" comment="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -472,15 +360,7 @@
       <workItem from="1746245778777" duration="13000" />
       <workItem from="1746304058185" duration="29000" />
       <workItem from="1746304097469" duration="845000" />
-      <workItem from="1746321199091" duration="2390000" />
-    </task>
-    <task id="LOCAL-00047" summary="fix bugs and improve ui">
-      <option name="closed" value="true" />
-      <created>1744519495712</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1744519495712</updated>
+      <workItem from="1746321199091" duration="2591000" />
     </task>
     <task id="LOCAL-00048" summary="fix roster table">
       <option name="closed" value="true" />
@@ -866,7 +746,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746304337020</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly">
+      <option name="closed" value="true" />
+      <created>1746323802305</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1746323802305</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <option name="clearContext" value="false" />
     <option name="createChangelist" value="false" />
     <option name="createBranch" value="false" />
@@ -942,7 +830,8 @@
     <MESSAGE value="Delete ignored files" />
     <MESSAGE value="Enable Material Design in flutter and clean up unused imports&#10;&#10;Added `uses-material-design: true` to the Flutter configuration for Bessie's app to improve UI consistency. Removed redundant import in `colors.dart` and corrected a debug comment format in `debug.dart`." />
     <MESSAGE value="Add IntelliJ configuration files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add IntelliJ configuration files" />
+    <MESSAGE value="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor: Move all bess_ui files to `src` directory and fix imports accordingly" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -987,6 +876,12 @@
           <option name="totalLines" value="1363298" />
           <option name="info" value="Add IntelliJ configuration files" />
         </TimePoint>
+        <TimePoint>
+          <option name="timestamp" value="1746323802818" />
+          <option name="linesCode" value="41999" />
+          <option name="totalLines" value="1363393" />
+          <option name="info" value="Refactor: Move all bess_ui files to `src` director" />
+        </TimePoint>
       </list>
     </option>
     <option name="genericTimePoints">
@@ -998,9 +893,9 @@
           <option name="info" value="May 3, 2025" />
         </TimePoint>
         <TimePoint>
-          <option name="timestamp" value="1746304339751" />
-          <option name="linesCode" value="41995" />
-          <option name="totalLines" value="1363298" />
+          <option name="timestamp" value="1746323802818" />
+          <option name="linesCode" value="41999" />
+          <option name="totalLines" value="1363393" />
           <option name="info" value="May 3, 2025" />
         </TimePoint>
       </list>
