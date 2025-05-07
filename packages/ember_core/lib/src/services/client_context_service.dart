@@ -5,6 +5,7 @@ import 'package:ember_core/user_houck_leyton.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core_backend.dart';
+import '../backend/backend_manager.dart';
 
 typedef OrganizationId = String;
 typedef BranchId = String;

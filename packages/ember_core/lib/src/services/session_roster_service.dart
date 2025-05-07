@@ -8,6 +8,8 @@ import 'package:ember_core/ember_core_services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
+import '../backend/backend_manager.dart';
+
 class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
   static CoreBackend backend = BackendManager.instance;
   CabinService cabinsService = Get.find<CabinService>();

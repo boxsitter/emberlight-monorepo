@@ -26,7 +26,7 @@ export 'src/models/core_objects/principal/principal_cabin.dart';
 export 'src/models/core_objects/schedule_block/ama_block.dart';
 export 'src/models/core_objects/camper.dart';
 export 'src/models/core_objects/schedule.dart';
-export 'src/models/core_objects/coreUser.dart';
+export 'src/models/core_objects/core_user.dart';
 
 
 export 'src/models/commit.dart';

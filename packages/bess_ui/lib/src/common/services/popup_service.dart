@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

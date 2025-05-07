@@ -1,5 +1,4 @@
 import '../../ember_core_debug.dart';
-import '../models/abstract/logable.dart';
 
 class ExceptionTest extends EmberException {
   ExceptionTest() : super(

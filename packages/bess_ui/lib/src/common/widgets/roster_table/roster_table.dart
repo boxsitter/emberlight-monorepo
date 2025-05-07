@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:bess_ui/src/common/constants/colors.dart';
 import 'package:bess_ui/src/common/constants/sizes.dart';
-import 'package:bess_ui/src/common/styles/shadows.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/column_header.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/data_row.dart';

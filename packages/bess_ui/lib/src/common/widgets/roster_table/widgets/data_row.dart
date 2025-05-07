@@ -2,7 +2,6 @@ import 'package:bess_ui/src/common/widgets/roster_table/widgets/string_cell.dart
 import 'package:flutter/material.dart';
 
 import '../../../constants/colors.dart';
-import '../../../constants/sizes.dart';
 import '../controllers/roster_table_controller.dart';
 
 class BessDataRow extends StatelessWidget {

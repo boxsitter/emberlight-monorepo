@@ -2,7 +2,6 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:get/get.dart';
@@ -191,7 +190,7 @@ class DatabaseRepairService extends GetxService{
       throw ArgumentError('The sum of fieldPresenceWeight and valueEqualityWeight must be 1.0');
     } else if (specialFields != null && (specialFieldPresenceWeight == null || specialValueEqualityWeight == null)) {
       throw ArgumentError('specialFieldPresenceWeight and specialValueEqualityWeight cannot be null if specialFields is not null');
-    } else if (specialFields != null && fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight! + specialValueEqualityWeight! != 1.0) {
+    } else if (specialFields != null && fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight + specialValueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of all weights must be 1.0');
     }
 
@@ -205,8 +204,8 @@ class DatabaseRepairService extends GetxService{
     if (specialFieldsPresent && specialFields != null && specialFieldPresenceWeight != null && specialValueEqualityWeight != null) {
       effectiveFieldPresenceWeight = fieldPresenceWeight;
       effectiveValueEqualityWeight = valueEqualityWeight;
-      effectiveSpecialFieldPresenceWeight = specialFieldPresenceWeight!;
-      effectiveSpecialValueEqualityWeight = specialValueEqualityWeight!;
+      effectiveSpecialFieldPresenceWeight = specialFieldPresenceWeight;
+      effectiveSpecialValueEqualityWeight = specialValueEqualityWeight;
     } else {
       double originalRegularWeightSum = fieldPresenceWeight + valueEqualityWeight;
       if (originalRegularWeightSum <= 0) {
@@ -218,7 +217,7 @@ class DatabaseRepairService extends GetxService{
       }
     }
 
-    final Set<String> regularExclude = {...?specialFields, ...alwaysIgnore};
+    final Set<String> regularExclude = {...specialFields, ...alwaysIgnore};
     double fieldPresenceIndex = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, exclude: regularExclude);
     double valueEqualityIndex = compareValueEquality(jsonA: jsonA, jsonB: jsonB, exclude: regularExclude);
 

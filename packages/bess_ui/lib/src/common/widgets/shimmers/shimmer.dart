@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../constants/colors.dart';
-import '../../utils/helpers/helper_functions.dart';
 
 class BessShimmerEffect extends StatelessWidget {
   const BessShimmerEffect({

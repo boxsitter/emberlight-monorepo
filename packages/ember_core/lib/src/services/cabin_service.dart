@@ -3,6 +3,8 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
+import '../backend/backend_manager.dart';
+
 class CabinService extends GetxService {
   CoreBackend backend = BackendManager.instance;
   CommitService requestService = Get.find<CommitService>();
@@ -40,6 +42,10 @@ class CabinService extends GetxService {
     final rawData = await backend.getFieldFromCollection('principal_cabin', 'brn', 'name');
     Map<String, String> valuesToString = rawData.map((key, value) => MapEntry(key, value as String));
     return valuesToString;
+  }
+
+  Future<PrincipalCabin> getPrincipalCabin(PrincipalActivityId id) {
+    return backend.getObject(id);
   }
 
   Future<Map<String, String>> getCabinDependentIdsToPrincipalIds() async {

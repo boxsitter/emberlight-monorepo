@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_fire/src/services/path_service.dart';
 import 'package:get/get.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'pull_repository.dart';
 

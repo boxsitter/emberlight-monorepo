@@ -1,11 +1,9 @@
 import 'package:bess_ui/src/common/styles/text_styles.dart';
-import 'package:bess_ui/src/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../routes/routes.dart';
 import '../../../constants/colors.dart';
-import '../../../constants/image_strings.dart';
 import '../../../constants/sizes.dart';
 import '../../../utils/device/device_utility.dart';
 import '../../context_switcher/context_display.dart';

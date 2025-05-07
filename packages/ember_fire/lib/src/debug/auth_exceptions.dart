@@ -10,7 +10,7 @@ abstract class AuthFailure extends EmberException {
 }
 
 abstract class AuthError extends EmberException {
-  AuthError({required super.devMessage, String? userMessage, super.metadata, LogType super.logType = LogType.error})
+  AuthError({required super.devMessage, String? userMessage, super.metadata, super.logType = LogType.error})
     : super(
         module: Module.fire,
         userMessage: userMessage ?? 'An authentication service error occurred. Please try again later or contact support',

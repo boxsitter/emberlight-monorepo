@@ -1,7 +1,6 @@
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../common/constants/colors.dart';
 import '../../common/constants/sizes.dart';

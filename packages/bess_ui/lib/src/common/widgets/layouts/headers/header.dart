@@ -1,5 +1,4 @@
 import 'package:bess_ui/src/common/widgets/images/bess_rounded_image.dart';
-import 'package:bess_ui/src/common/widgets/context_switcher/context_display.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

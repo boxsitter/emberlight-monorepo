@@ -10,7 +10,6 @@ import '../../../common/routes/routes.dart';
 typedef CabinDependantId = String;
 
 class ActivityPreferencesController extends GetxController {
-  static CoreBackend backend = BackendManager.instance;
   final ClientContextService clientContextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
@@ -185,7 +184,7 @@ class ActivityPreferencesController extends GetxController {
   }
 
   Future<void> showActivityInfo(PrincipalActivityId principalActivityId) async {
-    popupService.showActivityInfo(await backend.getObject(principalActivityId));
+    popupService.showActivityInfo(await activityPreferenceService.getPrincipalActivity(principalActivityId));
   }
 
 }

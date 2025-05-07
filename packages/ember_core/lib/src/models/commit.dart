@@ -4,7 +4,7 @@ import 'package:ember_core/ember_core_models.dart';
 
 class Commit {
   bool _armed;
-  int _disarmRequirementsLevel;
+  final int _disarmRequirementsLevel;
   final Map<String, CoreObject> objectsToPush = {};
   final Map<String, CoreObject> objectsToDelete = {};
   String confirmationMessage;

@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';

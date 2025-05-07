@@ -3,6 +3,8 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
+import '../backend/backend_manager.dart';
+
 class ConsoleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
   static CoreBackend backend = BackendManager.instance;
@@ -14,7 +16,7 @@ class ConsoleService extends GetxService {
     if (parts.isEmpty) return CommandResult(error: 'Invalid command');
 
     final baseCommand = parts.first;
-    final arguments = parts.skip(1).toList();
+    final _ = parts.skip(1).toList();
 
     switch (baseCommand) {
       case 'clear':

@@ -1,4 +1,3 @@
-import 'package:bess_ui/src/common/constants/colors.dart';
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
@@ -25,20 +24,8 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ActivityPreferencesController controller = Get.find<
+    Get.find<
         ActivityPreferencesController>();
-
-    if (controller.selectedCabinName == null ||
-        controller.selectedCabinId == null) {
-      // Show an error widget instead of crashing
-      return const Center(
-        child: Text(
-          // TODO: Make a more standardized error message to display or throw something and let the error service display it
-          'Error: Missing cabin information.',
-          style: TextStyle(fontSize: 18, color: Colors.red),
-        ),
-      );
-    }
 
     return GetBuilder<ActivityPreferencesController>(
       builder: (controller) {
@@ -92,10 +79,6 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
               // This part updates based on the selected camper
               Expanded( // Use Expanded if this list should fill remaining space
                 child: Obx(() { // Use Obx to react to activity loading state/data
-                  if (controller.selectedCamperId == null) {
-                    return const Center(child: Text(
-                        'Select a camper above'));
-                  }
                   if (!controller.isActivityDataLoaded.value) {
                     return const Center(child: CircularProgressIndicator());
                   }

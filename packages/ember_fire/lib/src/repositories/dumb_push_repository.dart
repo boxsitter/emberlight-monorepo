@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_models.dart';
 
 
-import '../services/path_service.dart';
 
 class DumbPushRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;

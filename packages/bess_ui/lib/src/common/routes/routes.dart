@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/common/routes/routes_middleware.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
@@ -17,8 +18,6 @@ import '../../pages/session_roster/session_roster.dart';
 class BessRoutes {
   static const home = '/';
 
-  //static const secondScreen = '/second-screen';
-  //static const secondScreenWithUID = '/second-screen/:userId';
   static const responsiveDesignExample = '/responsive-design';
   static const console = '/console';
   static const sessionRoster = '/session-roster';
@@ -44,22 +43,62 @@ class BessRoutes {
   static const login = '/login';
   static const forgotPassword = '/forgotPassword';
   static const resetPassword = '/resetPassword';
-}
 
-class BessAppRoute {
   static final List<GetPage> pages = [
-    GetPage(name: BessRoutes.home, page: () => const HomeScreen()),
-    GetPage(name: BessRoutes.responsiveDesignExample, page: () => const ResponsiveDesignScreen()),
-    GetPage(name: BessRoutes.console, page: () => const ConsoleScreen()),
-    GetPage(name: BessRoutes.sessionRoster, page: () => const SessionRoster()),
-    GetPage(name: BessRoutes.schedulePage, page: () => const SchedulePage()),
-    GetPage(name: BessRoutes.sessionManager, page: () => const SessionManager()),
-    GetPage(name: BessRoutes.activityRosters, page: () => const ActivityRosters()),
+    GetPage(
+      name: BessRoutes.home,
+      page: () => const HomeScreen(),
+      middlewares: [AuthMiddleware()], // PROTECTED
+    ),
+    GetPage(
+      name: BessRoutes.responsiveDesignExample,
+      page: () => const ResponsiveDesignScreen(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.console,
+      page: () => const ConsoleScreen(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.sessionRoster,
+      page: () => const SessionRoster(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.schedulePage,
+      page: () => const SchedulePage(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.sessionManager,
+      page: () => const SessionManager(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.activityRosters,
+      page: () => const ActivityRosters(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.activityPreferencesCabins,
+      page: () => const ActivityPreferencesCabins(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.activityPreferencesCampers,
+      page: () => const ActivityPreferencesCampers(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.activityPreferencesSelector,
+      page: () => const ActivityPreferencesSelector(),
+      middlewares: [AuthMiddleware()],
+    ),
 
-    GetPage(name: BessRoutes.activityPreferencesCabins, page: () => const ActivityPreferencesCabins()),
-    GetPage(name: BessRoutes.activityPreferencesCampers, page: () => const ActivityPreferencesCampers()),
-    GetPage(name: BessRoutes.activityPreferencesSelector, page: () => const ActivityPreferencesSelector()),
-
+    // --- AUTHENTICATION ROUTES (Public for unauthenticated users) ---
+    // No AuthMiddleware here to block unauthenticated access,
+    // but AuthMiddleware will redirect *away* if already logged in.
     GetPage(name: BessRoutes.login, page: () => const LoginScreen()),
     GetPage(name: BessRoutes.forgotPassword, page: () => const ForgotPasswordScreen()),
     GetPage(name: BessRoutes.resetPassword, page: () => const ResetPasswordScreen()),

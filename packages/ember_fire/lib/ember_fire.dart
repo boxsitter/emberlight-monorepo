@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_fire/src/repositories/authentication_repository.dart';
 import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:ember_fire/src/repositories/live_data_repository.dart';
 import 'package:ember_fire/src/repositories/pull_repository.dart';
@@ -22,6 +23,7 @@ class EmberFire implements CoreBackend {
   late final CommitRepository commitRepo;
   late final LiveDataRepository liveDataRepo;
   late final DatabaseRepairService databaseRepairService;
+  late final AuthenticationRepository authenticationRepo;
 
   EmberFire();
 
@@ -37,6 +39,7 @@ class EmberFire implements CoreBackend {
   @override
   void initLate() {
     commitRepo = Get.put(CommitRepository(), permanent: true);
+    authenticationRepo = Get.put(AuthenticationRepository(), permanent: true);
   }
 
   @override
@@ -123,6 +126,13 @@ class EmberFire implements CoreBackend {
   @override
   Future<void> cleanOrphanedDependents(Commit commit, Session session) {
     return databaseRepairService.cleanOrphanedDependents(commit, session);
+  }
+
+  // Auth
+
+  @override
+  bool isAuthenticated() {
+    return authenticationRepo.isAuthenticated;
   }
 
 }

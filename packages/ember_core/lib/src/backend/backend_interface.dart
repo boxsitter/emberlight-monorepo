@@ -33,4 +33,7 @@ abstract class CoreBackend {
   Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session);
   Future<Map<String, dynamic>> getFieldFromCollection(String collectionName, String domain, String field);
   Future<void> cleanOrphanedDependents(Commit commit, Session session);
+
+  // Auth
+  bool isAuthenticated();
 }

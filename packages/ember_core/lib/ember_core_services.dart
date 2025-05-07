@@ -10,4 +10,4 @@ export 'src/services/pdf_service.dart';
 export 'src/services/commit_service.dart';
 export 'src/services/schedule_service.dart';
 export 'src/services/session_roster_service.dart';
-export 'src/services/core_user_service.dart';
+export 'src/services/user_service.dart';

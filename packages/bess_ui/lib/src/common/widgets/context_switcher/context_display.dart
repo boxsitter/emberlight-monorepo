@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
 import 'package:bess_ui/src/common/styles/text_styles.dart';
-import 'package:bess_ui/src/common/theme/shad_theme.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/context_switcher/context_switcher.dart';
 import 'package:flutter/material.dart';

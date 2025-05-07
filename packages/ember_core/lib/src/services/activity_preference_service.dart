@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../ember_core_backend.dart';
 import '../../ember_core_models.dart';
+import '../backend/backend_manager.dart';
 
 
 class ActivityPreferenceService extends GetxService {
@@ -52,5 +53,9 @@ class ActivityPreferenceService extends GetxService {
   Future<void> rankRandom(Commit commit) async {
     final _ = Random();
     Set<Camper> campers = await sessionRosterService.registeredCampers;
+  }
+
+  Future<PrincipalActivity> getPrincipalActivity(PrincipalActivityId id) {
+    return backend.getObject(id);
   }
 }

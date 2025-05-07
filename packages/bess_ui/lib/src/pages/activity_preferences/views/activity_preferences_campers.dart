@@ -23,17 +23,6 @@ class ActivityPreferencesCampersDesktop extends StatelessWidget {
   Widget build(BuildContext context) {
     final ActivityPreferencesController controller = Get.find<ActivityPreferencesController>();
 
-    if (controller.selectedCabinName == null || controller.selectedCabinId == null) {
-      // Show an error widget instead of crashing
-      return const Center(
-        child: Text(
-          // TODO: Make a more standardized error message to display or throw something and let the error service display it
-          'Error: Missing cabin information.',
-          style: TextStyle(fontSize: 18, color: Colors.red),
-        ),
-      );
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

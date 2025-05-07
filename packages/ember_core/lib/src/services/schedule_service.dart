@@ -6,6 +6,7 @@ import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:ember_core/src/utils/model_helper_functions.dart';
 import 'package:get/get.dart';
 import '../../ember_core_services.dart';
+import '../backend/backend_manager.dart';
 
 
 class ScheduleService extends GetxService {

@@ -2,6 +2,7 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core_backend.dart';
+import '../backend/backend_manager.dart';
 
 class FrontendCommitService extends GetxService {
   CoreBackend backend = BackendManager.instance;

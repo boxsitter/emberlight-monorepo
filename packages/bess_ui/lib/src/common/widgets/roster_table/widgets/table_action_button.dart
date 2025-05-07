@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
-import '../../../constants/colors.dart';
 
 class TableActionButton extends StatelessWidget {
   final void Function() onPressed;

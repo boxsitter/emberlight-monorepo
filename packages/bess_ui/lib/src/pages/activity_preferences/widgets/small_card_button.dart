@@ -2,7 +2,6 @@ import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/constants/colors.dart';
-import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
 

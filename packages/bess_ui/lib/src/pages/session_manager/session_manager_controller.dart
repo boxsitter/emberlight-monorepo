@@ -62,7 +62,7 @@ class SessionManagerController extends GetxController {
     for (String registeredPrinCabinId in registeredPrinCabinIds) {
       if (!selectedCabinPrinIds.contains(registeredPrinCabinId)) {
         final Map<String, String> cabinPrincipalIdsToDependentIds = BessHelperFunctions.transposeMap(await cabinsService.getCabinDependentIdsToPrincipalIds());
-        commit.addObjectToDelete(commit.getObject(cabinPrincipalIdsToDependentIds[registeredPrinCabinId]) ?? await BackendManager.instance.getObject(cabinPrincipalIdsToDependentIds[registeredPrinCabinId]!));
+        commit.addObjectToDelete(commit.getObject(cabinPrincipalIdsToDependentIds[registeredPrinCabinId]) ?? await cabinsService.getPrincipalCabin(registeredPrinCabinId));
       }
     }
 

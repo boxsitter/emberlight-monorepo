@@ -2,6 +2,7 @@ import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/src/backend/backend_manager.dart';
 import 'package:ember_core/src/hard_coded_objects.dart';
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:get/get.dart';
@@ -25,7 +26,8 @@ class EmberCore {
   static void initializeEmberCore () {
     CoreBackend backend = BackendManager.instance;
     Get.put(CommitService(), permanent: true);
-    Get.put( ClientContext());
+    Get.put(ClientContext());
+    Get.put(UserService(), permanent: true);
     backend.init();
     ClientContextService clientContextService = Get.put(ClientContextService());
     clientContextService.setDefaultContext();
