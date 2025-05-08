@@ -3,7 +3,6 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_fire/src/repositories/commit_repository.dart';
-import 'package:ember_fire/src/services/authentication_state_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +12,8 @@ class AuthenticationRepository {
   final _auth = FirebaseAuth.instance;
   UserService userService = Get.find<UserService>();
   CommitRepository commitRepo = Get.find<CommitRepository>();
-  AuthenticationStateService authenticationStateService = Get.find<AuthenticationStateService>();
+
+  bool get isUserLoggedIn => _auth.currentUser != null;
 
   /// Logs in a user with the provided email and password using Firebase Authentication.
   ///
@@ -27,7 +27,7 @@ class AuthenticationRepository {
   /// Throws:
   ///   A specific exception extending [EmberException] (e.g., [AuthCredentialsFailure], [AuthServiceError])
   ///   if the login fails or an unexpected error occurs.
-  Future<UserCredential> loginWithEmailAndPassword(String email, String password) async {
+  Future<UserCredential> loginWithEmailAndPassword(String email, String password, bool rememberMe) async {
 
     Debug.logInfo(
       'Attempting Firebase login for email: ${CoreFormatter.maskEmail(email)}',
@@ -35,6 +35,14 @@ class AuthenticationRepository {
     );
 
     try {
+      if (rememberMe) {
+        await _auth.setPersistence(Persistence.LOCAL);
+        Debug.logInfo('[AuthRepo] Set persistence to LOCAL');
+      } else {
+        await _auth.setPersistence(Persistence.SESSION);
+        Debug.logInfo('[AuthRepo] Set persistence to SESSION');
+      }
+
       // Attempt to sign in using Firebase Auth
       final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -43,6 +51,8 @@ class AuthenticationRepository {
 
       // Log successful login
       final userId = userCredential.user?.uid ?? 'N/A';
+
+      Debug.logSuccess('${CoreFormatter.maskEmail(email)} successfully authenticated by Firebase');
 
       // Return the credential on success
       return userCredential;

@@ -138,7 +138,7 @@ class Debug {
       _devPrint(exception, stackTrace);
     }
     if (exception.userMessage != null) {
-      FrontendManager.instance.displayError(title: exception.logType.userString, message: exception.userMessage);
+      FrontendManager.instance.showToast(title: exception.logType.userString, message: exception.userMessage, logType: exception.logType);
     }
 
     exception.isHandled = true;
@@ -159,7 +159,7 @@ class Debug {
     }
 
     if (info.userTitle != null) {
-      FrontendManager.instance.displayInfo(title: info.userTitle, message: info.userMessage);
+      FrontendManager.instance.showToast(title: info.logType.userString, message: info.userMessage, logType: info.logType);
     }
   }
 

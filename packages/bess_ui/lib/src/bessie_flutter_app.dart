@@ -38,7 +38,7 @@ class BessieFlutterApp extends StatelessWidget {
           defaultTransition: Transition.noTransition,
           getPages: BessRoutes.pages,
           builder: (context, child) {
-            return ShadSonner(visibleToastsAmount: 3, child: child!);
+            return ShadSonner(visibleToastsAmount: 3, padding: EdgeInsets.all(42), child: child!);
           },
         );
       },

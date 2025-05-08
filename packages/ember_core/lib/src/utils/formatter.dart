@@ -152,13 +152,13 @@ class CoreFormatter {
       return '$defaultMask@$domain';
     }
 
-    if (localPart.length == 1) {
-      // If local part is only one character, mask it
-      return '*@$domain';
+    if (localPart.length <= 3) {
+      final String maskedLocalPart = ('*' * (localPart.length));
+      return '$maskedLocalPart@$domain';
     }
 
-    // Keep the first character, replace the rest with '*'
-    final String maskedLocalPart = localPart[0] + ('*' * (localPart.length - 1));
+    // Keep the first 3 characters, replace the rest with '*'
+    final String maskedLocalPart = localPart[0] + localPart[1] + localPart[2] +('*' * (localPart.length - 3));
 
     return '$maskedLocalPart@$domain';
   }

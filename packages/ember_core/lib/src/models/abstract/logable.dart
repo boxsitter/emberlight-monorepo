@@ -3,18 +3,60 @@ import 'package:ember_core/ember_core_utils.dart';
 import '../../../ember_core_debug.dart';
 
 enum LogType {
-  failure('Failure', 'Action could not be completed', AnsiColor.yellow),
-  unknown('Undefined Error', 'Something went wrong', AnsiColor.brightRed),
-  error('Error', 'Error', AnsiColor.brightRed),
-  critical('Critical Error', 'Critical error', AnsiColor.red),
-  info('Info', 'Info', AnsiColor.none),
-  success('Success', 'Success!', AnsiColor.brightGreen),
-  warning('Warning', 'Warning', AnsiColor.brightYellow);
+  failure(
+    'Failure',
+    'Oops',
+    AnsiColor.yellow,
+    Duration(milliseconds: 3500),
+  ),
+
+  unknownError(
+    'Undefined Error',
+    'Something went wrong',
+    AnsiColor.brightRed,
+    Duration(milliseconds: 4000),
+  ),
+
+  error(
+    'Error',
+    'Error',
+    AnsiColor.brightRed,
+    Duration(milliseconds: 4000),
+  ),
+
+  critical(
+    'Critical Error',
+    'Critical error',
+    AnsiColor.red,
+    Duration(milliseconds: 5000),
+  ),
+
+  info(
+    'Info',
+    'Info',
+    AnsiColor.none,
+    Duration(milliseconds: 2000),
+  ),
+
+  success(
+    'Success',
+    'Success!',
+    AnsiColor.brightGreen,
+    Duration(milliseconds: 2000),
+  ),
+
+  warning(
+    'Warning',
+    'Warning',
+    AnsiColor.brightYellow,
+    Duration(milliseconds: 3000),
+  );
 
   final String devString;
   final String userString;
   final AnsiColor ansiColor;
-  const LogType(this.devString, this.userString, this.ansiColor);
+  final Duration toastDuration;
+  const LogType(this.devString, this.userString, this.ansiColor, this.toastDuration);
 }
 
 enum Module {
@@ -49,7 +91,8 @@ abstract class Logable {
     final String moduleName = '[${module.name}]';
     if (Debug.colorfulLogs) {
       output += CoreFormatter.formatAnsi(
-          text: moduleName, color: AnsiColor.cyan
+        text: moduleName,
+        color: logType == LogType.info || logType == LogType.success ? AnsiColor.cyan : AnsiColor.red,
       );
     } else {
       output += moduleName;

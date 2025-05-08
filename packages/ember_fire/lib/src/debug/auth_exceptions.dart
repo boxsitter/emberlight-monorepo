@@ -132,7 +132,7 @@ class AuthUnknownError extends AuthError {
         devMessage: 'Unknown Firebase Auth error${code != null ? ' (Code: $code)' : ''}',
         userMessage: 'An unexpected authentication error occurred. Please try again',
         metadata: code != null ? {'firebase_code': code} : {},
-        logType: LogType.unknown,
+        logType: LogType.unknownError,
       );
 }
 

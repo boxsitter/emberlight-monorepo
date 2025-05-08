@@ -8,10 +8,8 @@ import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
 import 'package:ember_fire/src/repositories/live_data_repository.dart';
 import 'package:ember_fire/src/repositories/pull_repository.dart';
 import 'package:ember_fire/src/repositories/commit_repository.dart';
-import 'package:ember_fire/src/services/authentication_state_service.dart';
 import 'package:ember_fire/src/services/database_repair_service.dart';
 import 'package:ember_fire/src/services/path_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +24,6 @@ class EmberFire implements CoreBackend {
   late final LiveDataRepository liveDataRepo;
   late final DatabaseRepairService databaseRepairService;
   late final AuthenticationRepository authenticationRepo;
-  late final AuthenticationStateService authenticationStateService;
 
   EmberFire();
 
@@ -42,7 +39,6 @@ class EmberFire implements CoreBackend {
   @override
   void initLate() {
     commitRepo = Get.put(CommitRepository(), permanent: true);
-    authenticationStateService = Get.put(AuthenticationStateService(), permanent: true);
     authenticationRepo = Get.put(AuthenticationRepository(), permanent: true);
   }
 
@@ -136,12 +132,12 @@ class EmberFire implements CoreBackend {
 
   @override
   bool isAuthenticated() {
-    return authenticationStateService.isUserLoggedIn;
+    return authenticationRepo.isUserLoggedIn;
   }
 
   @override
-  Future<void> login(String email, String password) async {
-    authenticationRepo.loginWithEmailAndPassword(email, password);
+  Future<void> login(String email, String password, bool rememberMe) async {
+    await authenticationRepo.loginWithEmailAndPassword(email, password, rememberMe);
   }
 
 }

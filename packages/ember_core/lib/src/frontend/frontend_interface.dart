@@ -1,4 +1,8 @@
 
+import 'dart:ui';
+
+import 'package:ember_core/ember_core_debug.dart';
+
 abstract class CoreFrontend {
   String get frontendName;
   String get frontendDescription;
@@ -9,13 +13,5 @@ abstract class CoreFrontend {
     final Map<String, List<String>>? foldedSubcontent,
   });
 
-  void displayInfo({
-    String? title,
-    String? message,
-  });
-
-  void displayError({
-    String? title,
-    String? message,
-  });
+  void showToast({String? title, String? message, LogType logType});
 }

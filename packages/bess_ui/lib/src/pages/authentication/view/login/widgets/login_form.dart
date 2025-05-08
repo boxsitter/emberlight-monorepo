@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/utils/validators/validation.dart';
+import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:flutter/material.dart';
@@ -15,22 +16,42 @@ class BessLoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationController controller = Get.find<AuthenticationController>();
+    final AuthenticationController controller = Get.find<AuthenticationController>();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+    final FocusNode emailFocusNode = FocusNode();
+    final FocusNode passwordFocusNode = FocusNode();
+
+    void submitForm() {
+      // Unfocus fields to trigger any onUnfocus validation and hide keyboard
+      emailFocusNode.unfocus();
+      passwordFocusNode.unfocus();
+
+      if (_formKey.currentState?.validate() ?? false) {
+        controller.loginUser();
+      } else {
+        Debug.logWarning('Form validation failed');
+      }
+    }
 
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUnfocus,
       child: Padding(
-          padding:
-              const EdgeInsets.symmetric(vertical: BessSizes.spaceBtwSections),
+          padding: const EdgeInsets.symmetric(vertical: BessSizes.spaceBtwSections),
           child: Column(
             children: [
               /// Email
               TextFormField(
+                focusNode: emailFocusNode,
+                textInputAction: TextInputAction.next,
+                autofillHints: [AutofillHints.email, AutofillHints.username],
                 spellCheckConfiguration: SpellCheckConfiguration.disabled(),
                 validator: (value) => BessValidator.validateEmail(value),
                 controller: controller.emailController,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(passwordFocusNode);
+                },
                 decoration: const InputDecoration(
                   prefixIcon: Icon(LucideIcons.messageCircleMore),
                   labelText: BessTexts.email,
@@ -40,68 +61,61 @@ class BessLoginForm extends StatelessWidget {
               const SizedBox(height: BessSizes.spaceBtwInputFields),
 
               /// Password
-              TextFormField(
-                spellCheckConfiguration: SpellCheckConfiguration.disabled(),
-                obscureText: true,
-                obscuringCharacter: '•',
-                validator: (value) => BessValidator.validatePassword(value),
-                controller: controller.passwordController,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(LucideIcons.lock),
-                  labelText: BessTexts.password,
-                  suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(LucideIcons.eyeOff)
-                  ),
-                ),
-              ),
+              Obx(() => TextFormField(
+                    focusNode: passwordFocusNode, // Assign FocusNode
+                    controller: controller.passwordController,
+                    obscureText: controller.hidePassword.value,
+                    validator: (value) => BessValidator.validatePassword(value),
+                    textInputAction: TextInputAction.done, // Trigger submission
+                    onFieldSubmitted: (_) {
+                      submitForm();
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(LucideIcons.lock),
+                      labelText: BessTexts.password,
+                      suffixIcon: IconButton(
+                        icon: Icon(controller.hidePassword.value ? LucideIcons.eyeOff : LucideIcons.eye),
+                        onPressed: () => controller.hidePassword.value = !controller.hidePassword.value,
+                      ),
+                    ),
+                  )),
+
               const SizedBox(height: BessSizes.spaceBtwInputFields / 2),
 
               /// Remember me & forgot password
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(value: true, onChanged: (value) {}),
-                      const Text(BessTexts.rememberMe),
-                    ],
-                  ),
+                  /// Remember Me
+                  Obx(() => Row(
+                        children: [
+                          Checkbox(
+                              value: controller.rememberMe.value,
+                              onChanged: (value) => controller.rememberMe.value = value ?? false),
+                          const Text(BessTexts.rememberMe),
+                        ],
+                      )),
 
-                  // /// Forgot password
+                  // /// Forget Password
                   // TextButton(
-                  //     onPressed: () => Get.toNamed(BessRoutes.forgotPassword),
-                  //     child: const Text(BessTexts.forgotPassword)
-                  // )
+                  //     onPressed: () {
+                  //       // TODO: Implement forgot password navigation
+                  //       // Get.to(() => const ForgotPasswordScreen());
+                  //       Debug.logInfo("Forgot Password button pressed");
+                  //     },
+                  //     child: const Text(BessTexts.forgotPassword)),
                 ],
               ),
+
               const SizedBox(height: BessSizes.spaceBtwSections),
 
               /// Sign in button
-              /// TODO: replace button with my custom loader action button
-              SizedBox(
-                width: double.infinity,
-                child: Obx(() => ElevatedButton( // Obx to react to isLoading changes
-                  onPressed: controller.isLoading.value ? null : () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // If form is valid, attempt login
-                      controller.loginUser();
-                    } else {
-                      Debug.logWarning('Form validation failed');
-                    }
-                  },
-                  child: controller.isLoading.value ? const SizedBox( // Show a loader inside the button
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white, // Or your theme's button text color
-                      strokeWidth: 2.0,
-                    ),
-                  )
-                      : const Text(BessTexts.signIn),
-                )),
-              ),
+               Obx(() => ActionInitiator(
+                onPressed: () => submitForm(),
+                enabled: !controller.isLoading.value,
+                enabledText: 'Sign In',
+                disabledText: 'One Moment...',
+               ))
 
               // const SizedBox(height: BessSizes.spaceBtwInputFields / 2),
               //

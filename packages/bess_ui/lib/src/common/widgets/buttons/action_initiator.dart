@@ -5,19 +5,24 @@ import 'package:flutter/material.dart';
 import '../../styles/text_styles.dart';
 
 class ActionInitiator extends StatelessWidget {
-  const ActionInitiator({super.key, required this.onPressed, this.enabled = true, this.enabledText = '', this.disabledText = ''});
+  const ActionInitiator({super.key, required this.onPressed, this.enabled = true, this.enabledText = '', this.disabledText = '', this.width});
 
   final void Function()? onPressed;
   final bool? enabled;
   final String enabledText;
   final String disabledText;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     if (enabled != null && enabled == true) {
-      return ElevatedButton(
-        onPressed: onPressed,
-        child: Text(enabledText, style: BessTextStyles.standardInverted),
+      return SizedBox(
+        height: 37,
+        width: width ?? double.infinity,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          child: Text(enabledText, style: BessTextStyles.standardInverted),
+        ),
       );
     } else {
       return Stack(
@@ -35,6 +40,7 @@ class ActionInitiator extends StatelessWidget {
 
           SizedBox(
             height: 37,
+            width: width ?? double.infinity,
             child: Center(
               child: Text(
                 disabledText,

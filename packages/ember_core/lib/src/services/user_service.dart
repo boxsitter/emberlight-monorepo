@@ -34,8 +34,8 @@ class UserService extends GetxService {
     commit.addObjectToPush(userToRegister);
   }
 
-  Future<bool> login(String email, String password) async {
-    await backend.login(email, password);
+  Future<bool> login(String email, String password, bool rememberMe) async {
+    await backend.login(email, password, rememberMe);
     return isAuthenticated;
   }
 }

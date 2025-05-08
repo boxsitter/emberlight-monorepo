@@ -24,7 +24,7 @@ abstract class EmberException extends Logable implements Exception {
 extension UnknownExceptionWrapping on Object {
   EmberException toEmberException(StackTrace? stackTrace) {
     if (this is EmberException) return this as EmberException;
-    return _UnknownEmberException(this, LogType.unknown, stackTrace);
+    return _UnknownEmberException(this, LogType.unknownError, stackTrace);
   }
 }
 

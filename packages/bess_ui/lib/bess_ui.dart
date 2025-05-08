@@ -9,6 +9,7 @@ import 'package:bess_ui/src/pages/authentication/authentication_controller.dart'
 import 'package:bess_ui/src/pages/console/controller/console_controller.dart';
 import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -42,15 +43,9 @@ class BessUi implements CoreFrontend{
   String get frontendDescription => _frontendDescription;
 
   @override
-  void displayError({String? title, String? message}) {
+  void showToast({String? title, String? message, LogType? logType}) {
     final PopupService popupService = Get.find<PopupService>();
-    popupService.showToast(title: title, message: message); // TODO: Make a separate toast design for errors
-  }
-
-  @override
-  void displayInfo({String? title, String? message}) {
-    final PopupService popupService = Get.find<PopupService>();
-    popupService.showToast(title: title, message: message);
+    popupService.showToast(title: title, message: message, logType: logType);
   }
 
   @override
