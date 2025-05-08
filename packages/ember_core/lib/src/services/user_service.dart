@@ -33,4 +33,9 @@ class UserService extends GetxService {
     userToRegister.deactivationReason = 'Your account is pending approval'; // TODO: remove this in favor of camp codes
     commit.addObjectToPush(userToRegister);
   }
+
+  Future<bool> login(String email, String password) async {
+    await backend.login(email, password);
+    return isAuthenticated;
+  }
 }

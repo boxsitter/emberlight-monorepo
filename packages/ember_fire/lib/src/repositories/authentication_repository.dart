@@ -3,6 +3,7 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_fire/src/repositories/commit_repository.dart';
+import 'package:ember_fire/src/services/authentication_state_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -12,8 +13,7 @@ class AuthenticationRepository {
   final _auth = FirebaseAuth.instance;
   UserService userService = Get.find<UserService>();
   CommitRepository commitRepo = Get.find<CommitRepository>();
-
-  bool get isAuthenticated => _auth.currentUser != null;
+  AuthenticationStateService authenticationStateService = Get.find<AuthenticationStateService>();
 
   /// Logs in a user with the provided email and password using Firebase Authentication.
   ///
@@ -44,7 +44,6 @@ class AuthenticationRepository {
       // Log successful login
       final userId = userCredential.user?.uid ?? 'N/A';
 
-
       // Return the credential on success
       return userCredential;
 
@@ -61,17 +60,6 @@ class AuthenticationRepository {
   Stream<User?> get authStateChanges {
     Debug.logInfo('authStateChanges stream accessed', verbosity: Verbosity.excessive);
     return _auth.authStateChanges();
-  }
-
-  /// Gets the current authenticated user. Returns null if no user is logged in.
-  User? get currentUser {
-    final user = _auth.currentUser;
-    Debug.logInfo(
-        user == null ? 'currentUser accessed: No user logged in.' : 'currentUser accessed: User found (UID: ${user.uid})',
-        verbosity: Verbosity.excessive,
-        metadata: {'userId': user?.uid ?? 'null'}
-    );
-    return user;
   }
 
   // --- Placeholder Methods ---

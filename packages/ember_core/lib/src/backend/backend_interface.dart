@@ -36,4 +36,5 @@ abstract class CoreBackend {
 
   // Auth
   bool isAuthenticated();
+  Future<void> login(String email, String password);
 }

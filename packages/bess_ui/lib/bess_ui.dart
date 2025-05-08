@@ -5,6 +5,7 @@ import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/controllers/roster_table_controller.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';
 import 'package:bess_ui/src/pages/console/controller/console_controller.dart';
 import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
@@ -27,6 +28,7 @@ class BessUi implements CoreFrontend{
     Get.put(SessionManagerController(), permanent: true);
     Get.put(ActivityPreferencesController(), permanent: true);
     Get.put(SchedulePageController(), permanent: true);
+    Get.put(AuthenticationController());
   }
 
   static void launchFlutterApp() {

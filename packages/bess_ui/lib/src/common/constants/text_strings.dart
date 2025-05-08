@@ -52,8 +52,8 @@ class BessTexts {
   static const String resendEmailIn = "Resend email in";
 
   // -- Authentication Headings
-  static const String loginTitle = "Welcome back friend,";
-  static const String loginSubTitle = "Who are you though?";
+  static const String loginTitle = "Welcome to Bessie,";
+  static const String loginSubTitle = "who are you?";
   static const String signupTitle = "Let’s create your account";
   static const String forgotPasswordTitle = "Forgot password";
   static const String forgotPasswordSubTitle =
