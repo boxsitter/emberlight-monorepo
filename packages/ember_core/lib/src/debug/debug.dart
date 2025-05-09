@@ -111,7 +111,7 @@ class Debug {
     instance._colorfulLogs = !isReleaseMode;
   }
 
-  static EmberInfo getDebugStateInfo() {
+  static EmberInfo getDebugStateInfo()  {
     Map<String, String>? meta = {};
     meta['Config Code'] = configCode != null ? configCode.toString() : 'not set';
     meta['Enable Sentry'] = enableSentry.toString();
