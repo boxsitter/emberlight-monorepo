@@ -6,6 +6,7 @@
 import 'package:bess_ui/src/common/routes/routes.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
+import 'package:ember_core/ember_core_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,35 +30,40 @@ class RouteObservers extends GetObserver {
 
   @override
   void didChangeTop(Route topRoute, Route? previousTopRoute) {
-    RosterTableController rosterTableController = Get.find<RosterTableController>();
-    if (topRoute.settings.name == BessRoutes.sessionRoster) {
-      rosterTableController.startListening();
-    } else {
-      rosterTableController.stopListening();
-    }
+    if (Get.find<UserService>().isAuthenticated) {
+      RosterTableController rosterTableController = Get.find<RosterTableController>();
+      if (topRoute.settings.name == BessRoutes.sessionRoster) {
+        rosterTableController.startListening();
+      } else {
+        rosterTableController.stopListening();
+      }
 
-    ActivityPreferencesController activityPreferencesController = Get.find<ActivityPreferencesController>();
-    if (topRoute.settings.name == BessRoutes.activityPreferencesCabins && previousTopRoute?.settings.name != BessRoutes.activityPreferencesCabins) {
-      activityPreferencesController.onCabinsLoad();
-    }
-    if (topRoute.settings.name == BessRoutes.activityPreferencesSelector) {
-      activityPreferencesController.onSelectorLoad();
-    }
+      ActivityPreferencesController activityPreferencesController = Get.find<ActivityPreferencesController>();
+      if (topRoute.settings.name == BessRoutes.activityPreferencesCabins &&
+          previousTopRoute?.settings.name != BessRoutes.activityPreferencesCabins) {
+        activityPreferencesController.onCabinsLoad();
+      }
+      if (topRoute.settings.name == BessRoutes.activityPreferencesSelector) {
+        activityPreferencesController.onSelectorLoad();
+      }
 
-    SessionManagerController sessionManagerController = Get.find<SessionManagerController>();
-    if (topRoute.settings.name == BessRoutes.sessionManager && previousTopRoute?.settings.name != BessRoutes.sessionManager) {
-      sessionManagerController.populate();
+      SessionManagerController sessionManagerController = Get.find<SessionManagerController>();
+      if (topRoute.settings.name == BessRoutes.sessionManager && previousTopRoute?.settings.name != BessRoutes.sessionManager) {
+        sessionManagerController.populate();
+      }
     }
   }
 
   @override
   void didPush(Route<dynamic>? route, Route<dynamic>? previousRoute) {
-    final sidebarController = Get.find<SidebarController>();
+    if (Get.find<UserService>().isAuthenticated) {
+      final sidebarController = Get.find<SidebarController>();
 
-    if (route != null) {
-      for (var routeName in BessRoutes.sideMenuItems) {
-        if (route.settings.name == routeName) {
-          sidebarController.activeItem.value = routeName;
+      if (route != null) {
+        for (var routeName in BessRoutes.sideMenuItems) {
+          if (route.settings.name == routeName) {
+            sidebarController.activeItem.value = routeName;
+          }
         }
       }
     }

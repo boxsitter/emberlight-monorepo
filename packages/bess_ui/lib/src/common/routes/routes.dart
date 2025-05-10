@@ -29,7 +29,11 @@ class BessRoutes {
   static const activityPreferencesCampers = '/activity-preferences-campers';
   static const activityPreferencesSelector = '/activity-preferences-selector';
 
-  static List sideMenuItems = [
+  static const login = '/login';
+  static const forgotPassword = '/forgotPassword';
+  static const resetPassword = '/resetPassword';
+
+  static Set sideMenuItems = {
     console,
     sessionRoster,
     home,
@@ -38,11 +42,13 @@ class BessRoutes {
     responsiveDesignExample,
     sessionManager,
     schedulePage,
-  ];
+  };
 
-  static const login = '/login';
-  static const forgotPassword = '/forgotPassword';
-  static const resetPassword = '/resetPassword';
+  static Set publicRoutes = {
+    login,
+    forgotPassword,
+    resetPassword,
+  };
 
   static final List<GetPage> pages = [
     GetPage(

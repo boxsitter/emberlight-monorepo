@@ -7,7 +7,7 @@ abstract class CoreBackend {
   String get backendDescription;
 
   void init();
-  void onNewContext();
+  void onLogin();
   Future<T> getFieldValue<T>(String ref, String field);
   Future<Set<T>> getSetFieldValue<T>(String ref, String field);
   Future<T> getObject<T>(String ref);

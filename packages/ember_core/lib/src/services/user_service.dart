@@ -1,9 +1,10 @@
 import 'package:get/get.dart';
 
+import '../../ember_core.dart';
 import '../../ember_core_backend.dart';
+import '../../ember_core_frontend.dart';
 import '../../ember_core_models.dart';
 import '../../ember_core_services.dart';
-import '../backend/backend_manager.dart';
 
 class UserService extends GetxService {
   static CoreBackend backend = BackendManager.instance;
@@ -36,6 +37,11 @@ class UserService extends GetxService {
 
   Future<bool> login(String email, String password, bool rememberMe) async {
     await backend.login(email, password, rememberMe);
+    if (isAuthenticated) {
+      FrontendManager.instance.onLogin();
+      BackendManager.instance.onLogin();
+      EmberCore.onLogin();
+    }
     return isAuthenticated;
   }
 }

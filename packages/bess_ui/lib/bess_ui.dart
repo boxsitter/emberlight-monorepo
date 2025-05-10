@@ -18,10 +18,14 @@ const _frontendName = 'Bessie';
 const _frontendDescription = 'Cross-platform app interface for managing summer camp logistics with EmberCore';
 
 class BessUi implements CoreFrontend{
-  static void init() {
+  @override
+  void init() {
     Get.put(PopupService(), permanent: true);
     Get.put(AuthenticationController(), permanent: true);
+  }
 
+  @override
+  void onLogin() {
     Get.lazyPut(() => ConsoleController(), fenix: true);
     Get.lazyPut(() => SidebarController(), fenix: true);
     Get.lazyPut(() => RosterTableController(), fenix: true);
@@ -30,7 +34,8 @@ class BessUi implements CoreFrontend{
     Get.lazyPut(() => SchedulePageController(), fenix: true);
   }
 
-  static void onNewContext() {
+  @override
+  void onNewContext() {
     Get.delete<ConsoleController>();
     Get.delete<SidebarController>();
     Get.delete<RosterTableController>();

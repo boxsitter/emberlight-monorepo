@@ -7,6 +7,10 @@ abstract class CoreFrontend {
   String get frontendName;
   String get frontendDescription;
 
+  void init();
+  void onLogin();
+  void onNewContext();
+
   Future<bool> getConfirmation({
     required final String title,
     final String? message,

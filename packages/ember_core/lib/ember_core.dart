@@ -18,15 +18,16 @@ import 'package:get/get.dart';
 /// Import this package in your UI layer to access business logic and service methods.
 
 class EmberCore {
-  static void initializeComponents(CoreBackend backendInterface, CoreFrontend frontendInterface) {
+  static void init (CoreBackend backendInterface, CoreFrontend frontendInterface) {
     BackendManager.setBackend(backendInterface);
     FrontendManager.setFrontend(frontendInterface);
+    Get.put(ClientContext(), permanent: true);
+    Get.put(UserService(), permanent: true);
+    backendInterface.init();
+    frontendInterface.init();
   }
 
-  static void init () {
-    CoreBackend backend = BackendManager.instance;
-    Get.put(ClientContext(), permanent: true);
-
+  static void onLogin() {
     Get.lazyPut(() => CommitService());
     Get.lazyPut(() => UserService());
     Get.lazyPut(() => CabinService());
@@ -35,11 +36,8 @@ class EmberCore {
     Get.lazyPut(() => ConsoleService());
     Get.lazyPut(() => ScheduleService());
     Get.lazyPut(() => FrontendCommitService());
-
-    backend.init();
-
-    ClientContextService clientContextService = Get.put(ClientContextService());
-    clientContextService.setDefaultContext();
+    Get.lazyPut(() => ClientContextService());
+    Get.find<ClientContextService>().setDefaultContext();
   }
 
   static Future<void> recoverEmberCore () async {
@@ -50,7 +48,6 @@ class EmberCore {
     await backend.dumbDomainSetup(HardcodedObjects.ygs, HardcodedObjects.colman, HardcodedObjects.season, HardcodedObjects.session);
     ClientContextService clientContextService = Get.put(ClientContextService());
     clientContextService.setDefaultContext();
-    backend.onNewContext();
     Get.put(CabinService(), permanent: true);
     Get.put(SessionRosterService(), permanent: true);
     Get.put(ActivityPreferenceService(), permanent: true);

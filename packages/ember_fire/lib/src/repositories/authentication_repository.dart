@@ -11,7 +11,6 @@ import '../debug/auth_exceptions.dart';
 class AuthenticationRepository {
   final _auth = FirebaseAuth.instance;
   UserService userService = Get.find<UserService>();
-  CommitRepository commitRepo = Get.find<CommitRepository>();
 
   bool get isUserLoggedIn => _auth.currentUser != null;
 
@@ -131,7 +130,7 @@ class AuthenticationRepository {
           organizationRef: organizationId,
           role: role
       );
-      await commitRepo.commit(commit);
+      await Get.find<CommitRepository>().commit(commit);
       return userCredential;
     } on FirebaseAuthException catch (e, st) {
       final exception = BessFirebaseAuthExceptionFactory.fromCode(e.code);

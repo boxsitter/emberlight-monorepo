@@ -22,13 +22,17 @@ const _backendDescription = 'Firebase backend for EmberCore.';
 class EmberFire implements CoreBackend {
   @override
   void init() {
+    Get.put(AuthenticationRepository(), permanent: true);
+  }
+
+  @override
+  void onLogin() {
     Get.lazyPut(() => DumbPushRepository());
     Get.lazyPut(() => PathService());
-    Get.lazyPut(() => PullRepository());
+    Get.lazyPut(() => PullRepository(), fenix: true);
     Get.lazyPut(() => LiveDataRepository());
     Get.lazyPut(() => DatabaseRepairService());
     Get.lazyPut(() => CommitRepository());
-    Get.lazyPut(() => AuthenticationRepository());
   }
 
   @override
@@ -110,7 +114,7 @@ class EmberFire implements CoreBackend {
 
   @override
   Future<String> getActiveObjectId(String collectionName, String domain) {
-    return Get.find<LiveDataRepository>().getActiveObjectId(
+    return Get.find<PullRepository>().getActiveObjectId(
       collectionName,
       domain,
     );
@@ -125,7 +129,7 @@ class EmberFire implements CoreBackend {
     required bool overwriteWithEmptyAValues,
     Set<String>? aFieldsToIgnore,
   }) async {
-    await databaseRepairService.mergeObjectsWithDatabase(
+    await Get.find<DatabaseRepairService>().mergeObjectsWithDatabase(
       commit: commit,
       objects: objects,
       prioritizeAFields: prioritizeAFields,
@@ -141,7 +145,7 @@ class EmberFire implements CoreBackend {
     Season season,
     Session session,
   ) async {
-    await databaseRepairService.dumbDomainSetup(org, branch, season, session);
+    await Get.find<DatabaseRepairService>().dumbDomainSetup(org, branch, season, session);
   }
 
   @override
@@ -150,24 +154,24 @@ class EmberFire implements CoreBackend {
     String domain,
     String field,
   ) {
-    return pullRepo.getFieldFromCollection(collectionName, domain, field);
+    return Get.find<PullRepository>().getFieldFromCollection(collectionName, domain, field);
   }
 
   @override
   Future<void> cleanOrphanedDependents(Commit commit, Session session) {
-    return databaseRepairService.cleanOrphanedDependents(commit, session);
+    return Get.find<DatabaseRepairService>().cleanOrphanedDependents(commit, session);
   }
 
   // Auth
 
   @override
   bool isAuthenticated() {
-    return authenticationRepo.isUserLoggedIn;
+    return Get.find<AuthenticationRepository>().isUserLoggedIn;
   }
 
   @override
-  Future<void> login(String email, String password) async {
-    authenticationRepo.loginWithEmailAndPassword(email, password);
+  Future<void> login(String email, String password, bool rememberMe) async {
+    await Get.find<AuthenticationRepository>().loginWithEmailAndPassword(email, password, rememberMe);
   }
 }
 

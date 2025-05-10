@@ -3,11 +3,16 @@ import 'dart:io';
 
 import 'package:ember_core/ember_core.dart';
 import 'package:bess_ui/bess_ui.dart';
+import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_debug.dart';
+import 'package:ember_core/ember_core_frontend.dart';
+import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_fire/ember_fire.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -63,13 +68,11 @@ Future<void> initializeApp() async {
     throw Exception('Firebase not initialized!');
   }
 
-  BessUi.initEarly();
-  EmberCore.initializeComponents(EmberFire(), BessUi());
 
   if (recoveryMode) {
     await EmberCore.recoverEmberCore();
   } else {
-    EmberCore.initializeEmberCore();
+    EmberCore.init(EmberFire(), BessUi());
   }
 
   // Initialize window manager if on desktop
@@ -85,7 +88,12 @@ Future<void> initializeApp() async {
   // TODO: Find the actual minimum screen dimensions and enforce slightly larger minimum dimensions on all platforms
   // TODO: Figure out how the upscaling on mobile factors in to this
 
-  BessUi.init();
+  if (Get.find<UserService>().isAuthenticated) {
+    FrontendManager.instance.onLogin();
+    BackendManager.instance.onLogin();
+    EmberCore.onLogin();
+  }
+
   FlutterNativeSplash.remove();
   BessUi.launchFlutterApp();
 }
