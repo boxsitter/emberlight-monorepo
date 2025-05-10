@@ -18,18 +18,25 @@ const _frontendName = 'Bessie';
 const _frontendDescription = 'Cross-platform app interface for managing summer camp logistics with EmberCore';
 
 class BessUi implements CoreFrontend{
-  static void initEarly() {
+  static void init() {
     Get.put(PopupService(), permanent: true);
+    Get.put(AuthenticationController(), permanent: true);
+
+    Get.lazyPut(() => ConsoleController(), fenix: true);
+    Get.lazyPut(() => SidebarController(), fenix: true);
+    Get.lazyPut(() => RosterTableController(), fenix: true);
+    Get.lazyPut(() => SessionManagerController(), fenix: true);
+    Get.lazyPut(() => ActivityPreferencesController(), fenix: true);
+    Get.lazyPut(() => SchedulePageController(), fenix: true);
   }
 
-  static void init() {
-    Get.put(ConsoleController(), permanent: true);
-    Get.put(SidebarController(), permanent: true);
-    Get.put(RosterTableController(), permanent: true);
-    Get.put(SessionManagerController(), permanent: true);
-    Get.put(ActivityPreferencesController(), permanent: true);
-    Get.put(SchedulePageController(), permanent: true);
-    Get.put(AuthenticationController());
+  static void onNewContext() {
+    Get.delete<ConsoleController>();
+    Get.delete<SidebarController>();
+    Get.delete<RosterTableController>();
+    Get.delete<SessionManagerController>();
+    Get.delete<ActivityPreferencesController>();
+    Get.delete<SchedulePageController>();
   }
 
   static void launchFlutterApp() {

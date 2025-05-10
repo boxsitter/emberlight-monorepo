@@ -1,4 +1,5 @@
 library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_debug.dart';
@@ -19,27 +20,15 @@ const _backendName = 'EmberFire';
 const _backendDescription = 'Firebase backend for EmberCore.';
 
 class EmberFire implements CoreBackend {
-  late final PullRepository pullRepo;
-  late final CommitRepository commitRepo;
-  late final LiveDataRepository liveDataRepo;
-  late final DatabaseRepairService databaseRepairService;
-  late final AuthenticationRepository authenticationRepo;
-
-  EmberFire();
-
   @override
   void init() {
-    Get.put(DumbPushRepository(), permanent: true);
-    Get.put(PathService(), permanent: true);
-    pullRepo = Get.put(PullRepository(), permanent: true);
-    liveDataRepo = Get.put(LiveDataRepository(), permanent: true);
-    databaseRepairService = Get.put(DatabaseRepairService(), permanent: true);
-  }
-
-  @override
-  void initLate() {
-    commitRepo = Get.put(CommitRepository(), permanent: true);
-    authenticationRepo = Get.put(AuthenticationRepository(), permanent: true);
+    Get.lazyPut(() => DumbPushRepository());
+    Get.lazyPut(() => PathService());
+    Get.lazyPut(() => PullRepository());
+    Get.lazyPut(() => LiveDataRepository());
+    Get.lazyPut(() => DatabaseRepairService());
+    Get.lazyPut(() => CommitRepository());
+    Get.lazyPut(() => AuthenticationRepository());
   }
 
   @override
@@ -51,7 +40,7 @@ class EmberFire implements CoreBackend {
 
   @override
   Future<void> commit(Commit request) async {
-    commitRepo.commit(request);
+    Get.find<CommitRepository>().commit(request);
   }
 
   @override
@@ -62,32 +51,48 @@ class EmberFire implements CoreBackend {
 
   @override
   Future<T> getFieldValue<T>(String ref, String field) {
-    return pullRepo.getFieldValue(ref, field);
+    return Get.find<PullRepository>().getFieldValue(ref, field);
   }
 
   @override
   Future<T> getObject<T>(String ref) {
-    return pullRepo.getObject(ref);
+    return Get.find<PullRepository>().getObject(ref);
   }
 
   @override
   Future<Set<T>> getObjects<T>(Set<String> ref) {
-    return pullRepo.getObjects(ref);
+    return Get.find<PullRepository>().getObjects(ref);
   }
 
   @override
-  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain) {
-    return pullRepo.getObjectsInCollection(collectionName, domain);
+  Future<Set<T>> getObjectsInCollection<T>(
+    String collectionName,
+    String domain,
+  ) {
+    return Get.find<PullRepository>().getObjectsInCollection(
+      collectionName,
+      domain,
+    );
   }
 
   @override
   Future<Set<T>> getSetFieldValue<T>(String ref, String field) {
-    return pullRepo.getSetFieldValue(ref, field);
+    return Get.find<PullRepository>().getSetFieldValue(ref, field);
   }
 
   @override
-  Future<String?> queryField<T>(String collectionName, String domain, String field, T value) {
-    return pullRepo.queryField(collectionName, domain, field, value);
+  Future<String?> queryField<T>(
+    String collectionName,
+    String domain,
+    String field,
+    T value,
+  ) {
+    return Get.find<PullRepository>().queryField(
+      collectionName,
+      domain,
+      field,
+      value,
+    );
   }
 
   @override
@@ -96,7 +101,7 @@ class EmberFire implements CoreBackend {
     required String domain,
     bool updateDataInRealtime = true,
   }) {
-    return liveDataRepo.watchCollection(
+    return Get.find<LiveDataRepository>().watchCollection(
       collectionName: collectionName,
       domain: domain,
       updateDataInRealtime: updateDataInRealtime,
@@ -105,21 +110,46 @@ class EmberFire implements CoreBackend {
 
   @override
   Future<String> getActiveObjectId(String collectionName, String domain) {
-    return pullRepo.getActiveObjectId(collectionName, domain);
+    return Get.find<LiveDataRepository>().getActiveObjectId(
+      collectionName,
+      domain,
+    );
   }
 
   @override
-  Future<void> mergeObjectsWithDatabase({required Commit commit, required Set<CoreObject> objects, required bool prioritizeAFields, required bool prioritizeAValues, required bool overwriteWithEmptyAValues, Set<String>? aFieldsToIgnore}) async {
-    await databaseRepairService.mergeObjectsWithDatabase(commit: commit, objects: objects, prioritizeAFields: prioritizeAFields, prioritizeAValues: prioritizeAValues, overwriteWithEmptyAValues: overwriteWithEmptyAValues);
+  Future<void> mergeObjectsWithDatabase({
+    required Commit commit,
+    required Set<CoreObject> objects,
+    required bool prioritizeAFields,
+    required bool prioritizeAValues,
+    required bool overwriteWithEmptyAValues,
+    Set<String>? aFieldsToIgnore,
+  }) async {
+    await databaseRepairService.mergeObjectsWithDatabase(
+      commit: commit,
+      objects: objects,
+      prioritizeAFields: prioritizeAFields,
+      prioritizeAValues: prioritizeAValues,
+      overwriteWithEmptyAValues: overwriteWithEmptyAValues,
+    );
   }
 
   @override
-  Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session) async {
+  Future<void> dumbDomainSetup(
+    Organization org,
+    Branch branch,
+    Season season,
+    Session session,
+  ) async {
     await databaseRepairService.dumbDomainSetup(org, branch, season, session);
   }
 
   @override
-  Future<Map<String, dynamic>> getFieldFromCollection(String collectionName, String domain, String field) {
+  Future<Map<String, dynamic>> getFieldFromCollection(
+    String collectionName,
+    String domain,
+    String field,
+  ) {
     return pullRepo.getFieldFromCollection(collectionName, domain, field);
   }
 
@@ -136,10 +166,9 @@ class EmberFire implements CoreBackend {
   }
 
   @override
-  Future<void> login(String email, String password, bool rememberMe) async {
-    await authenticationRepo.loginWithEmailAndPassword(email, password, rememberMe);
+  Future<void> login(String email, String password) async {
+    authenticationRepo.loginWithEmailAndPassword(email, password);
   }
-
 }
 
 class FireStarter {
@@ -177,8 +206,10 @@ class FireStarter {
           db.useFirestoreEmulator('localhost', 6200);
           print("Using Firestore Emulator.");
         } catch (e) {
-          print("WARNING: Failed to connect to Firestore emulator at localhost:6200. "
-              "Ensure it's running. Falling back to cloud Firestore. Error: $e");
+          print(
+            "WARNING: Failed to connect to Firestore emulator at localhost:6200. "
+            "Ensure it's running. Falling back to cloud Firestore. Error: $e",
+          );
           // Decide if this error should prevent app startup or just log a warning.
         }
       }
@@ -200,14 +231,14 @@ class FireStarter {
       //    print('Firestore persistence enabled (Mobile).');
       // }
       // --- End Firestore specific setup ---
-
     } catch (e) {
       print('-----------------------------------------');
       print('FATAL: Error initializing Firebase: $e');
       print('-----------------------------------------');
       // Depending on your app, you might want to rethrow the error
       // or show a user-friendly error message and prevent app continuation.
-      _isInitialized = false; // Ensure it's marked as not initialized on failure
+      _isInitialized =
+          false; // Ensure it's marked as not initialized on failure
       rethrow; // Rethrow to indicate critical failure
     }
   }

@@ -72,8 +72,6 @@ class AuthenticationRepository {
     return _auth.authStateChanges();
   }
 
-  // --- Placeholder Methods ---
-
   /// Registers a new user with the provided email, password, and name using Firebase Authentication.
   ///
   /// Parameters:
