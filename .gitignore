@@ -8,15 +8,14 @@
 !.idea/runConfigurations/
 
 # Explicitly ignore common device-specific files/directories within .idea
-.idea/workspace.xml
+workspace.xml
 .idea/tasks/
 .idea/libraries/
 .idea/shelf/
 .idea/caches/
-.idea/build.xml
-.idea/misc.xml
-.idea/gradle.xml # If you were using Gradle, which Flutter sometimes does for Android
-.idea/libraries/ # Sometimes libraries have absolute paths here
+build.xml
+misc.xml
+gradle.xml
 
 
 # Any other specific file within .idea/ that you want to keep can be unignored here
