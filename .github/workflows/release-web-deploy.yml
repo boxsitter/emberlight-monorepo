@@ -6,11 +6,13 @@ on:
       - release/web
 
 env:
-  PROJECT_DIR: projects/bessie
+  PROJECT_DIR: apps/bessie # This is from your existing workflow file
   PUB_CACHE: ~/.pub-cache
+  # CORRECTED: Use the full GitHub SHA for the Sentry release version
+  SENTRY_RELEASE_VERSION: bessie-web-${{ github.sha }}
 
 concurrency:
-  group: build-and-deploy
+  group: build-and-deploy-${{ github.ref }} # Using GitHub.ref to make it per-branch
   cancel-in-progress: true
 
 jobs:
@@ -19,27 +21,21 @@ jobs:
 
     defaults:
       run:
-        # Commands will run in the context of your Flutter app directory
         working-directory: ${{ env.PROJECT_DIR }}
 
     steps:
       - name: Checkout Monorepo
-        uses: actions/checkout@v3
-        # This step now checks out the entire monorepo (emberlight-monorepo)
-        # No 'path' is specified, so it checks out to the root of the GITHUB_WORKSPACE
-
-      # The separate checkout steps for ember_core and ember_fire are removed
-      # as they are now part of the monorepo and included in the main checkout.
-      # The 'bess_ui' package is also assumed to be part of this monorepo checkout.
+        uses: actions/checkout@v3 # You can update to @v4 if you prefer
+        with:
+          fetch-depth: 0 # Sentry needs a full history
 
       - name: Cache Pub dependencies
         uses: actions/cache@v3
         with:
           path: |
-            ${{ env.PUB_CACHE }} # Path to the global pub cache
-            ${{ github.workspace }}/${{ env.PROJECT_DIR }}/.dart_tool # Path to project specific .dart_tool
-          # The key now uses pubspec files from within the PROJECT_DIR (apps/bessie)
-          key: ${{ runner.os }}-pub-${{ hashFiles('${{ github.workspace }}/${{ env.PROJECT_DIR }}/pubspec.lock') }}
+            ${{ env.PUB_CACHE }}
+            ${{ github.workspace }}/${{ env.PROJECT_DIR }}/.dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles(format('{0}/pubspec.lock', env.PROJECT_DIR)) }}
           restore-keys: |
             ${{ runner.os }}-pub-
 
@@ -47,22 +43,30 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          # Optional: Specify Flutter version if needed, e.g., flutter-version: '3.19.0'
 
       - name: Flutter pub get
         run: flutter pub get
-        # This runs in ${{ env.PROJECT_DIR }} (apps/bessie) due to the 'defaults'
 
       - name: Flutter build web
         run: flutter build web --release
-        # This runs in ${{ env.PROJECT_DIR }} (apps/bessie)
 
       - name: Prepare public folder
         run: |
           rm -rf public
           mv build/web public
-        # This runs in ${{ env.PROJECT_DIR }} (apps/bessie), so it correctly
-        # creates apps/bessie/public from apps/bessie/build/web
+
+      # SENTRY INTEGRATION: Create Release and Upload Source Maps
+      - name: Create Sentry Release and Upload Source Maps
+        uses: getsentry/action-release@v3
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          sourcemaps: ${{ env.PROJECT_DIR }}/public
+          version: ${{ env.SENTRY_RELEASE_VERSION }} # Uses the corrected version from env
+          environment: production
+          finalize: true
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -71,6 +75,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BESSIE_CAMP_APP }}
           projectId: bessie-camp-app
           channelId: live
-          # entryPoint points to your Flutter app directory relative to the repo root
-          # This tells Firebase where to find firebase.json and the 'public' folder
           entryPoint: ${{ env.PROJECT_DIR }}
