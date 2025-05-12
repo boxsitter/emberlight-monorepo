@@ -23,7 +23,7 @@ class HardcodedObjects {
     end: DateTime(2026, 1, 1).toUtc(),
   );
 
-  static final Session session = Session(
+  static final session = Session(
     name: 'Test Session',
     createdAt: DateTime.parse('2025-03-17T05:35:01.000Z').toUtc(),
     start: DateTime(2025, 1, 1).toUtc(),
