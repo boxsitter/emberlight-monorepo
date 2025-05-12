@@ -16,6 +16,7 @@ dependencies:
   window_manager: ^0.4.3
   firebase_core: ^3.13.0
   sentry_flutter: ^8.14.2
+  cider: ^0.2.8
 
   # --- Local Monorepo Packages ---
   bess_ui:

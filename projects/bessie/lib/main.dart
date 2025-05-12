@@ -40,6 +40,11 @@ Future<void> main() async {
         options.dsn = 'https://81a155539d2eb46d3a99b6fd0779bf30@o4508969385656320.ingest.us.sentry.io/4508969397190657';
         options.sendDefaultPii = true;
         options.tracesSampleRate = 1.0;
+        options.release = String.fromEnvironment(
+          'SENTRY_RELEASE_VERSION',
+          defaultValue: 'bessie-web-LOCAL-DEV-FALLBACK', // Fallback for local development if not defined
+        );
+        options.environment = 'production';
       },
       appRunner: initializeApp,
     );

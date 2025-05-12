@@ -44,7 +44,13 @@ class CabinService extends GetxService {
     return valuesToString;
   }
 
-  Future<PrincipalCabin> getPrincipalCabin(PrincipalActivityId id) {
+  Future<PrincipalCabin> getPrincipalCabin(String id) {
+    // TODO: check and make sure id points to a prin cabin
+    return backend.getObject(id);
+  }
+
+  Future<PrincipalCabin> getDependantCabin(String id) {
+    // TODO: check and make sure id points to a cabin dep
     return backend.getObject(id);
   }
 
