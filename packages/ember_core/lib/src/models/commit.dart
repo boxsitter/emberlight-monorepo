@@ -2,6 +2,8 @@
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 
+import 'enums/verbosity.dart';
+
 class Commit {
   bool _armed;
   final int _disarmRequirementsLevel;
