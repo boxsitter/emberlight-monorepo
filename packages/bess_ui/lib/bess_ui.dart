@@ -11,6 +11,7 @@ import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_frontend.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 

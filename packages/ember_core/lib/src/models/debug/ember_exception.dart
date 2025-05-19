@@ -2,6 +2,8 @@
 import 'package:ember_core/ember_core_utils.dart';
 
 import '../../../ember_core_debug.dart';
+import '../enums/log_type.dart';
+import '../enums/module.dart';
 
 // warning: can be normally triggered by the user, doesn't cause issues, cancels action, user needs to be notified
 // error: something has gone wrong, won't cause issues

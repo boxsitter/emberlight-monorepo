@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:ember_core/ember_core_debug.dart';
 
+import '../models/enums/log_type.dart';
+
 abstract class CoreFrontend {
   String get frontendName;
   String get frontendDescription;

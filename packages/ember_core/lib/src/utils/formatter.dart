@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 
 import '../models/abstract/logable.dart';
+import '../models/enums/ansi_color.dart';
+import '../models/enums/module.dart';
 
 /// Defines ANSI escape codes for text styles.
 enum AnsiStyle {

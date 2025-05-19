@@ -1,4 +1,6 @@
 import '../abstract/logable.dart';
+import '../enums/log_type.dart';
+import '../enums/module.dart';
 import '../enums/verbosity.dart';
 
 abstract class EmberInfo extends Logable{

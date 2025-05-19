@@ -30,3 +30,8 @@ export 'src/models/core_objects/core_user.dart';
 
 
 export 'src/models/commit.dart';
+
+// enums
+export 'src/models/enums/module.dart';
+export 'src/models/enums/log_type.dart';
+export 'src/models/enums/verbosity.dart';
