@@ -28,12 +28,13 @@ class RosterTableController extends GetxController {
   final RxMap<String, Camper> campers = <String, Camper>{}.obs;
   final RxInt count = 0.obs;
   final RxList<double> columnWidths = <double>[].obs;
+  final RxSet<String> selectedRowIds = <String>{}.obs;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
 
   // --- Derived State (Getter for Processed Data) ---
-  List<List<String>> get processedCampersData {
+  List<List<String>> get tableData {
     return campers.values.map((camper) {
       return [
         camper.fullName,
@@ -43,6 +44,14 @@ class RosterTableController extends GetxController {
         camper.cabinName ?? 'none',
       ];
     }).toList();
+  }
+
+  List<String> get metadata {
+    return campers.values.map((camper) {
+      return [
+        camper.id,
+      ];
+    });
   }
 
   // --- Public Method to Initialize ---
@@ -74,7 +83,7 @@ class RosterTableController extends GetxController {
   void _calculateAndUpdateColumnWidths() {
     if (_columnHeaders.isEmpty) return; // Don't calculate if headers aren't set
 
-    final List<List<String>> currentData = processedCampersData;
+    final List<List<String>> currentData = tableData;
     List<double> calculated = List.filled(_columnHeaders.length, 0.0);
 
     for (int i = 0; i < _columnHeaders.length; i++) {
@@ -143,5 +152,40 @@ class RosterTableController extends GetxController {
     print('RosterTableController Closing - Stopping Listener');
     stopListening();
     super.onClose();
+  }
+
+  void toggleRowSelection(String rowId, bool? newValue) {
+    if (newValue != null && newValue) {
+      if (!selectedRowIds.contains(rowId)) {
+        selectedRowIds.add(rowId);
+        return;
+      }
+    } else if (newValue != null) {
+      selectedRowIds.remove(rowId);
+      return;
+    }
+
+    if (selectedRowIds.contains(rowId)) {
+      selectedRowIds.remove(rowId);
+    } else {
+      selectedRowIds.add(rowId);
+    }
+  }
+
+  void toggleSelectAll(bool? newValue) {
+    if (newValue != null && newValue) {
+      selectedRowIds.clear();
+      selectedRowIds.addAll(campers.keys);
+      return;
+    } else if (newValue != null) {
+      selectedRowIds.clear();
+      return;
+    }
+
+    if (selectedRowIds.isEmpty) {
+      selectedRowIds.addAll(campers.keys);
+    } else {
+      selectedRowIds.clear();
+    }
   }
 }

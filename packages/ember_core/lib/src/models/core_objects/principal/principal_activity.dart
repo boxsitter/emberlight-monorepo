@@ -1,6 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
-import '../../abstract/elevated.dart';
+import '../../interfaces/elevated.dart';
 
 typedef PrincipalActivityId = String;
 

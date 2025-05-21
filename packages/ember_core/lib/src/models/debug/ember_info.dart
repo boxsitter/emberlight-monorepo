@@ -1,4 +1,4 @@
-import '../abstract/logable.dart';
+import '../interfaces/logable.dart';
 import '../enums/log_type.dart';
 import '../enums/module.dart';
 import '../enums/verbosity.dart';

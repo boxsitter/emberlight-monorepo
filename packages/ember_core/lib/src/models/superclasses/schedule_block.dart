@@ -1,4 +1,4 @@
-import 'package:ember_core/src/models/abstract/time_interval.dart';
+import 'package:ember_core/src/models/interfaces/time_interval.dart';
 
 import '../../../ember_core_models.dart';
 

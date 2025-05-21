@@ -1,7 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/src/models/abstract/time_interval.dart';
+import 'package:ember_core/src/models/interfaces/time_interval.dart';
 
-import '../../abstract/elevated.dart';
+import '../../interfaces/elevated.dart';
 
 typedef DependentId = String;
 typedef PrincipalId = String;

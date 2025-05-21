@@ -5,6 +5,7 @@ import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/column_header.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/data_row.dart';
+import 'package:bess_ui/src/common/widgets/roster_table/widgets/header_checkbox.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,6 @@ class BessRosterTable extends StatelessWidget {
   final List<String> columns;
   final RosterTableController controller;
   final String tableTitle;
-  static const double columnWidth = 250;
 
   const BessRosterTable({
     super.key,
@@ -73,10 +73,16 @@ class BessRosterTable extends StatelessWidget {
                                 final width = index < controller.columnWidths.length
                                     ? controller.columnWidths[index]
                                     : RosterTableController.minColumnWidth;
-                                return ColumnHeader(
-                                  columnLabel: columns[index],
-                                  width: width,
-                                );
+                                if (index == 0) {
+                                  return HeaderCheckbox(
+                                    controller: controller,
+                                  );
+                                } else {
+                                  return ColumnHeader(
+                                    columnLabel: columns[index - 1],
+                                    width: width,
+                                  );
+                                }
                               }),
                             ),
                           ),
@@ -86,10 +92,12 @@ class BessRosterTable extends StatelessWidget {
                           ),
                           Expanded(
                             child: ListView.builder(
-                              itemCount: controller.processedCampersData.length,
+                              itemCount: controller.tableData.length,
                               itemBuilder: (context, rowIndex) {
                                 return BessDataRow(
-                                  data: controller.processedCampersData[rowIndex], // Data for this specific row
+                                  controller: controller,
+                                  rowId: controller.tableData[rowIndex].last,
+                                  data: controller.tableData[rowIndex], // Data for this specific row
                                   columnWidths: controller.columnWidths, // Pass the *entire* list of widths
                                   even: rowIndex % 2 == 0,
                                 );

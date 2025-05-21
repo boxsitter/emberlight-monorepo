@@ -1,11 +1,11 @@
 library;
 
 // abstract
-export 'src/models/abstract/core_object.dart';
-export 'src/models/abstract/dependent.dart';
-export 'src/models/abstract/principal.dart';
-export 'src/models/abstract/schedule_block.dart';
-export 'src/models/abstract/domain.dart';
+export 'src/models/superclasses/core_object.dart';
+export 'src/models/interfaces/dependent.dart';
+export 'src/models/interfaces/principal.dart';
+export 'src/models/superclasses/schedule_block.dart';
+export 'src/models/interfaces/domain.dart';
 
 // core_objects
 // dependent

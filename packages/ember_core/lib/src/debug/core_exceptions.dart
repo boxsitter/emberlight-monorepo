@@ -36,3 +36,15 @@ class CoreUnsupportedError extends EmberException {
     devMessage: devMessage,
   );
 }
+
+class CoreMembershipClassError extends EmberException {
+  CoreMembershipClassError(String devMessage, Type attemptedType, Type expectedType) : super(
+    module: Module.core,
+    logType: LogType.error,
+    devMessage: devMessage,
+    metadata: {
+      'Attempted type: ' : attemptedType.toString(),
+      'Expected type ' : expectedType.toString(),
+    }
+  );
+}

@@ -1,7 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../../ember_core_utils.dart';
-import '../abstract/time_interval.dart';
+import '../interfaces/time_interval.dart';
 
 typedef ScheduleDayId = String;
 
