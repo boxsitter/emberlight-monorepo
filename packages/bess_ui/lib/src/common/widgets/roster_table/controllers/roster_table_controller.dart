@@ -26,7 +26,7 @@ class RosterTableController extends GetxController {
   static final TextStyle _dataStyle = BessTextStyles.columnHeader;
 
   // --- State ---
-  final RxList<Rosterable> sortedRoster = <Rosterable>[].obs;
+  final RxMap<String, Rosterable> roster = <String, Rosterable>{}.obs;
 
   final RxInt count = 0.obs;
   final RxList<double> columnWidths = <double>[].obs;
@@ -64,7 +64,7 @@ class RosterTableController extends GetxController {
   void _calculateAndUpdateColumnWidths() {
     if (_columnHeaders.isEmpty) return; // Don't calculate if headers aren't set
 
-    final List<List<String>> currentData = ;
+    final List<List<String>> currentData = rosterService.getTableData(roster.values.toSet());
     List<double> calculated = List.filled(_columnHeaders.length, 0.0);
 
     for (int i = 0; i < _columnHeaders.length; i++) {
@@ -96,7 +96,7 @@ class RosterTableController extends GetxController {
   Future<void> _startListening() async {
     final camperStream = await sessionRosterService.camperStream;
     _campersSubscription = camperStream.listen((camperMap) {
-      sortedRoster.assignAll(camperMap); // This triggers the 'ever' listener below
+      roster.assignAll(camperMap); // This triggers the 'ever' listener below
     });
   }
 
@@ -121,8 +121,8 @@ class RosterTableController extends GetxController {
     super.onInit();
     // Reactively update count AND recalculate widths whenever campers map changes
 
-    ever(sortedRoster, (_) {
-      count.value = sortedRoster.length;
+    ever(roster, (_) {
+      count.value = roster.length;
       _calculateAndUpdateColumnWidths(); // Trigger width calculation on data change
     });
     print('RosterTableController Initialized');
@@ -156,7 +156,7 @@ class RosterTableController extends GetxController {
   void toggleSelectAll(bool? newValue) {
     if (newValue != null && newValue) {
       selectedRowIds.clear();
-      selectedRowIds.addAll(sortedRoster.keys);
+      selectedRowIds.addAll(roster.keys);
       return;
     } else if (newValue != null) {
       selectedRowIds.clear();
@@ -164,7 +164,7 @@ class RosterTableController extends GetxController {
     }
 
     if (selectedRowIds.isEmpty) {
-      selectedRowIds.addAll(sortedRoster.keys);
+      selectedRowIds.addAll(roster.keys);
     } else {
       selectedRowIds.clear();
     }

@@ -1,7 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../../ember_core_utils.dart';
-import '../interfaces/rosterable.dart';
 
 
 typedef CabinId = String;

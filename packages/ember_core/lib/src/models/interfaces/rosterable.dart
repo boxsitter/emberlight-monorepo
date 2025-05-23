@@ -1,6 +1,7 @@
 import '../../../ember_core_models.dart';
 
 abstract class Rosterable {
+  String get id;
   String get firstName;
   String get preferredName;
   String get lastName;

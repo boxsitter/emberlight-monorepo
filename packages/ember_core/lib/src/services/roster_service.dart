@@ -80,5 +80,18 @@ class RosterService extends GetxService {
     ];
   }
 
+  List<List<String>> getTableData(Roster roster) {
+    return roster.map((camper) {
+      return [
+        camper.id,
+        camper.fullName,
+        camper.preferredName,
+        camper.gender,
+        camper.age.toString(),
+        camper.cabinName ?? 'none',
+      ];
+    }).toList();
+  }
+
 
 }
