@@ -10,17 +10,24 @@ typedef ActivityDependentId = String;
 typedef CamperId = String;
 
 class Camper extends CoreObject implements Rosterable {
+  @override
   String firstName;
+  @override
   String preferredName;
+  @override
   String lastName;
+  @override
   String gender;
-  DateTime birthday;
+  @override
+  DateTime? birthdate;
+  @override
   String note;
   CabinId? cabinRef;
+  @override
   String? cabinName;
-  final Map<PrincipalActivityId, double?> preferenceRefs; // A map of every unique activity type in the schedule to the camper's preference
+  final Map<PrincipalActivityId, double?> preferenceRefs;
   final Map<PrincipalActivityId, double> preferenceWeightRefs;
-  // maps assignable activity block ids to the activity ids that the campers are assigned to for that block
+  @override
   Map<AMABlockId, ActivityDependentId?> activityAssignmentRefs;
 
   Camper({
@@ -28,7 +35,7 @@ class Camper extends CoreObject implements Rosterable {
     required this.lastName,
     this.preferredName = '',
     this.gender = '',
-    this.age = 0,
+    this.birthdate,
     this.note = '',
     this.cabinRef,
     this.cabinName,
@@ -52,6 +59,17 @@ class Camper extends CoreObject implements Rosterable {
   String get fullName => '$name $lastName';
   String get lastInitial => lastName[0];
 
+  int? get age => (() {
+    if (birthdate == null) return null;
+
+    final DateTime today = DateTime.now();
+    int years = (today.year - birthdate!.year);
+    if (today.month < birthdate!.month || (today.month == birthdate!.month && today.day < birthdate!.day)) {
+      years--;
+    }
+    return years < 0 ? 0 : years;
+  })();
+
   @override
   String coreToString() {
     // TODO: implement coreToString
@@ -66,7 +84,7 @@ class Camper extends CoreObject implements Rosterable {
       'lastName': lastName,
       'preferredName': preferredName,
       'gender': gender,
-      'age': age,
+      'birthdate': birthdate,
       'note': note,
       'cabinRef': cabinRef,
       'cabinName': cabinName,
@@ -83,7 +101,7 @@ class Camper extends CoreObject implements Rosterable {
       lastName: json['lastName'] ?? '',
       preferredName: json['preferredName'] ?? '',
       gender: json['gender'] ?? '',
-      age: json['age'] is int ? json['age'] : int.tryParse(json['age'].toString()) ?? 0,
+      birthdate: (json['birthdate'] as DateTime?)?.toUtc(),
       note: json['note'] ?? '',
       cabinRef: json['cabinRef'],
       cabinName: json['cabinName'],

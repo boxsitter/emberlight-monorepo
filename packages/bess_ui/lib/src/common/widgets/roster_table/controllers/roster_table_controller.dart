@@ -13,6 +13,7 @@ class RosterTableController extends GetxController {
   final ClientContextService contextService = Get.find<ClientContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  final RosterService rosterService = Get.find<RosterService>();
 
   // --- Configuration ---
   List<String> _columnHeaders = []; // Internal storage for column headers
@@ -25,34 +26,14 @@ class RosterTableController extends GetxController {
   static final TextStyle _dataStyle = BessTextStyles.columnHeader;
 
   // --- State ---
-  final RxMap<String, Camper> campers = <String, Camper>{}.obs;
+  final RxList<Rosterable> sortedRoster = <Rosterable>[].obs;
+
   final RxInt count = 0.obs;
   final RxList<double> columnWidths = <double>[].obs;
   final RxSet<String> selectedRowIds = <String>{}.obs;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
-
-  // --- Derived State (Getter for Processed Data) ---
-  List<List<String>> get tableData {
-    return campers.values.map((camper) {
-      return [
-        camper.fullName,
-        camper.preferredName,
-        camper.gender,
-        camper.age.toString(),
-        camper.cabinName ?? 'none',
-      ];
-    }).toList();
-  }
-
-  List<String> get metadata {
-    return campers.values.map((camper) {
-      return [
-        camper.id,
-      ];
-    });
-  }
 
   // --- Public Method to Initialize ---
   void initializeColumns(List<String> headers) {
@@ -83,7 +64,7 @@ class RosterTableController extends GetxController {
   void _calculateAndUpdateColumnWidths() {
     if (_columnHeaders.isEmpty) return; // Don't calculate if headers aren't set
 
-    final List<List<String>> currentData = tableData;
+    final List<List<String>> currentData = ;
     List<double> calculated = List.filled(_columnHeaders.length, 0.0);
 
     for (int i = 0; i < _columnHeaders.length; i++) {
@@ -115,7 +96,7 @@ class RosterTableController extends GetxController {
   Future<void> _startListening() async {
     final camperStream = await sessionRosterService.camperStream;
     _campersSubscription = camperStream.listen((camperMap) {
-      campers.assignAll(camperMap); // This triggers the 'ever' listener below
+      sortedRoster.assignAll(camperMap); // This triggers the 'ever' listener below
     });
   }
 
@@ -140,8 +121,8 @@ class RosterTableController extends GetxController {
     super.onInit();
     // Reactively update count AND recalculate widths whenever campers map changes
 
-    ever(campers, (_) {
-      count.value = campers.length;
+    ever(sortedRoster, (_) {
+      count.value = sortedRoster.length;
       _calculateAndUpdateColumnWidths(); // Trigger width calculation on data change
     });
     print('RosterTableController Initialized');
@@ -175,7 +156,7 @@ class RosterTableController extends GetxController {
   void toggleSelectAll(bool? newValue) {
     if (newValue != null && newValue) {
       selectedRowIds.clear();
-      selectedRowIds.addAll(campers.keys);
+      selectedRowIds.addAll(sortedRoster.keys);
       return;
     } else if (newValue != null) {
       selectedRowIds.clear();
@@ -183,7 +164,7 @@ class RosterTableController extends GetxController {
     }
 
     if (selectedRowIds.isEmpty) {
-      selectedRowIds.addAll(campers.keys);
+      selectedRowIds.addAll(sortedRoster.keys);
     } else {
       selectedRowIds.clear();
     }

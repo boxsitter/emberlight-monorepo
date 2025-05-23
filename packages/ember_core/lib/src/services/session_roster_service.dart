@@ -42,7 +42,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       lastName: lastName,
       preferredName: preferredName,
       gender: gender,
-      age: age,
+      birthdate: birthdate,
       note: note,
     );
 

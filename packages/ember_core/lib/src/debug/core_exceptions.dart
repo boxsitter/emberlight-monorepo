@@ -48,3 +48,11 @@ class CoreMembershipClassError extends EmberException {
     }
   );
 }
+
+class CoreInvalidCollectionError extends EmberException {
+  CoreInvalidCollectionError(String devMessage) : super(
+    module: Module.core,
+    logType: LogType.error,
+    devMessage: devMessage,
+  );
+}

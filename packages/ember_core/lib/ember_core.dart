@@ -5,6 +5,7 @@ import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/src/backend/backend_manager.dart';
 import 'package:ember_core/src/hard_coded_objects.dart';
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
+import 'package:ember_core/src/services/roster_service.dart';
 import 'package:get/get.dart';
 
 /// Ember Core - The core logic and business layer for Emberlight software
@@ -31,6 +32,7 @@ class EmberCore {
     Get.lazyPut(() => CommitService());
     Get.lazyPut(() => UserService());
     Get.lazyPut(() => CabinService());
+    Get.lazyPut(() => RosterService());
     Get.lazyPut(() => SessionRosterService());
     Get.lazyPut(() => ActivityPreferenceService());
     Get.lazyPut(() => ConsoleService());

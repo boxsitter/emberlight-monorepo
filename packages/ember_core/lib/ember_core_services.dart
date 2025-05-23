@@ -11,3 +11,4 @@ export 'src/services/commit_service.dart';
 export 'src/services/schedule_service.dart';
 export 'src/services/session_roster_service.dart';
 export 'src/services/user_service.dart';
+export 'src/services/roster_service.dart';

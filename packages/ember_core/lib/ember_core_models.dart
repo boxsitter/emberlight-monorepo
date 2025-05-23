@@ -6,6 +6,7 @@ export 'src/models/interfaces/dependent.dart';
 export 'src/models/interfaces/principal.dart';
 export 'src/models/superclasses/schedule_block.dart';
 export 'src/models/interfaces/domain.dart';
+export 'src/models/interfaces/rosterable.dart';
 
 // core_objects
 // dependent
