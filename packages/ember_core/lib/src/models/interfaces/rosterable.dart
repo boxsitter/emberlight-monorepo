@@ -1,4 +1,5 @@
 import '../../../ember_core_models.dart';
+import '../enums/roster_field.dart';
 
 abstract class Rosterable {
   String get id;
@@ -12,4 +13,6 @@ abstract class Rosterable {
   String get note;
   String? get cabinName;
   Map<AMABlockId, ActivityDependentId?> get activityAssignmentRefs;
+
+  String getFieldAsString(RosterField field);
 }

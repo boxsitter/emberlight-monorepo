@@ -7,19 +7,20 @@ import 'package:bess_ui/src/common/widgets/roster_table/widgets/column_header.da
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/data_row.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/header_checkbox.dart';
 import 'package:bess_ui/src/common/widgets/roster_table/widgets/table_header.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'controllers/roster_table_controller.dart';
 
 class BessRosterTable extends StatelessWidget {
-  final List<String> columns;
+  final List<RosterField> fields;
   final RosterTableController controller;
   final String tableTitle;
 
   const BessRosterTable({
     super.key,
-    required this.columns,
+    required this.fields,
     required this.controller,
     required this.tableTitle,
   });
@@ -28,10 +29,10 @@ class BessRosterTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       // Ensure widths are calculated and match column count
-      if (controller.columnWidths.isEmpty || controller.columnWidths.length != columns.length) {
-        if (controller.columnWidths.isEmpty && columns.isNotEmpty) {
+      if (controller.columnWidths.isEmpty || controller.columnWidths.length != fields.length) {
+        if (controller.columnWidths.isEmpty && fields.isNotEmpty) {
           // Initialize with minimums if empty but headers exist
-          controller.columnWidths.assignAll(List.filled(columns.length, RosterTableController.minColumnWidth));
+          controller.columnWidths.assignAll(List.filled(fields.length, RosterTableController.minColumnWidth));
         } else {
           // Or return a loading state if critical info is missing
           return const Center(child: CircularProgressIndicator(key: ValueKey('loading')));
@@ -69,7 +70,7 @@ class BessRosterTable extends StatelessWidget {
                               color: BessColors.background,
                             ),
                             child: Row(
-                              children: List.generate(columns.length, (index) {
+                              children: List.generate(fields.length, (index) {
                                 final width = index < controller.columnWidths.length
                                     ? controller.columnWidths[index]
                                     : RosterTableController.minColumnWidth;
@@ -79,7 +80,7 @@ class BessRosterTable extends StatelessWidget {
                                   );
                                 } else {
                                   return ColumnHeader(
-                                    columnLabel: columns[index - 1],
+                                    columnLabel: fields[index].title,
                                     width: width,
                                   );
                                 }
@@ -92,12 +93,12 @@ class BessRosterTable extends StatelessWidget {
                           ),
                           Expanded(
                             child: ListView.builder(
-                              itemCount: controller.tableData.length,
+                              itemCount: controller.roster.length,
                               itemBuilder: (context, rowIndex) {
                                 return BessDataRow(
                                   controller: controller,
-                                  rowId: controller.tableData[rowIndex].last,
-                                  data: controller.tableData[rowIndex], // Data for this specific row
+                                  rowId: controller.roster[rowIndex].id,
+                                  data: controller.getRowData(rowIndex), // Data for this specific row
                                   columnWidths: controller.columnWidths, // Pass the *entire* list of widths
                                   even: rowIndex % 2 == 0,
                                 );

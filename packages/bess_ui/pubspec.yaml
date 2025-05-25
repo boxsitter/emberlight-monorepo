@@ -28,6 +28,9 @@ dependencies:
   ember_core:
     path: ../ember_core
 
+  ember_cli_utils:
+    path: ../ember_cli_utils
+
   # UI
   shadcn_ui: ^0.24.0
 
@@ -48,6 +51,7 @@ dependencies:
   # synchronized: ^3.0.0
   rxdart: ^0.28.0
   xterm: ^4.0.0
+  ansicolor: ^2.0.3
 
   # Web Specific
   web: ^1.1.1

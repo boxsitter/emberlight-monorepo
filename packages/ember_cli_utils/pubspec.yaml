@@ -9,19 +9,19 @@ environment:
 
 dependencies:
   # For basic argument parsing in the actual CLIs that will use this util package
-  args: ^2.5.0
+  args: ^2.7.0
 
   # For advanced interactive prompts
   interact: ^2.2.0 # Provides selection, confirmation, input, progress, etc.
 
   # For styled text output
-  ansicolor: ^2.0.1
+  ansicolor: ^2.0.3
 
   # For tabular data output
-  tabular: ^0.6.3 # Or other table packages like text_table
+  tabular: ^0.6.3+1 # Or other table packages like text_table
 
   # For path manipulation
-  path: ^1.9.0
+  path: ^1.9.1
 
   cli_util: ^0.4.2
   

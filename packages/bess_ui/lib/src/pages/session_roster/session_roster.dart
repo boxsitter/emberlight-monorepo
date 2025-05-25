@@ -1,3 +1,4 @@
+import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,16 +18,16 @@ class SessionRoster extends StatelessWidget {
 class SessionRosterDesktop extends StatelessWidget {
   SessionRosterDesktop({super.key});
 
-  final List<String> columns = ["Name", "Preferred Name", "Gender", "Age", "Cabin"];
+  final List<RosterField> fields = [RosterField.fullName, RosterField.preferredName, RosterField.gender, RosterField.age, RosterField.cabinName];
 
   @override
   Widget build(BuildContext context) {
     RosterTableController controller = Get.find<RosterTableController>();
-    controller.initializeColumns(columns);
+    controller.initializeColumns(fields);
 
     return BessRosterTable(
       tableTitle: 'Session Master Roster',
-      columns: columns,
+      fields: fields,
       controller: controller,
     );
   }

@@ -1,9 +1,12 @@
 import 'package:interact/interact.dart';
 import 'package:interact/interact.dart' as interact;
 
+import 'io_interfaces.dart';
+
 /// A utility class for interactive CLI input.
-class CliInput {
+class CliInput implements UserInput {
   /// Prompts the user for a text input.
+  @override
   String prompt(String message, {String? defaultValue, bool allowEmpty = false, Function(String)? validator}) {
     final Input input = Input(
       prompt: message,
@@ -22,12 +25,14 @@ class CliInput {
   }
 
   /// Prompts the user for a password (hidden input).
+  @override
   String promptPassword(String message) {
     final secret = Password(prompt: message);
     return secret.interact();
   }
 
   /// Prompts the user for a yes/no confirmation.
+  @override
   bool confirm(String message, {bool defaultValue = false}) {
     final confirmation = Confirm(
       prompt: message,
@@ -38,6 +43,7 @@ class CliInput {
 
   /// Prompts the user to select one option from a list.
   /// Returns the selected option's string value.
+  @override
   String select(String message, {required List<String> options, String? defaultValue}) {
     if (options.isEmpty) {
       throw ArgumentError('Options list cannot be empty for select prompt.');
@@ -53,6 +59,7 @@ class CliInput {
 
   /// Prompts the user to select multiple options from a list using checkboxes.
   /// Returns a list of selected option strings.
+  @override
   List<String> multiSelect(String message, {required List<String> options, List<String>? defaultSelection}) {
     if (options.isEmpty) {
       return [];
@@ -87,6 +94,7 @@ class CliInput {
   /// [inProgressMessage] is displayed next to the spinner while the task executes.
   /// [completionMessage] (optional) is displayed when the task completes successfully.
   /// If [completionMessage] is null, a default "inProgressMessage Complete!" will be used.
+  @override
   Future<T> withSpinner<T>({
     required String inProgressMessage,
     String? completionMessage,

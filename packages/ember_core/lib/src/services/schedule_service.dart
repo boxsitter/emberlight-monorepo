@@ -94,102 +94,102 @@ class ScheduleService extends GetxService {
     commit.addObjectsToPush({activityToSchedule, blockToAddTo, schedule});
   }
 
-  Future<void> assignCampersForBlock({
-    required Commit commit,
-    required String blockId
-    bool reassignAssignedCampers
-  }) async {
-    // 1. Fetch the Block object
-    AMABlock? block = commit.getObject<AMABlock>(blockId) ?? await backend.getObject<AMABlock>(blockId);
-
-    // 2. Fetch all relevant campers (e.g., from the current session roster)
-    // TODO: FIX THIS METHOD IN SESSION ROSTER SERVICE TO TAKE A COMMIT AND CHECK IT FIRST
-    List<Camper> campersToProcess = (await sessionRosterService.registeredCampers).toList();
-
-    // Randomize the order to ensure fairness if multiple campers have same prefs
-    campersToProcess.shuffle(Random());
-
-    // 3. Iterate through campers and attempt assignment
-    for (Camper camper in campersToProcess) {
-      if (camper.activityAssignmentRefs.containsKey(blockId)) {
-        // Already assigned in this block (maybe manually or previous run), skip.
-        continue;
-      }
-
-      // ASSUMPTION: Camper model has activityPreferences Map<String, String> { blockId: activityPreferenceSetId }
-      // TODO: Verify 'activityPreferences' field name and structure
-      String? preferenceSetId = camper.activityPreferences[blockId];
-      if (preferenceSetId == null) {
-        // TODO: Log appropriately (e.g., ConsoleController.error)
-        print('Error: ${camper.fullName} has no preference set defined for block ${block.name} ($blockId).');
-        continue;
-      }
-
-      // Fetch the preferences object
-      // ASSUMPTION: An ActivityPreferenceSet model exists with isComplete (bool) and rankedPreferences (Map<String, int> { activityDependentId: rank })
-      // TODO: Verify ActivityPreferenceSet model name and field names ('isComplete', 'rankedPreferences')
-      ActivityPreferenceSet? preferences = commit.getObject<ActivityPreferenceSet>(preferenceSetId) ?? await backend.getObject<ActivityPreferenceSet>(preferenceSetId);
-      if (preferences == null) {
-        // TODO: Log appropriately
-        print('Error: Could not load preference set $preferenceSetId for ${camper.fullName} in block ${block.name}.');
-        continue;
-      }
-      if (!preferences.isComplete) {
-        // TODO: Log appropriately (e.g., ConsoleController.warning)
-        print('Warning: ${camper.fullName} has incomplete preferences for ${block.name} and will not be assigned.');
-        continue;
-      }
-
-      // Get sorted list of preferred activity IDs for this block
-      var rankedPrefs = preferences.rankedPreferences;
-      List<String> sortedActivityIds = rankedPrefs.keys.toList()
-        ..sort((actIdA, actIdB) => rankedPrefs[actIdA]!.compareTo(rankedPrefs[actIdB]!));
-
-      // Attempt assignment based on rank order
-      bool camperAssigned = false;
-      int rank = 1;
-      for (String activityDepId in sortedActivityIds) {
-        // Ensure the activity is actually part of the block we're processing
-        ActivityDependent? actDep = commit.getObject<ActivityDependent>(activityDepId) ?? await backend.getObject<ActivityDependent>(activityDepId);
-        if (actDep == null) {
-          // TODO: Log appropriately
-          print('Warning: ActivityDependent $activityDepId (Rank $rank for ${camper.fullName}) not found. Skipping.');
-          rank++;
-          continue;
-        }
-        // ASSUMPTION: ActivityDependent has blockRef (String) field
-        // TODO: Verify 'blockRef' field name
-        if (actDep.blockRef != blockId) {
-          // TODO: Log appropriately
-          print('Warning: Activity ${actDep.id} is in camper ${camper.fullName}\'s preferences for block ${block.name}, but belongs to a different block (${actDep.blockRef}). Skipping.');
-          rank++;
-          continue;
-        }
-
-        // TODO: Log attempt (e.g., ConsoleController.log)
-        // print('Attempting to assign ${camper.fullName} to activity $activityDepId, ranked: $rank');
-
-        // Call the updated assignment function, passing the commit and IDs
-        bool success = await assignCamperToActivity(commit, camper.id, activityDepId);
-
-        if (success) {
-          camperAssigned = true;
-          // assignCamperToActivity handles adding modified objects to the commit
-          // TODO: Log success (e.g., ConsoleController.success)
-          // Fetching the PrincipalActivity name for logging might be nice, but requires another fetch here or passing more data back from assignCamperToActivity.
-          // print('Successfully assigned ${camper.fullName} to activity $activityDepId');
-          break; // Move to the next camper
-        }
-        rank++;
-      }
-
-      if (!camperAssigned) {
-        // TODO: Handle unassigned campers (e.g., assign to a default 'unassigned' activity, log for manual review - ConsoleController.error)
-        print('Error: ${camper.fullName} could not be assigned to any preferred activity in ${block.name}.');
-      }
-    }
-    // No explicit commit.push() here, assuming it happens after the calling function finishes its operations.
-  }
+  // Future<void> assignCampersForBlock({
+  //   required Commit commit,
+  //   required String blockId
+  //   bool reassignAssignedCampers
+  // }) async {
+  //   // 1. Fetch the Block object
+  //   AMABlock? block = commit.getObject<AMABlock>(blockId) ?? await backend.getObject<AMABlock>(blockId);
+  //
+  //   // 2. Fetch all relevant campers (e.g., from the current session roster)
+  //   // TODO: FIX THIS METHOD IN SESSION ROSTER SERVICE TO TAKE A COMMIT AND CHECK IT FIRST
+  //   List<Camper> campersToProcess = (await sessionRosterService.registeredCampers).toList();
+  //
+  //   // Randomize the order to ensure fairness if multiple campers have same prefs
+  //   campersToProcess.shuffle(Random());
+  //
+  //   // 3. Iterate through campers and attempt assignment
+  //   for (Camper camper in campersToProcess) {
+  //     if (camper.activityAssignmentRefs.containsKey(blockId)) {
+  //       // Already assigned in this block (maybe manually or previous run), skip.
+  //       continue;
+  //     }
+  //
+  //     // ASSUMPTION: Camper model has activityPreferences Map<String, String> { blockId: activityPreferenceSetId }
+  //     // TODO: Verify 'activityPreferences' field name and structure
+  //     String? preferenceSetId = camper.activityPreferences[blockId];
+  //     if (preferenceSetId == null) {
+  //       // TODO: Log appropriately (e.g., ConsoleController.error)
+  //       print('Error: ${camper.fullName} has no preference set defined for block ${block.name} ($blockId).');
+  //       continue;
+  //     }
+  //
+  //     // Fetch the preferences object
+  //     // ASSUMPTION: An ActivityPreferenceSet model exists with isComplete (bool) and rankedPreferences (Map<String, int> { activityDependentId: rank })
+  //     // TODO: Verify ActivityPreferenceSet model name and field names ('isComplete', 'rankedPreferences')
+  //     ActivityPreferenceSet? preferences = commit.getObject<ActivityPreferenceSet>(preferenceSetId) ?? await backend.getObject<ActivityPreferenceSet>(preferenceSetId);
+  //     if (preferences == null) {
+  //       // TODO: Log appropriately
+  //       print('Error: Could not load preference set $preferenceSetId for ${camper.fullName} in block ${block.name}.');
+  //       continue;
+  //     }
+  //     if (!preferences.isComplete) {
+  //       // TODO: Log appropriately (e.g., ConsoleController.warning)
+  //       print('Warning: ${camper.fullName} has incomplete preferences for ${block.name} and will not be assigned.');
+  //       continue;
+  //     }
+  //
+  //     // Get sorted list of preferred activity IDs for this block
+  //     var rankedPrefs = preferences.rankedPreferences;
+  //     List<String> sortedActivityIds = rankedPrefs.keys.toList()
+  //       ..sort((actIdA, actIdB) => rankedPrefs[actIdA]!.compareTo(rankedPrefs[actIdB]!));
+  //
+  //     // Attempt assignment based on rank order
+  //     bool camperAssigned = false;
+  //     int rank = 1;
+  //     for (String activityDepId in sortedActivityIds) {
+  //       // Ensure the activity is actually part of the block we're processing
+  //       ActivityDependent? actDep = commit.getObject<ActivityDependent>(activityDepId) ?? await backend.getObject<ActivityDependent>(activityDepId);
+  //       if (actDep == null) {
+  //         // TODO: Log appropriately
+  //         print('Warning: ActivityDependent $activityDepId (Rank $rank for ${camper.fullName}) not found. Skipping.');
+  //         rank++;
+  //         continue;
+  //       }
+  //       // ASSUMPTION: ActivityDependent has blockRef (String) field
+  //       // TODO: Verify 'blockRef' field name
+  //       if (actDep.blockRef != blockId) {
+  //         // TODO: Log appropriately
+  //         print('Warning: Activity ${actDep.id} is in camper ${camper.fullName}\'s preferences for block ${block.name}, but belongs to a different block (${actDep.blockRef}). Skipping.');
+  //         rank++;
+  //         continue;
+  //       }
+  //
+  //       // TODO: Log attempt (e.g., ConsoleController.log)
+  //       // print('Attempting to assign ${camper.fullName} to activity $activityDepId, ranked: $rank');
+  //
+  //       // Call the updated assignment function, passing the commit and IDs
+  //       bool success = await assignCamperToActivity(commit, camper.id, activityDepId);
+  //
+  //       if (success) {
+  //         camperAssigned = true;
+  //         // assignCamperToActivity handles adding modified objects to the commit
+  //         // TODO: Log success (e.g., ConsoleController.success)
+  //         // Fetching the PrincipalActivity name for logging might be nice, but requires another fetch here or passing more data back from assignCamperToActivity.
+  //         // print('Successfully assigned ${camper.fullName} to activity $activityDepId');
+  //         break; // Move to the next camper
+  //       }
+  //       rank++;
+  //     }
+  //
+  //     if (!camperAssigned) {
+  //       // TODO: Handle unassigned campers (e.g., assign to a default 'unassigned' activity, log for manual review - ConsoleController.error)
+  //       print('Error: ${camper.fullName} could not be assigned to any preferred activity in ${block.name}.');
+  //     }
+  //   }
+  //   // No explicit commit.push() here, assuming it happens after the calling function finishes its operations.
+  // }
 
   // /// Attempts to assign a specific camper to a specific activity.
   // /// Checks capacity, handles re-assignment within the same block, and updates objects in the commit.

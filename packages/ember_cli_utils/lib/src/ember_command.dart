@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:args/command_runner.dart';
+
+import 'io/io_interfaces.dart';
 export 'package:args/src/arg_parser.dart';
 export 'package:args/src/arg_results.dart';
 
@@ -23,7 +25,10 @@ abstract class EmberCommand<T> extends Command<T> {
   /// (Optional) Example usages of the command.
   List<String> get examples => [];
 
-  EmberCommand() {
+  final UserInput userInput;
+  final UserOutput userOutput;
+
+  EmberCommand({required this.userInput, required this.userOutput}) {
     // Common arguments for all commands could be added here if needed
     // argParser.addFlag('verbose', abbr: 'v', help: 'Enable verbose logging.', negatable: false);
   }

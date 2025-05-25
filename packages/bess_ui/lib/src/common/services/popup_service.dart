@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
-import 'package:ember_core/ember_core_debug.dart';
+import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,6 +50,168 @@ class PopupService extends GetxService {
       ],
       child: null,
     );
+  }
+
+  /// Shows a dialog for selecting one or more options from a list.
+  ///
+  /// Args:
+  ///   [title]: The title of the dialog.
+  ///   [message]: A descriptive message for the dialog.
+  ///   [options]: The list of string options to display.
+  ///   [defaultSelections]: A list of options that should be pre-selected.
+  ///                      For single selection mode, only the first item in this list is considered.
+  ///   [allowMultipleSelections]: If true, uses checkboxes for multiple selections.
+  ///                              If false, uses a dropdown (ShadSelect) for single selection.
+  ///
+  /// Returns:
+  ///   A list of selected option strings.
+  ///   If single selection mode and no selection is made or dialog cancelled,
+  ///   it attempts to return the default or an empty list.
+  ///   If multiple selection mode and cancelled, returns an empty list.
+  Future<List<String>> showOptionSelectionDialog({
+    required String title,
+    required String message,
+    required List<String> options,
+    List<String>? defaultSelections, // Can be used for both single (first item) and multi
+    bool allowMultipleSelections = false,
+  }) async {
+    if (options.isEmpty) {
+      return []; // No options to select from
+    }
+
+    // For single selection (ShadSelect)
+    RxString singleSelectedValue = ''.obs;
+    if (!allowMultipleSelections) {
+      String? initialSingleSelection = defaultSelections?.isNotEmpty == true && options.contains(defaultSelections!.first)
+          ? defaultSelections.first
+          : (options.isNotEmpty ? options.first : null);
+      if (initialSingleSelection == null && options.isNotEmpty) {
+        initialSingleSelection = options.first;
+      }
+      singleSelectedValue.value = initialSingleSelection ?? ""; // Ensure it's not null for ShadSelect if "" is not a valid option.
+      // Or handle null initialValue in ShadSelect if it supports it.
+    }
+
+    // For multiple selections (Checkboxes)
+    RxList<String> multiSelectedValues = RxList<String>.from(
+      defaultSelections?.where((s) => options.contains(s)).toList() ?? <String>[],
+    );
+
+    Widget selectionWidget;
+    if (allowMultipleSelections) {
+      selectionWidget = Container(
+        width: 350, // Adjust width as needed
+        constraints: BoxConstraints(maxHeight: Get.height * 0.5), // Limit height
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: options.length,
+          itemBuilder: (context, index) {
+            final option = options[index];
+            return Obx(() => ShadCheckbox(
+              label: Text(option),
+              value: multiSelectedValues.contains(option),
+              onChanged: (isChecked) {
+                if (isChecked == true) {
+                  if (!multiSelectedValues.contains(option)) {
+                    multiSelectedValues.add(option);
+                  }
+                } else {
+                  multiSelectedValues.remove(option);
+                }
+              },
+            ));
+          },
+        ),
+      );
+    } else {
+      // Single Selection using ShadSelect
+      if (singleSelectedValue.value.isEmpty && options.isNotEmpty) {
+        // Ensure a default is picked if current singleSelectedValue is empty (placeholder)
+        // and there are options. This is important if ShadSelect requires a non-null initialValue
+        // that's part of the options.
+        singleSelectedValue.value = options.first;
+      }
+      selectionWidget = Container(
+        padding: const EdgeInsets.symmetric(vertical: BessSizes.spaceBtwItems), //
+        width: 300, // Adjust width as needed
+        child: ShadSelect<String>(
+          selectedOptionBuilder: (context, value) => Text(value.isNotEmpty ? value : "Select..."), // Handle empty string case
+          placeholder: const Text('Select an option'),
+          initialValue: singleSelectedValue.value,
+          options: options
+              .map((option) => ShadOption<String>(
+            value: option,
+            child: Text(option),
+          ))
+              .toList(),
+          onChanged: (value) {
+            singleSelectedValue.value = value!;
+          },
+        ),
+      );
+    }
+
+    bool? dialogResult = await showFullScreenDialog(
+      title: title,
+      description: message,
+      child: selectionWidget,
+      actions: [
+        ShadButton.outline(
+          child: const Text('Cancel'),
+          onPressed: () => Get.back(result: false),
+        ),
+        ShadButton(
+          child: const Text('Confirm'),
+          onPressed: () => Get.back(result: true),
+        ),
+      ],
+    );
+
+    if (dialogResult == true) {
+      if (allowMultipleSelections) {
+        return multiSelectedValues.toList();
+      } else {
+        // For single selection, if singleSelectedValue.value is empty (e.g. placeholder was shown and not changed)
+        // and a selection is mandatory per UserInput, this might need adjustment.
+        // However, UserInput.select expects a String, not List<String>.
+        // This unified dialog returns List<String>. The adapter (GuiInput) will handle this.
+        return singleSelectedValue.value.isNotEmpty ? [singleSelectedValue.value] : [];
+      }
+    }
+    // User cancelled or closed dialog, return empty list to satisfy Future<List<String>>
+    // The caller (GuiInput) will need to adapt this for UserInput.select (single string)
+    return [];
+  }
+
+  Future<T> executeWithSpinner<T>({
+    required String inProgressMessage,
+    String? title,
+    required Future<T> Function() task,
+  }) async {
+    Get.dialog(
+      ShadDialog(
+        title: title != null ? Text(title) : null,
+        description: Text(inProgressMessage),
+        child: const Padding(
+          padding: EdgeInsets.all(BessSizes.lg), //
+          child: Center(child: BessCircularLoader()),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    try {
+      final result = await task();
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+      return result;
+    } catch (e) {
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+      rethrow;
+    }
   }
 
   void showToast({

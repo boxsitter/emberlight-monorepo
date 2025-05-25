@@ -22,7 +22,7 @@ class HeaderCheckbox extends StatelessWidget {
         alignment: Alignment.center,
         child: Obx(() {
           return Checkbox(
-            value: controller.selectedRowIds.containsAll(controller.campers.keys),
+            value: controller.selectedRowIds.containsAll(controller.roster..map((rosterable) => rosterable.id).toSet()),
             onChanged: (bool? newValue) {
               controller.toggleSelectAll(newValue);
             }

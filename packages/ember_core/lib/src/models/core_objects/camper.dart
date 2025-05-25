@@ -1,6 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../../ember_core_utils.dart';
+import '../enums/roster_field.dart';
 
 
 typedef CabinId = String;
@@ -68,6 +69,32 @@ class Camper extends CoreObject implements Rosterable {
     }
     return years < 0 ? 0 : years;
   })();
+
+  @override
+  String getFieldAsString(RosterField field) {
+    switch (field) {
+      case RosterField.id:
+        return id;
+      case RosterField.firstName:
+        return firstName;
+      case RosterField.preferredName:
+        return preferredName;
+      case RosterField.lastName:
+        return lastName;
+      case RosterField.fullName:
+        return fullName;
+      case RosterField.gender:
+        return gender;
+      case RosterField.age:
+        return age?.toString() ?? '';
+      case RosterField.birthdate:
+        return birthdate.toString();
+      case RosterField.cabinName:
+        return cabinName ?? 'N/A';
+      default:
+        return '';
+    }
+  }
 
   @override
   String coreToString() {

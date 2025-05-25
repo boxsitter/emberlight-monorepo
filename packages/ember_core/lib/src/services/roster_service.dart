@@ -6,7 +6,7 @@ import '../../ember_core_backend.dart';
 import '../models/enums/roster_field.dart';
 import '../models/interfaces/rosterable.dart';
 
-typedef Roster = Set<Rosterable>;
+typedef Roster = List<Rosterable>;
 
 class RosterService extends GetxService {
   static CoreBackend backend = BackendManager.instance;
@@ -61,37 +61,13 @@ class RosterService extends GetxService {
     return Future.value(list);
   }
 
-  Future<Roster> getRosterFromIds(Set<String> ids) async {
-    Set<dynamic> objects = await backend.getObjects(ids);
-    if (!CollectionValidation.isValidRoster(objects)) {
-      throw CoreInvalidCollectionError('Invalid roster');
+  List<String> getRowData(Roster roster, int rowIndex, List<RosterField> fields) {
+    Rosterable member = roster[rowIndex];
+    List<String> output = [];
+    for (RosterField field in fields) {
+      output.add(member.getFieldAsString(field));
     }
-    return objects as Roster;
+    return output;
   }
-
-  // TODO: Have this method take roster fields to indicate what fields to return
-  List<String> getRowData (Rosterable rosterMember) {
-    return [
-      rosterMember.fullName,
-      rosterMember.preferredName,
-      rosterMember.gender,
-      rosterMember.age.toString(),
-      rosterMember.cabinName ?? 'none',
-    ];
-  }
-
-  List<List<String>> getTableData(Roster roster) {
-    return roster.map((camper) {
-      return [
-        camper.id,
-        camper.fullName,
-        camper.preferredName,
-        camper.gender,
-        camper.age.toString(),
-        camper.cabinName ?? 'none',
-      ];
-    }).toList();
-  }
-
 
 }
