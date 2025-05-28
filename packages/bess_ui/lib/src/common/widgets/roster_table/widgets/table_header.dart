@@ -60,7 +60,7 @@ class TableHeader extends StatelessWidget {
 
             const Spacer(),
 
-            const ActionButtonRow(),
+            ActionButtonRow(controller: controller),
           ],
         ),
       ),

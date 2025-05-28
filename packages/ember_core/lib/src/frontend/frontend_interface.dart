@@ -1,6 +1,7 @@
 
 import 'dart:ui';
 
+import 'package:ember_cli_utils/ember_cli_utils.dart';
 import 'package:ember_core/ember_core_debug.dart';
 
 import '../models/enums/log_type.dart';
@@ -20,4 +21,7 @@ abstract class CoreFrontend {
   });
 
   void showToast({String? title, String? message, LogType logType});
+
+  UserOutput getUserOutputImplementation();
+  UserInput getUserInputImplementation();
 }

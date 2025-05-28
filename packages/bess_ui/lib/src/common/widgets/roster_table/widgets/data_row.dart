@@ -28,12 +28,27 @@ class BessDataRow extends StatelessWidget {
         color: even ?? false ? BessColors.core : BessColors.background,
       ),
       child: Row(
-        children: List.generate(data.length, (cellIndex) {
-          final width = cellIndex < columnWidths.length ? columnWidths[cellIndex] : RosterTableController.minColumnWidth;
+        // Generate data.length + 1 children: 1 checkbox + data.length data cells
+        children: List.generate(data.length + 1, (cellIndex) {
           if (cellIndex == 0) {
+            // Checkbox Cell
+            // Assumes CheckboxCell defines its own width or uses a standard.
+            // If it needs an explicit width for the Row, wrap in SizedBox or pass width to it.
+            // The 'columnWidths' prop of BessDataRow is for data fields.
             return CheckboxCell(controller: controller, rowId: rowId);
           } else {
-            return StringCell(content: data[cellIndex - 1], width: width);
+            // Data Cell
+            final dataIndex = cellIndex - 1; // Index for 'data' list and 'columnWidths' list
+
+            // Ensure dataIndex is valid for 'data' list (it should be if data.length > 0)
+            final String cellContent = (dataIndex < data.length) ? data[dataIndex] : "";
+
+            // 'columnWidths' are the widths for the data fields, passed from BessRosterTable
+            final widthForDataCell = (dataIndex < columnWidths.length)
+                ? columnWidths[dataIndex]
+                : RosterTableController.minColumnWidth; // Fallback
+
+            return StringCell(content: cellContent, width: widthForDataCell);
           }
         }),
       )

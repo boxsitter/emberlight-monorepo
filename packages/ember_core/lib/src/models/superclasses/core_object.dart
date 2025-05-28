@@ -77,6 +77,7 @@ abstract class CoreObject{
     'camper': (json) => Camper.fromJson(json),
     'schedule': (json) => Schedule.fromJson(json),
     'schedule_day': (json) => ScheduleDay.fromJson(json),
+    'core_user': (json) => CoreUser.fromJson(json),
   };
 
   static T fromJson<T>(Map<String, dynamic> json) {

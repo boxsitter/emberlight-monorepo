@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 
-import '../models/interfaces/logable.dart';
 import '../models/enums/ansi_color.dart';
 import '../models/enums/module.dart';
 
@@ -139,7 +138,11 @@ class CoreFormatter {
 
   static String simplifyStackTrace(StackTrace? stackTrace) {
     List<String> userPackagePrefixes = const [
-      'package',
+      'package:bess_ui/',
+      'package:bessie/',
+      'package:ember_cli_utils/',
+      'package:ember_core/',
+      'package:ember_fire/',
     ];
 
     const String placeholder = '[No stack trace available]';

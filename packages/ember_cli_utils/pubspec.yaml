@@ -12,7 +12,7 @@ dependencies:
   args: ^2.7.0
 
   # For advanced interactive prompts
-  interact: ^2.2.0 # Provides selection, confirmation, input, progress, etc.
+  # interact: ^2.2.0 # Provides selection, confirmation, input, progress, etc.
 
   # For styled text output
   ansicolor: ^2.0.3

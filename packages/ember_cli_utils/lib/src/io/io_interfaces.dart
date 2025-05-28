@@ -2,6 +2,8 @@
 
 import 'dart:async';
 
+import 'form_field_descriptors.dart';
+
 /// Interface for handling user input operations.
 abstract class UserInput {
   FutureOr<String> prompt(
@@ -32,6 +34,20 @@ abstract class UserInput {
     String? completionMessage,
     required Future<T> Function() task,
   });
+
+  /// Prompts the user with a dynamically generated form.
+  ///
+  /// [formTitle]: The title for the form dialog.
+  /// [fields]: A list of [FormFieldDescriptor] objects defining the form.
+  ///
+  /// Returns a `Future<Map<String, dynamic>?>`.
+  /// The map contains the collected data, with keys matching the `id` of each `FormFieldDescriptor`.
+  /// Returns `null` if the user cancels the form.
+  /// Returns an empty map if the form is submitted with no fields (edge case).
+  Future<List<dynamic>?> promptForm(
+      String formTitle,
+      List<FormFieldDescriptor> fields,
+      );
 }
 
 /// Interface for handling user output operations.

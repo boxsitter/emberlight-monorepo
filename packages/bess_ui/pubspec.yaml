@@ -32,7 +32,7 @@ dependencies:
     path: ../ember_cli_utils
 
   # UI
-  shadcn_ui: ^0.24.0
+  shadcn_ui: ^0.26.5
 
   # Utility Packages
   lottie: ^3.3.1
@@ -64,7 +64,7 @@ dependencies:
 
 
 dependency_overrides:
-  intl: ^0.19.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

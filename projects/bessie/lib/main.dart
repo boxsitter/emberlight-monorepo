@@ -74,7 +74,8 @@ Future<void> initializeApp() async {
 
 
   if (recoveryMode) {
-    await EmberCore.recoverEmberCore();
+    //await EmberCore.recoverEmberCore();
+    EmberCore.init(EmberFire(), BessUi());
   } else {
     EmberCore.init(EmberFire(), BessUi());
   }
@@ -95,7 +96,7 @@ Future<void> initializeApp() async {
   if (Get.find<UserService>().isAuthenticated) {
     FrontendManager.instance.onLogin();
     BackendManager.instance.onLogin();
-    EmberCore.onLogin();
+    await EmberCore.onLogin();
   }
 
   FlutterNativeSplash.remove();

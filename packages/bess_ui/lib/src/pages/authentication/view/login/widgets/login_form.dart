@@ -2,6 +2,7 @@ import 'package:bess_ui/src/common/utils/validators/validation.dart';
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';
 import 'package:ember_core/ember_core_debug.dart';
+import 'package:ember_core/ember_core_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -47,7 +48,7 @@ class BessLoginForm extends StatelessWidget {
                 textInputAction: TextInputAction.next,
                 autofillHints: [AutofillHints.email, AutofillHints.username],
                 spellCheckConfiguration: SpellCheckConfiguration.disabled(),
-                validator: (value) => BessValidator.validateEmail(value),
+                validator: (value) => InputValidation.validateEmail(value),
                 controller: controller.emailController,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(passwordFocusNode);
@@ -65,7 +66,7 @@ class BessLoginForm extends StatelessWidget {
                     focusNode: passwordFocusNode, // Assign FocusNode
                     controller: controller.passwordController,
                     obscureText: controller.hidePassword.value,
-                    validator: (value) => BessValidator.validatePassword(value),
+                    validator: (value) => InputValidation.validatePassword(value),
                     textInputAction: TextInputAction.done, // Trigger submission
                     onFieldSubmitted: (_) {
                       submitForm();

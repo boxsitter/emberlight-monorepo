@@ -34,26 +34,11 @@ class HomeScreenDesktop extends StatelessWidget {
 
               const SizedBox(height: BessSizes.spaceBtwItems),
 
-              Row(
-                children: [
-                  const Expanded(
-                    child: HomeScreenNavCard(
-                        title: 'Session Roster',
-                        icon: LucideIcons.layoutPanelLeft,
-                        description: 'View and manage the master roster of all participants assigned to the selected session'
-                    ),
-                  ),
-
-                  const SizedBox(width: BessSizes.md),
-
-                  const Expanded(
-                    child: HomeScreenNavCard(
-                        title: 'Console',
-                        icon: LucideIcons.squareTerminal,
-                        description: 'Developer terminal with tools for testing and debugging'
-                    ),
-                  ),
-                ],
+              Text(
+                'Nothing much to see here right now :)',
+                style: BessTextStyles.standard,
+                overflow: TextOverflow.clip,
+                maxLines: 1,
               ),
             ],
           );

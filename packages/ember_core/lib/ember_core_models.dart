@@ -37,3 +37,4 @@ export 'src/models/enums/module.dart';
 export 'src/models/enums/log_type.dart';
 export 'src/models/enums/verbosity.dart';
 export 'src/models/enums/roster_field.dart';
+export 'src/models/enums/role.dart';

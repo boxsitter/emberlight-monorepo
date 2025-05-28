@@ -1,3 +1,4 @@
+import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
@@ -13,25 +14,26 @@ class UserService extends GetxService {
 
   Future<void> registerCoreUser({
     required Commit commit,
+    required String email,
+    required String password,
     required String firstName,
     required String lastName,
     String? preferredName = '',
     String note = '',
-    required BranchId branchPar,
-    required OrganizationId organizationRef,
     required Role role,
   }) async {
+    String firebaseUid = await backend.registerWithEmailAndPassword(email: email, password: password);
+
     CoreUser userToRegister = CoreUser(
+      firebaseUid: firebaseUid,
       firstName: firstName,
       lastName: lastName,
       preferredName: preferredName,
       note: note,
-      branchPar: branchPar,
-      organizationRef: organizationRef,
+      // branchRef: HardcodedDomains.colman.id,
+      // organizationRef: HardcodedDomains.ygs.id,
       role: role,
     );
-    userToRegister.active = false;
-    userToRegister.deactivationReason = 'Your account is pending approval'; // TODO: remove this in favor of camp codes
     commit.addObjectToPush(userToRegister);
   }
 
@@ -43,5 +45,23 @@ class UserService extends GetxService {
       EmberCore.onLogin();
     }
     return isAuthenticated;
+  }
+
+  Future<void> logout() async {
+    await backend.logout();
+  }
+
+  Future<CoreUser> getCurrentUser() async {
+    String? firebaseUid = backend.getCurrentUid();
+    if (firebaseUid == null) {
+      throw Exception('User not logged in');
+    }
+    String? userId = await backend.queryField('core_user', 'rot', 'firebaseUid', firebaseUid);
+    print(userId);
+    if (userId == null) {
+      throw Exception('User does not have a CoreUser object associated with their firebase credentials');
+    }
+    CoreUser user = await backend.getObject(userId);
+    return user;
   }
 }

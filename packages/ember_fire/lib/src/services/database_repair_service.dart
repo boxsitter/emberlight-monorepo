@@ -1,11 +1,15 @@
 
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:collection/collection.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
-import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
+import 'package:ember_core/ember_core_validators.dart';
+import 'package:ember_fire/src/repositories/contextless_repository.dart';
 import 'package:get/get.dart';
 
+import '../debug/repair_exceptions.dart';
 import '../repositories/pull_repository.dart';
 
 class DatabaseRepairService extends GetxService{
@@ -19,7 +23,7 @@ class DatabaseRepairService extends GetxService{
 
 
   PullRepository pullRepo = Get.find<PullRepository>();
-  DumbPushRepository dumbRepo = Get.find<DumbPushRepository>();
+  ContextlessRepository contextlessRepo = Get.find<ContextlessRepository>();
 
   Future<void> cleanOrphanedDependents(Commit commit, Session session) async {
     final Map<String, Set<String>>principalDependentLinkTracker = session.principalDependentLinkTracker;
@@ -29,17 +33,171 @@ class DatabaseRepairService extends GetxService{
     }
   }
 
-  // TODO: Do something better to solve this please
-  Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session) async {
-    String orgId = org.id;
-    String branchId = branch.id;
-    String seasonId = season.id;
-    String sessionId = session.id;
+  /// Checks a document for various corruption conditions.
+  ///
+  /// Returns `true` if the document is considered not corrupt.
+  /// Throws a `RepairException` if a corruption is found.
+  ///
+  /// Args:
+  ///   path: The direct Firestore path to the document. Use this OR `id`.
+  ///   id: The CoreObject ID. Use this OR `path`. If provided, `pullRepo.getDoc` will be used.
+  ///   templateJson: A Map representing the expected structure and fields of the document.
+  ///   expectedType: The expected Dart runtimeType of the deserialized CoreObject (e.g., User.runtimeType).
+  ///   objectTypeStringForId: The string representation of the object type as expected in the Core ID's type part (e.g., "usr", "org").
+  Future<bool> checkDocumentCorruption({
+    String? path,
+    String? id,
+    required Map<String, dynamic> templateJson,
+    required Type expectedType,
+    required String objectTypeStringForId,
+  }) async {
+    Map<String, dynamic>? docData;
+    String documentKeyFromSource;
+    String? resolvedPath = path; // For error reporting
 
-    await dumbRepo.dumbPush('organization/$orgId', org);
-    await dumbRepo.dumbPush('organization/$orgId/branch/$branchId', branch);
-    await dumbRepo.dumbPush('organization/$orgId/branch/$branchId/season/$seasonId', season);
-    await dumbRepo.dumbPush('organization/$orgId/branch/$branchId/season/$seasonId/session/$sessionId', session);
+    if (path != null && id != null) {
+      throw RepairArgumentError(reason: "Provide either path or id, not both.");
+    }
+    if (path == null && id == null) {
+      throw RepairArgumentError(reason: "Either path or id must be provided.");
+    }
+
+    try {
+      if (path != null) {
+        documentKeyFromSource = path.split('/').last;
+        docData = await contextlessRepo.pull(path); //
+        if (docData == null) {
+          // contextlessRepo.pull returns null if doc doesn't exist or on error.
+          throw RepairDocNotFoundError(path: path, keyInfo: documentKeyFromSource);
+        }
+      } else { // id != null
+        documentKeyFromSource = id!;
+        // Attempt to get the actual path for better error reporting if possible
+        // This depends on PathService being accessible or if pullRepo can provide it.
+        // For now, we'll just use the ID for keyInfo.
+        docData = await pullRepo.getDoc(id); //
+        if (docData.isEmpty) { // pullRepo.getDoc returns {} if not found
+          throw RepairDocNotFoundError(id: id, keyInfo: documentKeyFromSource);
+        }
+      }
+
+      // 1. Check for 'id' field in document data
+      if (!docData.containsKey('id') || docData['id'] == null) {
+        throw RepairIdIssue(reason: "internal_id_missing_or_null", documentKey: documentKeyFromSource);
+      }
+      if (docData['id'] is! String) {
+        throw RepairIdIssue(
+            reason: "internal_id_not_string",
+            documentKey: documentKeyFromSource,
+        );
+      }
+      final String internalId = docData['id'] as String;
+
+      // 2. Validate internal ID format using CoreIdValidation
+      try {
+        CoreIdValidation.simpleValidate(internalId); //
+      } catch (e) {
+        throw RepairIdIssue(
+            reason: "internal_id_invalid_format",
+            internalId: internalId,
+            documentKey: documentKeyFromSource,
+        );
+      }
+
+      // 3. Match internal ID with document key from source (path/id)
+      if (internalId != documentKeyFromSource) {
+        throw RepairIdIssue(
+            reason: "internal_id_mismatch",
+            internalId: internalId,
+            documentKey: documentKeyFromSource);
+      }
+
+      // 4. Field count and name mismatch with templateJson
+      final Set<String> docKeys = docData.keys.toSet();
+      final Set<String> templateKeys = templateJson.keys.toSet();
+
+      if (docKeys.length != templateKeys.length) {
+        throw RepairFieldIssue(
+            reason: "field_count_mismatch",
+            documentKey: documentKeyFromSource,
+            docKeys: docKeys,
+            templateKeys: templateKeys);
+      }
+      if (!SetEquality().equals(docKeys, templateKeys)) { //
+        final Set<String> missingInDoc = templateKeys.difference(docKeys);
+        final Set<String> extraInDoc = docKeys.difference(templateKeys);
+        throw RepairFieldIssue(
+            reason: "field_name_mismatch",
+            documentKey: documentKeyFromSource,
+            missingInDoc: missingInDoc,
+            extraInDoc: extraInDoc);
+      }
+
+      // 5. Deserialization, Type Check, Reserialization
+      CoreObject deserializedObject;
+      try {
+        deserializedObject = CoreObject.fromJson(docData); //
+      } catch (e, s) {
+        throw RepairSerializationIssue(
+            stage: "deserialization",
+            errorMessage: e.toString(),
+            documentKey: documentKeyFromSource,
+        );
+      }
+
+      if (deserializedObject.runtimeType != expectedType) {
+        throw RepairTypeIssue(
+            expectedType: expectedType.toString(),
+            actualType: deserializedObject.runtimeType.toString(),
+            documentKey: documentKeyFromSource);
+      }
+
+      final String objectTypeFromId = IdFunctions.getIdPart(internalId, 1); //
+      if (objectTypeFromId != objectTypeStringForId) {
+        throw RepairIdIssue(
+            reason: "id_type_part_mismatch",
+            internalId: internalId,
+            documentKey: documentKeyFromSource,
+        );
+      }
+
+      try {
+        final Map<String, dynamic> reserializedJson = deserializedObject.toJson();
+        if (reserializedJson.isEmpty && docData.isNotEmpty) {
+          throw RepairSerializationIssue(
+              stage: "serialization",
+              errorMessage: "Reserialization resulted in an empty map for a non-empty document.",
+              documentKey: documentKeyFromSource);
+        }
+      } catch (e, s) {
+        throw RepairSerializationIssue(
+            stage: "serialization",
+            errorMessage: e.toString(),
+            documentKey: documentKeyFromSource,
+        );
+      }
+
+      for (final key in templateKeys) {
+        if (templateJson[key] != null && docData[key] == null) {
+          throw RepairFieldIssue(
+              reason: "unexpected_null_value",
+              documentKey: documentKeyFromSource,
+          );
+        }
+      }
+
+    } catch (e, st) {
+      if (e is RepairException) {
+        Error.throwWithStackTrace(Debug.parseException(e), st);
+      }
+      // For other unexpected errors during the check process itself
+      String keyInfo = resolvedPath ?? id ?? "unknown_source_key";
+      throw RepairUnexpectedError(
+          errorMessage: e.toString(),
+          keyInfo: keyInfo);
+    }
+
+    return true; // All checks passed, document is not corrupt
   }
 
   Future<void> mergeObjectsWithDatabase({

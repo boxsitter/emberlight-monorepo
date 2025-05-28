@@ -17,7 +17,7 @@ class BessieFlutterApp extends StatelessWidget {
     return ShadApp.custom(
       themeMode: ThemeMode.light,
       theme: BessShadTheme.shadThemeData,
-      appBuilder: (context, shadTheme) {
+      appBuilder: (context) {
         return GetMaterialApp(
           title: BessTexts.appName,
           themeMode: ThemeMode.light,

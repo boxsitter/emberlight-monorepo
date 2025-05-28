@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
+import 'package:ember_cli_utils/ember_cli_utils.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../constants/colors.dart';
 import '../styles/text_styles.dart';
+import '../widgets/form_inputs/dynamic_form_fields.dart';
 
 class PopupService extends GetxService {
 
@@ -279,5 +281,109 @@ class PopupService extends GetxService {
     );
   }
 
+  Future<List<dynamic>?> showDynamicFormDialog({
+    required String title,
+    required List<FormFieldDescriptor> fields,
+    String confirmButtonText = 'Submit',
+    String cancelButtonText = 'Cancel',
+  }) async {
+    final formKey = GlobalKey<FormState>();
+    // Use a List to store the current values of the form fields, in order.
+    // Initialize with nulls or default values.
+    final List<dynamic> formValues = List<dynamic>.filled(fields.length, null, growable: false);
+
+    // Initialize formValues with defaultValues from descriptors
+    for (int i = 0; i < fields.length; i++) {
+      final field = fields[i];
+      formValues[i] = field.defaultValue;
+      // if (field is MultiSelectFormFieldDescriptor && field.defaultValue != null) {
+      //   formValues[i] = List.from(field.defaultValue as List);
+      // }
+    }
+
+    List<Widget> buildFormWidgets() {
+      List<Widget> widgets = [];
+      for (int i = 0; i < fields.length; i++) {
+        final field = fields[i];
+        Widget fieldWidget;
+
+        // It's important that onSaved captures the index 'i' correctly.
+        final currentIndex = i;
+
+        if (field is TextFormFieldDescriptor) {
+          fieldWidget = DynamicTextFormField(
+            descriptor: field,
+            initialValue: formValues[currentIndex] as String?,
+            onSaved: (value) => formValues[currentIndex] = value,
+          );
+        } else if (field is BooleanFormFieldDescriptor) {
+          fieldWidget = DynamicBooleanFormField(
+            descriptor: field,
+            initialValue: formValues[currentIndex] as bool?,
+            onSaved: (value) => formValues[currentIndex] = value,
+          );
+        } else if (field is SelectFormFieldDescriptor) {
+          fieldWidget = DynamicSelectFormField(
+            descriptor: field,
+            onSaved: (value) => formValues[currentIndex] = value,
+          );
+        } else if (field is MultiSelectFormFieldDescriptor) {
+          fieldWidget = DynamicMultiSelectFormField(
+            descriptor: field,
+            onSaved: (value) => formValues[currentIndex] = value,
+          );
+        } else {
+          fieldWidget = Text('Unsupported field type: ${field.runtimeType}');
+        }
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: fieldWidget,
+        ));
+      }
+      return widgets;
+    }
+
+    final bool? success = await Get.dialog<bool>(
+      ShadDialog(
+        title: Text(title),
+        description: const Text('Please fill in the details below.'),
+        child: Container(
+          width: Get.width * 0.8,
+          constraints: BoxConstraints(maxHeight: Get.height * 0.7),
+          child: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: buildFormWidgets(),
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          ShadButton.outline(
+            child: Text(cancelButtonText),
+            onPressed: () => Get.back(result: false),
+          ),
+          ShadButton(
+            child: Text(confirmButtonText),
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
+                Get.back(result: true);
+              }
+            },
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+
+    if (success == true) {
+      return formValues; // Returns the ordered list of values
+    }
+    return null; // User cancelled
+  }
 
 }

@@ -12,7 +12,7 @@ import '../services/path_service.dart';
 class CommitRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final PullRepository pullRepo = Get.find<PullRepository>();
-  final ClientContextService clientContextService = Get.find<ClientContextService>();
+  final ContextService clientContextService = Get.find<ContextService>();
   final PathService pathService = Get.find<PathService>();
   CommitService requestService = Get.find<CommitService>();
 
@@ -64,7 +64,7 @@ class CommitRepository {
         try {
           final String resolvedPath = await pathService.getDocPathFromId(currentPushObject.id);
           // Basic path validation
-          if (resolvedPath.isNotEmpty && !resolvedPath.contains('//') && resolvedPath.split('/').length % 2 == 0) {
+          if (!resolvedPath.contains('//') && resolvedPath.split('/').length % 2 == 0) {
             final docRef = _db.doc(resolvedPath);
             // Perform the required steps directly:
             Map<String, dynamic> document = currentPushObject.toJson();

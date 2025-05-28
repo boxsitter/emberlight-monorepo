@@ -9,6 +9,7 @@ import 'package:bess_ui/src/pages/authentication/authentication_controller.dart'
 import 'package:bess_ui/src/pages/console/controller/console_controller.dart';
 import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
+import 'package:ember_cli_utils/src/io/io_interfaces.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
@@ -66,4 +67,16 @@ class BessUi implements CoreFrontend{
     final PopupService popupService = Get.find<PopupService>();
     return popupService.showConfirmationDialog(title: title, message: message);
   }
+
+  @override
+  UserInput getUserInputImplementation() {
+    return Get.find<ConsoleController>();
+  }
+
+  @override
+  UserOutput getUserOutputImplementation() {
+    return Get.find<ConsoleController>();
+  }
+
+
 }

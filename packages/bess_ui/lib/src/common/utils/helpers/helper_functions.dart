@@ -182,4 +182,28 @@ class BessHelperFunctions {
       resultBlueInt,
     );
   }
+
+  static String toTitleCase(String text) {
+    if (text.isEmpty) {
+      return '';
+    }
+
+    // Split the string into words. Handles multiple spaces between words.
+    final List<String> words = text.split(' ').where((word) => word.isNotEmpty).toList();
+
+    if (words.isEmpty) {
+      return ''; // Handles cases where the string might only contain spaces.
+    }
+
+    final List<String> titleCasedWords = words.map((word) {
+      if (word.isEmpty) { // Should not happen due to the .where() filter above, but good for safety.
+        return '';
+      }
+      final String firstLetter = word[0].toUpperCase();
+      final String restOfWord = word.substring(1).toLowerCase();
+      return '$firstLetter$restOfWord';
+    }).toList();
+
+    return titleCasedWords.join(' ');
+  }
 }

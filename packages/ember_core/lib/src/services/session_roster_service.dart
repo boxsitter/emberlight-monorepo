@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
   static CoreBackend backend = BackendManager.instance;
   CabinService cabinsService = Get.find<CabinService>();
-  ClientContextService clientContextService = Get.find<ClientContextService>();
+  ContextService clientContextService = Get.find<ContextService>();
   CommitService requestService = Get.find<CommitService>();
 
   Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses');

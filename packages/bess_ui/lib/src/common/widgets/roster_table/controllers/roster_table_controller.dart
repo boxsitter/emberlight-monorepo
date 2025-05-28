@@ -10,7 +10,7 @@ import '../../../constants/sizes.dart';
 import '../../../styles/text_styles.dart';
 
 class RosterTableController extends GetxController {
-  final ClientContextService contextService = Get.find<ClientContextService>();
+  final ContextService contextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
   final RosterService rosterService = Get.find<RosterService>();
@@ -18,7 +18,7 @@ class RosterTableController extends GetxController {
   // --- Configuration ---
   static const double maxColumnWidth = 300.0;
   static const double minColumnWidth = 80;  // Min width constraint
-  static const double horizontalPadding = BessSizes.md;
+  static const double horizontalPadding = BessSizes.lg; // TODO: This is extra padding to compensate for errors in the calculation logic, fix eventually
 
   // Placeholder TextStyles
   static final TextStyle _headerStyle = BessTextStyles.columnHeader;

@@ -11,7 +11,7 @@ import '../backend/backend_manager.dart';
 
 class ScheduleService extends GetxService {
   CoreBackend backend = BackendManager.instance;
-  ClientContextService clientContextService = Get.find<ClientContextService>();
+  ContextService clientContextService = Get.find<ContextService>();
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   Future<Map<PrincipalActivityId, String>> getScheduledPrincipalActivitiesToNames() async {

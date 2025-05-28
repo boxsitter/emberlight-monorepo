@@ -10,7 +10,7 @@ import '../../../common/routes/routes.dart';
 typedef CabinDependantId = String;
 
 class ActivityPreferencesController extends GetxController {
-  final ClientContextService clientContextService = Get.find<ClientContextService>();
+  final ContextService clientContextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();

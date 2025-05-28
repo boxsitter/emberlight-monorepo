@@ -17,6 +17,7 @@ class BessRosterTable extends StatelessWidget {
   final List<RosterField> fields;
   final RosterTableController controller;
   final String tableTitle;
+  static const double actualKnownCheckboxColumnWidth = 50.0;
 
   const BessRosterTable({
     super.key,
@@ -33,14 +34,27 @@ class BessRosterTable extends StatelessWidget {
         if (controller.columnWidths.isEmpty && fields.isNotEmpty) {
           // Initialize with minimums if empty but headers exist
           controller.columnWidths.assignAll(List.filled(fields.length, RosterTableController.minColumnWidth));
-        } else {
-          // Or return a loading state if critical info is missing
+        } else if (fields.isEmpty && controller.columnWidths.isNotEmpty) {
+          // If fields are gone but widths exist, clear widths
+          controller.columnWidths.clear();
+        }
+        // If fields is empty, totalContentWidth will be just checkbox width.
+        // If critical info is still missing (e.g., fields populated but widths not yet), show loading.
+        // This condition might need refinement based on initial loading sequence.
+        if (fields.isNotEmpty && (controller.columnWidths.isEmpty || controller.columnWidths.length != fields.length)) {
           return const Center(child: CircularProgressIndicator(key: ValueKey('loading')));
         }
       }
 
-      // Calculate the total minimum width required by the content
-      final double totalContentWidth = controller.columnWidths.reduce((a, b) => a + b);
+      // Calculate the total minimum width required by all content.
+      // This now uses the 'actualKnownCheckboxColumnWidth'.
+      final double checkboxColumnVisualWidth = actualKnownCheckboxColumnWidth;
+
+      final double totalDataColumnsWidth = controller.columnWidths.isEmpty
+          ? 0.0
+          : controller.columnWidths.reduce((a, b) => a + b);
+      final double totalContentWidth = checkboxColumnVisualWidth + totalDataColumnsWidth;
+
 
       return BessRoundedContainer(
         showShadow: false,
@@ -70,18 +84,19 @@ class BessRosterTable extends StatelessWidget {
                               color: BessColors.background,
                             ),
                             child: Row(
-                              children: List.generate(fields.length, (index) {
-                                final width = index < controller.columnWidths.length
-                                    ? controller.columnWidths[index]
-                                    : RosterTableController.minColumnWidth;
-                                if (index == 0) {
-                                  return HeaderCheckbox(
-                                    controller: controller,
-                                  );
+                              children: List.generate(fields.length + 1, (columnIndex) {
+                                if (columnIndex == 0) {
+                                  // Checkbox Header - relies on its intrinsic width
+                                  return HeaderCheckbox(controller: controller);
                                 } else {
+                                  // Data Column Header
+                                  final fieldIndex = columnIndex - 1; // Index for fields and columnWidths
+                                  final correctWidthForField = (fieldIndex < controller.columnWidths.length)
+                                      ? controller.columnWidths[fieldIndex]
+                                      : RosterTableController.minColumnWidth; // Fallback
                                   return ColumnHeader(
-                                    columnLabel: fields[index].title,
-                                    width: width,
+                                    columnLabel: fields[fieldIndex].title,
+                                    width: correctWidthForField,
                                   );
                                 }
                               }),
@@ -98,8 +113,8 @@ class BessRosterTable extends StatelessWidget {
                                 return BessDataRow(
                                   controller: controller,
                                   rowId: controller.roster[rowIndex].id,
-                                  data: controller.getRowData(rowIndex), // Data for this specific row
-                                  columnWidths: controller.columnWidths, // Pass the *entire* list of widths
+                                  data: controller.getRowData(rowIndex), // Data for this specific row (length: fields.length)
+                                  columnWidths: controller.columnWidths, // Pass the data column widths (length: fields.length)
                                   even: rowIndex % 2 == 0,
                                 );
                               },

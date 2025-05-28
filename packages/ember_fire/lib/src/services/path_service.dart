@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class PathService extends GetxService {
   ClientContext clientContext = Get.find<ClientContext>();
 
-  Future<String> _getPath(String collectionName, String domain, String? id,  [bool? bypassContextSafety]) async {
+  Future<String> _getPath(String collectionName, String domain, String? id) async {
 
     if (!CoreIdValidation.isValidDomain(domain)) {
       throw ArgumentError('Error getting path, invalid domain');
@@ -38,7 +38,10 @@ class PathService extends GetxService {
     } else if (domain == 'ses') {
       outputPath += '${await clientContext.getOrganizationId()}/branch/${await clientContext.getBranchId()}' '/season/${await clientContext.getSeasonId()}' '/session/${await clientContext.getSessionId()}';
     }
-    
+
+    if (outputPath.isEmpty) {
+      return suffix;
+    }
     return '$outputPath/$suffix';
   }
 

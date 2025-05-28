@@ -30,11 +30,16 @@ abstract class CoreBackend {
     required bool overwriteWithEmptyAValues,
     Set<String>? aFieldsToIgnore,
   });
-  Future<void> dumbDomainSetup (Organization org, Branch branch, Season season, Session session);
   Future<Map<String, dynamic>> getFieldFromCollection(String collectionName, String domain, String field);
   Future<void> cleanOrphanedDependents(Commit commit, Session session);
 
   // Auth
   bool isAuthenticated();
   Future<void> login(String email, String password, bool rememberMe);
+  Future<void> logout();
+  Future<String> registerWithEmailAndPassword({
+    required String email,
+    required String password,
+  });
+  String? getCurrentUid();
 }

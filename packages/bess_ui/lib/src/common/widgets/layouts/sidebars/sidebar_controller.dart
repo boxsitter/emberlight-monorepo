@@ -1,3 +1,4 @@
+import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/routes.dart';
@@ -6,6 +7,7 @@ import '../../../utils/device/device_utility.dart';
 class SidebarController extends GetxController {
   final activeItem = BessRoutes.home.obs;
   final hoverItem = ''.obs;
+  final UserService userService = Get.find<UserService>();
 
   @override
   void onInit() {
@@ -33,5 +35,10 @@ class SidebarController extends GetxController {
     }
 
     Get.toNamed(route);
+  }
+
+  Future<void> logOut() async {
+    Get.offAllNamed(BessRoutes.login);
+    await userService.logout();
   }
 }

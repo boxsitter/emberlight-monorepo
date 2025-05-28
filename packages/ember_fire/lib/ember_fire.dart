@@ -5,7 +5,7 @@ import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_fire/src/repositories/authentication_repository.dart';
-import 'package:ember_fire/src/repositories/dumb_push_repository.dart';
+import 'package:ember_fire/src/repositories/contextless_repository.dart';
 import 'package:ember_fire/src/repositories/live_data_repository.dart';
 import 'package:ember_fire/src/repositories/pull_repository.dart';
 import 'package:ember_fire/src/repositories/commit_repository.dart';
@@ -27,7 +27,7 @@ class EmberFire implements CoreBackend {
 
   @override
   void onLogin() {
-    Get.lazyPut(() => DumbPushRepository());
+    Get.lazyPut(() => ContextlessRepository());
     Get.lazyPut(() => PathService());
     Get.lazyPut(() => PullRepository(), fenix: true);
     Get.lazyPut(() => LiveDataRepository());
@@ -54,34 +54,34 @@ class EmberFire implements CoreBackend {
   }
 
   @override
-  Future<T> getFieldValue<T>(String ref, String field) {
-    return Get.find<PullRepository>().getFieldValue(ref, field);
+  Future<T> getFieldValue<T>(String ref, String field) async {
+    return await Get.find<PullRepository>().getFieldValue(ref, field);
   }
 
   @override
-  Future<T> getObject<T>(String ref) {
-    return Get.find<PullRepository>().getObject(ref);
+  Future<T> getObject<T>(String ref) async {
+    return await Get.find<PullRepository>().getObject(ref);
   }
 
   @override
-  Future<Set<T>> getObjects<T>(Set<String> ref) {
-    return Get.find<PullRepository>().getObjects(ref);
+  Future<Set<T>> getObjects<T>(Set<String> ref) async {
+    return await Get.find<PullRepository>().getObjects(ref);
   }
 
   @override
   Future<Set<T>> getObjectsInCollection<T>(
     String collectionName,
     String domain,
-  ) {
-    return Get.find<PullRepository>().getObjectsInCollection(
+  ) async {
+    return await Get.find<PullRepository>().getObjectsInCollection(
       collectionName,
       domain,
     );
   }
 
   @override
-  Future<Set<T>> getSetFieldValue<T>(String ref, String field) {
-    return Get.find<PullRepository>().getSetFieldValue(ref, field);
+  Future<Set<T>> getSetFieldValue<T>(String ref, String field) async {
+    return await Get.find<PullRepository>().getSetFieldValue(ref, field);
   }
 
   @override
@@ -90,8 +90,8 @@ class EmberFire implements CoreBackend {
     String domain,
     String field,
     T value,
-  ) {
-    return Get.find<PullRepository>().queryField(
+  ) async {
+    return await Get.find<PullRepository>().queryField(
       collectionName,
       domain,
       field,
@@ -113,8 +113,8 @@ class EmberFire implements CoreBackend {
   }
 
   @override
-  Future<String> getActiveObjectId(String collectionName, String domain) {
-    return Get.find<PullRepository>().getActiveObjectId(
+  Future<String> getActiveObjectId(String collectionName, String domain) async {
+    return await Get.find<PullRepository>().getActiveObjectId(
       collectionName,
       domain,
     );
@@ -139,27 +139,17 @@ class EmberFire implements CoreBackend {
   }
 
   @override
-  Future<void> dumbDomainSetup(
-    Organization org,
-    Branch branch,
-    Season season,
-    Session session,
-  ) async {
-    await Get.find<DatabaseRepairService>().dumbDomainSetup(org, branch, season, session);
-  }
-
-  @override
   Future<Map<String, dynamic>> getFieldFromCollection(
     String collectionName,
     String domain,
     String field,
-  ) {
-    return Get.find<PullRepository>().getFieldFromCollection(collectionName, domain, field);
+  ) async {
+    return await Get.find<PullRepository>().getFieldFromCollection(collectionName, domain, field);
   }
 
   @override
-  Future<void> cleanOrphanedDependents(Commit commit, Session session) {
-    return Get.find<DatabaseRepairService>().cleanOrphanedDependents(commit, session);
+  Future<void> cleanOrphanedDependents(Commit commit, Session session) async {
+    return await Get.find<DatabaseRepairService>().cleanOrphanedDependents(commit, session);
   }
 
   // Auth
@@ -172,6 +162,21 @@ class EmberFire implements CoreBackend {
   @override
   Future<void> login(String email, String password, bool rememberMe) async {
     await Get.find<AuthenticationRepository>().loginWithEmailAndPassword(email, password, rememberMe);
+  }
+
+  @override
+  Future<void> logout() async {
+    await Get.find<AuthenticationRepository>().logout();
+  }
+
+  @override
+  Future<String> registerWithEmailAndPassword({required String email, required String password}) async {
+    return await Get.find<AuthenticationRepository>().registerWithEmailAndPassword(email: email, password: password);
+  }
+
+  @override
+  String? getCurrentUid() {
+    return Get.find<AuthenticationRepository>().firebaseUid;
   }
 }
 

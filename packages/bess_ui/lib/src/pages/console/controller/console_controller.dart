@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:ember_cli_utils/ember_cli_utils.dart';
+import 'package:ember_core/ember_core_utils.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 
@@ -87,12 +88,22 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
     try {
       if (command == 'clear') {
         terminal.write(_AnsiCodes.clearScreen);
-      } else if (command == 'exit') {
-        _writeWithNewlineAndPromptFix('Exiting console...');
       } else {
-        info('Executing: $command');
-        await Future.delayed(const Duration(milliseconds: 100));
-        success('$command executed (simulated)');
+        void handleError(String message) {
+          error(message);
+        }
+
+        ParsedCommandResult result = CommandParser.parseCommand(
+            command,
+            availableCommands: CoreCommands.list,
+            setErrorMessage: handleError,
+            initialArgs: [],
+            initialFlagsAndOptions: {},
+        );
+
+        if (result.command != null) {
+          await result.command!.run();
+        }
       }
     } catch (e) {
       error('Failed to execute command: $command', details: e.toString());
@@ -444,6 +455,17 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
     // the calling layer (like a GuiInput adapter) handles completionMessage.
     // The provided file calls popupService.executeWithSpinner which doesn't take completionMessage.
     return await popupService.executeWithSpinner(inProgressMessage: inProgressMessage, task: task);
+  }
+
+  @override
+  Future<List<dynamic>?> promptForm(
+      String formTitle,
+      List<FormFieldDescriptor> fields,
+      ) async {
+    return await popupService.showDynamicFormDialog(
+      title: formTitle,
+      fields: fields,
+    );
   }
 }
 

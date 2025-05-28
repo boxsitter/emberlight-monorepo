@@ -2,7 +2,7 @@ enum RosterField {
   id('Core Id'),
   fullName('Full Name'),
   firstName('First Name'),
-  preferredName('First Name (pref)'),
+  preferredName('Preferred Name'),
   lastName('Last Name'),
   gender('Gender'),
   birthdate('Birthdate'),

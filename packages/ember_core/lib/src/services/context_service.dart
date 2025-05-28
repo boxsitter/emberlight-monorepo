@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
 import 'package:ember_core/user_houck_leyton.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core_backend.dart';
-import '../backend/backend_manager.dart';
 
 typedef OrganizationId = String;
 typedef BranchId = String;
@@ -48,7 +48,7 @@ class ClientContext extends GetxService {
   }
 }
 
-class ClientContextService extends GetxService {
+class ContextService extends GetxService {
   static CoreBackend backend = BackendManager.instance;
   final ClientContext clientContext = Get.find<ClientContext>();
 
@@ -57,22 +57,15 @@ class ClientContextService extends GetxService {
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
-    clientContext.organizationId = TestUser.organizationId;
-    clientContext.branchId = TestUser.branchId;
+    clientContext.organizationId = HardcodedDomains.ygs.id; // TODO: THIS NEEDS TO BE FIXED BEFORE ALLOWING MULTIPLE BRANCHES AND ORGS
+    clientContext.branchId = HardcodedDomains.colman.id;
 
     // Retrieve the unique active Season.
     clientContext.seasonId = await backend.getActiveObjectId('season', 'brn');
 
     // Retrieve the unique active Session.
     clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
-    asyncTasks();
   }
 
-  Future<void> asyncTasks() async {
-    Commit commit = Commit(disarmRequirementsLevel: 0);
-    backend.cleanOrphanedDependents(commit, await session);
-    commit
-        .disarm(); // not good practice but this operation needs to happen regardless if the user confirms or not since it is an extension of an already confirmed action
-    backend.commit(commit);
-  }
+
 }

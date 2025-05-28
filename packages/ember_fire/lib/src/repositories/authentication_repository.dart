@@ -13,6 +13,7 @@ class AuthenticationRepository {
   UserService userService = Get.find<UserService>();
 
   bool get isUserLoggedIn => _auth.currentUser != null;
+  String? get firebaseUid => _auth.currentUser?.uid;
 
   /// Logs in a user with the provided email and password using Firebase Authentication.
   ///
@@ -84,25 +85,13 @@ class AuthenticationRepository {
   /// Throws:
   ///   A specific exception extending [EmberException] (e.g., [AuthCredentialsFailure], [AuthServiceError])
   ///   if the registration fails or an unexpected error occurs.
-  Future<UserCredential> registerWithEmailAndPassword({
+  Future<String> registerWithEmailAndPassword({
     required String email,
     required String password,
-    required String firstName,
-    required String lastName,
-    String? preferredName,
-    required BranchId branchId,
-    required OrganizationId organizationId,
-    required Role role,
   }) async {
     Debug.logInfo(
       'Attempting Firebase registration for email: ${CoreFormatter.maskEmail(email)}',
       verbosity: Verbosity.verbose,
-      metadata: {
-        'name': firstName,
-        'lastName': lastName,
-        'preferredName': preferredName ?? 'none',
-        'branchId': branchId,
-      }
     );
 
     try {
@@ -113,25 +102,13 @@ class AuthenticationRepository {
       );
 
       // Log successful registration
-      final userId = userCredential.user?.uid ?? 'N/A';
+      final userId = userCredential.user!.uid;
       Debug.logInfo(
         'Firebase registration successful. User ID: $userId',
         verbosity: Verbosity.verbose,
-        metadata: {'userId': userId, 'email': CoreFormatter.maskEmail(email)},
+        metadata: {'userId': userId ?? 'N/A', 'email': CoreFormatter.maskEmail(email)},
       );
-
-      Commit commit = Commit(disarmRequirementsLevel: 0);
-      userService.registerCoreUser(
-          commit: commit,
-          firstName: firstName,
-          lastName: lastName,
-          preferredName: preferredName,
-          branchPar: branchId,
-          organizationRef: organizationId,
-          role: role
-      );
-      await Get.find<CommitRepository>().commit(commit);
-      return userCredential;
+      return userId;
     } on FirebaseAuthException catch (e, st) {
       final exception = BessFirebaseAuthExceptionFactory.fromCode(e.code);
       Error.throwWithStackTrace(Debug.parseException(exception), st);

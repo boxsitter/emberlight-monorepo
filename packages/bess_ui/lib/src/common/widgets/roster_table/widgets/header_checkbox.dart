@@ -17,12 +17,12 @@ class HeaderCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 50,
-      padding: const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: BessSizes.sm),
+      padding: const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: 0),
       child: Align(
         alignment: Alignment.center,
         child: Obx(() {
           return Checkbox(
-            value: controller.selectedRowIds.containsAll(controller.roster..map((rosterable) => rosterable.id).toSet()),
+            value: controller.selectedRowIds.isNotEmpty,
             onChanged: (bool? newValue) {
               controller.toggleSelectAll(newValue);
             }
