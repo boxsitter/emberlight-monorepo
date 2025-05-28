@@ -1,8 +1,7 @@
 class Constants {
-  // Relative paths
-  static const String repoRootPath = '../../';
-  static const String projectsDir = '${repoRootPath}projects';
-  static const String packagesDir = '${repoRootPath}packages';
+  static const String configDirName = '.emdev';
+  static const String configFileName = 'config.json';
+  static const String emdevProjectPathKey = 'emdevProjectPath';
 }
 
 class Text {

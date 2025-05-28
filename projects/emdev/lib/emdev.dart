@@ -1,4 +1,4 @@
 /// Support for EmberDev CLI tools.
-library emdev;
+library;
 
-export 'src/commands/release_command.dart';
+export 'src/commands/release_commands.dart';

@@ -1,30 +1,32 @@
-import 'dart:io'; // Required for stdin.readLineSync()
-
+import 'dart:io';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:args/command_runner.dart';
-import 'package:emdev/src/commands/release_command.dart';
-// If you update ember_cli_utils.dart to export CliInput and CliOutput:
-// import 'package:ember_cli_utils/ember_cli_utils.dart';
-// Otherwise, import them directly:
-import 'package:ember_cli_utils/src/io/cli_input.dart';
-import 'package:ember_cli_utils/src/io/cli_output.dart';
+import 'package:ember_cli_utils/ember_cli_utils.dart';
+import 'package:emdev/src/commands/config_commands.dart';
+import 'package:emdev/src/commands/release_commands.dart';
 
 
 Future<void> main(List<String> args) async {
+  final UserOutput userOutput = CliOutput();
+  final UserInput userInput = CliInput();
+
+  final ConfigCommands configCommands = ConfigCommands(userInput: userInput, userOutput: userOutput);
+  final ReleaseCommands releaseCommands = ReleaseCommands(userInput: userInput, userOutput: userOutput);
+
+  final List<EmberCommand> allCommands = [... configCommands.list, ... releaseCommands.list];
+
   final runner = CommandRunner<void>(
     'emdev', // Changed executable name to emdev as per your request
     'CLI for managing the EmberLight monorepo development and release tasks.',
-  )
-    ..addCommand(ReleaseCommand());
-  // Add other commands here
-  // ..addCommand(AnotherCommand());
+  );
 
-  final cliOutput = CliOutput(); // For styled output
-  final cliInput = CliInput();   // For interactive input (though we'll use stdin.readLineSync for the main loop)
+  for (final command in allCommands) {
+    runner.addCommand(command);
+  }
 
   if (args.isEmpty) {
     // No arguments provided, enter REPL mode
-    cliOutput.info('Welcome to EmberDev interactive mode. Type "help" for commands, or "exit" to quit.');
+    userOutput.info('Welcome to EmberDev interactive mode. Type "help" for commands, or "exit" to quit.');
     while (true) {
       // Display prompt. Using CliOutput's emphasize for the prompt.
       // stdout.write doesn't add a newline, which is what we want for a prompt.
@@ -32,7 +34,7 @@ Future<void> main(List<String> args) async {
       final line = stdin.readLineSync();
 
       if (line == null || line.trim().toLowerCase() == 'exit' || line.trim().toLowerCase() == 'quit') {
-        cliOutput.info('Exiting EmberDev.');
+        userOutput.info('Exiting EmberDev.');
         break;
       }
 
@@ -48,13 +50,13 @@ Future<void> main(List<String> args) async {
       try {
         await runner.run(parts);
       } on UsageException catch (e) {
-        cliOutput.error(e.message);
+        userOutput.error(e.message);
         if (e.usage.isNotEmpty) {
           print('');
-          cliOutput.log(e.usage); // CommandRunner's usage string
+          userOutput.log(e.usage); // CommandRunner's usage string
         }
       } catch (error, stackTrace) {
-        cliOutput.error('An unexpected error occurred: $error');
+        userOutput.error('An unexpected error occurred: $error');
         // Optionally print stack trace for debugging in dev mode
         // print(stackTrace);
       }
@@ -65,14 +67,14 @@ Future<void> main(List<String> args) async {
     try {
       await runner.run(args);
     } on UsageException catch (e) {
-      cliOutput.error(e.message);
+      userOutput.error(e.message);
       if (e.usage.isNotEmpty) {
         print('');
-        cliOutput.log(e.usage);
+        userOutput.log(e.usage);
       }
       exit(64); // Exit code 64 indicates a usage error
     } catch (error) {
-      cliOutput.error('An unexpected error occurred: $error');
+      userOutput.error('An unexpected error occurred: $error');
       exit(1); // General error
     }
   }
