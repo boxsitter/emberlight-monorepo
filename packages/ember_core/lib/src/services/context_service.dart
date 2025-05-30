@@ -5,7 +5,9 @@ import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
 import 'package:ember_core/user_houck_leyton.dart';
 import 'package:get/get.dart';
 
+import '../../ember_core.dart';
 import '../../ember_core_backend.dart';
+import '../../ember_core_frontend.dart';
 
 typedef OrganizationId = String;
 typedef BranchId = String;
@@ -13,39 +15,32 @@ typedef SeasonId = String;
 typedef SessionId = String;
 
 class ClientContext extends GetxService {
-  final Completer<OrganizationId> _orgCompleter = Completer();
-  final Completer<BranchId> _branchCompleter = Completer();
-  final Completer<SeasonId> _seasonCompleter = Completer();
-  final Completer<SessionId> _sessionCompleter = Completer();
+  // Replace Completers with simple, late-initialized fields
+  late OrganizationId _organizationId;
+  late BranchId _branchId;
+  late SeasonId _seasonId;
+  late SessionId _sessionId;
 
-  Future<OrganizationId> getOrganizationId() => _orgCompleter.future;
-  Future<BranchId> getBranchId() => _branchCompleter.future;
-  Future<SeasonId> getSeasonId() => _seasonCompleter.future;
-  Future<SessionId> getSessionId() => _sessionCompleter.future;
+  // Provide simple getters
+  OrganizationId get organizationId => _organizationId;
+  BranchId get branchId => _branchId;
+  SeasonId get seasonId => _seasonId;
+  SessionId get sessionId => _sessionId;
 
-  set organizationId(OrganizationId id) {
-    if (!_orgCompleter.isCompleted) {
-      _orgCompleter.complete(id);
-    }
-  }
+  // Provide simple setters that allow overwriting the values
+  set organizationId(OrganizationId id) => _organizationId = id;
+  set branchId(BranchId id) => _branchId = id;
+  set seasonId(SeasonId id) => _seasonId = id;
+  set sessionId(SessionId id) => _sessionId = id;
 
-  set branchId(BranchId id) {
-    if (!_branchCompleter.isCompleted) {
-      _branchCompleter.complete(id);
-    }
-  }
+  // For any services that relied on the Future, you can keep
+  // these methods for compatibility. They now return an already-completed Future.
+  Future<OrganizationId> getOrganizationId() => Future.value(_organizationId);
+  Future<BranchId> getBranchId() => Future.value(_branchId);
+  Future<SeasonId> getSeasonId() => Future.value(_seasonId);
+  Future<SessionId> getSessionId() => Future.value(_sessionId);
 
-  set seasonId(SeasonId id) {
-    if (!_seasonCompleter.isCompleted) {
-      _seasonCompleter.complete(id);
-    }
-  }
-
-  set sessionId(SessionId id) {
-    if (!_sessionCompleter.isCompleted) {
-      _sessionCompleter.complete(id);
-    }
-  }
+  bool justMigrated = false;
 }
 
 class ContextService extends GetxService {
@@ -57,6 +52,10 @@ class ContextService extends GetxService {
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
+    if (clientContext.justMigrated) {
+      clientContext.justMigrated = false;
+      return;
+    }
     clientContext.organizationId = HardcodedDomains.ygs.id; // TODO: THIS NEEDS TO BE FIXED BEFORE ALLOWING MULTIPLE BRANCHES AND ORGS
     clientContext.branchId = HardcodedDomains.colman.id;
 
@@ -67,5 +66,27 @@ class ContextService extends GetxService {
     clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
   }
 
+  Future<void> migrateContext(SessionId sessionId) async {
+    Session? session = await backend.getObject(sessionId);
+    if (session != null) {
+      clientContext.sessionId = sessionId;
+    } else {
+      throw StateError('Attempted to migrate to a context that doesn\'t exist');
+    }
+    clientContext.justMigrated = true;
+    //Get.reset();
+    // TODO: handle this manually. services should not need to be removed but controllers should. The whole deleting controllers marked as fenix was a good idea
+    // TODO: clean up anything else manually
+    FrontendManager.instance.onLogin();
+    BackendManager.instance.onLogin();
+    await EmberCore.onLogin();
+    Get.offAllNamed('/');
+  }
 
+  Future<Map<String, String>> getSessionNames() async {
+    final dynamicMap = await backend.getFieldFromCollection('session', 'sea', 'name');
+    return dynamicMap.map((key, value) {
+      return MapEntry(key, value.toString());
+    });
+  }
 }

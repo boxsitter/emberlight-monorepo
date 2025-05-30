@@ -2,6 +2,7 @@ import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:get/get.dart';
 
