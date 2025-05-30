@@ -49,6 +49,8 @@ class ContextService extends GetxService {
 
   Future<Session> get session async => backend.getObject(await clientContext.getSessionId());
   Future<Schedule> get schedule async => (await backend.getObjectsInCollection('schedule', 'ses')).first as Schedule;
+  Future<String> get sessionName async => await backend.getFieldValue(clientContext.sessionId, 'name');
+  Future<String> get seasonName async => await backend.getFieldValue(clientContext.seasonId, 'name');
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
@@ -74,12 +76,8 @@ class ContextService extends GetxService {
       throw StateError('Attempted to migrate to a context that doesn\'t exist');
     }
     clientContext.justMigrated = true;
-    //Get.reset();
-    // TODO: handle this manually. services should not need to be removed but controllers should. The whole deleting controllers marked as fenix was a good idea
-    // TODO: clean up anything else manually
-    FrontendManager.instance.onLogin();
-    BackendManager.instance.onLogin();
-    await EmberCore.onLogin();
+    FrontendManager.instance.onNewContext();
+    await EmberCore.onNewContext(backend);
     Get.offAllNamed('/');
   }
 

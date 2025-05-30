@@ -27,12 +27,12 @@ class EmberFire implements CoreBackend {
 
   @override
   void onLogin() {
-    Get.lazyPut(() => ContextlessRepository());
-    Get.lazyPut(() => PathService());
+    Get.lazyPut(() => ContextlessRepository(), fenix: true);
+    Get.lazyPut(() => PathService(), fenix: true);
     Get.lazyPut(() => PullRepository(), fenix: true);
-    Get.lazyPut(() => LiveDataRepository());
-    Get.lazyPut(() => DatabaseRepairService());
-    Get.lazyPut(() => CommitRepository());
+    Get.lazyPut(() => LiveDataRepository(), fenix: true);
+    Get.lazyPut(() => DatabaseRepairService(), fenix: true);
+    Get.lazyPut(() => CommitRepository(), fenix: true);
   }
 
   @override

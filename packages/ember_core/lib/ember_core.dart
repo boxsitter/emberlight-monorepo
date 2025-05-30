@@ -38,10 +38,10 @@ class EmberCore {
     Get.lazyPut(() => ContextService());
     await Get.find<ContextService>().setDefaultContext();
     CoreBackend backend = BackendManager.instance;
-    asyncTasks(backend);
+    onNewContext(backend);
   }
 
-  static Future<void> asyncTasks(CoreBackend backend) async {
+  static Future<void> onNewContext(CoreBackend backend) async {
     Commit commit = Commit(disarmRequirementsLevel: 0);
     backend.cleanOrphanedDependents(commit, await Get.find<ContextService>().session);
     commit.disarm(); // not good practice but this operation needs to happen regardless if the user confirms or not since it is an extension of an already confirmed action

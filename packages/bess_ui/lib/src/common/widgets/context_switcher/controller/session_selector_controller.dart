@@ -11,11 +11,16 @@ class SessionSelectorController extends GetxController {
   // Manages the loading state to show a progress indicator in the UI
   final isLoading = true.obs;
 
+  final RxString sessionName = RxString('loading...');
+  final RxString seasonName = RxString('loading...');
+
   /// Called automatically when the controller is initialized.
   @override
   void onInit() {
     super.onInit();
     _fetchSessions();
+    setSessionName();
+    setSeasonName();
   }
 
   /// Fetches the session names from the ContextService and updates the state.
@@ -26,7 +31,6 @@ class SessionSelectorController extends GetxController {
     sessions.value = await Get.find<ContextService>().getSessionNames();
     isLoading.value = false;
   }
-
 
   // Method to update the selection from the dropdown
   void updateSelection(String? key) {
@@ -40,5 +44,13 @@ class SessionSelectorController extends GetxController {
       // Call the existing migrateContext method from your service
       await Get.find<ContextService>().migrateContext(selectedId);
     }
+  }
+
+  Future<void> setSessionName() async {
+    sessionName.value = await Get.find<ContextService>().sessionName;
+  }
+
+  Future<void> setSeasonName() async {
+    seasonName.value = await Get.find<ContextService>().seasonName;
   }
 }

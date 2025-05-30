@@ -12,6 +12,7 @@ abstract class CoreFrontend {
 
   void init();
   void onLogin();
+  void onNewContext();
 
   Future<bool> getConfirmation({
     required final String title,

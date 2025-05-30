@@ -107,7 +107,7 @@ class BessSidebar extends StatelessWidget {
 
                             SizedBox(width: BessSizes.md),
 
-                            Expanded(child: ContextDisplay(top: '2025', bottom: 'Session A')),
+                            Expanded(child: ContextDisplay()),
                           ],
                         ),
                       ],
