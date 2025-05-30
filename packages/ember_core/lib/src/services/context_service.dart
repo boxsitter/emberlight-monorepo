@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../ember_core.dart';
 import '../../ember_core_backend.dart';
+import '../../ember_core_debug.dart';
 import '../../ember_core_frontend.dart';
 
 typedef OrganizationId = String;
@@ -58,14 +59,68 @@ class ContextService extends GetxService {
       clientContext.justMigrated = false;
       return;
     }
+
+    final Map<String, dynamic> dynamicOrgNames = await backend.getFieldFromCollection('organization', 'rot', 'name');
+    final Map<String, String> orgNames = {};
+    dynamicOrgNames.forEach((key, value) {
+      if (value is String) {
+        orgNames[key] = value;
+      }
+    });
+    if (!orgNames.containsValue(HardcodedDomains.ygs.name)) {
+      Debug.logWarning('YGS doesn\'t exist, recreating it');
+      await basicDomainCreate(HardcodedDomains.ygs);
+    }
     clientContext.organizationId = HardcodedDomains.ygs.id; // TODO: THIS NEEDS TO BE FIXED BEFORE ALLOWING MULTIPLE BRANCHES AND ORGS
+
+    final Map<String, dynamic> dynamicBranchNames = await backend.getFieldFromCollection('branch', 'org', 'name');
+    final Map<String, String> branchNames = {};
+    dynamicBranchNames.forEach((key, value) {
+      if (value is String) {
+        branchNames[key] = value;
+      }
+    });
+    if (!branchNames.containsValue(HardcodedDomains.colman.name)) {
+      Debug.logWarning('Colman doesn\'t exist, recreating it');
+      await basicDomainCreate(HardcodedDomains.colman);
+    }
     clientContext.branchId = HardcodedDomains.colman.id;
 
     // Retrieve the unique active Season.
-    clientContext.seasonId = await backend.getActiveObjectId('season', 'brn');
+    final Map<String, dynamic> dynamicSeasonNames = await backend.getFieldFromCollection('season', 'brn', 'name');
+    final Map<String, String> seasonNames = {};
+    dynamicSeasonNames.forEach((key, value) {
+      if (value is String) {
+        seasonNames[key] = value;
+      }
+    });
+    if (!seasonNames.containsValue(HardcodedDomains.season.name)) {
+      Debug.logWarning('2025 doesn\'t exist, recreating it');
+      await basicDomainCreate(HardcodedDomains.season);
+      clientContext.seasonId = HardcodedDomains.season.id;
+    }
+    clientContext.seasonId = HardcodedDomains.season.id;
 
-    // Retrieve the unique active Session.
-    clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
+    final Map<String, dynamic> dynamicSessionNames = await backend.getFieldFromCollection('session', 'sea', 'name');
+    final Map<String, String> sessionNames = {};
+    dynamicSessionNames.forEach((key, value) {
+      if (value is String) {
+        sessionNames[key] = value;
+      }
+    });
+    if (sessionNames.isEmpty) {
+      Debug.logWarning('No sessions exist, creating one');
+      await basicDomainCreate(HardcodedDomains.testSession);
+      clientContext.sessionId = HardcodedDomains.testSession.id;
+    } else {
+      clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
+    }
+  }
+
+  Future<void> basicDomainCreate(Domain domain) async {
+    Commit commit = Commit(disarmRequirementsLevel: 0);
+    commit.addObjectToPush(domain);
+    await backend.commit(commit);
   }
 
   Future<void> migrateContext(SessionId sessionId) async {

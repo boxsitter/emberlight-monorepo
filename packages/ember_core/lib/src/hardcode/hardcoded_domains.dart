@@ -15,6 +15,7 @@ class HardcodedDomains {
 
   static final Season season = Season(
     name: '2025',
+    id: '2025-season-brn-RBpYT2E',
     createdAt: DateTime.parse('2025-03-17T05:19:16.000Z').toUtc(),
     start: DateTime(2025, 1, 1).toUtc(),
     end: DateTime(2026, 1, 1).toUtc(),
