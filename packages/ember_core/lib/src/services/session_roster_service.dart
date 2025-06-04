@@ -7,8 +7,12 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
-class SessionRosterService extends GetxService { //TODO: Consider refactoring all service operations as their own object subclassing an operation object that handles permissions and error logging
+import '../../ember_core_debug.dart';
+import '../debug/service_exceptions.dart';
+
+class SessionRosterService extends GetxService {
   static CoreBackend backend = BackendManager.instance;
   CabinService cabinsService = Get.find<CabinService>();
   ContextService clientContextService = Get.find<ContextService>();
@@ -27,6 +31,7 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     required DateTime birthdate,
     String cabinName = '',
     String note = '',
+    String? ultracampId,
   }) async {
     String? cabinRef;
     // need to fetch cabin by name from the active cabins for the selected session
@@ -42,15 +47,20 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       gender: gender,
       birthdate: birthdate,
       note: note,
+      ultracampId: ultracampId,
     );
 
     initCamperPreference(commit,camperToAdd);
-    print('Camper: ${camperToAdd.fullName} added');
+    Debug.logInfo('Camper: ${camperToAdd.fullName} added');
     commit.addObjectToPush(camperToAdd);
 
-    if (cabinRef != null) {
-      CabinDependent cabinDependent = commit.getObject(cabinRef) ?? await backend.getObject(cabinRef);
-      await cabinsService.addCamperToCabin(commit, cabinDependent, camperToAdd);
+    try {
+      if (cabinRef != null) {
+        CabinDependent cabinDependent = commit.getObject(cabinRef) ?? await backend.getObject(cabinRef);
+        await cabinsService.addCamperToCabin(commit, cabinDependent, camperToAdd);
+      }
+    } on Exception catch (e) {
+      throw CamperRegistrationError('Error registering camper: $e', 'Something went wrong trying to register camper: $firstName, to cabin $cabinName. Make sure $cabinName is active for this session.');
     }
   }
 
@@ -66,102 +76,106 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
     commit.addObjectsToPush({schedule, session});
   }
 
-  Future<bool> isCamperDuplicate(String firstName, String lastName, int age, Set<Camper> checkAgainst) async {
+  Future<bool> isCamperDuplicate(String firstName, String lastName, Set<Camper> checkAgainst) async {
     for (Camper camper in checkAgainst) {
-      if (camper.firstName == firstName && camper.lastName == lastName && camper.age == age) {
+      if (camper.firstName.toLowerCase() == firstName.toLowerCase() &&
+          camper.lastName.toLowerCase() == lastName.toLowerCase()) {
         return true;
       }
     }
     return false;
   }
 
-  Future<void> importFromCsv({
-    required Commit commit,
-    required String firstNameHeader,
-    required String lastNameHeader,
-    required String ageHeader,
-    String? preferredNameHeader,
-    String? genderHeader,
-    String? cabinHeader,
-  }) async {
-    try {
-      // 1. Pick and Read File Content
-      final csvContent = await _pickAndReadCsv();
+  Future<Commit> importFromCsv() async {
+    final List<RosterField> expectedColumns = [
+      RosterField.firstName,
+      RosterField.preferredName,
+      RosterField.lastName,
+      RosterField.gender,
+      RosterField.birthdate,
+      RosterField.cabinName,
+      RosterField.ultracampId,
+    ];
 
-      // 2. Parse CSV
+    try {
+      final csvContent = await _pickAndReadCsv();
       final List<List<dynamic>> rows = const CsvToListConverter().convert(csvContent, eol: '\n');
-      if (rows.isEmpty) {
-        throw ArgumentError('CSV file is empty.');
+      if (rows.length < 2) { // Must have at least a header and one data row
+        throw CsvError(
+          'CSV file has less than 2 rows (header + data).',
+          'The CSV file is empty or missing data rows. Please ensure it has a header row and at least one camper entry.',
+        );
       }
 
-      // 3. Process Headers
       final headers = rows.first.map((h) => h.toString().toLowerCase().trim()).toList();
-      final indices = _parseHeaderIndices(
-        headers: headers,
-        firstNameHeader: firstNameHeader,
-        lastNameHeader: lastNameHeader,
-        ageHeader: ageHeader,
-        preferredNameHeader: preferredNameHeader,
-        genderHeader: genderHeader,
-        cabinHeader: cabinHeader,
-      );
+      final Map<RosterField, int> headerIndices = _parseHeaderIndices(headers, expectedColumns);
 
-      // 4. Prepare for Processing
-      final Set<Camper> alreadyRegistered = await registeredCampers;
+      final List<Map<String, dynamic>> campersToRegisterData = [];
+      final Set<Camper> existingCampers = await registeredCampers;
+      final Set<String> newCampersUniqueKeys = {}; // To track campers from the current CSV
 
-      // 5. Process Each Data Row
-      for (final row in rows.skip(1)) {
-        if (row.length < headers.length) {
-          print('Skipping malformed row (wrong column count): $row');
+      for (int i = 1; i < rows.length; i++) {
+        final row = rows[i];
+        // Skip empty rows
+        if (row.every((cell) => cell == null || cell.toString().trim().isEmpty)) {
+          Debug.logInfo('Skipping empty row ${i + 1}.');
+          continue;
+        }
+        if (row.length != headers.length) {
+          throw CsvError(
+            'Row ${i + 1} has ${row.length} columns, expected ${headers.length}.',
+            'Row ${i + 1} has an incorrect number of columns. Please ensure all rows have the same number of columns as the header.',
+          );
+        }
+        // Pass 'i' as rowIndex for better error messages
+        final camperData = _extractCamperDataFromRow(row, headerIndices, expectedColumns, i);
+
+        // Duplicate Checking
+        final String firstName = camperData[RosterField.firstName.name];
+        final String lastName = camperData[RosterField.lastName.name];
+        final DateTime birthdate = camperData[RosterField.birthdate.name];
+
+        final String currentCamperKey = '${firstName.toLowerCase()}_${lastName.toLowerCase()}_$birthdate';
+
+        if (await isCamperDuplicate(firstName, lastName, existingCampers)) {
+          Debug.logInfo('Skipping duplicate (already registered): $firstName $lastName Row: ${i + 1}', userMessage: 'Skipping duplicate (already registered): $firstName $lastName');
           continue;
         }
 
-        // Extract and validate row data
-        final camperData = _extractCamperDataFromRow(row, indices);
-        if (camperData == null) {
-          print('Skipping invalid row data: $row');
-          continue; // Skip if basic validation failed (e.g., empty name, invalid age)
-        }
-
-        // Check for duplicates against already registered AND newly added ones
-        final Set<Camper> potentialDuplicates = {
-          ...alreadyRegistered,
-          ...commit.getObjectsOfType(),
-        };
-        final bool isDuplicate = await isCamperDuplicate(
-          camperData['firstName'],
-          camperData['lastName'],
-          camperData['age'],
-          potentialDuplicates,
-        );
-
-        if (isDuplicate) {
-          print('Skipping duplicate camper: ${camperData['firstName']} ${camperData['lastName']}');
+        if (newCampersUniqueKeys.contains(currentCamperKey)) {
+          Debug.logInfo('Skipping duplicate (within CSV): $firstName $lastName, Row: ${i + 1}');
           continue;
         }
 
-        // 6. Create Camper Request and Update State
-        try {
+        newCampersUniqueKeys.add(currentCamperKey);
+        campersToRegisterData.add(camperData);
+        }
+
+      final Commit commit = Commit(disarmRequirementsLevel: 0);
+      for (final camperData in campersToRegisterData) {
           await registerCamper(
             commit: commit,
-            firstName: camperData['firstName'],
-            lastName: camperData['lastName'],
-            preferredName: camperData['preferredName'],
-            gender: camperData['gender'],
-            birthdate: camperData['age'],
-            cabinName: camperData['cabinName'],
+            firstName: camperData[RosterField.firstName.name],
+            lastName: camperData[RosterField.lastName.name],
+            preferredName: camperData[RosterField.preferredName.name] ?? '',
+            gender: camperData[RosterField.gender.name],
+            birthdate: camperData[RosterField.birthdate.name],
+            cabinName: camperData[RosterField.cabinName.name] ?? '',
+            ultracampId: camperData[RosterField.ultracampId.name],
           );
-
-        } catch(e) {
-          print('Error registering camper for row: $row. Error: $e');
-          continue;
         }
-      }
-    } catch (e) {
-      // Catch specific errors like FileSystemException, ArgumentError, StateError if needed
-      print('Error during CSV import process: $e'); // Log the error
-      // Rethrow or handle as appropriate for UI feedback
-      throw StateError('Error importing CSV: $e');
+      return commit;
+    } on CsvError catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+      // To make the userMessage accessible to the UI, the UI's error handling
+      // would need to check if the caught error is a CsvError and then access e.userMessage.
+      // For now, rethrowing like this is fine for GetX to handle.
+      rethrow;
+    } catch (e, st) { // Catch any other unexpected errors
+      throw CsvError(
+        'An unexpected error occurred during the CSV import process: $e',
+        'An unexpected error occurred. Please try again.',
+      );
     }
   }
 
@@ -171,72 +185,114 @@ class SessionRosterService extends GetxService { //TODO: Consider refactoring al
       allowedExtensions: ['csv'],
     );
     if (result == null) {
-      throw StateError('No CSV file selected.');
+      throw CsvError(
+        'No CSV file selected by the user.',
+        'No CSV file was selected. Please try again and choose a .csv file.',
+      );
     }
     final Uint8List? bytes = result.files.first.bytes;
     if (bytes == null) {
-      throw StateError('Unable to read CSV data.');
+      throw CsvError(
+        'Unable to read CSV data (file bytes are null).',
+        'Could not read the selected file. It might be corrupted or empty.',
+      );
     }
-    // Consider adding checks for file size or basic content validation here
     return String.fromCharCodes(bytes);
   }
 
-  Map<String, int> _parseHeaderIndices({
-    required List<String> headers,
-    required String firstNameHeader,
-    required String lastNameHeader,
-    required String ageHeader,
-    String? preferredNameHeader,
-    String? genderHeader,
-    String? cabinHeader,
-  }) {
-    return {
-      'firstName': _findColumnIndex(headers, firstNameHeader, isRequired: true),
-      'lastName': _findColumnIndex(headers, lastNameHeader, isRequired: true),
-      'age': _findColumnIndex(headers, ageHeader, isRequired: true),
-      'preferredName': preferredNameHeader == null ? -1 : _findColumnIndex(headers, preferredNameHeader, isRequired: false),
-      'gender': genderHeader == null ? -1 : _findColumnIndex(headers, genderHeader, isRequired: false),
-      'cabin': cabinHeader == null ? -1 : _findColumnIndex(headers, cabinHeader, isRequired: false),
-    };
+  Map<RosterField, int> _parseHeaderIndices(List<String> headers, List<RosterField> expectedColumns) {
+    final Map<RosterField, int> indices = {};
+    for (final field in expectedColumns) {
+      int index = -1;
+      if (field.csvHeader != null) {
+        index = headers.indexOf(field.csvHeader!.toLowerCase().trim());
+      }
+      if (index == -1 && field.csvHeaderAlt != null) {
+        index = headers.indexOf(field.csvHeaderAlt!.toLowerCase().trim());
+      }
+
+      if (index == -1 && field.required) {
+        throw CsvError(
+          'Required column "${field.title}" (expected: "${field.csvHeader}" or "${field.csvHeaderAlt}") not found.',
+          'The required column "${field.title}" is missing. Please check your CSV file.',
+        );
+      }
+      indices[field] = index;
+    }
+    return indices;
   }
 
-  Map<String, dynamic>? _extractCamperDataFromRow(List<dynamic> row, Map<String, int> indices) {
-    final String firstName = _getCellValue(row, indices['firstName']!);
-    final String lastName = _getCellValue(row, indices['lastName']!);
-    final String ageString = _getCellValue(row, indices['age']!);
-    final int age = int.tryParse(ageString) ?? 0;
+  Map<String, dynamic> _extractCamperDataFromRow(List<dynamic> row, Map<RosterField, int> indices, List<RosterField> expectedColumns, int rowIndex) {
+    final Map<String, dynamic> camperData = {};
 
-    // Basic validation
-    if (firstName.isEmpty || lastName.isEmpty || age <= 0) {
-      return null; // Indicate invalid data
+    for (final field in expectedColumns) {
+      final index = indices[field]!;
+      final cellValue = (index != -1 && index < row.length) ? row[index]?.toString().trim() : null;
+
+      if (field.required && (cellValue == null || cellValue.isEmpty)) {
+        throw CsvError(
+          'Missing required value for "${field.title}" in row ${rowIndex + 1}. Cell value is "$cellValue".',
+          'Row ${rowIndex + 1} is missing a required value for the "${field.title}" column. Please ensure all required cells have data.',
+        );
+      }
+
+      switch (field) {
+        case RosterField.gender:
+          camperData[field.name] = _parseGender(cellValue);
+          break;
+        case RosterField.birthdate:
+          // cellValue is guaranteed to be non-null here due to the required check above
+          camperData[field.name] = _parseBirthdate(cellValue!, rowIndex);
+          break;
+        case RosterField.cabinName:
+          // TODO: Implement cabinName parsing
+          camperData[field.name] = cellValue;
+          break;
+        default:
+      camperData[field.name] = cellValue;
+    }
+  }
+    return camperData;
+  }
+
+  String _parseGender(String? value) {
+    if (value == null || value.isEmpty) return '';
+    switch (value.toLowerCase()) {
+        case 'male':
+            return 'M';
+        case 'female':
+            return 'F';
+        case 'non-binary':
+        case 'nonbinary':
+            return 'NB';
+        default:
+            // Consider if an error should be thrown for unrecognized, non-empty gender values
+            // For now, returning empty as per previous logic for unrecognized values.
+            return '';
+    }
     }
 
-    return {
-      'firstName': firstName,
-      'lastName': lastName,
-      'age': age,
-      'preferredName': _getCellValue(row, indices['preferredName']!),
-      'gender': _getCellValue(row, indices['gender']!),
-      'cabinName': _getCellValue(row, indices['cabin']!),
-    };
-  }
-
-  /// Returns the index of [columnName] within [headers]. Throws an error if
-  /// it’s a required column but not found. Returns -1 if optional and not found.
-  int _findColumnIndex(
-      List<String> headers,
-      String columnName, {
-        required bool isRequired,
-      }) {
-    final int index = headers.indexOf(columnName.toLowerCase().trim());
-    if (index == -1 && isRequired) {
-      throw ArgumentError('CSV must contain a "$columnName" column.');
+  DateTime _parseBirthdate(String dateString, int rowIndex) {
+    try {
+      // Attempt to parse with time first, as in "MM/DD/YYYY HH:MM:SS AM/PM"
+    try {
+        final DateFormat formatWithTime = DateFormat('M/d/yyyy h:mm:ss a');
+        final DateTime date = formatWithTime.parseUtc(dateString);
+        return DateTime.utc(date.year, date.month, date.day, 21, 0, 0);
+      } catch (_) {
+        // Fallback to parsing without time, then set time
+        final DateFormat formatWithoutTime = DateFormat('M/d/yyyy');
+        final DateTime date = formatWithoutTime.parseUtc(dateString);
+        return DateTime.utc(date.year, date.month, date.day, 21, 0, 0);
+      }
+    } catch (e) {
+      throw CsvError(
+        'Invalid birthdate format for "$dateString" in row ${rowIndex + 1}. Expected MM/DD/YYYY or MM/DD/YYYY HH:MM:SS AM/PM. Error: $e',
+        'The birthdate "$dateString" in row ${rowIndex + 1} is not in the correct format. Please use MM/DD/YYYY.',
+      );
     }
-    return index;
   }
 
-  /// Simple helper to safely extract the value from [row] at [index] as a String.
-  /// Returns an empty string if [index] is -1 or out of range.
   String _getCellValue(List<dynamic> row, int index) {
     if (index < 0 || index >= row.length) return '';
     return row[index]?.toString().trim() ?? '';

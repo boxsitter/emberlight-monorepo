@@ -121,7 +121,7 @@ class ScheduleService extends GetxService {
   //     String? preferenceSetId = camper.activityPreferences[blockId];
   //     if (preferenceSetId == null) {
   //       // TODO: Log appropriately (e.g., ConsoleController.error)
-  //       print('Error: ${camper.fullName} has no preference set defined for block ${block.name} ($blockId).');
+  //       Debug.logInfo('Error: ${camper.fullName} has no preference set defined for block ${block.name} ($blockId).');
   //       continue;
   //     }
   //
@@ -131,12 +131,12 @@ class ScheduleService extends GetxService {
   //     ActivityPreferenceSet? preferences = commit.getObject<ActivityPreferenceSet>(preferenceSetId) ?? await backend.getObject<ActivityPreferenceSet>(preferenceSetId);
   //     if (preferences == null) {
   //       // TODO: Log appropriately
-  //       print('Error: Could not load preference set $preferenceSetId for ${camper.fullName} in block ${block.name}.');
+  //       Debug.logInfo('Error: Could not load preference set $preferenceSetId for ${camper.fullName} in block ${block.name}.');
   //       continue;
   //     }
   //     if (!preferences.isComplete) {
   //       // TODO: Log appropriately (e.g., ConsoleController.warning)
-  //       print('Warning: ${camper.fullName} has incomplete preferences for ${block.name} and will not be assigned.');
+  //       Debug.logInfo('Warning: ${camper.fullName} has incomplete preferences for ${block.name} and will not be assigned.');
   //       continue;
   //     }
   //
@@ -153,7 +153,7 @@ class ScheduleService extends GetxService {
   //       ActivityDependent? actDep = commit.getObject<ActivityDependent>(activityDepId) ?? await backend.getObject<ActivityDependent>(activityDepId);
   //       if (actDep == null) {
   //         // TODO: Log appropriately
-  //         print('Warning: ActivityDependent $activityDepId (Rank $rank for ${camper.fullName}) not found. Skipping.');
+  //         Debug.logInfo('Warning: ActivityDependent $activityDepId (Rank $rank for ${camper.fullName}) not found. Skipping.');
   //         rank++;
   //         continue;
   //       }
@@ -161,13 +161,13 @@ class ScheduleService extends GetxService {
   //       // TODO: Verify 'blockRef' field name
   //       if (actDep.blockRef != blockId) {
   //         // TODO: Log appropriately
-  //         print('Warning: Activity ${actDep.id} is in camper ${camper.fullName}\'s preferences for block ${block.name}, but belongs to a different block (${actDep.blockRef}). Skipping.');
+  //         Debug.logInfo('Warning: Activity ${actDep.id} is in camper ${camper.fullName}\'s preferences for block ${block.name}, but belongs to a different block (${actDep.blockRef}). Skipping.');
   //         rank++;
   //         continue;
   //       }
   //
   //       // TODO: Log attempt (e.g., ConsoleController.log)
-  //       // print('Attempting to assign ${camper.fullName} to activity $activityDepId, ranked: $rank');
+  //       // Debug.logInfo('Attempting to assign ${camper.fullName} to activity $activityDepId, ranked: $rank');
   //
   //       // Call the updated assignment function, passing the commit and IDs
   //       bool success = await assignCamperToActivity(commit, camper.id, activityDepId);
@@ -177,7 +177,7 @@ class ScheduleService extends GetxService {
   //         // assignCamperToActivity handles adding modified objects to the commit
   //         // TODO: Log success (e.g., ConsoleController.success)
   //         // Fetching the PrincipalActivity name for logging might be nice, but requires another fetch here or passing more data back from assignCamperToActivity.
-  //         // print('Successfully assigned ${camper.fullName} to activity $activityDepId');
+  //         // Debug.logInfo('Successfully assigned ${camper.fullName} to activity $activityDepId');
   //         break; // Move to the next camper
   //       }
   //       rank++;
@@ -185,7 +185,7 @@ class ScheduleService extends GetxService {
   //
   //     if (!camperAssigned) {
   //       // TODO: Handle unassigned campers (e.g., assign to a default 'unassigned' activity, log for manual review - ConsoleController.error)
-  //       print('Error: ${camper.fullName} could not be assigned to any preferred activity in ${block.name}.');
+  //       Debug.logInfo('Error: ${camper.fullName} could not be assigned to any preferred activity in ${block.name}.');
   //     }
   //   }
   //   // No explicit commit.push() here, assuming it happens after the calling function finishes its operations.
@@ -201,7 +201,7 @@ class ScheduleService extends GetxService {
   //
   //   if (camper == null || activityDep == null) {
   //     // TODO: Log appropriately
-  //     print('Error: Could not find Camper ($camperId) or ActivityDependent ($activityDepId) for assignment.');
+  //     Debug.logInfo('Error: Could not find Camper ($camperId) or ActivityDependent ($activityDepId) for assignment.');
   //     return false;
   //   }
   //
@@ -211,7 +211,7 @@ class ScheduleService extends GetxService {
   //   PrincipalActivity? principalActivity = commit.getObject<PrincipalActivity>(activityDep.principalPar) ?? await backend.getObject<PrincipalActivity>(activityDep.principalPar);
   //   if (principalActivity == null) {
   //     // TODO: Log appropriately
-  //     print('Error: Could not find PrincipalActivity (${activityDep.principalPar}) for ActivityDependent ${activityDep.id}. Cannot check capacity.');
+  //     Debug.logInfo('Error: Could not find PrincipalActivity (${activityDep.principalPar}) for ActivityDependent ${activityDep.id}. Cannot check capacity.');
   //     return false;
   //   }
   //
@@ -227,7 +227,7 @@ class ScheduleService extends GetxService {
   //   bool alreadyInRoster = activityDep.rosterCmps.contains(camperId);
   //   if (!alreadyInRoster && currentSize >= capacity) {
   //     // TODO: Log appropriately (e.g., ConsoleController.error or .log)
-  //     print('Assigning ${camper.fullName} to ${principalActivity.name} ($activityDepId) would exceed capacity. Current: $currentSize, Capacity: $capacity');
+  //     Debug.logInfo('Assigning ${camper.fullName} to ${principalActivity.name} ($activityDepId) would exceed capacity. Current: $currentSize, Capacity: $capacity');
   //     return false;
   //   }
   //
@@ -242,11 +242,11 @@ class ScheduleService extends GetxService {
   //     if (currentAssignedActivityId != null && currentAssignedActivityId != activityDepId) {
   //       // Camper is assigned to a *different* activity in this block, remove them first.
   //       // TODO: Log appropriately
-  //       print('Info: ${camper.fullName} is currently in activity $currentAssignedActivityId, removing before assigning to ${principalActivity.name} ($activityDepId).');
+  //       Debug.logInfo('Info: ${camper.fullName} is currently in activity $currentAssignedActivityId, removing before assigning to ${principalActivity.name} ($activityDepId).');
   //       bool removed = await removeCamperFromActivity(commit, camperId, currentAssignedActivityId);
   //       if (!removed) {
   //         // TODO: Log appropriately
-  //         print('Error: Failed to remove ${camper.fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDepId aborted.');
+  //         Debug.logInfo('Error: Failed to remove ${camper.fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDepId aborted.');
   //         return false;
   //       }
   //       // Re-fetch camper object as it was modified in the commit by removeCamperFromActivity
@@ -254,13 +254,13 @@ class ScheduleService extends GetxService {
   //       camper = commit.getObject<Camper>(camperId);
   //       if (camper == null) {
   //         // This would be a critical internal error with the commit system
-  //         print('CRITICAL Error: Camper $camperId disappeared from commit after removal.');
+  //         Debug.logInfo('CRITICAL Error: Camper $camperId disappeared from commit after removal.');
   //         return false;
   //       }
   //     } else if (currentAssignedActivityId == activityDepId) {
   //       // Already assigned to this exact activity. Consider it success.
   //       // TODO: Log appropriately (e.g., ConsoleController.log or .info)
-  //       print('Info: ${camper.fullName} is already assigned to ${principalActivity.name} ($activityDepId). No action needed.');
+  //       Debug.logInfo('Info: ${camper.fullName} is already assigned to ${principalActivity.name} ($activityDepId). No action needed.');
   //       return true;
   //     }
   //   }
@@ -284,7 +284,7 @@ class ScheduleService extends GetxService {
   //   commit.addObjectsToPush({camper, activityDep});
   //
   //   // TODO: Log success (e.g., ConsoleController.success)
-  //   print('${camper.fullName} successfully assigned to ${principalActivity.name} ($activityDepId)');
+  //   Debug.logInfo('${camper.fullName} successfully assigned to ${principalActivity.name} ($activityDepId)');
   //   return true;
   // }
   //
@@ -296,7 +296,7 @@ class ScheduleService extends GetxService {
   //
   //   if (camper == null || activityDep == null) {
   //     // TODO: Log appropriately
-  //     print('Error: Could not find Camper ($camperId) or ActivityDependent ($activityDepId) for removal.');
+  //     Debug.logInfo('Error: Could not find Camper ($camperId) or ActivityDependent ($activityDepId) for removal.');
   //     return false; // Indicate failure
   //   }
   //
@@ -334,11 +334,11 @@ class ScheduleService extends GetxService {
   //     // Add modified objects to commit ONLY if changes were made
   //     commit.addObjectsToPush({camper, activityDep});
   //     // TODO: Log removal (e.g., ConsoleController.log)
-  //     print('${camper.fullName} removed from ${activityName} ($activityDepId)');
+  //     Debug.logInfo('${camper.fullName} removed from ${activityName} ($activityDepId)');
   //     return true; // Indicate success
   //   } else {
   //     // TODO: Log warning (e.g., ConsoleController.warning)
-  //     print('Warning: Attempted to remove ${camper.fullName} from ${activityName} ($activityDepId), but they were not found in the roster or assignment map for that block.');
+  //     Debug.logInfo('Warning: Attempted to remove ${camper.fullName} from ${activityName} ($activityDepId), but they were not found in the roster or assignment map for that block.');
   //     // Return true because the desired state (camper not assigned to this activity) is effectively true.
   //     return true;
   //   }

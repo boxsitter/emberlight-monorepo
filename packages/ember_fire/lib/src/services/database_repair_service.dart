@@ -323,7 +323,7 @@ class DatabaseRepairService extends GetxService{
     Set<Map <String, dynamic>> jsons = (await pullRepo.getDocsInCollection(collectionName, domain)).values.toSet();
     for (var jsonB in jsons) {
       if (computeJsonSimilarity(jsonA, jsonB) >= matchThreshold) {
-        print('MATCHING DOC FOUND!');
+        Debug.logInfo('MATCHING DOC FOUND!');
         return jsonB;
       }
     }

@@ -56,3 +56,12 @@ class CoreInvalidCollectionError extends EmberException {
     devMessage: devMessage,
   );
 }
+
+class CamperRegistrationError extends EmberException {
+  CamperRegistrationError(String devMessage, String userMessage) : super(
+    module: Module.core,
+    logType: LogType.error,
+    devMessage: devMessage,
+    userMessage: userMessage,
+  );
+}

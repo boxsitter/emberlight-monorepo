@@ -21,7 +21,7 @@ class HardcodedPrincipalCabins {
     capacity: 14,
   );
 
-  static final Set<PrincipalCabin> hardcodedPrincipalCabins = <PrincipalCabin>{
+  static final Set<PrincipalCabin> list = <PrincipalCabin>{
     henderson,
     leckenby,
     yarrow,

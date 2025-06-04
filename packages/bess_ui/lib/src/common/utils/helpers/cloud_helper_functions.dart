@@ -120,10 +120,10 @@
 //       Reference ref = FirebaseStorage.instance.refFromURL(downloadUrl);
 //       await ref.delete();
 //
-//       print('File deleted successfully.');
+//       Debug.logInfo('File deleted successfully.');
 //     } on FirebaseException catch (e) {
 //       if (e.code == 'object-not-found') {
-//         print('The file does not exist in Firebase Storage.');
+//         Debug.logInfo('The file does not exist in Firebase Storage.');
 //       } else {
 //         throw e.message!;
 //       }

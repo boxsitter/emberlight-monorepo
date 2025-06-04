@@ -44,13 +44,7 @@ class EmberFire implements CoreBackend {
 
   @override
   Future<void> commit(Commit request) async {
-    Get.find<CommitRepository>().commit(request);
-  }
-
-  @override
-  Future<void> deleteObject(String key) async {
-    //deleteRepo.deleteObject(key);
-    throw UnimplementedError();
+    await Get.find<CommitRepository>().commit(request);
   }
 
   @override
@@ -186,12 +180,12 @@ class FireStarter {
   static Future<void> initialize() async {
     // Prevent multiple initializations
     if (_isInitialized) {
-      print('Firebase already initialized.');
+      Debug.logInfo('Firebase already initialized.');
       return;
     }
 
     try {
-      print('Initializing Firebase...');
+      Debug.logInfo('Initializing Firebase...');
       // Ensure WidgetsFlutterBinding is initialized BEFORE Firebase.initializeApp
       // This is usually done in main(), but adding here for safety if called elsewhere.
       // WidgetsFlutterBinding.ensureInitialized(); // Uncomment if needed, but best practice is in main()
@@ -200,7 +194,7 @@ class FireStarter {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       _isInitialized = true; // Mark as initialized SUCCESSFULLY
-      print('Firebase initialized successfully.');
+      Debug.logInfo('Firebase initialized successfully.');
 
       // --- Firestore specific setup ---
       final db = FirebaseFirestore.instance;
@@ -230,20 +224,20 @@ class FireStarter {
       //     await db.enablePersistence(
       //       const PersistenceSettings(synchronizeTabs: true),
       //     );
-      //     print('Firestore persistence with tab synchronization enabled (Web).');
+      //     Debug.logInfo('Firestore persistence with tab synchronization enabled (Web).');
       //   } catch (e) {
-      //     print('Firestore Web Persistence failed: $e');
+      //     Debug.logInfo('Firestore Web Persistence failed: $e');
       //   }
       // } else {
       //    // Mobile persistence settings if needed
       //    // db.settings = const Settings(persistenceEnabled: true, cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
-      //    print('Firestore persistence enabled (Mobile).');
+      //    Debug.logInfo('Firestore persistence enabled (Mobile).');
       // }
       // --- End Firestore specific setup ---
     } catch (e) {
-      print('-----------------------------------------');
-      print('FATAL: Error initializing Firebase: $e');
-      print('-----------------------------------------');
+      Debug.logInfo('-----------------------------------------');
+      Debug.logInfo('FATAL: Error initializing Firebase: $e');
+      Debug.logInfo('-----------------------------------------');
       // Depending on your app, you might want to rethrow the error
       // or show a user-friendly error message and prevent app continuation.
       _isInitialized =

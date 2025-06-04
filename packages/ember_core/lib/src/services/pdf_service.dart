@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../ember_core_debug.dart';
 import '../utils/pdf_styles.dart';
 
 class PdfService extends GetxService{
@@ -123,7 +124,7 @@ class PdfService extends GetxService{
       await file.writeAsBytes(await pdf.save());
 
     } catch (e) {
-      print('Error saving pdf locally');
+      Debug.logInfo('Error saving pdf locally');
     }
   }
 }

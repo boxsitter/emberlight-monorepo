@@ -1,3 +1,5 @@
+import '../../ember_core_debug.dart';
+
 /// Defines ANSI escape codes for text colors.
 class CoreHelperFunctions {
   static DateTime parseDate(dynamic value) {
@@ -14,7 +16,7 @@ class CoreHelperFunctions {
       return dt.toUtc();
     } else if (value is DateTime) {
       // If we actually get a DateTime, just print and convert to UTC
-      print('parseDate received a direct DateTime: $value');
+      Debug.logInfo('parseDate received a direct DateTime: $value');
       return value.toUtc();
     } else if (value is String) {
       // Possibly an ISO 8601 string

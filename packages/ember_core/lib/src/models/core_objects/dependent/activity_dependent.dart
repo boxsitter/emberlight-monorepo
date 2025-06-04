@@ -1,5 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import '../../../../ember_core_debug.dart';
 import '../../../../ember_core_utils.dart';
 
 class ActivityDependent extends CoreObject implements Dependent{
@@ -50,7 +51,7 @@ class ActivityDependent extends CoreObject implements Dependent{
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
+    Debug.logInfo('Purging $id from ${this.id}');
     // TODO: implement purgeRef
   }
 }

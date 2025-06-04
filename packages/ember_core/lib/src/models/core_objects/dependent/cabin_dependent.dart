@@ -1,6 +1,8 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_utils.dart';
 
+import '../../../../ember_core_debug.dart';
+
 class CabinDependent extends CoreObject implements Dependent{
   @override
   final String principalPar;
@@ -29,7 +31,7 @@ class CabinDependent extends CoreObject implements Dependent{
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
+    Debug.logInfo('Purging $id from ${this.id}');
     if (IdFunctions.getIdPart(id, 1) == 'camper') {
       camperRefs.remove(id);
       campersWithPreferences.remove(id);

@@ -1,0 +1,11 @@
+import '../../ember_core_debug.dart';
+import '../../ember_core_models.dart';
+
+class CsvError extends EmberException {
+  CsvError(String devMessage, String userMessage) : super(
+    module: Module.core,
+    logType: LogType.error,
+    devMessage: devMessage,
+    userMessage: userMessage,
+  );
+}

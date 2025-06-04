@@ -2,6 +2,7 @@
 
 import 'package:ember_core/ember_core_models.dart';
 
+import '../../../../ember_core_debug.dart';
 import '../../interfaces/elevated.dart';
 
 class Organization extends CoreObject implements Domain, Elevated{
@@ -25,8 +26,8 @@ class Organization extends CoreObject implements Domain, Elevated{
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
-    print('unnecessary purge');
+    Debug.logInfo('Purging $id from ${this.id}');
+    Debug.logInfo('unnecessary purge');
     return;
   }
 

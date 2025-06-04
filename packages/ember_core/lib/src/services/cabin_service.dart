@@ -3,6 +3,7 @@ import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
+import '../../ember_core_debug.dart';
 import '../backend/backend_manager.dart';
 
 class CabinService extends GetxService {
@@ -107,7 +108,7 @@ class CabinService extends GetxService {
 
   Future<void> registerCabinToSession(Commit commit, PrincipalCabin principalCabin) async {
     if ((await getRegisteredPrincipalCabinIds()).contains(principalCabin.id)) {
-      print('This cabin is already registered to this session');
+      Debug.logInfo('This cabin is already registered to this session');
       return;
     }
     CabinDependent cabinToRegister = CabinDependent(principalPar: principalCabin.id);

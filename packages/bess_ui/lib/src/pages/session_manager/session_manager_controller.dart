@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
@@ -41,10 +42,10 @@ class SessionManagerController extends GetxController {
   void toggleCabinSelection(String cabinPrinId) {
     if (selectedCabinPrinIds.contains(cabinPrinId)) {
       selectedCabinPrinIds.remove(cabinPrinId);
-      print('$cabinPrinId selection is now: false');
+      Debug.logInfo('$cabinPrinId selection is now: false');
     } else {
       selectedCabinPrinIds.add(cabinPrinId);
-      print('$cabinPrinId selection is now: true');
+      Debug.logInfo('$cabinPrinId selection is now: true');
     }
   }
 

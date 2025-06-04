@@ -1,6 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/src/models/interfaces/time_interval.dart';
 
+import '../../../../ember_core_debug.dart';
 import '../../interfaces/elevated.dart';
 
 typedef DependentId = String;
@@ -64,7 +65,7 @@ class Session extends CoreObject implements Domain, Elevated, TimeInterval{
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
+    Debug.logInfo('Purging $id from ${this.id}');
     refTracker.remove(id);
 
     for (Set<String> set in refTracker.values) {

@@ -55,63 +55,79 @@ class ContextService extends GetxService {
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
+    bool doDomainRepair = false;
+
     if (clientContext.justMigrated) {
       clientContext.justMigrated = false;
       return;
     }
 
-    final Map<String, dynamic> dynamicOrgNames = await backend.getFieldFromCollection('organization', 'rot', 'name');
-    final Map<String, String> orgNames = {};
-    dynamicOrgNames.forEach((key, value) {
-      if (value is String) {
-        orgNames[key] = value;
+    // TODO: This is really painful, fix it
+    if (doDomainRepair) {
+      final Map<String, dynamic> dynamicOrgNames = await backend.getFieldFromCollection('organization', 'rot', 'name');
+      final Map<String, String> orgNames = {};
+      dynamicOrgNames.forEach((key, value) {
+        if (value is String) {
+          orgNames[key] = value;
+        }
+      });
+      if (!orgNames.containsValue(HardcodedDomains.ygs.name)) {
+        Debug.logWarning('YGS doesn\'t exist, recreating it');
+        await basicDomainCreate(HardcodedDomains.ygs);
       }
-    });
-    if (!orgNames.containsValue(HardcodedDomains.ygs.name)) {
-      Debug.logWarning('YGS doesn\'t exist, recreating it');
-      await basicDomainCreate(HardcodedDomains.ygs);
     }
     clientContext.organizationId = HardcodedDomains.ygs.id; // TODO: THIS NEEDS TO BE FIXED BEFORE ALLOWING MULTIPLE BRANCHES AND ORGS
 
-    final Map<String, dynamic> dynamicBranchNames = await backend.getFieldFromCollection('branch', 'org', 'name');
-    final Map<String, String> branchNames = {};
-    dynamicBranchNames.forEach((key, value) {
-      if (value is String) {
-        branchNames[key] = value;
+    if (doDomainRepair) {
+      final Map<String, dynamic> dynamicBranchNames = await backend.getFieldFromCollection('branch', 'org', 'name');
+      final Map<String, String> branchNames = {};
+      dynamicBranchNames.forEach((key, value) {
+        if (value is String) {
+          branchNames[key] = value;
+        }
+      });
+      if (!branchNames.containsValue(HardcodedDomains.colman.name)) {
+        Debug.logWarning('Colman doesn\'t exist, recreating it');
+        await basicDomainCreate(HardcodedDomains.colman);
       }
-    });
-    if (!branchNames.containsValue(HardcodedDomains.colman.name)) {
-      Debug.logWarning('Colman doesn\'t exist, recreating it');
-      await basicDomainCreate(HardcodedDomains.colman);
     }
     clientContext.branchId = HardcodedDomains.colman.id;
 
     // Retrieve the unique active Season.
-    final Map<String, dynamic> dynamicSeasonNames = await backend.getFieldFromCollection('season', 'brn', 'name');
-    final Map<String, String> seasonNames = {};
-    dynamicSeasonNames.forEach((key, value) {
-      if (value is String) {
-        seasonNames[key] = value;
+    if (doDomainRepair) {
+      final Map<String, dynamic> dynamicSeasonNames = await backend.getFieldFromCollection('season', 'brn', 'name');
+      final Map<String, String> seasonNames = {};
+      dynamicSeasonNames.forEach((key, value) {
+        if (value is String) {
+          seasonNames[key] = value;
+        }
+      });
+      if (!seasonNames.containsValue(HardcodedDomains.season.name)) {
+        Debug.logWarning('2025 doesn\'t exist, recreating it');
+        await basicDomainCreate(HardcodedDomains.season);
+        clientContext.seasonId = HardcodedDomains.season.id;
       }
-    });
-    if (!seasonNames.containsValue(HardcodedDomains.season.name)) {
-      Debug.logWarning('2025 doesn\'t exist, recreating it');
-      await basicDomainCreate(HardcodedDomains.season);
-      clientContext.seasonId = HardcodedDomains.season.id;
     }
     clientContext.seasonId = HardcodedDomains.season.id;
 
-    final Map<String, dynamic> dynamicSessionNames = await backend.getFieldFromCollection('session', 'sea', 'name');
-    final Map<String, String> sessionNames = {};
-    dynamicSessionNames.forEach((key, value) {
-      if (value is String) {
-        sessionNames[key] = value;
+    if (doDomainRepair) {
+      final Map<String, dynamic> dynamicSessionNames = await backend.getFieldFromCollection('session', 'sea', 'name');
+      final Map<String, String> sessionNames = {};
+      dynamicSessionNames.forEach((key, value) {
+        if (value is String) {
+          sessionNames[key] = value;
+        }
+      });
+      if (sessionNames.isEmpty) {
+        Debug.logWarning('No sessions exist, creating one');
+        await basicDomainCreate(HardcodedDomains.testSession);
+        clientContext.sessionId = HardcodedDomains.testSession.id;
+        Commit scheduleCommit = Commit(disarmRequirementsLevel: 0);
+        scheduleCommit.addObjectToPush(HardcodedDomains.schedule);
+        await backend.commit(scheduleCommit);
+      } else {
+        clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
       }
-    });
-    if (sessionNames.isEmpty) {
-      Debug.logWarning('No sessions exist, creating one');
-      await basicDomainCreate(HardcodedDomains.testSession);
-      clientContext.sessionId = HardcodedDomains.testSession.id;
     } else {
       clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
     }

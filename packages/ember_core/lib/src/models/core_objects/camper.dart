@@ -1,7 +1,6 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../../ember_core_utils.dart';
-import '../enums/roster_field.dart';
 
 
 typedef CabinId = String;
@@ -19,12 +18,14 @@ class Camper extends CoreObject implements Rosterable {
   @override
   String gender;
   @override
-  DateTime? birthdate;
+  DateTime birthdate;
   @override
   String note;
   CabinId? cabinRef;
   @override
   String? cabinName;
+  @override
+  String? ultracampId;
   final Map<PrincipalActivityId, double?> preferenceRefs;
   final Map<PrincipalActivityId, double> preferenceWeightRefs;
   @override
@@ -35,10 +36,11 @@ class Camper extends CoreObject implements Rosterable {
     required this.lastName,
     this.preferredName = '',
     this.gender = '',
-    this.birthdate,
+    required this.birthdate,
     this.note = '',
     this.cabinRef,
     this.cabinName,
+    this.ultracampId,
     Map<PrincipalActivityId, double?>? preferenceRefs,
     Map<PrincipalActivityId, double>? preferenceWeightRefs,
     Map<AMABlockId, ActivityDependentId>? activityAssignmentRefs,
@@ -56,15 +58,15 @@ class Camper extends CoreObject implements Rosterable {
 
   /// returns preferred name if set, first name if not
   String get name => preferredName.isNotEmpty ? preferredName : firstName;
-  String get fullName => '$name $lastName';
+  @override
+  String get fullName => '$firstName $lastName';
+  String get fullNamePreferred => '$name $lastName';
   String get lastInitial => lastName[0];
 
-  int? get age => (() {
-    if (birthdate == null) return null;
-
+  int get age => (() {
     final DateTime today = DateTime.now();
-    int years = (today.year - birthdate!.year);
-    if (today.month < birthdate!.month || (today.month == birthdate!.month && today.day < birthdate!.day)) {
+    int years = (today.year - birthdate.year);
+    if (today.month < birthdate.month || (today.month == birthdate.month && today.day < birthdate.day)) {
       years--;
     }
     return years < 0 ? 0 : years;
@@ -86,7 +88,7 @@ class Camper extends CoreObject implements Rosterable {
       case RosterField.gender:
         return gender;
       case RosterField.age:
-        return age?.toString() ?? '';
+        return age.toString() ?? '';
       case RosterField.birthdate:
         return birthdate.toString();
       case RosterField.cabinName:
@@ -114,6 +116,7 @@ class Camper extends CoreObject implements Rosterable {
       'note': note,
       'cabinRef': cabinRef,
       'cabinName': cabinName,
+      'ultracampId': ultracampId,
       'preferenceRefs': preferenceRefs.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
       'preferenceWeightRefs': preferenceWeightRefs.map((key, value) => MapEntry(key, value.clamp(0.0, 1.0))),
       'activityAssignmentRefs': activityAssignmentRefs,
@@ -127,10 +130,11 @@ class Camper extends CoreObject implements Rosterable {
       lastName: json['lastName'] ?? '',
       preferredName: json['preferredName'] ?? '',
       gender: json['gender'] ?? '',
-      birthdate: (json['birthdate'] as DateTime?)?.toUtc(),
+      birthdate: (json['birthdate'] as DateTime?)!.toUtc(),
       note: json['note'] ?? '',
       cabinRef: json['cabinRef'],
       cabinName: json['cabinName'],
+      ultracampId: json['ultracampId'],
       preferenceRefs: (json['preferenceRefs'] as Map?)?.cast<String, double?>() ?? {},
       preferenceWeightRefs: (json['preferenceWeightRefs'] as Map?)?.cast<String, double>() ?? {},
       activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String>() ?? {},

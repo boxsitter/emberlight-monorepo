@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:ember_core/ember_core_validators.dart';
 import 'package:ember_fire/src/repositories/pull_repository.dart';
+import 'package:ember_fire/src/services/database_repair_service.dart';
 import 'package:get/get.dart';
 
 
@@ -32,11 +34,11 @@ class CommitRepository {
     required Set<CoreObject> objectsToDelete,
   }) async {
     if (objectsToPush.isEmpty && objectsToDelete.isEmpty) {
-      print('Bulk Apply: No objects to push or delete.');
+      Debug.logInfo('Bulk Apply: No objects to push or delete.');
       return;
     }
 
-    print('Bulk Apply: Starting. Processing ${objectsToPush.length} pushes and ${objectsToDelete.length} deletes.');
+    Debug.logInfo('Bulk Apply: Starting. Processing ${objectsToPush.length} pushes and ${objectsToDelete.length} deletes.');
 
     // Use iterators to process both sets concurrently within batch limits
     final pushIterator = objectsToPush.iterator;
@@ -75,10 +77,10 @@ class CommitRepository {
             opsInCurrentBatch++;
             pushesInBatch++;
           } else {
-            print('Warning (Batch #$batchNum): Skipping push object with empty ID.');
+            Debug.logInfo('Warning (Batch #$batchNum): Skipping push object with empty ID.');
           }
         } catch (e) {
-          print('Error processing push for object ID "${currentPushObject.id}" in batch #$batchNum: $e. Skipping.');
+          Debug.logInfo('Error processing push for object ID "${currentPushObject.id}" in batch #$batchNum: $e. Skipping.');
         }
         // Move to the next push item
         hasMorePushes = pushIterator.moveNext();
@@ -97,10 +99,10 @@ class CommitRepository {
             opsInCurrentBatch++;
             deletesInBatch++;
           } else {
-            print('Warning (Batch #$batchNum): Invalid path "$resolvedPath" for delete object ID "$currentDeleteObject.id". Skipping.');
+            Debug.logInfo('Warning (Batch #$batchNum): Invalid path "$resolvedPath" for delete object ID "$currentDeleteObject.id". Skipping.');
           }
         } catch (e) {
-          print('Error processing delete for object ID "${currentDeleteObject.id}" in batch #$batchNum: $e. Skipping.');
+          Debug.logInfo('Error processing delete for object ID "${currentDeleteObject.id}" in batch #$batchNum: $e. Skipping.');
         }
         // Move to the next delete item
         hasMoreDeletes = deleteIterator.moveNext();
@@ -109,48 +111,75 @@ class CommitRepository {
       // --- Commit the current batch if it has operations ---
       if (opsInCurrentBatch > 0) {
         try {
-          print('Bulk Apply: Committing batch #$batchNum ($pushesInBatch pushes, $deletesInBatch deletes)...');
+          Debug.logInfo('Bulk Apply: Committing batch #$batchNum ($pushesInBatch pushes, $deletesInBatch deletes)...');
           await batch.commit();
           totalOpsCommitted += opsInCurrentBatch;
           batchesCommitted++;
-          print('Bulk Apply: Batch #$batchesCommitted committed successfully.');
+          Debug.logInfo('Bulk Apply: Batch #$batchesCommitted committed successfully.');
         } catch (e) {
-          print('Error committing Firestore batch #$batchNum: $e');
+          Debug.logInfo('Error committing Firestore batch #$batchNum: $e');
           // Rethrow to signal failure. The loop will terminate.
           rethrow;
         }
       } else {
-        print('Bulk Apply: Batch #$batchNum contained no valid operations to commit.');
+        Debug.logInfo('Bulk Apply: Batch #$batchNum contained no valid operations to commit.');
       }
     }
-    print('Bulk Apply: Finished. $totalOpsCommitted operations committed across $batchesCommitted batch(es).');
+    Debug.logInfo('Bulk Apply: Finished. $totalOpsCommitted operations committed across $batchesCommitted batch(es).');
   }
 
   Future<bool> commit(Commit commit) async {
+    DatabaseRepairService repairService = Get.find<DatabaseRepairService>();
 
     if (commit.objectsToPush.isEmpty && commit.objectsToDelete.isEmpty) {
-      print('Nothing to commit!');
+      Debug.logInfo('Nothing to commit!');
       return false;
     }
 
     if (!await requestService.disarmCommit(commit)) {
-      print('Operation cannot proceed');
+      Debug.logInfo('Operation cannot proceed');
       return false;
     }
 
-    Set<CoreObject> ignore = {};
-    Set<CoreObject> objectsToDeleteSnapshot = commit.objectsToDelete.values.toSet();
-    for (CoreObject object in objectsToDeleteSnapshot) {
-      await _cleanBeforeDelete(commit, object, ignore);
-      ignore.add(object);
+    // if the commit is intended to be merged rather than pushed, do that
+    if (commit.merge && commit.objectsToPush.isNotEmpty) {
+      final objectsToMerge = commit.objectsToPush.values.toSet();
+      commit.objectsToPush.clear();
+      await repairService.mergeObjectsWithDatabase(
+        commit: commit,
+        objects: objectsToMerge,
+        prioritizeAFields: true,
+        prioritizeAValues: true,
+        overwriteWithEmptyAValues: false,
+        aFieldsToIgnore: {'createdAt'},
+      );
     }
 
-    Session newSession = commit.getObjectOfType() ?? await clientContextService.session;
-    await Future.wait([
-      Future(() => _updateRefTracker(newSession.refTracker, commit.objectsToPush.values.toSet())),
-      Future(() => _updatePrincipalDependentLinkTracker(newSession.principalDependentLinkTracker, commit.objectsToPush.values.toSet())),
-    ]);
-    commit.addObjectToPush(newSession);
+    bool containsOnlyDomain = false;
+    if (commit.objectsToPush.length == 1 && commit.objectsToDelete.length == 0) {
+      for (CoreObject object in commit.objectsToPush.values) {
+        if (object is Domain) {
+          containsOnlyDomain = true;
+        }
+      }
+    }
+
+    // Don't update ref tracker if the commit only has a domain in it
+    if (!containsOnlyDomain) {
+      Set<CoreObject> ignore = {};
+      Set<CoreObject> objectsToDeleteSnapshot = commit.objectsToDelete.values.toSet();
+      for (CoreObject object in objectsToDeleteSnapshot) {
+        await _cleanBeforeDelete(commit, object, ignore);
+        ignore.add(object);
+      }
+
+      Session newSession = commit.getObjectOfType() ?? await clientContextService.session;
+      await Future.wait([
+        Future(() => _updateRefTracker(newSession.refTracker, commit.objectsToPush.values.toSet())),
+        Future(() => _updatePrincipalDependentLinkTracker(newSession.principalDependentLinkTracker, commit.objectsToPush.values.toSet())),
+      ]);
+      commit.addObjectToPush(newSession);
+    }
 
     await _bulkApplyChanges(objectsToPush: commit.objectsToPush.values.toSet(), objectsToDelete: commit.objectsToDelete.values.toSet());
     return true;
@@ -300,7 +329,7 @@ class CommitRepository {
           if (componentObject != null) {
             await _cleanBeforeDelete(commit, componentObject, ignore);
           } else {
-            print('Warning: Could not find or fetch component object for ID $id during pre-delete cleaning.');
+            Debug.logInfo('Warning: Could not find or fetch component object for ID $id during pre-delete cleaning.');
           }
 
         } catch (error) {

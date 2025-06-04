@@ -1,5 +1,6 @@
 import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
@@ -63,10 +64,10 @@ class ActivityPreferencesController extends GetxController {
   Future<void> onSelectorLoad() async {
     if (selectedCabinName.value == null || selectedCabinId.value == null) {
       // TODO: Throw an error
-      print('SelectedCabinName: ${selectedCabinName.value}, SelectedCabinId: ${selectedCabinId.value}');
+      Debug.logInfo('SelectedCabinName: ${selectedCabinName.value}, SelectedCabinId: ${selectedCabinId.value}');
       return;
     }
-    print('Loaded selector screen!');
+    Debug.logInfo('Loaded selector screen!');
     camperNames.clear();
     camperIsCompleted.clear();
     activityNames.clear();
@@ -114,7 +115,7 @@ class ActivityPreferencesController extends GetxController {
       orderedActivityIds.clear();
     } finally {
       isActivityDataLoaded.value = true;
-      print('Finished POPULATING ACTIVITY MAPS for camper: $selectedCamperId.value');
+      Debug.logInfo('Finished POPULATING ACTIVITY MAPS for camper: $selectedCamperId.value');
     }
   }
 

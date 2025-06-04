@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 
 
@@ -11,9 +12,9 @@ class ContextlessRepository {
   Future<void> push(String path, CoreObject object) async {
     try {
       await FirebaseFirestore.instance.doc(path).set(object.toJson());
-      print('Document pushed successfully to $path');
+      Debug.logInfo('Document pushed successfully to $path');
     } catch (e) {
-      print('Error pushing document to $path: $e');
+      Debug.logInfo('Error pushing document to $path: $e');
     }
   }
 
@@ -22,7 +23,7 @@ class ContextlessRepository {
       final DocumentSnapshot doc = await _db.doc(path).get();
       return doc.exists;
     } catch (e) {
-      print('Error checking if document exists at $path: $e');
+      Debug.logInfo('Error checking if document exists at $path: $e');
       return false; // Or rethrow the error if you want to handle it upstream
     }
   }
@@ -33,11 +34,11 @@ class ContextlessRepository {
       if (docSnapshot.exists) {
         return docSnapshot.data() as Map<String, dynamic>?;
       } else {
-        print('Document does not exist at path: $path');
+        Debug.logInfo('Document does not exist at path: $path');
         return null;
       }
     } catch (e) {
-      print('Error getting document at $path: $e');
+      Debug.logInfo('Error getting document at $path: $e');
       return null;
     }
   }

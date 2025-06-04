@@ -1,5 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 
+import '../../../../ember_core_debug.dart';
+
 class AMABlock extends CoreObject implements ScheduleBlock {
   @override
   final String name;
@@ -63,7 +65,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
 
   @override
   void purgeRef(String id) {
-    print('Purging $id from ${this.id}');
+    Debug.logInfo('Purging $id from ${this.id}');
     // TODO: implement purgeRef
   }
 

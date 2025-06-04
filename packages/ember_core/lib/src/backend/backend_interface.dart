@@ -16,7 +16,6 @@ abstract class CoreBackend {
   Future<String?> queryField<T>(String collectionName, String domain, String field, T value);
   Future<String> getActiveObjectId(String collectionName, String domain);
   Future<void> commit(Commit commit);
-  Future<void> deleteObject(String key);
   Future<Stream<Map<String, T>>> watchCollection<T>({
     required String collectionName,
     required String domain,

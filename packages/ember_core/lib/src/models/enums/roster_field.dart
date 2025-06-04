@@ -1,15 +1,19 @@
 enum RosterField {
-  id('Core Id'),
-  fullName('Full Name'),
-  firstName('First Name'),
-  preferredName('Preferred Name'),
-  lastName('Last Name'),
-  gender('Gender'),
-  birthdate('Birthdate'),
-  age('Age'),
-  note('Note'),
-  cabinName('Cabin');
+  id('Core Id', false),
+  fullName('Full Name', false),
+  firstName('First Name', true, 'nameFirst'),
+  preferredName('Preferred Name', false, 'nickname'),
+  lastName('Last Name', true, 'nameLast'),
+  gender('Gender', false, 'expressionName', 'Gender'),
+  birthdate('Birthdate', true, 'Birthdate'),
+  age('Age', false),
+  note('Note', false),
+  cabinName('Cabin', false, 'Cabin'),
+  ultracampId('UltraCamp id', false, 'idPerson');
 
   final String title;
-  const RosterField(this.title);
+  final bool required;
+  final String? csvHeader;
+  final String? csvHeaderAlt;
+  const RosterField(this.title, this.required, [this.csvHeader, this.csvHeaderAlt]);
 }

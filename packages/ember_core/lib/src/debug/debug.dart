@@ -159,7 +159,7 @@ class Debug {
       _devPrint(info);
     }
 
-    if (info.userTitle != null) {
+    if (info.userMessage != null) {
       FrontendManager.instance.showToast(title: info.logType.userString, message: info.userMessage, logType: info.logType);
     }
   }

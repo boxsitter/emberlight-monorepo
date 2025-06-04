@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:bess_ui/src/common/routes/routes.dart';
+import 'package:bess_ui/src/common/services/popup_service.dart';
+import 'package:ember_core/ember_core_backend.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +18,7 @@ class RosterTableController extends GetxController {
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
   final RosterService rosterService = Get.find<RosterService>();
+  final FrontendCommitService commitService = Get.find<FrontendCommitService>();
 
   // --- Configuration ---
   static const double maxColumnWidth = 300.0;
@@ -31,6 +36,8 @@ class RosterTableController extends GetxController {
   final RxInt count = 0.obs;
   final RxList<double> columnWidths = <double>[].obs;
   final RxSet<String> selectedRowIds = <String>{}.obs;
+
+  final RxBool importingCampers = false.obs;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
@@ -224,14 +231,14 @@ class RosterTableController extends GetxController {
 
   void startListening() {
     if (_campersSubscription == null) {
-      print('Started listening to camper stream');
+      Debug.logInfo('Started listening to camper stream');
       _startListening();
     }
   }
 
   void stopListening() {
     if (_campersSubscription != null) {
-      print('Stopped listening to camper stream');
+      Debug.logInfo('Stopped listening to camper stream');
       _campersSubscription?.cancel();
       _campersSubscription = null;
     }
@@ -247,12 +254,12 @@ class RosterTableController extends GetxController {
       count.value = roster.length;
       _calculateAndUpdateColumnWidths(); // Trigger width calculation on data change
     });
-    print('RosterTableController Initialized');
+    Debug.logInfo('RosterTableController Initialized');
   }
 
   @override
   void onClose() {
-    print('RosterTableController Closing - Stopping Listener');
+    Debug.logInfo('RosterTableController Closing - Stopping Listener');
     stopListening();
     super.onClose();
   }
@@ -294,5 +301,37 @@ class RosterTableController extends GetxController {
 
   List<String> getRowData(int rowIndex) {
     return rosterService.getRowData(roster, rowIndex, fields);
+  }
+
+  Future<bool> showPopup(String title, Widget popupChild) {
+    PopupService popupService = Get.find<PopupService>();
+    return popupService.showFullScreenDialog(
+      title: title,
+      child: popupChild,
+    );
+  }
+
+  Future<void> importCsv() async {
+    importingCampers.value = true;
+    try {
+      await commitService.commit(await sessionRosterService.importFromCsv());
+    } on Exception catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      importingCampers.value = false;
+      Get.back();
+    }
+  }
+  
+  Future<void> deleteSelected() async {
+    try {
+      Commit commit = Commit(disarmRequirementsLevel: 1, confirmationMessage: 'Once deleted, campers cannot be restored. Their activity assignments and preferences will be gone. '
+          'Are you sure you want to proceed?');
+      Set<Camper> campersToDelete = await BackendManager.instance.getObjects(selectedRowIds);
+      commit.addObjectsToDelete(campersToDelete);
+      await commitService.commit(commit);
+    } finally {
+      selectedRowIds.clear();
+    }
   }
 }

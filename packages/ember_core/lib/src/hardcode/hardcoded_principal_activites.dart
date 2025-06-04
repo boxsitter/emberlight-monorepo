@@ -1,7 +1,7 @@
 import '../../ember_core_models.dart';
 
 class HardcodedPrincipalActivities {
-  static final Set<PrincipalActivity> hardcodedPrincipalActivities = <PrincipalActivity>{
+  static final Set<PrincipalActivity> list = <PrincipalActivity>{
     gagaBall,
     boating,
     climbing,

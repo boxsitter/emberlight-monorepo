@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,7 @@ class PullRepository {
 
   Future<bool> docExists(String id) async {
     final resolvedPath = await pathService.getDocPathFromId(id);
-    print('Getting doc: $id');
+    Debug.logInfo('Getting doc: $id');
 
     try {
       final docSnapshot = await _db.doc(resolvedPath).get();
@@ -25,11 +26,11 @@ class PullRepository {
         return true;
       }
     } on FirebaseException catch (e) {
-      print('Error fetching document at $resolvedPath: ${e.message}');
+      Debug.logInfo('Error fetching document at $resolvedPath: ${e.message}');
       rethrow;
     } catch (e) {
       // Handle all other errors
-      print('Error fetching document at $resolvedPath: $e');
+      Debug.logInfo('Error fetching document at $resolvedPath: $e');
       rethrow;
     }
   }
@@ -39,7 +40,7 @@ class PullRepository {
   /// Throws an error if there is an issue during retrieval.
   Future<Map<String, dynamic>> getDoc(String id) async {
     final resolvedPath = await pathService.getDocPathFromId(id);
-    print('Getting doc: $id');
+    Debug.logInfo('Getting doc: $id');
 
     try {
       final docSnapshot = await _db.doc(resolvedPath).get();
@@ -54,11 +55,11 @@ class PullRepository {
       convertToDateTime(data);
       return data;
     } on FirebaseException catch (e) {
-      print('Error fetching document at $resolvedPath: ${e.message}');
+      Debug.logInfo('Error fetching document at $resolvedPath: ${e.message}');
       rethrow;
     } catch (e) {
       // Handle all other errors
-      print('Error fetching document at $resolvedPath: $e');
+      Debug.logInfo('Error fetching document at $resolvedPath: $e');
       rethrow;
     }
   }
@@ -77,7 +78,7 @@ class PullRepository {
     final collection = await pathService.getCollectionPathFromId(ids.first);
     final idList = ids.toList();
 
-    print('Getting docs: [${ids.join('\n')}]');
+    Debug.logInfo('Getting docs: [${ids.join('\n')}]');
 
     // Create batches of at most 10 IDs each
     final batches = <List<String>>[];
@@ -110,10 +111,10 @@ class PullRepository {
         results.addAll(map);
       }
     } on FirebaseException catch (e) {
-      print('Error fetching documents: ${e.message}');
+      Debug.logInfo('Error fetching documents: ${e.message}');
       rethrow;
     } catch (e) {
-      print('Error fetching documents: $e');
+      Debug.logInfo('Error fetching documents: $e');
       rethrow;
     }
 
@@ -126,7 +127,7 @@ class PullRepository {
   /// Throws an error if the retrieval fails.
   Future<Map<String, Map<String, dynamic>>> getDocsInCollection(String collectionName, String domain,) async {
     final collectionPath = await pathService.getCollectionPath(collectionName, domain);
-    print('Fetching all documents from collection: $collectionPath');
+    Debug.logInfo('Fetching all documents from collection: $collectionPath');
     try {
       final querySnapshot = await _db.collection(collectionPath).get();
 
@@ -147,7 +148,7 @@ class PullRepository {
         'Error fetching documents from $collectionName: ${e.message}',
       );
     } catch (e) {
-      print('Error fetching documents from collection $collectionName: $e');
+      Debug.logInfo('Error fetching documents from collection $collectionName: $e');
       rethrow;
     }
   }
@@ -194,7 +195,7 @@ class PullRepository {
   Future<dynamic> _getDocumentField(String id, String field) async {
     final document = await getDoc(id);
     if (!document.containsKey(field)) {
-      throw ArgumentError("Field '$field' does not exist in document with id '$id'.");
+      throw ArgumentError('Field \'$field\' does not exist in document with id \'$id\'.');
     }
     return document[field];
   }
@@ -208,12 +209,12 @@ class PullRepository {
       if (document.containsKey(field)) {
         fieldValues[document['id']] = document[field];
       } else {
-        throw ArgumentError("Field '$field' not found in one of the documents in collection '$collectionName'");
+        throw ArgumentError('Field \'$field\' not found in one of the documents in collection \'$collectionName\'');
       }
     }
 
     if (fieldValues.isEmpty) {
-      print("Warning: Field '$field' was not found in any documents in collection '$collectionName' (domain: '$domain'). Returning empty list.");
+      Debug.logInfo('Warning: Field \'$field\' was not found in any documents in collection \'$collectionName\' (domain: \'$domain\'). Returning empty list.');
     }
 
     return fieldValues;
@@ -225,10 +226,9 @@ class PullRepository {
     final value = await _getDocumentField(id, field);
     if (value is! T) {
       throw ArgumentError(
-          "Field '$field' is expected to be of type ${T.toString()} but found ${value.runtimeType}."
-      );
+          'Field \'$field\' is expected to be of type ${T.toString()} but found ${value.runtimeType}.');
     }
-    print('Getting field: $field in $id');
+    Debug.logInfo('Getting field: $field in $id');
     return value;
   }
 
@@ -239,15 +239,15 @@ class PullRepository {
     final value = await _getDocumentField(id, field);
     if (value is! List) {
       throw ArgumentError(
-          "Field '$field' is expected to be a List but found ${value.runtimeType}."
+          'Field \'$field\' is expected to be a List but found ${value.runtimeType}.'
       );
     }
-    print('Getting set: $field in $id');
+    Debug.logInfo('Getting set: $field in $id');
     try {
       return (value).map((e) => e as T).toSet();
     } catch (_) {
       throw ArgumentError(
-          "Field '$field' contains values that can't be cast to ${T.toString()}."
+          'Field \'$field\' contains values that can\'t be cast to ${T.toString()}.'
       );
     }
   }
@@ -304,7 +304,7 @@ class PullRepository {
               query = query.where(field, isGreaterThanOrEqualTo: operand);
               break;
             default:
-              throw ArgumentError("Unsupported operator: $operator");
+              throw ArgumentError('Unsupported operator: $operator');
           }
         });
       } else {
@@ -313,7 +313,7 @@ class PullRepository {
     });
     final querySnapshot = await query.limit(1).get();
     if (querySnapshot.docs.isEmpty) {
-      throw StateError("No document found in '$collectionName' matching $conditions");
+      throw StateError('No document found in \'$collectionName\' matching $conditions');
     }
     return querySnapshot.docs.first.id;
   }
@@ -341,7 +341,7 @@ class PullRepository {
     try {
       return await _queryCollection(collectionName, domain, conditions);
     } catch (e) {
-      print('Error fetching active objects: $e');
+      Debug.logInfo('Error fetching active objects: $e');
       rethrow;
     }
   }
@@ -364,11 +364,11 @@ class PullRepository {
   Future<Set<String>> findMissingKeys(Set<String> keysToCheck) async {
     // --- 1. Handle Empty Input ---
     if (keysToCheck.isEmpty) {
-      print("[findMissingKeys] Input key set is empty. Returning empty set.");
+      Debug.logInfo('[findMissingKeys] Input key set is empty. Returning empty set.');
       return {};
     }
 
-    print("[findMissingKeys] Starting check for ${keysToCheck.length} keys.");
+    Debug.logInfo('[findMissingKeys] Starting check for ${keysToCheck.length} keys.');
 
     // --- 2. Resolve Paths and Group by Collection ---
     // Map: collectionPath -> Set<originalKey>
@@ -382,13 +382,13 @@ class PullRepository {
       try {
         fullPath = await pathService.getDocPathFromId(key);
         if (fullPath.trim().isEmpty) {
-          print("[findMissingKeys] Warning: Resolved path for key '$key' is empty. Skipping.");
+          Debug.logInfo('[findMissingKeys] Warning: Resolved path for key \'$key\' is empty. Skipping.');
           continue; // Skip keys that don't resolve to a non-empty path
         }
 
         collectionPath = await pathService.getCollectionPathFromId(key);
         if (collectionPath.trim().isEmpty) {
-          print("[findMissingKeys] Warning: Could not determine collection path for '$fullPath' (from key '$key'). Skipping grouping for this key.");
+          Debug.logInfo('[findMissingKeys] Warning: Could not determine collection path for \'$fullPath\' (from key \'$key\'). Skipping grouping for this key.');
           // Key is still in originalKeyToFullPath, will be treated as missing if not found later
           continue; // Skip grouping if collection path can't be determined
         }
@@ -398,7 +398,7 @@ class PullRepository {
 
       } catch (e) {
         // Catch errors during path resolution or collection path extraction
-        print("[findMissingKeys] Error processing key '$key' (Path: '$fullPath'): $e. Skipping key.");
+        Debug.logInfo('[findMissingKeys] Error processing key \'$key\' (Path: \$fullPath\'): $e. Skipping key.');
         // Ensure key is not left in map if resolution failed partway
         originalKeyToFullPath.remove(key);
       }
@@ -406,14 +406,14 @@ class PullRepository {
 
     // Check if any keys could be successfully resolved and grouped
     if (keysByCollection.isEmpty) {
-      print("[findMissingKeys] No keys could be grouped by collection (check path resolution logs).");
+      Debug.logInfo('[findMissingKeys] No keys could be grouped by collection (check path resolution logs).');
       // Decide what to return: maybe all originally checked keys, or only those resolvable?
       // Let's return keys that *could* be resolved but maybe not grouped or found
-      print("[findMissingKeys] Assuming all keys (${originalKeyToFullPath.length}) with resolved paths are missing.");
+      Debug.logInfo('[findMissingKeys] Assuming all keys (${originalKeyToFullPath.length}) with resolved paths are missing.');
       return originalKeyToFullPath.keys.toSet();
     }
 
-    print("[findMissingKeys] Grouped ${originalKeyToFullPath.length} resolvable keys into ${keysByCollection.length} collections.");
+    Debug.logInfo('[findMissingKeys] Grouped ${originalKeyToFullPath.length} resolvable keys into ${keysByCollection.length} collections.');
 
     // --- 3. Prepare Batched `whereIn` Queries ---
     final List<Future<QuerySnapshot<Map<String, dynamic>>>> queryFutures = [];
@@ -436,14 +436,14 @@ class PullRepository {
             .toList();
 
         if (docIdsInCollectionBatch.isEmpty) {
-          print("[findMissingKeys] Warning: No valid document IDs extracted for collection '$collectionPath'. Skipping query.");
+          Debug.logInfo('[findMissingKeys] Warning: No valid document IDs extracted for collection \'$collectionPath\'. Skipping query.');
           return; // Continue to next collection path
         }
 
         // Use '.slices()' from 'package:collection/collection.dart' for easy batching
         final List<List<String>> batches = docIdsInCollectionBatch.slices(firestoreWhereInLimit).toList();
 
-        print("[findMissingKeys] Collection '$collectionPath': ${keysInCollection.length} keys -> ${batches.length} Firestore query batch(es).");
+        Debug.logInfo('[findMissingKeys] Collection \'$collectionPath\': ${keysInCollection.length} keys -> ${batches.length} Firestore query batch(es).');
 
         // Create a query Future for each batch
         for (final batch in batches) {
@@ -457,26 +457,26 @@ class PullRepository {
           }
         }
       } else {
-        print("[findMissingKeys] Info: Collection '$collectionPath' had no keys associated after resolution/grouping. Skipping query.");
+        Debug.logInfo('[findMissingKeys] Info: Collection \'$collectionPath\' had no keys associated after resolution/grouping. Skipping query.');
       }
     });
 
     // Check if any queries were actually prepared
     if (queryFutures.isEmpty) {
-      print("[findMissingKeys] No Firestore queries were prepared (check grouping/ID extraction logs).");
-      print("[findMissingKeys] Assuming all keys (${originalKeyToFullPath.length}) with resolved paths are missing.");
+      Debug.logInfo('[findMissingKeys] No Firestore queries were prepared (check grouping/ID extraction logs).');
+      Debug.logInfo('[findMissingKeys] Assuming all keys (${originalKeyToFullPath.length}) with resolved paths are missing.');
       return originalKeyToFullPath.keys.toSet();
     }
 
     // --- 4. Execute Queries Concurrently ---
-    print("[findMissingKeys] Executing ${queryFutures.length} Firestore queries concurrently via Future.wait...");
+    Debug.logInfo('[findMissingKeys] Executing ${queryFutures.length} Firestore queries concurrently via Future.wait...');
     List<QuerySnapshot<Map<String, dynamic>>> queryResults;
     try {
       // Wait for all the prepared query Futures to complete
       queryResults = await Future.wait(queryFutures);
-      print("[findMissingKeys] All ${queryFutures.length} queries completed.");
+      Debug.logInfo('[findMissingKeys] All ${queryFutures.length} queries completed.');
     } catch (e, stackTrace) {
-      print("[findMissingKeys] CRITICAL: Error during Future.wait executing Firestore queries: $e");
+      Debug.logInfo('[findMissingKeys] CRITICAL: Error during Future.wait executing Firestore queries: $e');
       print(stackTrace);
       // Strategy on error: rethrow, return partial, assume all missing?
       // Rethrowing is often best, letting the caller handle the failure state.
@@ -496,7 +496,7 @@ class PullRepository {
         }
       }
     }
-    print("[findMissingKeys] Found $foundDocsCount existing documents across all queries (unique paths: ${foundFullPaths.length}).");
+    Debug.logInfo('[findMissingKeys] Found $foundDocsCount existing documents across all queries (unique paths: ${foundFullPaths.length}).');
 
 
     // --- 6. Map Found Paths Back to Original Keys ---
@@ -514,7 +514,7 @@ class PullRepository {
     final Set<String> checkableKeys = originalKeyToFullPath.keys.toSet();
     final Set<String> missingKeys = checkableKeys.difference(foundOriginalKeys);
 
-    print("[findMissingKeys] Determined ${missingKeys.length} missing keys out of ${checkableKeys.length} successfully resolved keys.");
+    Debug.logInfo('[findMissingKeys] Determined ${missingKeys.length} missing keys out of ${checkableKeys.length} successfully resolved keys.');
     // For debugging: print(missingKeys);
 
     // --- 8. Return Missing Keys ---

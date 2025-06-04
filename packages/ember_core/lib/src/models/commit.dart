@@ -10,6 +10,7 @@ class Commit {
   final Map<String, CoreObject> objectsToPush = {};
   final Map<String, CoreObject> objectsToDelete = {};
   String confirmationMessage;
+  bool merge = false;
 
   bool get armed => _armed;
   int get disarmRequirementsLevel => _disarmRequirementsLevel;
