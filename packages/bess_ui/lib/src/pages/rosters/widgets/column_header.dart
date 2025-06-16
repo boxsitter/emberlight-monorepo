@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../constants/sizes.dart';
-import '../../../styles/text_styles.dart';
+import '../../../common/constants/sizes.dart';
+import '../../../common/styles/text_styles.dart';
 
 class ColumnHeader extends StatelessWidget {
   final String columnLabel;

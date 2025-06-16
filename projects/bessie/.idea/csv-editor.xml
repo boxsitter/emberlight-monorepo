@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="D:\emberlight-monorepo\packages\ember_core\test_files\long_name.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

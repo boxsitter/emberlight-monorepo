@@ -14,8 +14,8 @@ class SmallCardButton extends StatelessWidget {
     required this.onTap,
     this.isSelected = false,
     this.isCompleted = false,
+    this.maxLines = 2,
   });
-
 
   final String title;
   final double? height;
@@ -23,8 +23,7 @@ class SmallCardButton extends StatelessWidget {
   final Function()? onTap;
   final bool isSelected;
   final bool isCompleted;
-
-
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +67,7 @@ class SmallCardButton extends StatelessWidget {
               Text(
                 title,
                 style: isSelected ? BessTextStyles.standardInverted : BessTextStyles.standard,
-                maxLines: 2,
+                maxLines: maxLines,
                 overflow: TextOverflow.ellipsis,
               ),
             ],

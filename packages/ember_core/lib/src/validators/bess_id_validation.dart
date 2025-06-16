@@ -15,6 +15,7 @@ class CoreIdValidation {
     final String expectedType = firstParts[1];
 
     for (final id in ids.skip(1)) {
+      print(id);
       final parts = IdFunctions.getIdParts(id);
       if (parts[2] != expectedDomain) {
         throw ArgumentError("Not all objects are of the same domain");

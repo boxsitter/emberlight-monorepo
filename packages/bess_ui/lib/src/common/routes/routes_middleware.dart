@@ -24,29 +24,23 @@ class AuthMiddleware extends GetMiddleware {
 
     final bool isTryingToAccessPublicAuthRoute = publicAuthRoutes.contains(route);
 
-    Debug.logInfo('AuthMiddleware: Current route: $route, IsAuthenticated: ${userService.isAuthenticated}');
-
     if (userService.isAuthenticated) {
       // User IS authenticated
       if (isTryingToAccessPublicAuthRoute) {
         // If an authenticated user tries to access login, forgot password, etc.,
         // redirect them to the home page.
-        Debug.logInfo('AuthMiddleware: Authenticated user on a public auth page ($route). Redirecting to ${BessRoutes.home}');
         return const RouteSettings(name: BessRoutes.home);
       }
       // For any other route (which are effectively protected or other non-auth public pages), allow access.
-      Debug.logInfo('AuthMiddleware: Authenticated user accessing $route. Allowed.');
       return null; // No redirection needed, proceed to the intended route.
     } else {
       // User is NOT authenticated
       if (isTryingToAccessPublicAuthRoute) {
         // If an unauthenticated user is trying to access a public auth route (like login), allow it.
-        Debug.logInfo('AuthMiddleware: Unauthenticated user accessing public auth route $route. Allowed.');
         return null; // No redirection needed
       } else {
         // If an unauthenticated user tries to access any other route (which should be protected),
         // redirect them to the login page.
-        Debug.logInfo('AuthMiddleware: Unauthenticated user on protected route $route. Redirecting to ${BessRoutes.login}');
         return const RouteSettings(name: BessRoutes.login);
       }
     }

@@ -40,12 +40,7 @@ class RosterService extends GetxService {
         break;
       case RosterField.age:
         comparator = (a, b) {
-          if (a.age == null) {
-            return 1;
-          } else if (b.age == null) {
-            return -1;
-          }
-          return a.age!.compareTo(b.age!);
+          return a.age.compareTo(b.age);
         };
         break;
       default:

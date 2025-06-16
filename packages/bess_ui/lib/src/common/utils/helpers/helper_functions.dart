@@ -206,4 +206,71 @@ class BessHelperFunctions {
 
     return titleCasedWords.join(' ');
   }
+
+  /// Finds the key of a time interval from a map based on the following priority:
+  ///
+  /// 1. An interval currently occurring.
+  /// 2. The next interval that will occur (based on the soonest start time).
+  /// 3. If all intervals are in the past, the last one that occurred (based on the most recent end time).
+  ///
+  /// The `intervals` map should have a `String` key and a `List<DateTime>` value.
+  /// It is assumed the list always contains two elements: `[startTime, endTime]`.
+  ///
+  /// Returns the `String` key of the found interval, or `null` if the map is empty
+  /// or no valid intervals are found.
+  static String? findNextOrCurrentInterval(Map<String, List<DateTime>> intervals) {
+    if (intervals.isEmpty) {
+      return null;
+    }
+
+    final DateTime now = DateTime.now();
+    final List<MapEntry<String, List<DateTime>>> currentIntervals = [];
+    final List<MapEntry<String, List<DateTime>>> futureIntervals = [];
+    final List<MapEntry<String, List<DateTime>>> pastIntervals = [];
+
+    // Categorize each interval in a single pass
+    for (final entry in intervals.entries) {
+      if (entry.value.length != 2) {
+      continue; // Skip invalid entries
+      }
+
+      final DateTime start = entry.value[0];
+      final DateTime end = entry.value[1];
+
+    // --- More Robust "Current" Check ---
+    // A block is current if 'now' is within [start, end).
+    final bool isCurrentDuringDuration = !now.isBefore(start) && now.isBefore(end);
+    // A block is also current if it's instantaneous (start == end) and happening right now.
+    final bool isCurrentInstantaneous = start == end && now.isAtSameMomentAs(start);
+
+    if (isCurrentDuringDuration || isCurrentInstantaneous) {
+        currentIntervals.add(entry);
+      } else if (start.isAfter(now)) {
+        futureIntervals.add(entry);
+      } else {
+        pastIntervals.add(entry);
+      }
+    }
+
+    // Priority 1: Check for and return a currently occurring interval
+    if (currentIntervals.isNotEmpty) {
+    // Sort by start time to be deterministic if multiple are current
+    currentIntervals.sort((a, b) => a.value[0].compareTo(b.value[0]));
+      return currentIntervals.first.key;
+    }
+
+    // Priority 2: Find and return the next interval to occur
+    if (futureIntervals.isNotEmpty) {
+      futureIntervals.sort((a, b) => a.value[0].compareTo(b.value[0]));
+      return futureIntervals.first.key;
+    }
+
+    // Priority 3: Find and return the last interval that occurred
+    if (pastIntervals.isNotEmpty) {
+      pastIntervals.sort((a, b) => b.value[1].compareTo(a.value[1]));
+      return pastIntervals.first.key;
+    }
+
+    return null; // No valid intervals were found
+  }
 }

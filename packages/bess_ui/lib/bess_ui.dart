@@ -1,16 +1,16 @@
 library;
 
 import 'package:bess_ui/src/bessie_flutter_app.dart';
+import 'package:bess_ui/src/common/routes/navigation_observer.dart';
 import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
-import 'package:bess_ui/src/common/widgets/roster_table/controllers/roster_table_controller.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';
 import 'package:bess_ui/src/pages/console/controller/console_controller.dart';
+import 'package:bess_ui/src/pages/rosters/controllers/roster_table_controller.dart';
 import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
 import 'package:ember_cli_utils/src/io/io_interfaces.dart';
-import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_frontend.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +30,6 @@ class BessUi implements CoreFrontend{
   void onLogin() {
     Get.lazyPut(() => ConsoleController(), fenix: true);
     Get.lazyPut(() => SidebarController(), fenix: true);
-    Get.lazyPut(() => RosterTableController(), fenix: true);
     Get.lazyPut(() => SessionManagerController(), fenix: true);
     Get.lazyPut(() => ActivityPreferencesController(), fenix: true);
     Get.lazyPut(() => SchedulePageController(), fenix: true);
@@ -47,6 +46,7 @@ class BessUi implements CoreFrontend{
   }
 
   static void launchFlutterApp() {
+    Get.put(BessNavigationObserver(), permanent: true);
     runApp(const BessieFlutterApp());
   }
 

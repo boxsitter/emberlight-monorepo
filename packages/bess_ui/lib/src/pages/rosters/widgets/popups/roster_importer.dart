@@ -1,18 +1,18 @@
 import 'package:bess_ui/bess_ui.dart';
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
-import 'package:bess_ui/src/common/widgets/roster_table/controllers/roster_table_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
-import '../../../../constants/sizes.dart';
+import '../../../../common/constants/sizes.dart';
 
 /// A widget to create a standardized popup for importing CSV files.
-class Importer extends StatelessWidget {
-  final RosterTableController controller;
+class RosterImporter extends StatelessWidget {
+  final bool isImporting;
+  final VoidCallback onImport;
 
-  const Importer({
+  const RosterImporter({
     super.key,
-    required this.controller,
+    required this.isImporting,
+    required this.onImport,
   });
 
   @override
@@ -48,18 +48,17 @@ class Importer extends StatelessWidget {
           ),
           const SizedBox(height: BessSizes.spaceBtwItems),
           const Text(
-            'The data for nickname, gender/expressionName, or cabin can be empty or incomplete, but Bessie expects the column to at least be included in the report.'
+              'The data for nickname, gender/expressionName, or cabin can be empty or incomplete, but Bessie expects the column to at least be included in the report.'
           ),
           const SizedBox(height: BessSizes.spaceBtwSections),
           Center(
-            child: Obx( () {
-              return ActionInitiator(
-                enabledText: 'Add File',
-                disabledText: 'Importing... (this may take a while)',
-                onPressed: controller.importCsv,
-                enabled: !controller.importingCampers.value,
-              );
-            }),
+            // No Obx needed, as the parent GetBuilder will handle rebuilds.
+            child: ActionInitiator(
+              enabledText: 'Add File',
+              disabledText: 'Importing... (this may take a while)',
+              onPressed: onImport,
+              enabled: !isImporting,
+            ),
           ),
         ],
       ),

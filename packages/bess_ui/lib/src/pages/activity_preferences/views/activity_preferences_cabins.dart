@@ -5,45 +5,57 @@ import 'package:get/get.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
+import '../../../common/widgets/state/controller_dependant_wrapper.dart';
 import '../widgets/card_button.dart';
 
 class ActivityPreferencesCabins extends StatelessWidget {
-  const ActivityPreferencesCabins({super.key});
+  const ActivityPreferencesCabins({
+    super.key,
+    required this.pageControllerTag,
+  });
+
+  final String pageControllerTag;
 
   @override
   Widget build(BuildContext context) {
-    return const BessSiteTemplate(desktop: ActivityPreferencesCabinsDesktop(), mobile: ActivityPreferencesCabinsMobile());
+    final controller = Get.put(ActivityPreferencesController(), tag: pageControllerTag);
+    return BessSiteTemplate(
+      desktop: ActivityPreferencesCabinsDesktop(
+        controller: controller,
+        tag: pageControllerTag,
+      ),
+    );
   }
 }
 
 class ActivityPreferencesCabinsDesktop extends StatelessWidget {
-  const ActivityPreferencesCabinsDesktop({super.key});
+  const ActivityPreferencesCabinsDesktop({
+    super.key,
+    required this.controller,
+    required this.tag,
+  });
+
+  final ActivityPreferencesController controller;
+  final String tag;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ActivityPreferencesController>();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Cabins',
-          style: BessTextStyles.lightTitle,
-          overflow: TextOverflow.clip,
-          maxLines: 1,
-        ),
-
-        const SizedBox(height: BessSizes.spaceBtwSections),
-
-        Expanded(
-          child: Obx(() {
-            if (!controller.isCabinDataLoaded.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return SingleChildScrollView(
+    return ControllerDependantWrapper<ActivityPreferencesController>(
+      controller: controller,
+      tag: tag,
+      builder: (controller) {
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            'Cabins',
+            style: BessTextStyles.lightTitle,
+            overflow: TextOverflow.clip,
+            maxLines: 1,
+          ),
+          const SizedBox(height: BessSizes.spaceBtwSections),
+          Expanded(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.only(right: 24),
-              child: Wrap (
+              child: Wrap(
                 spacing: 24,
                 runSpacing: 24,
                 children: controller.cabinNames.keys.map((cabinId) {
@@ -60,71 +72,14 @@ class ActivityPreferencesCabinsDesktop extends StatelessWidget {
                     isInProgress: isInProgress,
                     height: 90,
                     width: 250,
-                    onTap: () => controller.navigateToSelection(cabinId, name ),
+                    onTap: () => controller.navigateToSelection(cabinId, name),
                   );
                 }).toList(),
               ),
-            );
-          }),
-        ),
-      ],
+            ),
+          )
+        ]);
+      },
     );
   }
 }
-
-class ActivityPreferencesCabinsMobile extends StatelessWidget {
-  const ActivityPreferencesCabinsMobile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<ActivityPreferencesController>();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Cabins',
-          style: BessTextStyles.lightTitle,
-          overflow: TextOverflow.clip,
-          maxLines: 1,
-        ),
-
-        const SizedBox(height: BessSizes.spaceBtwSections),
-
-        Expanded(
-          child: Obx(() {
-            if (!controller.isCabinDataLoaded.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
-                alignment: Alignment.topCenter, // Center the wrap within the full-width container
-                child: Wrap(
-                  alignment: WrapAlignment.center, // Center-align the items in each row
-                  spacing: 24,
-                  runSpacing: 24,
-                  children: controller.cabinNames.keys.map((cabinId) {
-                    final name = controller.cabinNames[cabinId] ?? 'Unknown';
-                    final count = controller.camperCounts[cabinId] ?? 0;
-                    final preferencesCount = controller.campersWithPreferencesCounts[cabinId] ?? 0;
-
-                    return CardButton(
-                      title: name,
-                      subtitle: '$preferencesCount/$count campers completed',
-                      height: 90,
-                      width: double.infinity,
-                      onTap: () => controller.navigateToSelection(cabinId, name ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
-          }),
-        ),
-      ],
-    );
-  }
-}
-

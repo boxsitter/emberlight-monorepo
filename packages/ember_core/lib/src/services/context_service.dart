@@ -55,7 +55,7 @@ class ContextService extends GetxService {
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
-    bool doDomainRepair = false;
+    bool doDomainRepair = false; // TODO: ewwww get rid of this garbage
 
     if (clientContext.justMigrated) {
       clientContext.justMigrated = false;

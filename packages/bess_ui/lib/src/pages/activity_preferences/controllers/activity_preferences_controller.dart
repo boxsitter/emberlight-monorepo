@@ -6,11 +6,12 @@ import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
 import 'package:get/get.dart';
 
+import '../../../common/mixins/route_aware_controller_mixin.dart';
 import '../../../common/routes/routes.dart';
 
 typedef CabinDependantId = String;
 
-class ActivityPreferencesController extends GetxController {
+class ActivityPreferencesController extends GetxController with RouteAwareControllerMixin {
   final ContextService clientContextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
@@ -19,29 +20,46 @@ class ActivityPreferencesController extends GetxController {
   final FrontendCommitService commitService = Get.find<FrontendCommitService>();
   final ActivityPreferenceService activityPreferenceService = Get.find<ActivityPreferenceService>();
 
-  final RxMap<CabinDependantId, String> cabinNames = <CabinId, String>{}.obs;
-  final RxMap<CabinDependantId, int> camperCounts = <CabinId, int>{}.obs;
-  final RxMap<CabinDependantId, int> campersWithPreferencesCounts = <CabinId, int>{}.obs;
+  // --- State Variables ---
+  Map<CabinDependantId, String> cabinNames = {};
+  Map<CabinDependantId, int> camperCounts = {};
+  Map<CabinDependantId, int> campersWithPreferencesCounts = {};
 
-  Rx<String?> selectedCabinId = Rx<String?>(null);
-  Rx<String?> selectedCabinName = Rx<String?>(null);
-  final RxMap<CamperId, String> camperNames = <CamperId, String>{}.obs;
-  final RxSet<CamperId> camperIsCompleted = <CamperId>{}.obs;
-  Rx<String?> selectedCamperId = Rx<String?>(null);
-  Rx<String?> selectedCamperName = Rx<String?>(null);
-  final RxMap<PrincipalActivityId, String> activityNames = <PrincipalActivityId, String>{}.obs;
-  final RxList<PrincipalActivityId> orderedActivityIds = <PrincipalActivityId>[].obs;
+  String? selectedCabinId;
+  String? selectedCabinName;
+  Map<CamperId, String> camperNames = {};
+  Set<CamperId> camperIsCompleted = {};
+  String? selectedCamperId;
+  String? selectedCamperName;
 
-  final RxBool isCabinDataLoaded = false.obs;
-  final RxBool isCamperDataLoaded = false.obs;
-  final RxBool isActivityDataLoaded = false.obs;
-  final RxBool saveInProgress = false.obs;
+  Map<PrincipalActivityId, String> standardActivityNames = {};
+  Map<PrincipalActivityId, String> skillsActivityNames = {};
+  List<PrincipalActivityId> orderedStandardActivityIds = [];
+  List<PrincipalActivityId> orderedSkillsActivityIds = [];
 
-  Future<void> onCabinsLoad() async {
-    cabinNames.clear();
-    camperCounts.clear();
-    campersWithPreferencesCounts.clear();
-    isCabinDataLoaded.value = false;
+  bool isCabinDataLoaded = false;
+  bool isCamperDataLoaded = false;
+  bool isActivityDataLoaded = false;
+  bool saveInProgress = false;
+
+  /// Determines which data to load based on whether a cabin has been selected.
+  @override
+  void onNavigateTo() {
+    if (selectedCabinId == null) {
+      _loadCabinsData();
+    } else {
+      _loadSelectorData();
+    }
+  }
+
+  @override
+  void onNavigateFrom() {
+    // Nothing to dispose or cancel in this controller.
+  }
+
+  Future<void> _loadCabinsData() async {
+    isCabinDataLoaded = false;
+    update();
 
     final Map<CabinDependent, PrincipalCabin> cabinsInUse = await cabinsService.getCabinDependentToPrincipalCabins();
 
@@ -49,40 +67,47 @@ class ActivityPreferencesController extends GetxController {
     final counts = <CabinId, int>{};
     final preferences = <CabinId, int>{};
 
-    cabinsInUse.forEach((key, value) {
-        names[key.id] = value.name;
-        counts[key.id] = key.camperRefs.length;
-        preferences[key.id] = key.campersWithPreferences.length;
-    });
+    for (var entry in cabinsInUse.entries) {
+      names[entry.key.id] = entry.value.name;
+      counts[entry.key.id] = entry.key.camperRefs.length;
+      preferences[entry.key.id] = entry.key.campersWithPreferences.length;
+    }
 
-    cabinNames.addAll(names);
-    camperCounts.addAll(counts);
-    campersWithPreferencesCounts.addAll(preferences);
-    isCabinDataLoaded.value = true;
+    cabinNames = names;
+    camperCounts = counts;
+    campersWithPreferencesCounts = preferences;
+    isCabinDataLoaded = true;
+    update();
   }
 
-  Future<void> onSelectorLoad() async {
-    if (selectedCabinName.value == null || selectedCabinId.value == null) {
-      // TODO: Throw an error
-      Debug.logInfo('SelectedCabinName: ${selectedCabinName.value}, SelectedCabinId: ${selectedCabinId.value}');
+  Future<void> _loadSelectorData() async {
+    if (selectedCabinName == null || selectedCabinId == null) {
+      Debug.logInfo('SelectedCabinName: $selectedCabinName, SelectedCabinId: $selectedCabinId');
       return;
     }
     Debug.logInfo('Loaded selector screen!');
-    camperNames.clear();
-    camperIsCompleted.clear();
-    activityNames.clear();
-    orderedActivityIds.clear();
-    isCamperDataLoaded.value = false;
-    isActivityDataLoaded.value = false;
+    // Reset state for the selector screen
+    isCamperDataLoaded = false;
+    isActivityDataLoaded = false;
+    camperNames = {};
+    camperIsCompleted = {};
+    standardActivityNames = {};
+    skillsActivityNames = {};
+    orderedStandardActivityIds = [];
+    orderedSkillsActivityIds = [];
+    update();
 
     final results = await Future.wait([
-      cabinsService.getCampersInCabin(selectedCabinId.value!),
+      cabinsService.getCampersInCabin(selectedCabinId!),
       clientContextService.schedule,
-      scheduleService.getScheduledPrincipalActivitiesToNames(),
+      scheduleService.getScheduledPrincipalActivitiesToNames(false),
+      scheduleService.getScheduledPrincipalActivitiesToNames(true),
     ]);
-    Set<Camper> campersInSelectedCabin = results[0] as Set<Camper>;
-    Schedule schedule = results[1] as Schedule;
-    activityNames.addAll(results[2] as Map<PrincipalActivityId, String>);
+
+    final Set<Camper> campersInSelectedCabin = results[0] as Set<Camper>;
+    final Schedule schedule = results[1] as Schedule;
+    standardActivityNames = results[2] as Map<PrincipalActivityId, String>;
+    skillsActivityNames = results[3] as Map<PrincipalActivityId, String>;
 
     for (Camper camper in campersInSelectedCabin) {
       camperNames[camper.id] = camper.fullName;
@@ -91,101 +116,130 @@ class ActivityPreferencesController extends GetxController {
       }
     }
 
-    selectedCamperId.value = camperNames.keys.first;
-    selectedCamperName.value = camperNames[selectedCamperId.value];
-    isCamperDataLoaded.value = true;
+    if (camperNames.isNotEmpty) {
+      selectedCamperId = camperNames.keys.first;
+      selectedCamperName = camperNames[selectedCamperId];
+    }
+    isCamperDataLoaded = true;
+    update();
 
-    orderedActivityIds.addAll(await scheduleService.getOrderedActivities(selectedCamperId.value!));
-    isActivityDataLoaded.value = true;
+    await updateActivityOrder();
+
+    isActivityDataLoaded = true;
+    update();
   }
 
   Future<void> updateActivityOrder() async {
-    if (selectedCamperId.value == null || selectedCamperId.value!.isEmpty) {
-      // TODO: Throw an error
-      return;
+    if (selectedCamperId == null || selectedCamperId!.isEmpty) {
+      throw StateError('Error updating activity order: No camper selected');
     }
-    isActivityDataLoaded.value = false;
-    orderedActivityIds.clear();
+    isActivityDataLoaded = false;
+    update();
+
+    orderedStandardActivityIds = [];
+    orderedSkillsActivityIds = [];
 
     try {
-      orderedActivityIds.addAll(await scheduleService.getOrderedActivities(selectedCamperId.value!));
+      final results = await Future.wait([
+        scheduleService.getOrderedActivities(selectedCamperId!, false),
+        scheduleService.getOrderedActivities(selectedCamperId!, true),
+      ]);
+
+      orderedStandardActivityIds.addAll(results[0]);
+      orderedSkillsActivityIds.addAll(results[1]);
     } catch (e) {
-      print("Error fetching activities: $e");
-      popupService.showToast(title: 'Error', message: 'Could not load activities for $selectedCabinName.value'); // TODO: This should be handled by simply throwing an error
-      orderedActivityIds.clear();
+      orderedStandardActivityIds = [];
+      orderedSkillsActivityIds = [];
+      throw StateError('Error ordering activities');
     } finally {
-      isActivityDataLoaded.value = true;
-      Debug.logInfo('Finished POPULATING ACTIVITY MAPS for camper: $selectedCamperId.value');
+      isActivityDataLoaded = true;
+      Debug.logInfo('Finished POPULATING ACTIVITY MAPS for camper: $selectedCamperId');
+      update();
     }
   }
 
-  // *** ADDED: Method to handle list reordering ***
-  void onReorderActivities(int oldIndex, int newIndex) {
-    // This logic correctly handles moving items up or down in the list
+  void onReorderStandardActivities(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
-    // Remove the item ID from the old position
-    final ActivityDependentId movedItemId = orderedActivityIds.removeAt(oldIndex);
-    // Insert the item ID into the new position
-    orderedActivityIds.insert(newIndex, movedItemId);
-
-    print("Reordered activities: ${orderedActivityIds.toList()}");
-    // You might want to trigger a save state or indicate unsaved changes here
+    final String movedItemId = orderedStandardActivityIds.removeAt(oldIndex);
+    orderedStandardActivityIds.insert(newIndex, movedItemId);
+    Debug.logInfo("Reordered standard activities: $orderedStandardActivityIds");
+    update();
   }
 
-  // *** ADDED: Method to save the current ranking ***
+  void onReorderSkillsActivities(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final String movedItemId = orderedSkillsActivityIds.removeAt(oldIndex);
+    orderedSkillsActivityIds.insert(newIndex, movedItemId);
+    Debug.logInfo("Reordered skills activities: $orderedSkillsActivityIds");
+    update();
+  }
+
   Future<void> saveActivityRanking() async {
-    if (selectedCamperId.value == null) {
-      popupService.showToast(title: 'Error', message: 'No camper selected'); // TODO: throw an error
+    if (selectedCamperId == null) {
+      popupService.showToast(title: 'Error', message: 'No camper selected');
       return;
     }
-    if (orderedActivityIds.isEmpty) {
+    if (orderedStandardActivityIds.isEmpty && orderedSkillsActivityIds.isEmpty) {
       popupService.showToast(title: 'Info', message: 'No activities have been scheduled for this session');
       return;
     }
-    saveInProgress.value = true;
-    final currentRanking = orderedActivityIds.toList();
-    final String currentCamperId = selectedCamperId.value!;
-    final String currentCamperName = selectedCamperName.value!;
+
+    saveInProgress = true;
+    update();
+
+    final String currentCamperId = selectedCamperId!;
+    final String currentCamperName = selectedCamperName!;
 
     try {
       Commit commit = Commit(disarmRequirementsLevel: 0);
       await activityPreferenceService.setRanking(
         commit: commit,
         camperId: currentCamperId,
-        orderedPrincipalActivityIds: currentRanking,
+        orderedPrincipalActivityIds: orderedStandardActivityIds,
+      );
+      await activityPreferenceService.setRanking(
+        commit: commit,
+        camperId: currentCamperId,
+        orderedPrincipalActivityIds: orderedSkillsActivityIds,
       );
       await commitService.commit(commit);
+
       camperIsCompleted.add(currentCamperId);
-      update();
       popupService.showToast(title: 'Success', message: 'Activity ranking for $currentCamperName has been saved!');
     } catch (e) {
-      print("Error saving ranking: $e");
+      Debug.logInfo("Error saving ranking: $e");
       popupService.showToast(title: 'Error', message: 'Failed to save ranking: $e');
     } finally {
-      saveInProgress.value = false;
+      saveInProgress = false;
+      update();
     }
-    // --- End Saving Logic ---
   }
 
   Future<void> navigateToSelection(String cabinId, String cabinName) async {
-    selectedCabinId.value = cabinId;
-    selectedCabinName.value = cabinName;
+    selectedCabinId = cabinId;
+    selectedCabinName = cabinName;
+    // No need for update() here as Get.toNamed will trigger a new view/wrapper
     Get.toNamed(BessRoutes.activityPreferencesSelector);
   }
 
-  // selectCamper method (ensure it calls populateActivityMaps)
   Future<void> selectCamper(String camperId, String camperName) async {
-    selectedCamperId.value = camperId;
-    selectedCamperName.value = camperName;
-    update();
-    await updateActivityOrder();
-    update();
+    while (isActivityDataLoaded == false) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    selectedCamperId = camperId;
+    selectedCamperName = camperName;
+    update(); // Update the UI to show the new camper name is selected
+
+    await updateActivityOrder(); // This will call update() when it's done.
   }
 
   Future<void> showActivityInfo(PrincipalActivityId principalActivityId) async {
-    popupService.showActivityInfo(await activityPreferenceService.getPrincipalActivity(principalActivityId));
+    final activity = await activityPreferenceService.getPrincipalActivity(principalActivityId);
+    popupService.showActivityInfo(activity);
   }
-
 }

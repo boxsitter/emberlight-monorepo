@@ -1,8 +1,7 @@
 import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constants/colors.dart';
-import '../../../constants/sizes.dart';
+import '../../../common/constants/sizes.dart';
 
 class StringCell extends StatelessWidget {
   final String content;

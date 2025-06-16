@@ -64,9 +64,11 @@ class RepairHardCode extends EmberCommand {
       ScheduleService scheduleService = Get.find<ScheduleService>();
       ContextService clientContextService = Get.find<ContextService>();
       Schedule schedule = await clientContextService.schedule;
-      schedule.scheduleDayCmps.add(day1.id);
-      day1.blockCmps.add(day1.id);
-      commit.addObjectToPush(day1);
+      if (schedule.scheduleDayCmps.isEmpty) {
+        schedule.scheduleDayCmps.add(day1.id);
+        day1.blockCmps.add(day1.id);
+        commit.addObjectToPush(day1);
+      }
       commit.addObjectToPush(schedule);
       scheduleService.addBlockToDay(
           commit, commit.getObjectOfType<ScheduleDay>()!.id, HardcodedSchedule.choiceActivity);
@@ -82,6 +84,10 @@ class RepairHardCode extends EmberCommand {
           commit, HardcodedPrincipalActivities.tieDye.id, commit.getObjectOfType<ScheduleBlock>()!.id);
       scheduleService.scheduleActivity(
           commit, HardcodedPrincipalActivities.archery.id, commit.getObjectOfType<ScheduleBlock>()!.id);
+      scheduleService.scheduleActivity(
+          commit, HardcodedPrincipalActivities.cardGames.id, commit.getObjectOfType<ScheduleBlock>()!.id);
+      scheduleService.scheduleActivity(
+          commit, HardcodedPrincipalActivities.soccer.id, commit.getObjectOfType<ScheduleBlock>()!.id);
     }
 
     if (commit.objectsToPush.isNotEmpty) {

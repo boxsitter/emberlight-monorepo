@@ -36,12 +36,6 @@ class CreateUser extends EmberCommand {
 
   @override
   Future<dynamic> run() async {
-    Role userRole = (await userService.getCurrentUser()).role;
-    if (userRole != Role.root) {
-      userOutput.error('This command requires root permissions');
-      return;
-    }
-
     String email = await userInput.prompt('Email: ', allowEmpty: false);
     String password = await userInput.promptPassword('Password: ');
     String confirmPassword = await userInput.promptPassword('Confirm Password: ');

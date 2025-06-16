@@ -2,25 +2,22 @@ import 'package:bess_ui/src/common/routes/routes_middleware.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
-import '../../pages/activity_preferences/views/activity_preferences_campers.dart';
 import '../../pages/activity_preferences/views/activity_preferences_selector.dart';
-import '../../pages/activity_rosters/activity_rosters.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
 import '../../pages/console/view/console.dart';
 import '../../pages/home/home.dart';
-import '../../pages/responsive_design_test/responsive_design.dart';
+import '../../pages/rosters/session_roster.dart';
 import '../../pages/schedule/schedule_page.dart';
 import '../../pages/session_manager/session_manager.dart';
-import '../../pages/session_roster/session_roster.dart';
 
 class BessRoutes {
   static const home = '/';
 
   static const responsiveDesignExample = '/responsive-design';
   static const console = '/console';
-  static const sessionRoster = '/session-roster';
+  static const rosters = '/session-roster';
   static const schedulePage = '/schedule-page';
   static const sessionManager = '/session-manager';
   static const activityRosters = '/activity-rosters';
@@ -35,7 +32,7 @@ class BessRoutes {
 
   static Set sideMenuItems = {
     console,
-    sessionRoster,
+    rosters,
     home,
     activityPreferencesCabins,
     activityRosters,
@@ -57,18 +54,13 @@ class BessRoutes {
       middlewares: [AuthMiddleware()], // PROTECTED
     ),
     GetPage(
-      name: BessRoutes.responsiveDesignExample,
-      page: () => const ResponsiveDesignScreen(),
-      middlewares: [AuthMiddleware()],
-    ),
-    GetPage(
       name: BessRoutes.console,
       page: () => const ConsoleScreen(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
-      name: BessRoutes.sessionRoster,
-      page: () => const SessionRoster(),
+      name: BessRoutes.rosters,
+      page: () => const Rosters(rosterTableController: 'session-roster-controller'),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
@@ -78,27 +70,17 @@ class BessRoutes {
     ),
     GetPage(
       name: BessRoutes.sessionManager,
-      page: () => const SessionManager(),
-      middlewares: [AuthMiddleware()],
-    ),
-    GetPage(
-      name: BessRoutes.activityRosters,
-      page: () => const ActivityRosters(),
+      page: () => const SessionManager(pageControllerTag: 'session-manager-controller',),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferencesCabins,
-      page: () => const ActivityPreferencesCabins(),
-      middlewares: [AuthMiddleware()],
-    ),
-    GetPage(
-      name: BessRoutes.activityPreferencesCampers,
-      page: () => const ActivityPreferencesCampers(),
+      page: () => const ActivityPreferencesCabins(pageControllerTag: 'activity-preferences-controller'),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferencesSelector,
-      page: () => const ActivityPreferencesSelector(),
+      page: () => const ActivityPreferencesSelector(pageControllerTag: 'activity-preferences-controller'),
       middlewares: [AuthMiddleware()],
     ),
 

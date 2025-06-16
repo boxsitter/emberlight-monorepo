@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import 'common/constants/text_strings.dart';
-import 'common/routes/route_observer.dart';
+import 'common/routes/navigation_observer.dart';
 import 'common/routes/routes.dart';
 import 'common/theme/shad_theme.dart';
 import 'common/theme/theme.dart';
@@ -22,7 +22,6 @@ class BessieFlutterApp extends StatelessWidget {
           title: BessTexts.appName,
           themeMode: ThemeMode.light,
           theme: BessieAppTheme.theme,
-          //darkTheme: BessieAppTheme.darkTheme,
           debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
           initialRoute: BessRoutes.home,
@@ -34,7 +33,7 @@ class BessieFlutterApp extends StatelessWidget {
               ),
             ),
           ),
-          navigatorObservers: [RouteObservers()],
+          navigatorObservers: [Get.find<BessNavigationObserver>()],
           defaultTransition: Transition.noTransition,
           getPages: BessRoutes.pages,
           builder: (context, child) {

@@ -94,7 +94,7 @@ class BessTextStyles {
 
   static final TextStyle tableHeader = TextStyle(
     fontFamily: 'Inter',
-    fontSize: 18.0,
+    fontSize: 17.0,
     color: BessColors.textPrimary,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,

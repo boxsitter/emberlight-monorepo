@@ -27,7 +27,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
   })  : activityDependentCmps = activityDependentCmps ?? {},
         super(
           domain: 'ses',
-          type: 'AMA_Block',
+          type: 'ama_block',
           idTag: name,
         );
 

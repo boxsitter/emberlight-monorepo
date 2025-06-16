@@ -6,7 +6,6 @@ import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:ember_core/src/utils/model_helper_functions.dart';
 import 'package:get/get.dart';
 import '../../ember_core_services.dart';
-import '../backend/backend_manager.dart';
 
 
 class ScheduleService extends GetxService {
@@ -14,27 +13,53 @@ class ScheduleService extends GetxService {
   ContextService clientContextService = Get.find<ContextService>();
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
-  Future<Map<PrincipalActivityId, String>> getScheduledPrincipalActivitiesToNames() async {
+  Future<Schedule> get schedule async => await clientContextService.schedule;
+  Future<Set<ScheduleDay>> get scheduleDays async => await backend.getObjects((await schedule).scheduleDayCmps.toSet());
+
+  Future<Set<String>> getSkillsActivityIds() async {
+    Schedule schedule = await clientContextService.schedule;
+    Set<PrincipalActivity> scheduledPrincipalActivities = await backend.getObjects(schedule.principalActivityRefs);
+    final Set<String> output = {};
+    for (PrincipalActivity activity in scheduledPrincipalActivities) {
+      if (activity.isSkillsRec) {
+        output.add(activity.id);
+      }
+    }
+    return output;
+  }
+
+  // if onlySkillsRecs is false, skills recs will not be fetched
+  Future<Map<PrincipalActivityId, String>> getScheduledPrincipalActivitiesToNames(bool onlySkillsRecs) async {
     Schedule schedule = await clientContextService.schedule;
     Set<String> scheduledPrincipalActivityIds = schedule.principalActivityRefs;
     Set<PrincipalActivity> scheduledPrincipalActivities = await backend.getObjects(scheduledPrincipalActivityIds);
     Map<PrincipalActivityId, String> scheduledPrincipalActivityMap = {};
     for (PrincipalActivity activity in scheduledPrincipalActivities) {
-      scheduledPrincipalActivityMap[activity.id] = activity.name;
+      if (activity.isSkillsRec == onlySkillsRecs) {
+        scheduledPrincipalActivityMap[activity.id] = activity.name;
+      }
     }
     return scheduledPrincipalActivityMap;
   }
 
-  Future<List<PrincipalActivityId>> getOrderedActivities(CamperId camperId) async {
+  Future<List<PrincipalActivityId>> getOrderedActivities(CamperId camperId, bool onlySkillsRecs) async {
     final results = await Future.wait([
       backend.getObject(camperId),
       clientContextService.schedule,
+      getSkillsActivityIds(),
     ]);
-    Camper camper = results[0] as Camper;
-    Schedule schedule = results[1] as Schedule;
+    final Camper camper = results[0] as Camper;
+    final Schedule schedule = results[1] as Schedule;
+    final List<String> skillsActivityIds = (results[2] as Set<String>).toList();
+
+    final List<MapEntry<PrincipalActivityId, double?>> entries = camper.preferenceRefs.entries.toList();
+    if (onlySkillsRecs) {
+      entries.removeWhere((element) => !skillsActivityIds.contains(element.key));
+    } else {
+      entries.removeWhere((element) => skillsActivityIds.contains(element.key));
+    }
 
     if (ModelHelperFunctions.preferenceCompleted(camper, schedule)) {
-      final List<MapEntry<PrincipalActivityId, double?>> entries = camper.preferenceRefs.entries.toList();
       entries.sort((entryA, entryB) {
         final double? scoreA = entryA.value;
         final double? scoreB = entryB.value;
@@ -55,7 +80,7 @@ class ScheduleService extends GetxService {
       return entries.map((entry) => entry.key).toList();
     } else {
       // If the camper hasn't already set their preferences, return the activities in a random order
-      final List<PrincipalActivityId> activityIds = camper.preferenceRefs.keys.toList();
+      final List<PrincipalActivityId> activityIds = entries.map((e) => e.key).toList();
       activityIds.shuffle(Random());
       return activityIds;
     }
@@ -92,6 +117,31 @@ class ScheduleService extends GetxService {
     schedule.principalActivityRefs.add(activityToSchedule.principalPar);
 
     commit.addObjectsToPush({activityToSchedule, blockToAddTo, schedule});
+  }
+
+  Future<Map<String, ScheduleBlock>> getScheduleBlocks() async {
+    Set<ScheduleDay> scheduleDays = await this.scheduleDays;
+    Set<String> blockRefs = {};
+    for (ScheduleDay scheduleDay in scheduleDays) {
+      blockRefs.addAll(scheduleDay.blockCmps);
+    }
+    Set<ScheduleBlock> blocks = await backend.getObjects(blockRefs);
+    Map<String, ScheduleBlock> output = {};
+    for (ScheduleBlock block in blocks) {
+      output[block.id] = block;
+    }
+    return output;
+  }
+
+  Future<Map<String, AMABlock>> getAMABlocks() async {
+    Map<String, ScheduleBlock> blocks = await getScheduleBlocks();
+    Map<String, AMABlock> output = {};
+    for (ScheduleBlock block in blocks.values) {
+      if (block is AMABlock) {
+        output[block.id] = block;
+      }
+    }
+    return output;
   }
 
   // Future<void> assignCampersForBlock({

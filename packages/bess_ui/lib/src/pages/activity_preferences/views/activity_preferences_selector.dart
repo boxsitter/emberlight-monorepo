@@ -1,36 +1,54 @@
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/src/pages/activity_preferences/widgets/activity_reorderable_list.dart';
+import 'package:bess_ui/src/pages/activity_preferences/widgets/horizontal_card_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
+import '../../../common/widgets/state/controller_dependant_wrapper.dart';
 import '../widgets/small_card_button.dart';
 
 class ActivityPreferencesSelector extends StatelessWidget {
-  const ActivityPreferencesSelector({super.key});
+  const ActivityPreferencesSelector({
+    super.key,
+    required this.pageControllerTag,
+  });
+
+  final String pageControllerTag;
 
   @override
   Widget build(BuildContext context) {
-    return const BessSiteTemplate(desktop: ActivityPreferencesSelectorDesktop());
+    final controller = Get.put(ActivityPreferencesController(), tag: pageControllerTag);
+    return BessSiteTemplate(
+      desktop: ActivityPreferencesSelectorDesktop(
+        controller: controller,
+        tag: pageControllerTag,
+      ),
+    );
   }
 }
 
 class ActivityPreferencesSelectorDesktop extends StatelessWidget {
-  const ActivityPreferencesSelectorDesktop({super.key});
+  const ActivityPreferencesSelectorDesktop({
+    super.key,
+    required this.controller,
+    required this.tag,
+  });
+
+  final ActivityPreferencesController controller;
+  final String tag;
 
   @override
   Widget build(BuildContext context) {
-    Get.find<
-        ActivityPreferencesController>();
-
-    return GetBuilder<ActivityPreferencesController>(
-      builder: (controller) {
-        return Obx(() {
-          if (!controller.isCamperDataLoaded.value) {
+    return ControllerDependantWrapper<ActivityPreferencesController>(
+        controller: controller,
+        tag: tag,
+        builder: (controller) {
+          if (!controller.isCamperDataLoaded) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -43,142 +61,52 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                 overflow: TextOverflow.clip,
                 maxLines: 1,
               ),
-
               const SizedBox(height: BessSizes.spaceBtwItems),
-
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              HorizontalCardSelector(
+                itemIdsToNames: controller.camperNames,
+                selectedId: controller.selectedCamperId,
+                completedIds: controller.camperIsCompleted,
+                selectItem: controller.selectCamper,
+              ),
+              const SizedBox(height: BessSizes.spaceBtwItems),
+              Expanded(
                 child: Row(
-                  children: controller.camperNames.keys.map((camperId) {
-                    final name = controller.camperNames[camperId] ??
-                        'Unknown';
-                    final bool isSelected = controller.selectedCamperId == camperId;
-                    final bool isCompleted = controller.camperIsCompleted.contains(camperId);
+                  children: [
+                    ActivityReorderableList(
+                      title: 'Choice Activities',
+                      orderedItemIds: controller.orderedStandardActivityIds,
+                      displayInfo: controller.showActivityInfo,
+                      itemIdsToNames: controller.standardActivityNames,
+                      onReorder: controller.onReorderStandardActivities,
+                    ),
 
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: BessSizes.spaceBtwItems,
-                          horizontal: BessSizes.spaceBtwItems / 2),
-                      child: SmallCardButton(
-                        title: name,
-                        height: 35,
-                        width: 120,
-                        isSelected: isSelected,
-                        isCompleted: isCompleted,
-                        onTap: () => controller.selectCamper(camperId, name),
-                      ),
-                    );
-                  }).toList(),
+                    const SizedBox(width: BessSizes.spaceBtwItems),
+
+                    ActivityReorderableList(
+                      title: 'Skills Recs',
+                      orderedItemIds: controller.orderedSkillsActivityIds,
+                      displayInfo: controller.showActivityInfo,
+                      itemIdsToNames: controller.skillsActivityNames,
+                      onReorder: controller.onReorderSkillsActivities,
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(height: BessSizes.spaceBtwItems),
-              // Space before activity list
 
-              // --- Section for Activity Ranking ---
-              // This part updates based on the selected camper
-              Expanded( // Use Expanded if this list should fill remaining space
-                child: Obx(() { // Use Obx to react to activity loading state/data
-                  if (!controller.isActivityDataLoaded.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  // Use orderedActivityIds for checking emptiness now
-                  if (controller.orderedActivityIds.isEmpty) {
-                    return const Center(child: Text(
-                        'No activities scheduled for this session'));
-                  }
-
-                  // Example:
-                  return Column( // Column to hold the list and the save button
-                    children: [
-                      Expanded( // Let the list take available space
-                        child: SizedBox(
-                          width: 400,
-                          child: ReorderableListView.builder(
-                            buildDefaultDragHandles: false,
-                            shrinkWrap: true,
-
-
-                            itemCount: controller.orderedActivityIds.length,
-
-                            itemBuilder: (context, index) {
-                              final activityId = controller
-                                  .orderedActivityIds[index];
-                              // Lookup name from the map
-                              final activityName = controller
-                                  .activityNames[activityId] ??
-                                  'Unknown Activity';
-
-
-                              // *** Each item MUST have a unique Key ***
-                              return BessRoundedContainer(
-                                  key: ValueKey(activityId),
-                                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                  width: 400,
-                                  height: 40,
-                                  borderThickness: 2,
-                                  showBorder: true,
-                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text( // Display rank number
-                                        '#${index + 1}    $activityName',
-                                        style: BessTextStyles.standard,
-                                      ),
-
-                                    Spacer(),
-
-                                    IconButton(
-                                      onPressed: () => controller.showActivityInfo(activityId),
-                                      icon: const Icon(LucideIcons.info),
-                                    ),
-
-                                      ReorderableDragStartListener(
-                                        index: index,
-                                        // Required for the listener
-                                        child: Icon(LucideIcons.gripVertical),
-                                      ),
-                                    ],
-                                  )
-                              );
-                            },
-                            // *** Callback when item is reordered ***
-                            onReorder: controller.onReorderActivities,
-                            // Optional: Improve appearance while dragging
-                            proxyDecorator: (Widget child, int index,
-                                Animation<double> animation) {
-                              return Material( // Ensures elevation shadow is drawn correctly
-                                color: Colors.transparent,
-                                // Keep card visuals during drag
-                                child: child,
-                              );
-                            },
-
-                            header: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text('Choice Activities', style: BessTextStyles.boldCardTitle),
-                              ),
-
-                            footer: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: ActionInitiator(
-                                enabled: !controller.saveInProgress.value,
-                                onPressed: controller.saveActivityRanking,
-                                enabledText: 'Save Ranking',
-                                disabledText: 'Saving...',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ActionInitiator(
+                  enabled: !controller.saveInProgress,
+                  onPressed: controller.saveActivityRanking,
+                  enabledText: 'Save Ranking',
+                  disabledText: 'Saving...',
+                  width: 400,
+                ),
               ),
             ],
           );
         });
-      });
   }
 }

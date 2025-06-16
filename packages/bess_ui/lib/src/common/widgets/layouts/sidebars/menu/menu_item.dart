@@ -23,19 +23,14 @@ class BessMenuItem extends StatelessWidget {
 
     return InkWell(
       onTap: () => menuController.menuOnTap(route),
-      onHover: (hovering) => hovering
-          ? menuController.changeHoverItem(route)
-          : menuController.changeHoverItem(''),
+      onHover: (hovering) => hovering ? menuController.changeHoverItem(route) : menuController.changeHoverItem(''),
       child: Obx(
         () => Padding(
-          padding:
-              const EdgeInsets.symmetric(vertical: BessSizes.spaceBtwMenuItems),
+          padding: const EdgeInsets.symmetric(vertical: BessSizes.spaceBtwMenuItems),
           child: Container(
               decoration: BoxDecoration(
-                color: menuController.isHovering(route) ||
-                        menuController.isActive(route)
-                    ? BessColors.primary
-                    : Colors.transparent,
+                color:
+                    menuController.isHovering(route) || menuController.isActive(route) ? BessColors.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(BessSizes.cardRadiusMd),
               ),
               child: Row(
@@ -43,36 +38,20 @@ class BessMenuItem extends StatelessWidget {
                 children: [
                   //Icon
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: BessSizes.lg,
-                        top: BessSizes.md,
-                        bottom: BessSizes.md,
-                        right: BessSizes.md),
+                    padding:
+                        const EdgeInsets.only(left: BessSizes.lg, top: BessSizes.md, bottom: BessSizes.md, right: BessSizes.md),
                     child: menuController.isActive(route)
                         ? Icon(icon, size: 22, color: BessColors.low)
                         : Icon(icon,
-                            size: 22,
-                            color: menuController.isHovering(route)
-                                ? BessColors.textInverted
-                                : BessColors.textPrimary),
+                            size: 22, color: menuController.isHovering(route) ? BessColors.textInverted : BessColors.textPrimary),
                   ),
 
                   // Text
-                  if (menuController.isHovering(route) ||
-                      menuController.isActive(route))
-                    Flexible(
-                        child: Text(itemName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .apply(color: BessColors.low)))
+                  if (menuController.isHovering(route) || menuController.isActive(route))
+                    Flexible(child: Text(itemName, style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.low)))
                   else
                     Flexible(
-                        child: Text(itemName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .apply(color: BessColors.semiHigh))),
+                        child: Text(itemName, style: Theme.of(context).textTheme.bodyMedium!.apply(color: BessColors.semiHigh))),
                 ],
               )),
         ),

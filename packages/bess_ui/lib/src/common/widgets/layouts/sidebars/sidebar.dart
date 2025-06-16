@@ -59,17 +59,13 @@ class BessSidebar extends StatelessWidget {
                                 icon: LucideIcons.house,
                                 itemName: 'Home'),
                             const BessMenuItem(
-                                route: BessRoutes.sessionRoster,
+                                route: BessRoutes.rosters,
                                 icon: LucideIcons.bookUser,
-                                itemName: 'Session Roster'),
+                                itemName: 'Rosters'),
                             const BessMenuItem(
                                 route: BessRoutes.activityPreferencesCabins,
                                 icon: LucideIcons.listOrdered,
                                 itemName: 'Activity Preferences'),
-                            const BessMenuItem(
-                                route: BessRoutes.activityRosters,
-                                icon: LucideIcons.clipboardList,
-                                itemName: 'Activity Rosters'),
                             const BessMenuItem(
                                 route: BessRoutes.schedulePage,
                                 icon: LucideIcons.columns3,
@@ -82,10 +78,6 @@ class BessSidebar extends StatelessWidget {
                             //     route: BessRoutes.console,
                             //     icon: LucideIcons.flameKindling,
                             //     itemName: 'Branch Manager'),
-                            // const BessMenuItem(
-                            //     route: BessRoutes.responsiveDesignExample,
-                            //     icon: LucideIcons.layoutPanelLeft,
-                            //     itemName: 'Widgets'),
                             const BessMenuItem(
                                 route: BessRoutes.console,
                                 icon: LucideIcons.squareTerminal,

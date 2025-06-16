@@ -1,40 +1,37 @@
 import 'dart:collection';
 
+import 'package:bess_ui/src/common/mixins/route_aware_controller_mixin.dart';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
-import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
-class SessionManagerController extends GetxController {
+class SessionManagerController extends GetxController with RouteAwareControllerMixin {
   final CabinService cabinsService = Get.find<CabinService>();
   final FrontendCommitService commitService = Get.find<FrontendCommitService>();
-  // --- Observable State Variables ---
 
-  // Use RxList for the list of cabin names so the UI reacts to changes
-  // Initialize it maybe in onInit() by fetching data
-  final RxMap<String, String> cabinPrinIdsToNames = <String, String>{}.obs;
+  // --- State Variables (No longer Rx) ---
+  Map<String, String> cabinPrinIdsToNames = {};
+  Set<String> selectedCabinPrinIds = {};
+  bool isLoading = true;
 
-  // Use RxMap to store the selection state { 'cabinName': true/false }
-  final RxSet<String> selectedCabinPrinIds = <String>{}.obs;
+  @override
+  Future<void> onNavigateTo() async {
+    isLoading = true;
+    update();
 
-  // Optional: Loading indicator state
-  final RxBool isLoading = true.obs;
-
-  Future<void> populate() async {
-    isLoading.value = true;
     cabinPrinIdsToNames.clear();
     selectedCabinPrinIds.clear();
 
     Map<String, String> rawData = await cabinsService.getPrincipalCabinNames();
     List<MapEntry<String, String>> sortedEntries = rawData.entries.toList()
       ..sort((a, b) => a.value.compareTo(b.value));
-    Map<String, String> sortedMap = LinkedHashMap.fromEntries(sortedEntries);
-    cabinPrinIdsToNames.assignAll(sortedMap);
+    cabinPrinIdsToNames = LinkedHashMap.fromEntries(sortedEntries);
 
-    selectedCabinPrinIds.assignAll((await cabinsService.getCabinDependentIdsToPrincipalIds()).values.toSet());
-    isLoading.value = false;
+    selectedCabinPrinIds = (await cabinsService.getCabinDependentIdsToPrincipalIds()).values.toSet();
+    isLoading = false;
+    update();
   }
 
 
@@ -47,6 +44,7 @@ class SessionManagerController extends GetxController {
       selectedCabinPrinIds.add(cabinPrinId);
       Debug.logInfo('$cabinPrinId selection is now: true');
     }
+    update(); // Notify UI of selection change
   }
 
   Future<void> commitSelection() async {
@@ -69,8 +67,4 @@ class SessionManagerController extends GetxController {
 
     commitService.commit(commit);
   }
-
-// Add any other methods needed, like saving the state
-// void saveActiveCabins() { ... }
-
 }
