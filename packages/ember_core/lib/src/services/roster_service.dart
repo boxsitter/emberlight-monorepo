@@ -3,7 +3,7 @@ import 'package:ember_core/src/validators/collection_validation.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core_backend.dart';
-import '../models/enums/roster_field.dart';
+import '../../ember_core_models.dart';
 import '../models/interfaces/rosterable.dart';
 
 typedef Roster = List<Rosterable>;

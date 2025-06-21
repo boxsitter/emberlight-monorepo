@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../common/constants/sizes.dart';
+import '../../../../common/constants/sizes.dart';
 
 class HeaderCheckbox extends StatelessWidget {
   final int totalRowCount;

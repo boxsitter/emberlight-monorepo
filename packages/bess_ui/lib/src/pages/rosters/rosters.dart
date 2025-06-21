@@ -1,45 +1,64 @@
 import 'dart:math';
 
-import 'package:bess_ui/src/common/constants/colors.dart';
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/column_header.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/data_row.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/header_checkbox.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/table/column_header.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/table/data_row.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/table/header_checkbox.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/table_header.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/constants/colors.dart';
 import '../../common/constants/sizes.dart';
+import '../../common/widgets/containers/rounded_container.dart';
+import '../../common/widgets/layouts/templates/site_layout.dart';
 import '../../common/widgets/state/controller_dependant_wrapper.dart';
-import 'controllers/roster_table_controller.dart';
+import 'controllers/rosters_controller.dart';
 
-class BessRosterTable extends StatelessWidget {
-  final List<RosterField> fields;
-  final String defaultTitle;
-  final String controllerTag;
-  static const double actualKnownCheckboxColumnWidth = 50.0;
-
-  const BessRosterTable({
+class Rosters extends StatelessWidget {
+  const Rosters({
     super.key,
-    required this.defaultTitle,
-    required this.fields,
-    required this.controllerTag,
+    required this.pageControllerTag,
   });
+
+  final String pageControllerTag;
 
   @override
   Widget build(BuildContext context) {
-    final RosterTableController controller = Get.put(
-      RosterTableController(
+    return BessSiteTemplate(desktop: RostersDesktop(pageControllerTag: pageControllerTag));
+  }
+}
+
+class RostersDesktop extends StatelessWidget {
+  RostersDesktop({
+    super.key,
+    required this.pageControllerTag,
+  });
+
+  final String pageControllerTag;
+  static const double actualKnownCheckboxColumnWidth = 50.0;
+  static const String defaultTitle = 'Campers';
+  final List<RosterField> defaultRosterFields = [
+    RosterField.fullName,
+    RosterField.preferredName,
+    RosterField.gender,
+    RosterField.age,
+    RosterField.cabinName
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final RostersController controller = Get.put(
+      RostersController(
         defaultTitle: defaultTitle,
-        defaultColumns: fields,
+        defaultFields: defaultRosterFields,
       ),
-      tag: controllerTag,
+      tag: pageControllerTag,
     );
 
-    return ControllerDependantWrapper<RosterTableController>(
+    return ControllerDependantWrapper<RostersController>(
       controller: controller,
-      tag: controllerTag,
+      tag: pageControllerTag,
       builder: (controller) {
         return BessRoundedContainer(
           showShadow: false,
@@ -53,6 +72,7 @@ class BessRosterTable extends StatelessWidget {
               // This TableHeader remains fixed at the top and does not scroll horizontally
               TableHeader(
                 title: controller.rosterTitle,
+                pageControllerTag: pageControllerTag,
                 count: controller.count,
                 selectedRowIds: controller.selectedRowIds,
                 onImport: controller.showImporterPopup,
@@ -66,11 +86,8 @@ class BessRosterTable extends StatelessWidget {
                     final double totalDataColumnsWidth =
                         controller.columnWidths.isEmpty ? 0.0 : controller.columnWidths.reduce((a, b) => a + b);
 
-                    // Add the fixed width of the checkbox column
-                    final double totalContentWidth = actualKnownCheckboxColumnWidth + totalDataColumnsWidth;
-
                     // Determine the layout width. It's the greater of the available width or the content's required width.
-                    final double layoutWidth = max(totalContentWidth, constraints.maxWidth);
+                    final double layoutWidth = max(actualKnownCheckboxColumnWidth + totalDataColumnsWidth, constraints.maxWidth);
 
                     // Use a SingleChildScrollView to enable horizontal scrolling
                     return SingleChildScrollView(

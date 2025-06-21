@@ -6,9 +6,11 @@ import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import 'action_button_row.dart';
+import 'menu_bar.dart';
 
 class TableHeader extends StatelessWidget {
   final String title;
+  final String pageControllerTag;
   final int count;
   final Set<String> selectedRowIds;
   final VoidCallback onImport;
@@ -17,6 +19,7 @@ class TableHeader extends StatelessWidget {
   const TableHeader({
     super.key,
     required this.title,
+    required this.pageControllerTag,
     required this.count,
     required this.selectedRowIds,
     required this.onImport,
@@ -39,22 +42,26 @@ class TableHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: BessTextStyles.tableHeader,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      title,
+                      style: BessTextStyles.tableHeader,
+                    ),
+
+                    SizedBox(width: 8),
+
+                    Text(
+                      '($count)',
+                      style: BessTextStyles.tableHeaderSecondary,
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: BessSizes.xs),
 
-                BessRoundedContainer(
-                  radius: 5,
-                  backgroundColor: BessColors.crust,
-                  padding: const EdgeInsets.all(BessSizes.xs),
-                  child: Text(
-                    'Count: $count',
-                    style: BessTextStyles.secondarySmall,
-                  ),
-                ),
+                TableMenuBar(pageControllerTag: pageControllerTag),
               ],
             ),
             const Spacer(),

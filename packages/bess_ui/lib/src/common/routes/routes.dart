@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/routes/routes_middleware.dart';
+import 'package:ember_core/ember_core_models.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
@@ -8,7 +9,7 @@ import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
 import '../../pages/console/view/console.dart';
 import '../../pages/home/home.dart';
-import '../../pages/rosters/session_roster.dart';
+import '../../pages/rosters/rosters.dart';
 import '../../pages/schedule/schedule_page.dart';
 import '../../pages/session_manager/session_manager.dart';
 
@@ -60,7 +61,7 @@ class BessRoutes {
     ),
     GetPage(
       name: BessRoutes.rosters,
-      page: () => const Rosters(rosterTableController: 'session-roster-controller'),
+      page: () => const Rosters(pageControllerTag: 'rosters-controller'),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(

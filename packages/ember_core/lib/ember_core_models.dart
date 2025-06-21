@@ -7,6 +7,7 @@ export 'src/models/interfaces/principal.dart';
 export 'src/models/superclasses/schedule_block.dart';
 export 'src/models/interfaces/domain.dart';
 export 'src/models/interfaces/rosterable.dart';
+export 'src/models/interfaces/titled.dart';
 
 // core_objects
 // dependent
@@ -33,8 +34,4 @@ export 'src/models/core_objects/core_user.dart';
 export 'src/models/commit.dart';
 
 // enums
-export 'src/models/enums/module.dart';
-export 'src/models/enums/log_type.dart';
-export 'src/models/enums/verbosity.dart';
-export 'src/models/enums/roster_field.dart';
-export 'src/models/enums/role.dart';
+export 'src/models/enums.dart';

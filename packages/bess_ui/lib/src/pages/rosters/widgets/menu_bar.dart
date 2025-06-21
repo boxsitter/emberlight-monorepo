@@ -1,110 +1,93 @@
+import 'package:bess_ui/src/common/constants/sizes.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/filter_popover_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class MenuBar extends StatelessWidget {
-  const MenuBar({super.key});
+import '../../../common/constants/colors.dart';
+import '../../../common/styles/text_styles.dart';
+import '../controllers/rosters_controller.dart';
+
+class TableMenuBar extends StatelessWidget {
+  final String pageControllerTag;
+
+  const TableMenuBar({
+    super.key,
+    required this.pageControllerTag,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = ShadTheme.of(context);
-    final square = SizedBox.square(
+    final RostersController controller = Get.find<RostersController>(
+      tag: pageControllerTag,
+    );
+
+    final circle = SizedBox.square(
       dimension: 16,
       child: Center(
         child: SizedBox.square(
           dimension: 8,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: theme.colorScheme.foreground,
+              color: ShadTheme.of(context).colorScheme.foreground,
               shape: BoxShape.circle,
             ),
           ),
         ),
       ),
     );
+
     final divider = ShadSeparator.horizontal(
       margin: const EdgeInsets.symmetric(vertical: 4),
-      color: theme.colorScheme.muted,
+      color: BessColors.borderPrimary,
     );
+
     return ShadMenubar(
+      selectOnHover: false,
+      radius: BorderRadius.all(Radius.circular(BessSizes.cardRadiusMd)),
       items: [
         ShadMenubarItem(
-          items: [
-            const ShadContextMenuItem(child: Text('New Tab')),
-            const ShadContextMenuItem(child: Text('New Window')),
-            const ShadContextMenuItem(
-              enabled: false,
-              child: Text('New Incognito Window'),
-            ),
-            divider,
-            const ShadContextMenuItem(
-              trailing: Icon(LucideIcons.chevronRight),
-              items: [
-                ShadContextMenuItem(child: Text('Email Link')),
-                ShadContextMenuItem(child: Text('Messages')),
-                ShadContextMenuItem(child: Text('Notes')),
-              ],
-              child: Text('Share'),
-            ),
-            divider,
-            const ShadContextMenuItem(child: Text('Print...')),
-          ],
+          // File
           child: const Text('File'),
-        ),
-        ShadMenubarItem(
           items: [
-            const ShadContextMenuItem(child: Text('Undo')),
-            const ShadContextMenuItem(child: Text('Redo')),
-            divider,
             ShadContextMenuItem(
-              trailing: const Icon(LucideIcons.chevronRight),
-              items: [
-                const ShadContextMenuItem(child: Text('Search the web')),
-                divider,
-                const ShadContextMenuItem(child: Text('Find...')),
-                const ShadContextMenuItem(child: Text('Find Next')),
-                const ShadContextMenuItem(child: Text('Find Previous')),
-              ],
-              child: const Text('Find'),
+              child: Text('Import From Ultracamp'),
+              onPressed: controller.showImporterPopup,
             ),
             divider,
-            const ShadContextMenuItem(child: Text('Cut')),
-            const ShadContextMenuItem(child: Text('Copy')),
-            const ShadContextMenuItem(child: Text('Paste')),
+            const ShadContextMenuItem(child: Text('Export')),
+            const ShadContextMenuItem(child: Text('Print')),
           ],
-          child: const Text('Edit'),
         ),
         ShadMenubarItem(
+          // Edit
+          child: const Text('Edit'),
           items: [
-            const ShadContextMenuItem.inset(
-              child: Text('Always Show Bookmarks Bar'),
+            ShadContextMenuItem(
+              child: Text('Delete',
+                  style: controller.isSingleSelected() || controller.isMultiSelected()
+                      ? BessTextStyles.standard.copyWith(color: BessColors.red)
+                      : BessTextStyles.standardSecondary
+              ),
+              onPressed: controller.deleteSelected,
+              enabled: controller.isSingleSelected() || controller.isMultiSelected(),
             ),
-            const ShadContextMenuItem(
-              leading: Icon(LucideIcons.check),
-              child: Text('Always Show Full URLs'),
-            ),
-            divider,
-            const ShadContextMenuItem.inset(child: Text('Reload')),
-            const ShadContextMenuItem.inset(
-                enabled: false, child: Text('Force Reload')),
-            divider,
-            const ShadContextMenuItem.inset(
-              child: Text('Toggle Full Screen'),
-            ),
-            divider,
-            const ShadContextMenuItem.inset(child: Text('Hide Sidebar')),
           ],
-          child: const Text('View'),
         ),
-        ShadMenubarItem(items: [
-          const ShadContextMenuItem.inset(child: Text('Andy')),
-          ShadContextMenuItem(leading: square, child: const Text('Benoit')),
-          const ShadContextMenuItem.inset(child: Text('Luis')),
-          divider,
-          const ShadContextMenuItem.inset(child: Text('Edit...')),
-          divider,
-          const ShadContextMenuItem.inset(child: Text('Add Profile...')),
-        ], child: const Text('Profiles')),
+        ShadMenubarItem(
+          // View
+          child: const Text('View'),
+          items: [
+            ShadContextMenuItem(
+              //leading: Icon(LucideIcons.check),
+              child: const Text('Paginated'),
+            ),
+          ],
+        ),
+
+        FilterPopoverButton(controller: controller,),
       ],
     );
   }
 }
+

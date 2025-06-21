@@ -11,6 +11,14 @@ class BessTextStyles {
     height: 1.2,
   );
 
+  static final TextStyle standardSecondary = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14.0,
+    color: BessColors.textSecondary,
+    fontWeight: FontWeight.w400,
+    height: 1.2,
+  );
+
   static final TextStyle standardBold = TextStyle(
     fontFamily: 'Inter',
     fontSize: 14.0,
@@ -96,6 +104,14 @@ class BessTextStyles {
     fontFamily: 'Inter',
     fontSize: 17.0,
     color: BessColors.textPrimary,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 1.0,
+  );
+
+  static final TextStyle tableHeaderSecondary = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 17.0,
+    color: BessColors.textSecondary,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,
   );

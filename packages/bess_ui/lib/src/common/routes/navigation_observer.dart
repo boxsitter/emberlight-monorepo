@@ -1,5 +1,4 @@
 import 'package:bess_ui/src/common/routes/routes.dart';
-import 'package:ember_core/ember_core_services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -7,8 +6,8 @@ import '../widgets/layouts/sidebars/sidebar_controller.dart';
 
 abstract class BessNavigationSubscriber {
   Route get route;
-  void onNavigateTo();
-  void onNavigateFrom();
+  void onNavigateTo(String to, String? from);
+  void onNavigateFrom(String from, String to);
 }
 
 class BessNavigationObserver extends NavigatorObserver {
@@ -23,7 +22,7 @@ class BessNavigationObserver extends NavigatorObserver {
     if (subscriber.route.isCurrent) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_subscribers.contains(subscriber)) {
-          subscriber.onNavigateTo();
+          subscriber.onNavigateTo(subscriber.route.settings.name!, null);
         }
       });
     }
@@ -41,50 +40,22 @@ class BessNavigationObserver extends NavigatorObserver {
         route.settings.name!.isNotEmpty;
   }
 
-  void _notifyOnNavigateTo(Route route) {
-    final List<BessNavigationSubscriber> subscribers = _subscribers.toList();
-    for (final sub in subscribers) {
-      if (sub.route == route) {
-        sub.onNavigateTo();
-      }
-    }
-  }
-
-  void _notifyOnNavigateFrom(Route route) {
-    final List<BessNavigationSubscriber> subscribers = _subscribers.toList();
-    for (final sub in subscribers) {
-      if (sub.route == route) {
-        sub.onNavigateFrom();
-      }
-    }
-  }
-
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    final sidebarController = Get.find<SidebarController>();
     super.didPush(route, previousRoute);
-
-    // Only trigger onNavigateFrom if we are navigating away from a real page
-    // to another real page. This is the key to ignoring popups.
-    if (_isRealPageRoute(route) && _isRealPageRoute(previousRoute)) {
-      _notifyOnNavigateFrom(previousRoute!);
-    }
-
-    // For the new page, if it's a real page, we wait until the end of the frame
-    // to call onNavigateTo. By then, its widget will have been built and subscribed.
-    if (_isRealPageRoute(route)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _notifyOnNavigateTo(route);
-      });
-    }
-
-    if (Get.find<UserService>().isAuthenticated) {
-      final sidebarController = Get.find<SidebarController>();
-
       for (var routeName in BessRoutes.sideMenuItems) {
         if (route.settings.name == routeName) {
           sidebarController.activeItem.value = routeName;
         }
       }
+
+    // Only trigger notifications if we are navigating between two "real" pages.
+    // This correctly ignores showing a popup.
+    if (_isRealPageRoute(route) && _isRealPageRoute(previousRoute)) {
+      _notifyOnNavigateFrom(
+          previousRoute!.settings.name!, route.settings.name!);
+      _notifyOnNavigateTo(route.settings.name!, previousRoute.settings.name);
         }
   }
 
@@ -104,8 +75,9 @@ class BessNavigationObserver extends NavigatorObserver {
     // Only trigger notifications if we are navigating between two "real" pages.
     // This correctly ignores dismissing a popup.
     if (_isRealPageRoute(route) && _isRealPageRoute(previousRoute)) {
-      _notifyOnNavigateFrom(route);
-      _notifyOnNavigateTo(previousRoute!);
+      _notifyOnNavigateFrom(
+          route.settings.name!, previousRoute!.settings.name!);
+      _notifyOnNavigateTo(previousRoute.settings.name!, route.settings.name);
     }
   }
 
@@ -115,9 +87,10 @@ class BessNavigationObserver extends NavigatorObserver {
 
     // Only trigger notifications if we are replacing a "real" page with another.
     if (_isRealPageRoute(newRoute) && _isRealPageRoute(oldRoute)) {
-      _notifyOnNavigateFrom(oldRoute!);
+      _notifyOnNavigateFrom(
+          oldRoute!.settings.name!, newRoute!.settings.name!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _notifyOnNavigateTo(newRoute!);
+        _notifyOnNavigateTo(newRoute.settings.name!, oldRoute.settings.name);
       });
     }
   }
@@ -126,10 +99,23 @@ class BessNavigationObserver extends NavigatorObserver {
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didRemove(route, previousRoute);
 
-    // didRemove is called for a route that is removed from the history.
-    // We should notify its subscribers that they are being navigated from.
-    if (_isRealPageRoute(route)) {
-      _notifyOnNavigateFrom(route);
+    // didRemove is called for a variety of reasons, only some of which we care
+    // about. For now, we are not using this, but it might be useful in the future.
+  }
+
+  void _notifyOnNavigateTo(String to, String? from) {
+    for (var subscriber in _subscribers) {
+      if (subscriber.route.settings.name == to) {
+        subscriber.onNavigateTo(to, from);
+    }
+  }
+}
+
+  void _notifyOnNavigateFrom(String from, String to) {
+    for (var subscriber in _subscribers) {
+      if (subscriber.route.settings.name == from) {
+        subscriber.onNavigateFrom(from, to);
+      }
     }
   }
 }

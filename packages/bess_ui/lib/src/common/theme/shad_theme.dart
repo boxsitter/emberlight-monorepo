@@ -1,10 +1,10 @@
-import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/theme/widget_themes/text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../constants/animation_curves.dart';
 import '../constants/colors.dart';
+import '../constants/sizes.dart';
 
 class BessShadTheme {
   static ShadThemeData shadThemeData = ShadThemeData(
@@ -30,10 +30,6 @@ class BessShadTheme {
       ]
     ),
 
-    selectTheme: ShadSelectTheme(
-        decoration: ShadDecoration(),
-    ),
-
     optionTheme: ShadOptionTheme(
       hoveredBackgroundColor: BessColors.element1,
     ),
@@ -48,6 +44,33 @@ class BessShadTheme {
       foregroundColor: BessColors.red,
     ),
 
+    menubarTheme: ShadMenubarTheme(
+      buttonForegroundColor: BessColors.textPrimary,
+      backgroundColor: BessColors.core,
+      buttonHoverBackgroundColor: BessColors.crust,
+      buttonHoverForegroundColor: BessColors.textPrimary,
+      buttonSelectedBackgroundColor: BessColors.crust,
+      buttonPressedBackgroundColor: BessColors.primary,
+      buttonPressedForegroundColor: BessColors.textInverted,
+      buttonBackgroundColor: BessColors.core,
+      buttonHeight: 30,
+      radius: BorderRadius.all(Radius.circular(BessSizes.cardRadiusMd)),
+    ),
+
+    contextMenuTheme: ShadContextMenuTheme(
+      selectedBackgroundColor: BessColors.primary,
+      backgroundColor: BessColors.core,
+    ),
+
+    primaryButtonTheme: ShadButtonTheme(
+      hoverBackgroundColor: BessColors.crust,
+      hoverForegroundColor: BessColors.textPrimary,
+    ),
+
+    secondaryButtonTheme: ShadButtonTheme(
+      hoverBackgroundColor: BessColors.crust,
+      hoverForegroundColor: BessColors.textPrimary,
+    ),
 
   );
 
@@ -64,8 +87,8 @@ class BessShadTheme {
     secondaryForeground: BessColors.textPrimary,
     muted: BessColors.textSubtle,
     mutedForeground: BessColors.textSubtle,
-    accent: BessColors.secondary,
-    accentForeground: BessColors.textInverted,
+    accent: BessColors.crust,
+    accentForeground: BessColors.textPrimary,
     destructive: Colors.red,
     destructiveForeground: Colors.red,
     border: BessColors.borderPrimary,

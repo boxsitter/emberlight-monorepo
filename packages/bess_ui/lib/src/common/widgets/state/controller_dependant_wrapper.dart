@@ -64,17 +64,17 @@ class _ControllerDependantWrapperState<T extends RouteAwareControllerMixin> exte
   Widget build(BuildContext context) {
     return GetBuilder<T>(
       tag: widget.tag,
-      builder: widget.builder,
+      builder: (controller) => widget.builder(controller),
     );
   }
 
   @override
-  void onNavigateTo() {
-    widget.controller.onNavigateTo();
+  void onNavigateTo(String to, String? from) {
+    widget.controller.onNavigateTo(to, from);
   }
 
   @override
-  void onNavigateFrom() {
-    widget.controller.onNavigateFrom();
+  void onNavigateFrom(String from, String to) {
+    widget.controller.onNavigateFrom(from, to);
   }
 }

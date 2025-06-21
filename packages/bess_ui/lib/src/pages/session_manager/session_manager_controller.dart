@@ -5,6 +5,7 @@ import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SessionManagerController extends GetxController with RouteAwareControllerMixin {
@@ -17,7 +18,7 @@ class SessionManagerController extends GetxController with RouteAwareControllerM
   bool isLoading = true;
 
   @override
-  Future<void> onNavigateTo() async {
+  Future<void> onNavigateTo(String to, String? from) async {
     isLoading = true;
     update();
 

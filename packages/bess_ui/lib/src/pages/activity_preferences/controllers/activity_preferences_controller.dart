@@ -4,6 +4,7 @@ import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/ember_core_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../common/mixins/route_aware_controller_mixin.dart';
@@ -44,8 +45,8 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
 
   /// Determines which data to load based on whether a cabin has been selected.
   @override
-  void onNavigateTo() {
-    if (selectedCabinId == null) {
+  void onNavigateTo(String to, String? from) {
+    if (to == BessRoutes.activityPreferencesCabins) {
       _loadCabinsData();
     } else {
       _loadSelectorData();
@@ -53,7 +54,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   }
 
   @override
-  void onNavigateFrom() {
+  void onNavigateFrom(String from, String to) {
     // Nothing to dispose or cancel in this controller.
   }
 

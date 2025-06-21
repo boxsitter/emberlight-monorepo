@@ -1,8 +1,9 @@
-import 'package:bess_ui/src/pages/rosters/widgets/string_cell.dart';
+
+import 'package:bess_ui/src/pages/rosters/widgets/table/string_cell.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/colors.dart';
-import '../controllers/roster_table_controller.dart';
+import '../../../../common/constants/colors.dart';
+import '../../controllers/rosters_controller.dart';
 import 'checkbox_cell.dart';
 
 class BessDataRow extends StatelessWidget {
@@ -39,7 +40,7 @@ class BessDataRow extends StatelessWidget {
             final String cellContent = data[index];
             final double widthForDataCell = (index < columnWidths.length)
                 ? columnWidths[index]
-                : RosterTableController.minColumnWidth; // Fallback
+                : RostersController.minColumnWidth; // Fallback
 
             return StringCell(
               content: cellContent,

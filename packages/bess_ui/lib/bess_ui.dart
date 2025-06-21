@@ -7,7 +7,7 @@ import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.d
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';
 import 'package:bess_ui/src/pages/console/controller/console_controller.dart';
-import 'package:bess_ui/src/pages/rosters/controllers/roster_table_controller.dart';
+import 'package:bess_ui/src/pages/rosters/controllers/rosters_controller.dart';
 import 'package:bess_ui/src/pages/schedule/schedule_page_controller.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
 import 'package:ember_cli_utils/src/io/io_interfaces.dart';
@@ -24,12 +24,12 @@ class BessUi implements CoreFrontend{
   void init() {
     Get.put(PopupService(), permanent: true);
     Get.put(AuthenticationController(), permanent: true);
+    Get.lazyPut(() => SidebarController(), fenix: true);
   }
 
   @override
   void onLogin() {
     Get.lazyPut(() => ConsoleController(), fenix: true);
-    Get.lazyPut(() => SidebarController(), fenix: true);
     Get.lazyPut(() => SessionManagerController(), fenix: true);
     Get.lazyPut(() => ActivityPreferencesController(), fenix: true);
     Get.lazyPut(() => SchedulePageController(), fenix: true);
@@ -39,7 +39,7 @@ class BessUi implements CoreFrontend{
   void onNewContext() {
     Get.delete<ConsoleController>();
     Get.delete<SidebarController>();
-    Get.delete<RosterTableController>();
+    Get.delete<RostersController>();
     Get.delete<SessionManagerController>();
     Get.delete<ActivityPreferencesController>();
     Get.delete<SchedulePageController>();

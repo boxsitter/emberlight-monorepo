@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:ember_core/ember_core_frontend.dart';
 
 import '../../ember_core_debug.dart';
-import '../models/enums/verbosity.dart';
+import '../../ember_core_models.dart';
 
 class Debug {
   Debug._internal();

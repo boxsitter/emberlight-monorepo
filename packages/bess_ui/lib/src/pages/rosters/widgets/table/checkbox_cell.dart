@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/sizes.dart';
+import '../../../../common/constants/sizes.dart';
 
 class CheckboxCell extends StatelessWidget {
   final bool isSelected;

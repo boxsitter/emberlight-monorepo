@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/ember_core_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../common/mixins/route_aware_controller_mixin.dart';
@@ -20,7 +21,7 @@ class ActivityRostersController extends GetxController with RouteAwareController
   bool isBlockDataLoaded = false;
 
   @override
-  Future<void> onNavigateTo() async {
+  Future<void> onNavigateTo(String to, String? from) async {
     isBlockDataLoaded = false;
     update(); // Show a loading state
 
@@ -69,4 +70,6 @@ class ActivityRostersController extends GetxController with RouteAwareController
     selectedAmaName = amaName;
     update();
   }
+
+  
 }

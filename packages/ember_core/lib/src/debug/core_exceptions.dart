@@ -1,6 +1,5 @@
 import '../../ember_core_debug.dart';
-import '../models/enums/log_type.dart';
-import '../models/enums/module.dart';
+import '../../ember_core_models.dart';
 
 class ExceptionTest extends EmberException {
   ExceptionTest() : super(

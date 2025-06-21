@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bess_ui/src/common/services/popup_service.dart';
-import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:ember_core/ember_core_backend.dart';
 import 'package:ember_core/ember_core_debug.dart';
 import 'package:ember_core/ember_core_models.dart';
@@ -15,7 +14,7 @@ import '../../../common/mixins/route_aware_controller_mixin.dart';
 import '../../../common/styles/text_styles.dart';
 import '../widgets/popups/roster_importer.dart';
 
-class RosterTableController extends GetxController with RouteAwareControllerMixin {
+class RostersController extends GetxController with RouteAwareControllerMixin {
   final ContextService contextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
@@ -31,10 +30,9 @@ class RosterTableController extends GetxController with RouteAwareControllerMixi
 
   // --- State (Now using standard Dart types) ---
   late String rosterTitle;
-  final bool includeAmas;
 
   List<Rosterable> roster = [];
-  List<RosterField> fields = [];
+  late final List<RosterField> fields;
 
   int count = 0;
   List<double> columnWidths = [];
@@ -42,23 +40,71 @@ class RosterTableController extends GetxController with RouteAwareControllerMixi
 
   bool importingCampers = false;
 
-  Map<String, String> amaBlockNames = {};
-  String? selectedAMABlockId;
+  RosterField? sortByField;
+  SortDirection sortDirection = SortDirection.asc;
+  RosterField? groupBy;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
 
-  RosterTableController({
+  RostersController({
     required String defaultTitle,
-    required List<RosterField> defaultColumns,
-    this.includeAmas = false,
+    required List<RosterField> defaultFields,
   }) {
     rosterTitle = defaultTitle;
-    fields = defaultColumns;
+    fields = defaultFields;
   }
 
+  /// A computed list of fields that are available to be added.
+  List<RosterField> get availableFields {
+    return RosterField.values.where((f) => !fields.contains(f)).toList();
+  }
+
+  // --- Placeholder Methods for Column Configuration ---
+
+  void setColumnOrder(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex -= 1;
+    final item = fields.removeAt(oldIndex);
+    fields.insert(newIndex, item);
+    calculateAndUpdateColumnWidths();
+    // In a real implementation, you would now trigger a data refresh/re-sort
+    update();
+  }
+
+  void addVisibleColumn(RosterField field) {
+    if (!fields.contains(field)) {
+      fields.add(field);
+      update();
+    }
+  }
+
+  void removeVisibleColumn(RosterField field) {
+    fields.remove(field);
+    if (sortByField == field) sortByField = null;
+    if (groupBy == field) groupBy = null;
+    update();
+  }
+
+  void setSortBy(RosterField? field) {
+    sortByField = field;
+    if (field != null) sortDirection = SortDirection.asc;
+    update();
+  }
+
+  void toggleSortDirection() {
+    sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
+    update();
+  }
+
+  void setGroupBy(RosterField? field) {
+    groupBy = field;
+    update();
+  }
+
+  // --- Existing Methods ---
+
   @override
-  void onNavigateTo() {
+  void onNavigateTo(String to, String? from) {
     Debug.logInfo('RosterTableController navigated to - Starting Listener');
     if (_campersSubscription == null) {
       Debug.logInfo('Started listening to camper stream');
@@ -68,30 +114,28 @@ class RosterTableController extends GetxController with RouteAwareControllerMixi
         });
       });
     }
-    if (includeAmas) {
-      Get.find<ScheduleService>().getAMABlocks().then((amaBlocks) {
-        amaBlockNames = amaBlocks.map((key, value) => MapEntry(key, value.name));
-        Map<String, List<DateTime>> intervals = {};
-        for (AMABlock block in amaBlocks.values) {
-          intervals[block.id] = [block.start, block.end];
-        }
-        final nextBlockId = BessHelperFunctions.findNextOrCurrentInterval(intervals);
-        if (nextBlockId != null) {
-          selectedAMABlockId = nextBlockId;
-        }
-        update();
-      });
-    }
   }
 
   @override
-  void onNavigateFrom() {
+  void onNavigateFrom(String to, String? from) {
     Debug.logInfo('RosterTableController navigated from - Stopping Listener');
     if (_campersSubscription != null) {
       Debug.logInfo('Stopped listening to camper stream');
       _campersSubscription?.cancel();
       _campersSubscription = null;
     }
+  }
+
+  bool isNothingSelected() {
+    return selectedRowIds.isEmpty;
+  }
+
+  bool isSingleSelected() {
+    return selectedRowIds.length == 1;
+  }
+
+  bool isMultiSelected() {
+    return selectedRowIds.length > 1;
   }
 
   /// Call this method whenever the roster data is fetched or changed.
@@ -208,4 +252,16 @@ class RosterTableController extends GetxController with RouteAwareControllerMixi
       update(); // Update UI to clear selections
     }
   }
+
+  Map<String, bool> getColumnsVisibility() {
+    // Create a map from all possible RosterField enum values.
+    // The key is the field's title, and the value is whether the controller's
+    // `fields` list currently contains that RosterField.
+    return {
+      for (var field in RosterField.values)
+        field.title: fields.contains(field)
+    };
+  }
 }
+
+
