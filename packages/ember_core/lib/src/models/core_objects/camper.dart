@@ -1,6 +1,7 @@
 import 'package:ember_core/ember_core_models.dart';
 
 import '../../../ember_core_utils.dart';
+import '../roster_field.dart';
 
 
 typedef CabinId = String;
@@ -62,6 +63,7 @@ class Camper extends CoreObject implements Rosterable {
   String get fullName => '$firstName $lastName';
   String get fullNamePreferred => '$name $lastName';
   String get lastInitial => lastName[0];
+  String get formattedBirthdate => CoreFormatter.formatDate(birthdate, false);
 
   int get age => (() {
     final DateTime today = DateTime.now();
@@ -90,7 +92,7 @@ class Camper extends CoreObject implements Rosterable {
       case RosterField.age:
         return age.toString() ?? '';
       case RosterField.birthdate:
-        return birthdate.toString();
+        return formattedBirthdate.toString();
       case RosterField.cabinName:
         return cabinName ?? 'N/A';
       default:

@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
+import 'package:bess_ui/src/common/theme/widget_themes/data_table_theme.dart';
 import 'package:bess_ui/src/common/theme/widget_themes/progress_indicator_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +18,28 @@ class BessieAppTheme {
 
   static ThemeData theme = ThemeData(
     useMaterial3: true,
+    cupertinoOverrideTheme: MaterialBasedCupertinoThemeData(materialTheme: ThemeData(checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(BessSizes.xs)),
+      checkColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return BessColors.low;
+        } else {
+          return BessColors.high;
+        }
+      }),
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return BessColors.primary;
+        } else {
+          return Colors.transparent;
+        }
+      }),
+    ))),
+
     visualDensity: VisualDensity.compact,
     fontFamily: 'Inter',
-
+    platform: TargetPlatform.android,
     disabledColor: BessColors.disabled,
     brightness: Brightness.light,
     primaryColor: BessColors.core,
@@ -33,6 +53,7 @@ class BessieAppTheme {
     outlinedButtonTheme: BessieOutlinedButtonTheme.outlinedButtonTheme,
     inputDecorationTheme: BessieTextFormFieldTheme.inputDecorationTheme,
     progressIndicatorTheme: BessieProgressIndicatorTheme.progressIndicatorTheme,
+    dataTableTheme: BessieDataTableTheme.dataTableTheme,
     iconTheme: IconThemeData(color: BessColors.semiHigh, size: BessSizes.bg),
   );
 

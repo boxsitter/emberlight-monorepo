@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../ember_core_backend.dart';
 import '../../ember_core_models.dart';
 import '../models/interfaces/rosterable.dart';
+import '../models/roster_field.dart';
 
 typedef Roster = List<Rosterable>;
 

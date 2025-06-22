@@ -41,10 +41,10 @@ class TableMenuBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       color: BessColors.borderPrimary,
     );
-
     return ShadMenubar(
       selectOnHover: false,
       radius: BorderRadius.all(Radius.circular(BessSizes.cardRadiusMd)),
+      padding: EdgeInsets.only(left: 4, right: 6),
       items: [
         ShadMenubarItem(
           // File

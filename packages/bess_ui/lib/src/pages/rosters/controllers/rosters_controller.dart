@@ -9,9 +9,7 @@ import 'package:ember_core/ember_core_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../common/constants/sizes.dart';
 import '../../../common/mixins/route_aware_controller_mixin.dart';
-import '../../../common/styles/text_styles.dart';
 import '../widgets/popups/roster_importer.dart';
 
 class RostersController extends GetxController with RouteAwareControllerMixin {
@@ -21,13 +19,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final RosterService rosterService = Get.find<RosterService>();
   final FrontendCommitService commitService = Get.find<FrontendCommitService>();
 
-  // --- Configuration ---
-  static const double maxColumnWidth = 300.0;
-  static const double minColumnWidth = 80;
-  static const double horizontalPadding = BessSizes.lg;
-  static final TextStyle _headerStyle = BessTextStyles.columnHeader;
-  static final TextStyle _dataStyle = BessTextStyles.columnHeader;
-
   // --- State (Now using standard Dart types) ---
   late String rosterTitle;
 
@@ -35,7 +26,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   late final List<RosterField> fields;
 
   int count = 0;
-  List<double> columnWidths = [];
   Set<String> selectedRowIds = {};
 
   bool importingCampers = false;
@@ -66,7 +56,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     if (newIndex > oldIndex) newIndex -= 1;
     final item = fields.removeAt(oldIndex);
     fields.insert(newIndex, item);
-    calculateAndUpdateColumnWidths();
     // In a real implementation, you would now trigger a data refresh/re-sort
     update();
   }
@@ -91,6 +80,25 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
+  void sort(RosterField field) {
+    if (sortByField == field) {
+      sortDirection =
+          sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
+    } else {
+      sortByField = field;
+      sortDirection = SortDirection.asc;
+    }
+
+    roster.sort((a, b) {
+      final aValue = a.getFieldAsString(field);
+      final bValue = b.getFieldAsString(field);
+      final compare = aValue.compareTo(bValue);
+      return sortDirection == SortDirection.asc ? compare : -compare;
+    });
+
+    update();
+  }
+
   void toggleSortDirection() {
     sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
     update();
@@ -99,6 +107,32 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void setGroupBy(RosterField? field) {
     groupBy = field;
     update();
+  }
+
+  List<String> getRowDataFromItem(Rosterable rosterItem) {
+    final List<String> rowData = [];
+    for (final field in fields) {
+      switch (field) {
+        case RosterField.fullName:
+          rowData.add(rosterItem.fullName);
+          break;
+        case RosterField.preferredName:
+          rowData.add(rosterItem.preferredName);
+          break;
+        case RosterField.gender:
+        // Assuming gender is an enum, you might need .name to get the string
+          rowData.add(rosterItem.gender);
+          break;
+        case RosterField.age:
+          rowData.add(rosterItem.age.toString());
+          break;
+        case RosterField.cabinName:
+          rowData.add(rosterItem.cabinName ?? 'N/A');
+          break;
+      // Handle other fields as needed
+      }
+    }
+    return rowData;
   }
 
   // --- Existing Methods ---
@@ -142,52 +176,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void onRosterUpdated(List<Rosterable> newRoster) {
     roster = newRoster;
     count = roster.length;
-    calculateAndUpdateColumnWidths(); // This will trigger its own update()
-  }
-
-  // Simplified and clarified rounding/padding.
-  double _measureTextWidth(String text, TextStyle style) {
-    final TextPainter textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-    )..layout(minWidth: 0, maxWidth: double.infinity);
-
-    double calculatedWidth = textPainter.size.width;
-    double widthWithPadding = calculatedWidth + (horizontalPadding * 2);
-    double roundedWidth = widthWithPadding.ceilToDouble();
-
-    if (roundedWidth % 2 != 0) {
-      roundedWidth++;
-    }
-    return roundedWidth;
-  }
-
-  void calculateAndUpdateColumnWidths() {
-    if (fields.isEmpty) {
-      columnWidths = [];
-      update(); // Update UI
-      return;
-    }
-
-    List<double> newCalculatedWidths = List.filled(fields.length, 0.0, growable: false);
-
-    for (int i = 0; i < fields.length; i++) {
-      RosterField currentField = fields[i];
-      double headerTextWidth = _measureTextWidth(currentField.title, _headerStyle);
-
-      double maxDataTextWidth = 0.0;
-      if (roster.isNotEmpty) {
-        maxDataTextWidth =
-            roster.map((member) => _measureTextWidth(member.getFieldAsString(currentField), _dataStyle)).reduce(max);
-      }
-
-      double requiredWidth = max(headerTextWidth, maxDataTextWidth);
-      newCalculatedWidths[i] = requiredWidth.clamp(minColumnWidth, maxColumnWidth);
-    }
-
-    columnWidths = newCalculatedWidths;
-    update(); // Update the UI with the new column widths
+    update(); // This will trigger its own update()
   }
 
   void toggleRowSelection(String rowId, bool? newValue) {
@@ -199,8 +188,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update(); // Update UI to reflect selection change
   }
 
-  void toggleSelectAll(bool? newValue) {
-    if (newValue == true) {
+  void toggleSelectAll(bool? value) {
+    if (value == true) {
       selectedRowIds = roster.map((rosterable) => rosterable.id).toSet();
     } else {
       selectedRowIds.clear();

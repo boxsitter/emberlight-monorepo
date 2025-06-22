@@ -15,11 +15,15 @@ enum AnsiStyle {
 }
 
 class CoreFormatter {
-  static String formatDate(DateTime? date) {
+  static String formatDate(DateTime? date, bool includeTime) {
     date ??= DateTime.now();
     final onlyDate = DateFormat('dd/MM/yyyy').format(date);
     final onlyTime = DateFormat('hh:mm').format(date);
-    return '$onlyDate at $onlyTime';
+    if (includeTime) {
+      return '$onlyDate at $onlyTime';
+    } else {
+      return onlyDate;
+    }
   }
 
   static String weekdayToString(int weekday, bool lowercase) {

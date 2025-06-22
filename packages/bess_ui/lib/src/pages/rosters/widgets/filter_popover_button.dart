@@ -47,7 +47,7 @@ class _FilterPopoverButtonState extends State<FilterPopoverButton> {
         width: 30,
         padding: EdgeInsets.zero,
         icon: const Icon(
-          LucideIcons.listFilter500,
+          LucideIcons.columns3Cog500,
           size: 18,
         ),
         onPressed: popoverController.toggle,
@@ -85,7 +85,7 @@ class _FilterForm extends StatelessWidget {
                 Text('Visible Columns', style: BessTextStyles.standardBold),
                 const SizedBox(height: BessSizes.sm),
                 Container(
-                  height: 200, // Increased height for better scrolling
+                  height: 300, // Increased height for better scrolling
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     border: Border.all(color: BessColors.borderPrimary),

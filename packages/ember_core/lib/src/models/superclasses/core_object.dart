@@ -32,8 +32,8 @@ abstract class CoreObject{
   @override
   int get hashCode => id.hashCode;
 
-  String get formattedCreatedAt => CoreFormatter.formatDate(createdAt.toLocal());
-  String get formattedUpdatedAt => CoreFormatter.formatDate(updatedAt.toLocal());
+  String get formattedCreatedAt => CoreFormatter.formatDate(createdAt.toLocal(), true);
+  String get formattedUpdatedAt => CoreFormatter.formatDate(updatedAt.toLocal(), true);
 
   String coreToString();
   Map<String, dynamic> toJson();

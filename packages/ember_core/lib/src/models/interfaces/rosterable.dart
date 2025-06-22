@@ -1,4 +1,5 @@
 import '../../../ember_core_models.dart';
+import '../roster_field.dart';
 
 abstract class Rosterable {
   String get id;

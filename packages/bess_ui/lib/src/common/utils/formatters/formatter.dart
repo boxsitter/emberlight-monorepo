@@ -1,13 +1,6 @@
 import 'package:intl/intl.dart';
 
 class BessFormatter {
-  static String formatDate(DateTime? date) {
-    date ??= DateTime.now();
-    final onlyDate = DateFormat('dd/MM/yyyy').format(date);
-    final onlyTime = DateFormat('hh:mm').format(date);
-    return '$onlyDate at $onlyTime';
-  }
-
   static String formatCurrency(double amount) {
     return NumberFormat.currency(locale: 'en_US', symbol: '\$')
         .format(amount); // Customize the currency locale and symbol as needed

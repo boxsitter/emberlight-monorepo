@@ -32,6 +32,7 @@ export 'src/models/core_objects/core_user.dart';
 
 
 export 'src/models/commit.dart';
+export 'src/models/roster_field.dart';
 
 // enums
 export 'src/models/enums.dart';

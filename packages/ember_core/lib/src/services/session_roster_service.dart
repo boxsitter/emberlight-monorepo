@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../../ember_core_debug.dart';
 import '../debug/service_exceptions.dart';
+import '../models/roster_field.dart';
 
 class SessionRosterService extends GetxService {
   static CoreBackend backend = BackendManager.instance;

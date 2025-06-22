@@ -34,7 +34,7 @@ class TableHeader extends StatelessWidget {
         border: Border(bottom: BorderSide(width: 1, color: BessColors.borderPrimary)),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(right: BessSizes.md, left: BessSizes.md, top: BessSizes.ms, bottom: BessSizes.sm),
+        padding: const EdgeInsets.only(right: BessSizes.bg, left: BessSizes.bg, top: BessSizes.bg, bottom: BessSizes.sm),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -59,17 +59,17 @@ class TableHeader extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: BessSizes.xs),
+                SizedBox(height: BessSizes.sm),
 
                 TableMenuBar(pageControllerTag: pageControllerTag),
               ],
             ),
-            const Spacer(),
-            ActionButtonRow(
-              selectedRowIds: selectedRowIds,
-              onImport: onImport,
-              onDelete: onDelete,
-            ),
+            // const Spacer(),
+            // ActionButtonRow(
+            //   selectedRowIds: selectedRowIds,
+            //   onImport: onImport,
+            //   onDelete: onDelete,
+            // ),
           ],
         ),
       ),

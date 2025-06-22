@@ -53,6 +53,7 @@ class BessShadTheme {
       buttonPressedBackgroundColor: BessColors.primary,
       buttonPressedForegroundColor: BessColors.textInverted,
       buttonBackgroundColor: BessColors.core,
+      buttonSize: ShadButtonSize.sm,
       buttonHeight: 30,
       radius: BorderRadius.all(Radius.circular(BessSizes.cardRadiusMd)),
     ),
