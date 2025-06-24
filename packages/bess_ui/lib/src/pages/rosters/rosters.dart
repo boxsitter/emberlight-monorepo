@@ -28,7 +28,7 @@ class Rosters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BessSiteTemplate(desktop: RostersDesktop(pageControllerTag: pageControllerTag));
+    return BessSiteTemplate(desktop: RostersDesktop(pageControllerTag: pageControllerTag), desktopPadding: false);
   }
 }
 
@@ -72,13 +72,8 @@ class RostersDesktop extends StatelessWidget {
       controller: controller,
       tag: pageControllerTag,
       builder: (controller) {
-        return BessRoundedContainer(
-          showShadow: false,
-          showBorder: true,
-          borderThickness: BessSizes.borderThicknessMd,
-          backgroundColor: BessColors.core,
-          padding: EdgeInsets.zero,
-          clipContent: true,
+        return Container(
+          color: BessColors.core,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
