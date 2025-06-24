@@ -6,6 +6,7 @@ class RosterField implements Titled {
   final String title;
   final bool required;
   final double defaultWidth;
+  final String? dataId;
   final String? csvHeader;
   final String? csvHeaderAlt;
 
@@ -15,18 +16,19 @@ class RosterField implements Titled {
     required this.title,
     required this.required,
     required this.defaultWidth,
+    this.dataId,
     this.csvHeader,
     this.csvHeaderAlt,
   });
 
   static const double widthSm = 60;
-  static const double widthMd = 80;
-  static const double widthLg = 110;
-  static const double widthXl = 140;
+  static const double widthMd = 100;
+  static const double widthLg = 140;
+  static const double widthXl = 260;
 
   /// --- Static definitions for each field ---
-  static const RosterField id = RosterField(name: 'id', title: 'Core Id', required: false, defaultWidth: widthLg);
-  static const RosterField fullName = RosterField(name: 'fullName', title: 'Full Name', required: false, defaultWidth: widthXl);
+  static const RosterField id = RosterField(name: 'id', title: 'Bessie Id', required: false, defaultWidth: widthXl);
+  static const RosterField fullName = RosterField(name: 'fullName', title: 'Full Name', required: false, defaultWidth: widthLg);
   static const RosterField firstName = RosterField(
     name: 'firstName',
     title: 'First Name',
@@ -79,6 +81,18 @@ class RosterField implements Titled {
     defaultWidth: widthLg,
     csvHeader: 'idPerson',
   );
+  static const RosterField arrived = RosterField(
+    name: 'arrived',
+    title: 'Arrived',
+    required: false,
+    defaultWidth: widthMd,
+  );
+  static const RosterField canSwim = RosterField(
+    name: 'canSwim',
+    title: 'Can Swim',
+    required: false,
+    defaultWidth: widthMd,
+  );
 
   /// A list of all possible RosterField values, similar to `Enum.values`.
   static const List<RosterField> values = [
@@ -93,6 +107,8 @@ class RosterField implements Titled {
     note,
     cabinName,
     ultracampId,
+    arrived,
+    canSwim,
   ];
 
   @override
@@ -105,4 +121,7 @@ class RosterField implements Titled {
 
   @override
   int get hashCode => title.hashCode;
+
+  @override
+  String get displayTitle => title;
 }

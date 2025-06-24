@@ -111,7 +111,7 @@ class SessionRosterService extends GetxService {
       final headers = rows.first.map((h) => h.toString().toLowerCase().trim()).toList();
       final Map<RosterField, int> headerIndices = _parseHeaderIndices(headers, expectedColumns);
 
-      final List<Map<String, dynamic>> campersToRegisterData = [];
+      final List<Map<RosterField, dynamic>> campersToRegisterData = [];
       final Set<Camper> existingCampers = await registeredCampers;
       final Set<String> newCampersUniqueKeys = {}; // To track campers from the current CSV
 
@@ -132,9 +132,9 @@ class SessionRosterService extends GetxService {
         final camperData = _extractCamperDataFromRow(row, headerIndices, expectedColumns, i);
 
         // Duplicate Checking
-        final String firstName = camperData[RosterField.firstName.name];
-        final String lastName = camperData[RosterField.lastName.name];
-        final DateTime birthdate = camperData[RosterField.birthdate.name];
+        final String firstName = camperData[RosterField.firstName];
+        final String lastName = camperData[RosterField.lastName];
+        final DateTime birthdate = camperData[RosterField.birthdate];
 
         final String currentCamperKey = '${firstName.toLowerCase()}_${lastName.toLowerCase()}_$birthdate';
 
@@ -156,13 +156,13 @@ class SessionRosterService extends GetxService {
       for (final camperData in campersToRegisterData) {
           await registerCamper(
             commit: commit,
-            firstName: camperData[RosterField.firstName.name],
-            lastName: camperData[RosterField.lastName.name],
-            preferredName: camperData[RosterField.preferredName.name] ?? '',
-            gender: camperData[RosterField.gender.name],
-            birthdate: camperData[RosterField.birthdate.name],
-            cabinName: camperData[RosterField.cabinName.name] ?? '',
-            ultracampId: camperData[RosterField.ultracampId.name],
+            firstName: camperData[RosterField.firstName],
+            lastName: camperData[RosterField.lastName],
+            preferredName: camperData[RosterField.preferredName] ?? '',
+            gender: camperData[RosterField.gender],
+            birthdate: camperData[RosterField.birthdate],
+            cabinName: camperData[RosterField.cabinName] ?? '',
+            ultracampId: camperData[RosterField.ultracampId],
           );
         }
       return commit;
@@ -223,8 +223,8 @@ class SessionRosterService extends GetxService {
     return indices;
   }
 
-  Map<String, dynamic> _extractCamperDataFromRow(List<dynamic> row, Map<RosterField, int> indices, List<RosterField> expectedColumns, int rowIndex) {
-    final Map<String, dynamic> camperData = {};
+  Map<RosterField, dynamic> _extractCamperDataFromRow(List<dynamic> row, Map<RosterField, int> indices, List<RosterField> expectedColumns, int rowIndex) {
+    final Map<RosterField, dynamic> camperData = {};
 
     for (final field in expectedColumns) {
       final index = indices[field]!;
@@ -237,20 +237,20 @@ class SessionRosterService extends GetxService {
         );
       }
 
-      switch (field) {
-        case RosterField.gender:
-          camperData[field.name] = _parseGender(cellValue);
+      switch (field.name) {
+        case 'gender':
+          camperData[field] = _parseGender(cellValue);
           break;
-        case RosterField.birthdate:
+        case 'birthdate':
           // cellValue is guaranteed to be non-null here due to the required check above
-          camperData[field.name] = _parseBirthdate(cellValue!, rowIndex);
+          camperData[field] = _parseBirthdate(cellValue!, rowIndex);
           break;
-        case RosterField.cabinName:
+        case 'cabinName':
           // TODO: Implement cabinName parsing
-          camperData[field.name] = cellValue;
+          camperData[field] = cellValue;
           break;
         default:
-      camperData[field.name] = cellValue;
+      camperData[field] = cellValue;
     }
   }
     return camperData;

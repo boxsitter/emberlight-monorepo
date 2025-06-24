@@ -25,14 +25,7 @@ class BessieFlutterApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
           initialRoute: BessRoutes.home,
-          unknownRoute: GetPage(
-            name: '/page-not-found',
-            page: () => const Scaffold(
-              body: Center(
-                child: Text("Woah there partner, that page doesn't exist!"),
-              ),
-            ),
-          ),
+          unknownRoute: BessRoutes.pages.last,
           navigatorObservers: [Get.find<BessNavigationObserver>()],
           defaultTransition: Transition.noTransition,
           getPages: BessRoutes.pages,

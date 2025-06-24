@@ -1,6 +1,5 @@
-import 'package:ember_core/ember_core_utils.dart';
-
 import '../../../ember_core_models.dart';
+import '../../../ember_core_utils.dart';
 import '../core_objects/schedule_day.dart';
 
 typedef CoreObjectObjId = String;
@@ -32,8 +31,8 @@ abstract class CoreObject{
   @override
   int get hashCode => id.hashCode;
 
-  String get formattedCreatedAt => CoreFormatter.formatDate(createdAt.toLocal(), true);
-  String get formattedUpdatedAt => CoreFormatter.formatDate(updatedAt.toLocal(), true);
+  String get formattedCreatedAt => DateTimeHelpers.formatDate(createdAt.toLocal(), true);
+  String get formattedUpdatedAt => DateTimeHelpers.formatDate(updatedAt.toLocal(), true);
 
   String coreToString();
   Map<String, dynamic> toJson();

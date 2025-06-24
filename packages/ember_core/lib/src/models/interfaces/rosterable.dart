@@ -14,6 +14,8 @@ abstract class Rosterable {
   String? get cabinName;
   String? get ultracampId;
   Map<AMABlockId, ActivityDependentId?> get activityAssignmentRefs;
+  bool? get arrived;
+  bool? get canSwim;
 
   String getFieldAsString(RosterField field);
 }

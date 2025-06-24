@@ -4,7 +4,6 @@ import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core_debug.dart';
-import '../backend/backend_manager.dart';
 
 class CabinService extends GetxService {
   CoreBackend backend = BackendManager.instance;

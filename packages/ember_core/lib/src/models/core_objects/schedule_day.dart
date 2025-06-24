@@ -25,7 +25,7 @@ class ScheduleDay extends CoreObject implements TimeInterval {
         super(
         domain: 'ses',
         type: 'schedule_day',
-        idTag: '${dayIndex}_${CoreFormatter.weekdayToString(start.weekday, true)}',
+        idTag: '${dayIndex}_${DateTimeHelpers.weekdayToString(start.weekday, true)}',
       );
 
   @override

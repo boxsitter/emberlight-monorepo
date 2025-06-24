@@ -11,7 +11,7 @@ class HardcodedSchedule {
 
   static final AMABlock choiceActivity = AMABlock(
     id: 'choice_activity_1-ama_block-ses-NnRd9WU',
-    name: 'Choice Activity 1',
+    title: 'Choice Activity 1',
     isTemplate: false,
     start: DateTime.now(),
     end: DateTime.now(),

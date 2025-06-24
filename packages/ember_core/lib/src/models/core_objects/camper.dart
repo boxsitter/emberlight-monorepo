@@ -3,7 +3,6 @@ import 'package:ember_core/ember_core_models.dart';
 import '../../../ember_core_utils.dart';
 import '../roster_field.dart';
 
-
 typedef CabinId = String;
 typedef AMABlockId = String;
 typedef ActivityDependentId = String;
@@ -27,8 +26,13 @@ class Camper extends CoreObject implements Rosterable {
   String? cabinName;
   @override
   String? ultracampId;
+  @override
+  bool? arrived;
+  @override
+  bool? canSwim;
   final Map<PrincipalActivityId, double?> preferenceRefs;
   final Map<PrincipalActivityId, double> preferenceWeightRefs;
+
   @override
   Map<AMABlockId, ActivityDependentId?> activityAssignmentRefs;
 
@@ -42,20 +46,18 @@ class Camper extends CoreObject implements Rosterable {
     this.cabinRef,
     this.cabinName,
     this.ultracampId,
+    this.arrived,
+    this.canSwim,
     Map<PrincipalActivityId, double?>? preferenceRefs,
     Map<PrincipalActivityId, double>? preferenceWeightRefs,
     Map<AMABlockId, ActivityDependentId>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : preferenceRefs = preferenceRefs ?? {},
-        preferenceWeightRefs = preferenceWeightRefs ?? {},
-        activityAssignmentRefs = activityAssignmentRefs ?? {},
-        super(
-        domain: 'ses',
-        type: 'camper',
-        idTag: '${firstName}_${lastName[0]}',
-      );
+  }) : preferenceRefs = preferenceRefs ?? {},
+       preferenceWeightRefs = preferenceWeightRefs ?? {},
+       activityAssignmentRefs = activityAssignmentRefs ?? {},
+       super(domain: 'ses', type: 'camper', idTag: '${firstName}_${lastName[0]}');
 
   /// returns preferred name if set, first name if not
   String get name => preferredName.isNotEmpty ? preferredName : firstName;
@@ -63,16 +65,18 @@ class Camper extends CoreObject implements Rosterable {
   String get fullName => '$firstName $lastName';
   String get fullNamePreferred => '$name $lastName';
   String get lastInitial => lastName[0];
-  String get formattedBirthdate => CoreFormatter.formatDate(birthdate, false);
+  String get formattedBirthdate => DateTimeHelpers.formatDate(birthdate, false);
 
-  int get age => (() {
-    final DateTime today = DateTime.now();
-    int years = (today.year - birthdate.year);
-    if (today.month < birthdate.month || (today.month == birthdate.month && today.day < birthdate.day)) {
-      years--;
-    }
-    return years < 0 ? 0 : years;
-  })();
+  @override
+  int get age =>
+      (() {
+        final DateTime today = DateTime.now();
+        int years = (today.year - birthdate.year);
+        if (today.month < birthdate.month || (today.month == birthdate.month && today.day < birthdate.day)) {
+          years--;
+        }
+        return years < 0 ? 0 : years;
+      })();
 
   @override
   String getFieldAsString(RosterField field) {
@@ -95,8 +99,18 @@ class Camper extends CoreObject implements Rosterable {
         return formattedBirthdate.toString();
       case RosterField.cabinName:
         return cabinName ?? 'N/A';
+      case RosterField.ultracampId:
+        return ultracampId.toString();
+      case RosterField.arrived:
+        return arrived == null ? 'N/A' : arrived! ? 'yes' : 'no';
+      case RosterField.canSwim:
+        return arrived == null ? 'N/A' : arrived! ? 'yes' : 'no';
       default:
-        return '';
+        if (field.name == 'activityPeriod') { // TODO: This sucks
+          return activityAssignmentRefs[field.dataId] ?? '';
+        } else {
+          return '';
+        }
     }
   }
 
@@ -162,6 +176,4 @@ class Camper extends CoreObject implements Rosterable {
       activityAssignmentRefs.removeWhere((key, value) => value == id);
     }
   }
-
-
 }

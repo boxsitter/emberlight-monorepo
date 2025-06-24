@@ -2,7 +2,7 @@ import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:bess_ui/src/pages/activity_preferences/widgets/activity_reorderable_list.dart';
-import 'package:bess_ui/src/pages/activity_preferences/widgets/horizontal_card_selector.dart';
+import 'package:bess_ui/src/common/widgets/misc/horizontal_card_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,5 +1,5 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/filter_popover_button.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/column_config_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -85,7 +85,7 @@ class TableMenuBar extends StatelessWidget {
           ],
         ),
 
-        FilterPopoverButton(controller: controller,),
+        ColumnConfigButton(controller: controller,),
       ],
     );
   }

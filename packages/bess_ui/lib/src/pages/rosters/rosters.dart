@@ -90,76 +90,87 @@ class RostersDesktop extends StatelessWidget {
                 selectedRowIds: controller.selectedRowIds,
               ),
               Expanded(
-                child: DataTable2(
-                  datarowCheckboxTheme: BessieCheckboxTheme.checkboxTheme.copyWith(splashRadius: 0),
-                  headingCheckboxTheme: BessieCheckboxTheme.checkboxTheme.copyWith(splashRadius: 0),
-                  headingRowColor: WidgetStateProperty.all<Color?>(BessColors.background),
-                  headingRowHeight: 42,
-                  columnSpacing: 0,
-                  horizontalMargin: 24,
-                  dataRowHeight: 40,
-                  minWidth: 600,
-                  // Assign the custom sizes map to the table.
-                  columns: controller.fields.map((field) {
-                    if (controller.fields.last == field) {
-                      // LAST COLUMN: Use 'size' to make it expand.
-                      return DataColumn2(
-                        label: Text(
-                          field.title,
-                          style: BessTextStyles.columnHeader,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                        ),
-                        size: ColumnSize.L,
-                      );
+                child: Builder(
+                  builder: (context) {
+                    if (controller.fields.isEmpty) {
+                      return Center(child: Text('Add some columns!'));
                     } else {
-                      // OTHER COLUMNS: Use 'fixedWidth' to prevent them from expanding.
-                      // You may need to adjust this value based on your content.
-                      return DataColumn2(
-                        label: Text(
-                          field.title,
-                          style: BessTextStyles.columnHeader,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                        ),
-                        fixedWidth: field.defaultWidth,
+                      return DataTable2(
+                        datarowCheckboxTheme: BessieCheckboxTheme.checkboxTheme.copyWith(splashRadius: 0),
+                        headingCheckboxTheme: BessieCheckboxTheme.checkboxTheme.copyWith(splashRadius: 0),
+                        headingRowColor: WidgetStateProperty.all<Color?>(BessColors.background),
+                        headingRowHeight: 42,
+                        columnSpacing: 16,
+                        horizontalMargin: 24,
+                        dataRowHeight: 40,
+                        onSelectAll: (selected) {
+                          controller.toggleSelectAll(selected);
+                        },
+                        minWidth: controller.minWidth + 10,
+                        // Assign the custom sizes map to the table.
+                        columns: controller.fields.map((field) {
+                          if (controller.fields.last == field) {
+                            // LAST COLUMN: Use 'size' to make it expand.
+                            return DataColumn2(
+                              label: Text(
+                                field.title,
+                                style: BessTextStyles.columnHeader,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                              ),
+                              size: ColumnSize.L,
+                            );
+                          } else {
+                            // OTHER COLUMNS: Use 'fixedWidth' to prevent them from expanding.
+                            // You may need to adjust this value based on your content.
+                            return DataColumn2(
+                              label: Text(
+                                field.title,
+                                style: BessTextStyles.columnHeader,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                              ),
+                              fixedWidth: field.defaultWidth,
+                            );
+                          }
+                        }).toList(),
+                        rows: List<DataRow>.generate(controller.roster.length, (index) {
+                          final rosterItem = controller.roster[index];
+                          final isSelected = controller.selectedRowIds.contains(rosterItem.id);
+                          return DataRow(
+                            selected: isSelected,
+                            // Set the color property using MaterialStateProperty.
+                            color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+                              // Color for selected rows.
+                              if (states.contains(WidgetState.selected)) {
+                                return BessColors.primary.withAlpha(30);
+                              }
+                              // Alternate colors for even and odd rows.
+                              if (index.isOdd) {
+                                return BessColors.background;
+                              }
+                              // Return null for odd rows to use the default transparent color.
+                              return null;
+                            }),
+                            onSelectChanged: (selected) {
+                              controller.toggleRowSelection(rosterItem.id, selected);
+                            },
+                            cells: controller
+                                .getRowDataFromItem(rosterItem)
+                                .map((cellData) => DataCell(
+                              Text(
+                                cellData,
+                                style: BessTextStyles.standard,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ))
+                                .toList(),
+                          );
+                        }).toList(),
                       );
                     }
-                  }).toList(),
-                  rows: List<DataRow>.generate(controller.roster.length, (index) {
-                    final rosterItem = controller.roster[index];
-                    final isSelected = controller.selectedRowIds.contains(rosterItem.id);
-                    return DataRow(
-                      selected: isSelected,
-                      // Set the color property using MaterialStateProperty.
-                      color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                        // Color for selected rows.
-                        if (states.contains(WidgetState.selected)) {
-                          return BessColors.primary.withAlpha(30);
-                        }
-                        // Alternate colors for even and odd rows.
-                        if (index.isOdd) {
-                          return BessColors.background;
-                        }
-                        // Return null for odd rows to use the default transparent color.
-                        return null;
-                      }),
-                      onSelectChanged: (selected) {
-                        controller.toggleRowSelection(rosterItem.id, selected);
-                      },
-                      cells: controller
-                          .getRowDataFromItem(rosterItem)
-                          .map((cellData) => DataCell(
-                                Text(
-                                  cellData,
-                                  style: BessTextStyles.standard,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))
-                          .toList(),
-                    );
-                  }).toList(),
+                  }
                 ),
               ),
             ],

@@ -1,10 +1,11 @@
 import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core_utils.dart';
 
 import '../../../../ember_core_debug.dart';
 
-class AMABlock extends CoreObject implements ScheduleBlock {
+class AMABlock extends CoreObject implements ScheduleBlock, Titled {
   @override
-  final String name;
+  final String title;
   @override
   final bool isTemplate;
   @override
@@ -15,7 +16,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
   bool isSkillsRec;
 
   AMABlock({
-    required this.name,
+    required this.title,
     required this.isTemplate,
     required this.start,
     required this.end,
@@ -28,19 +29,22 @@ class AMABlock extends CoreObject implements ScheduleBlock {
         super(
           domain: 'ses',
           type: 'ama_block',
-          idTag: name,
+          idTag: title,
         );
 
   @override
+  String get displayTitle => '${DateTimeHelpers.dateTimeToWeekdayString(start, true)} - $title';
+
+  @override
   String coreToString() {
-    return 'AMABlock: $name, Activities: ${activityDependentCmps.length}';
+    return 'AMABlock: $title, Activities: ${activityDependentCmps.length}';
   }
 
   @override
   Map<String, dynamic> toJson() {
     final json = toJsonSuper();
     json.addAll({
-      'name': name,
+      'title': title,
       'isTemplate': isTemplate,
       'start': start,
       'end': end,
@@ -52,7 +56,7 @@ class AMABlock extends CoreObject implements ScheduleBlock {
 
   factory AMABlock.fromJson(Map<String, dynamic> json) {
     final block = AMABlock(
-      name: json['name'] as String,
+      title: json['title'] as String,
       isTemplate: json['isTemplate'],
       start: json['start'] as DateTime,
       end: json['end'] as DateTime,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/sizes.dart';
-import 'small_card_button.dart';
+import '../../constants/sizes.dart';
+import '../../../pages/activity_preferences/widgets/small_card_button.dart';
 
 class HorizontalCardSelector extends StatelessWidget {
   const HorizontalCardSelector({

@@ -18,21 +18,29 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
   final RosterService rosterService = Get.find<RosterService>();
   final FrontendCommitService commitService = Get.find<FrontendCommitService>();
+  final ScheduleService scheduleService = Get.find<ScheduleService>();
 
   // --- State (Now using standard Dart types) ---
   late String rosterTitle;
 
   List<Rosterable> roster = [];
+  List<AMABlock> amas = [];
+  List<PrincipalActivity> principalActivities = [];
+  List<ActivityDependent> activityDependents = [];
   late final List<RosterField> fields;
+  double minWidth = 0;
 
   int count = 0;
   Set<String> selectedRowIds = {};
 
   bool importingCampers = false;
+  bool populatingActivities = false;
 
+  // Column config
   RosterField? sortByField;
   SortDirection sortDirection = SortDirection.asc;
   RosterField? groupBy;
+  bool displayAmas = false;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
@@ -47,10 +55,45 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   /// A computed list of fields that are available to be added.
   List<RosterField> get availableFields {
-    return RosterField.values.where((f) => !fields.contains(f)).toList();
+    return RosterField.values.where((field) => !fields.contains(field)).toList();
   }
 
-  // --- Placeholder Methods for Column Configuration ---
+  @override
+  void onNavigateTo(String to, String? from) {
+    Debug.logInfo('RosterTableController navigated to - Starting Listener');
+    populateActivities();
+    if (_campersSubscription == null) {
+      Debug.logInfo('Started listening to camper stream');
+      sessionRosterService.camperStream.then((stream) {
+        _campersSubscription = stream.listen((camperMap) {
+          onRosterUpdated(camperMap.values.toList());
+        });
+      });
+    }
+    updateMinimumWidth();
+  }
+
+  // TODO: NEED TO MAKE THIS A STREAM
+  Future<void> populateActivities() async {
+    populatingActivities = true;
+    update();
+    final List<dynamic> activityData = (await scheduleService.getActivityData());
+    amas = (activityData[0] as Set<AMABlock>).toList();
+    principalActivities = (activityData[2] as Set<PrincipalActivity>).toList();
+    activityDependents = (activityData[1] as Set<ActivityDependent>).toList();
+    populatingActivities = false;
+    update();
+  }
+
+  @override
+  void onNavigateFrom(String to, String? from) {
+    Debug.logInfo('RosterTableController navigated from - Stopping Listener');
+    if (_campersSubscription != null) {
+      Debug.logInfo('Stopped listening to camper stream');
+      _campersSubscription?.cancel();
+      _campersSubscription = null;
+    }
+  }
 
   void setColumnOrder(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) newIndex -= 1;
@@ -63,15 +106,17 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void addVisibleColumn(RosterField field) {
     if (!fields.contains(field)) {
       fields.add(field);
+      updateMinimumWidth();
       update();
     }
   }
 
   void removeVisibleColumn(RosterField field) {
-    fields.remove(field);
-    if (sortByField == field) sortByField = null;
-    if (groupBy == field) groupBy = null;
-    update();
+    if (fields.contains(field)) {
+      fields.remove(field);
+      updateMinimumWidth();
+      update();
+    }
   }
 
   void setSortBy(RosterField? field) {
@@ -109,55 +154,57 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
+  void updateMinimumWidth() {
+    double newVal = 0;
+    for (RosterField field in fields) {
+      newVal += field.defaultWidth;
+    }
+    minWidth = newVal;
+  }
+
   List<String> getRowDataFromItem(Rosterable rosterItem) {
     final List<String> rowData = [];
     for (final field in fields) {
-      switch (field) {
-        case RosterField.fullName:
-          rowData.add(rosterItem.fullName);
-          break;
-        case RosterField.preferredName:
-          rowData.add(rosterItem.preferredName);
-          break;
-        case RosterField.gender:
-        // Assuming gender is an enum, you might need .name to get the string
-          rowData.add(rosterItem.gender);
-          break;
-        case RosterField.age:
-          rowData.add(rosterItem.age.toString());
-          break;
-        case RosterField.cabinName:
-          rowData.add(rosterItem.cabinName ?? 'N/A');
-          break;
-      // Handle other fields as needed
+      if (field.name == 'activityPeriod') { // TODO: This sucks
+        if (!populatingActivities) {
+          String activityDependentId = rosterItem.getFieldAsString(field);
+          if (activityDependentId == '') {
+            rowData.add('unassigned');
+            continue;
+          }
+          ActivityDependent? activityDependent;
+          for (ActivityDependent activityDep in activityDependents) {
+            if (activityDep.id == activityDependentId) {
+              activityDependent = activityDep;
+            } else {
+              rowData.add('error');
+              continue;
+            }
+          }
+
+          PrincipalActivity? principalActivity;
+          for (PrincipalActivity prinActivity in principalActivities) {
+            if (activityDependent!.principalPar == prinActivity.id) {
+              principalActivity = prinActivity;
+            } else {
+              rowData.add('error');
+              continue;
+            }
+          }
+          rowData.add(principalActivity!.name);
+        } else {
+          rowData.add('loading...');
+        }
+      } else {
+        rowData.add(rosterItem.getFieldAsString(field));
       }
     }
     return rowData;
   }
 
-  // --- Existing Methods ---
-
-  @override
-  void onNavigateTo(String to, String? from) {
-    Debug.logInfo('RosterTableController navigated to - Starting Listener');
-    if (_campersSubscription == null) {
-      Debug.logInfo('Started listening to camper stream');
-      sessionRosterService.camperStream.then((stream) {
-        _campersSubscription = stream.listen((camperMap) {
-          onRosterUpdated(camperMap.values.toList());
-        });
-      });
-    }
-  }
-
-  @override
-  void onNavigateFrom(String to, String? from) {
-    Debug.logInfo('RosterTableController navigated from - Stopping Listener');
-    if (_campersSubscription != null) {
-      Debug.logInfo('Stopped listening to camper stream');
-      _campersSubscription?.cancel();
-      _campersSubscription = null;
-    }
+  void toggleDisplayAmas() {
+    displayAmas = !displayAmas;
+    update();
   }
 
   bool isNothingSelected() {
@@ -189,8 +236,14 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   void toggleSelectAll(bool? value) {
-    if (value == true) {
-      selectedRowIds = roster.map((rosterable) => rosterable.id).toSet();
+    if (value == null) {
+      selectedRowIds.clear();
+    } else if (value == true) {
+      if (selectedRowIds.isNotEmpty) {
+        selectedRowIds.clear();
+      } else {
+        selectedRowIds = roster.map((rosterable) => rosterable.id).toSet();
+      }
     } else {
       selectedRowIds.clear();
     }

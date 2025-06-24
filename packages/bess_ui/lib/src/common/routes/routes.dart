@@ -12,9 +12,11 @@ import '../../pages/home/home.dart';
 import '../../pages/rosters/rosters.dart';
 import '../../pages/schedule/schedule_page.dart';
 import '../../pages/session_manager/session_manager.dart';
+import '../../pages/unknown_route/unknown_route.dart';
 
 class BessRoutes {
   static const home = '/';
+  static const unknown = '/unknown';
 
   static const responsiveDesignExample = '/responsive-design';
   static const console = '/console';
@@ -46,6 +48,7 @@ class BessRoutes {
     login,
     forgotPassword,
     resetPassword,
+    unknown,
   };
 
   static final List<GetPage> pages = [
@@ -91,5 +94,11 @@ class BessRoutes {
     GetPage(name: BessRoutes.login, page: () => const LoginScreen()),
     GetPage(name: BessRoutes.forgotPassword, page: () => const ForgotPasswordScreen()),
     GetPage(name: BessRoutes.resetPassword, page: () => const ResetPasswordScreen()),
+
+    // THIS MUST BE LAST IN THE LIST!!!
+    GetPage(
+      name: BessRoutes.unknown,
+      page: () => const UnknownRoute(),
+    ),
   ];
 }

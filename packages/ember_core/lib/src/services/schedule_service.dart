@@ -14,7 +14,14 @@ class ScheduleService extends GetxService {
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   Future<Schedule> get schedule async => await clientContextService.schedule;
-  Future<Set<ScheduleDay>> get scheduleDays async => await backend.getObjects((await schedule).scheduleDayCmps.toSet());
+  Future<Set<ScheduleDay>> get scheduleDays async => await backend.getObjectsInCollection('schedule_day', 'ses');
+  Future<Set<AMABlock>> get amas async => await backend.getObjectsInCollection('ama_block', 'ses');
+  Future<Set<ActivityDependent>> get activityDependents async => await backend.getObjectsInCollection('activity_dependent', 'ses');
+  Future<Set<PrincipalActivity>> get principleActivities async => await backend.getObjectsInCollection('principal_activity', 'brn');
+
+  Future<List<dynamic>> getActivityData() async {
+    return await Future.wait([amas, activityDependents, principleActivities]);
+  }
 
   Future<Set<String>> getSkillsActivityIds() async {
     Schedule schedule = await clientContextService.schedule;
@@ -95,7 +102,7 @@ class ScheduleService extends GetxService {
   Future<void> scheduleAMABlock(Commit commit, String name, String scheduleDayId, DateTime start, DateTime end, bool isSkillsRec) async {
     // TODO: infer the day from the start and end
     //  TODO: Add robust checking to make sure the AMA block doesn't overlap with other blocks or span days
-    AMABlock amaBlockToCreate = AMABlock(name: name, isTemplate: false, start: start, end: end, isSkillsRec: isSkillsRec);
+    AMABlock amaBlockToCreate = AMABlock(title: name, isTemplate: false, start: start, end: end, isSkillsRec: isSkillsRec);
     commit.addObjectToPush(amaBlockToCreate);
     Schedule schedule = commit.getObjectOfType() ?? await clientContextService.schedule; // TODO: Remove this
     addBlockToDay(commit, schedule.scheduleDayCmps.first, amaBlockToCreate);

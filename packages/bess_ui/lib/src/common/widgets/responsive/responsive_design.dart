@@ -23,8 +23,6 @@ class BessResponsiveWidget extends StatefulWidget {
 }
 
 class BessResponsiveWidgetState extends State<BessResponsiveWidget> {
-  bool isFullScreen = false;
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(

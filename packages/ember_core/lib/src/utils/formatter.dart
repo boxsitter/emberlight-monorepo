@@ -15,22 +15,6 @@ enum AnsiStyle {
 }
 
 class CoreFormatter {
-  static String formatDate(DateTime? date, bool includeTime) {
-    date ??= DateTime.now();
-    final onlyDate = DateFormat('dd/MM/yyyy').format(date);
-    final onlyTime = DateFormat('hh:mm').format(date);
-    if (includeTime) {
-      return '$onlyDate at $onlyTime';
-    } else {
-      return onlyDate;
-    }
-  }
-
-  static String weekdayToString(int weekday, bool lowercase) {
-    final weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    return lowercase ? weekdays[weekday - 1] : weekdays[weekday - 1].toUpperCase();
-  }
-
   /// Formats a string with specified ANSI color and style.
   ///
   /// [text]: The string to format.
