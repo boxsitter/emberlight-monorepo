@@ -24,13 +24,28 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   late String rosterTitle;
 
   List<Rosterable> roster = [];
+  String searchQuery = '';
+  Timer? _debounce;
+
+  List<Rosterable> get filteredRoster {
+    if (searchQuery.isEmpty) {
+      return roster;
+    } else {
+      return roster.where((item) {
+        final fullName = item.getFieldAsString(RosterField.fullName).toLowerCase();
+        final nickname = item.getFieldAsString(RosterField.preferredName).toLowerCase();
+        return fullName.contains(searchQuery.toLowerCase()) || nickname.contains(searchQuery.toLowerCase());
+      }).toList();
+    }
+  }
+
   List<AMABlock> amas = [];
   List<PrincipalActivity> principalActivities = [];
   List<ActivityDependent> activityDependents = [];
   late final List<RosterField> fields;
   double minWidth = 0;
 
-  int count = 0;
+  int get count => filteredRoster.length;
   Set<String> selectedRowIds = {};
 
   bool importingCampers = false;
@@ -41,6 +56,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   SortDirection sortDirection = SortDirection.asc;
   RosterField? groupBy;
   bool displayAmas = false;
+
+  // View Settings
+  bool alternateRowColors = true;
+  bool highContrast = false;
+  bool rowDividers = false;
+  bool compact = true;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
@@ -56,6 +77,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   /// A computed list of fields that are available to be added.
   List<RosterField> get availableFields {
     return RosterField.values.where((field) => !fields.contains(field)).toList();
+  }
+
+  @override
+  void onClose() {
+    _debounce?.cancel();
+    _campersSubscription?.cancel();
+    super.onClose();
   }
 
   @override
@@ -95,6 +123,14 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     }
   }
 
+  void setSearchQuery(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 50), () {
+      searchQuery = query;
+      update();
+    });
+  }
+
   void setColumnOrder(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) newIndex -= 1;
     final item = fields.removeAt(oldIndex);
@@ -127,8 +163,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   void sort(RosterField field) {
     if (sortByField == field) {
-      sortDirection =
-          sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
+      sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
     } else {
       sortByField = field;
       sortDirection = SortDirection.asc;
@@ -165,7 +200,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   List<String> getRowDataFromItem(Rosterable rosterItem) {
     final List<String> rowData = [];
     for (final field in fields) {
-      if (field.name == 'activityPeriod') { // TODO: This sucks
+      if (field.name == 'activityPeriod') {
+        // TODO: This sucks
         if (!populatingActivities) {
           String activityDependentId = rosterItem.getFieldAsString(field);
           if (activityDependentId == '') {
@@ -207,6 +243,26 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
+  void toggleAlternateRowColors() {
+    alternateRowColors = !alternateRowColors;
+    update();
+  }
+
+  void toggleHighContrast() {
+    highContrast = !highContrast;
+    update();
+  }
+
+  void toggleRowDividers() {
+    rowDividers = !rowDividers;
+    update();
+  }
+
+  void toggleCompact() {
+    compact = !compact;
+    update();
+  }
+
   bool isNothingSelected() {
     return selectedRowIds.isEmpty;
   }
@@ -222,7 +278,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   /// Call this method whenever the roster data is fetched or changed.
   void onRosterUpdated(List<Rosterable> newRoster) {
     roster = newRoster;
-    count = roster.length;
     update(); // This will trigger its own update()
   }
 
@@ -235,19 +290,30 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update(); // Update UI to reflect selection change
   }
 
-  void toggleSelectAll(bool? value) {
-    if (value == null) {
+  void toggleSelectAll(bool? select) {
+    final filteredIds = filteredRoster.map((e) => e.id).toSet();
+    if (select! && selectedRowIds.isNotEmpty) {
       selectedRowIds.clear();
-    } else if (value == true) {
-      if (selectedRowIds.isNotEmpty) {
-        selectedRowIds.clear();
-      } else {
-        selectedRowIds = roster.map((rosterable) => rosterable.id).toSet();
-      }
+    } else if (select) {
+      selectedRowIds.addAll(filteredIds);
     } else {
       selectedRowIds.clear();
     }
-    update(); // Update UI to reflect selection change
+    update();
+  }
+
+  bool? get headingCheckboxState {
+    final filteredIds = filteredRoster.map((e) => e.id).toSet();
+    if (filteredIds.isEmpty) return false;
+    final selectedFiltered = selectedRowIds.intersection(filteredIds);
+
+    if (selectedFiltered.isEmpty) {
+      return false;
+    }
+    if (selectedFiltered.length == filteredIds.length) {
+      return true;
+    }
+    return null;
   }
 
   List<String> getRowData(int rowIndex) {
@@ -299,11 +365,27 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     // Create a map from all possible RosterField enum values.
     // The key is the field's title, and the value is whether the controller's
     // `fields` list currently contains that RosterField.
-    return {
-      for (var field in RosterField.values)
-        field.title: fields.contains(field)
-    };
+    return {for (var field in RosterField.values) field.title: fields.contains(field)};
+  }
+
+  bool noMatches() {
+    if (filteredRoster.isEmpty && searchQuery.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void invertSelection() {
+    // Create a set of all possible IDs from the main roster list.
+    final allIds = roster.map((rosterable) => rosterable.id).toSet();
+
+    // The new set of selected IDs will be all IDs from the roster
+    // that are not currently in the selectedRowIds set.
+    // The `difference` method on sets is perfect for this.
+    selectedRowIds = allIds.difference(selectedRowIds);
+
+    // Update the UI to reflect the change in selection.
+    update();
   }
 }
-
-

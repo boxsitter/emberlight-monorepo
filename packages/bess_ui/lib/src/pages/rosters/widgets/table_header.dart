@@ -1,11 +1,9 @@
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
-import 'action_button_row.dart';
 import 'menu_bar.dart';
 
 class TableHeader extends StatelessWidget {
@@ -15,6 +13,8 @@ class TableHeader extends StatelessWidget {
   final Set<String> selectedRowIds;
   final VoidCallback onImport;
   final VoidCallback onDelete;
+  final void Function(String) onSearchChange;
+  final bool noMatches;
 
   const TableHeader({
     super.key,
@@ -24,6 +24,8 @@ class TableHeader extends StatelessWidget {
     required this.selectedRowIds,
     required this.onImport,
     required this.onDelete,
+    required this.onSearchChange,
+    required this.noMatches,
   });
 
   @override
@@ -49,27 +51,19 @@ class TableHeader extends StatelessWidget {
                       title,
                       style: BessTextStyles.tableHeader,
                     ),
-
-                    SizedBox(width: 8),
-
+                    const SizedBox(width: 8),
                     Text(
                       '($count)',
                       style: BessTextStyles.tableHeaderSecondary,
                     ),
                   ],
                 ),
-
-                SizedBox(height: BessSizes.sm),
-
+                const SizedBox(height: BessSizes.sm),
                 TableMenuBar(pageControllerTag: pageControllerTag),
               ],
             ),
-            // const Spacer(),
-            // ActionButtonRow(
-            //   selectedRowIds: selectedRowIds,
-            //   onImport: onImport,
-            //   onDelete: onDelete,
-            // ),
+            const Spacer(),
+            searchbar(onSearchChange: onSearchChange, noMatches: noMatches),
           ],
         ),
       ),

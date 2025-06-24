@@ -72,6 +72,8 @@ class TableMenuBar extends StatelessWidget {
               onPressed: controller.deleteSelected,
               enabled: controller.isSingleSelected() || controller.isMultiSelected(),
             ),
+            divider,
+            ShadContextMenuItem(child: const Text('Invert Selection'), onPressed: controller.invertSelection, enabled: controller.selectedRowIds.isNotEmpty),
           ],
         ),
         ShadMenubarItem(
@@ -79,8 +81,29 @@ class TableMenuBar extends StatelessWidget {
           child: const Text('View'),
           items: [
             ShadContextMenuItem(
-              //leading: Icon(LucideIcons.check),
+              leading: Icon(LucideIcons.check, color: Colors.transparent),
               child: const Text('Paginated'),
+            ),
+            ShadContextMenuItem(
+              child: const Text('Alternate Row Colors'),
+              onPressed: controller.toggleAlternateRowColors,
+              leading: controller.alternateRowColors ? Icon(LucideIcons.check, color: BessColors.textPrimary,) : Icon(LucideIcons.check, color: Colors.transparent,),
+            ),
+            ShadContextMenuItem(
+              child: const Text('High Contrast'),
+              onPressed: controller.toggleHighContrast,
+              leading: controller.highContrast ? Icon(LucideIcons.check, color: BessColors.textPrimary,) : Icon(LucideIcons.check, color: Colors.transparent),
+              enabled: controller.alternateRowColors,
+            ),
+            ShadContextMenuItem(
+              child: const Text('Row Dividers'),
+              onPressed: controller.toggleRowDividers,
+              leading: controller.rowDividers ? Icon(LucideIcons.check, color: BessColors.textPrimary,) : Icon(LucideIcons.check, color: Colors.transparent,),
+            ),
+            ShadContextMenuItem(
+              child: const Text('Compact'),
+              onPressed: controller.toggleCompact,
+              leading: controller.compact ? Icon(LucideIcons.check, color: BessColors.textPrimary,) : Icon(LucideIcons.check, color: Colors.transparent,),
             ),
           ],
         ),

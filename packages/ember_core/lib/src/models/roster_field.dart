@@ -66,7 +66,7 @@ class RosterField implements Titled {
     csvHeader: 'Birthdate',
   );
   static const RosterField age = RosterField(name: 'age', title: 'Age', required: false, defaultWidth: widthSm);
-  static const RosterField note = RosterField(name: 'note', title: 'Note', required: false, defaultWidth: widthLg);
+  static const RosterField note = RosterField(name: 'note', title: 'Note', required: false, defaultWidth: widthXl);
   static const RosterField cabinName = RosterField(
     name: 'cabinName',
     title: 'Cabin',

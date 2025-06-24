@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/theme/widget_themes/checkbox_theme.dart';
+import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/table_header.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:ember_core/ember_core_models.dart';
@@ -88,12 +89,19 @@ class RostersDesktop extends StatelessWidget {
                 onDelete: controller.deleteSelected,
                 onImport: controller.importCsv,
                 selectedRowIds: controller.selectedRowIds,
+                onSearchChange: controller.setSearchQuery,
+                noMatches: controller.noMatches(),
               ),
               Expanded(
                 child: Builder(
                   builder: (context) {
                     if (controller.fields.isEmpty) {
-                      return Center(child: Text('Add some columns!'));
+                    return const Center(child: Text('Add some columns!'));
+                  } else if (controller.filteredRoster.isEmpty &&
+                      controller.searchQuery.isNotEmpty) {
+                    return Center(
+                        child: Text(
+                            'No campers found for "${controller.searchQuery}".'));
                     } else {
                       return DataTable2(
                         datarowCheckboxTheme: BessieCheckboxTheme.checkboxTheme.copyWith(splashRadius: 0),
@@ -102,7 +110,8 @@ class RostersDesktop extends StatelessWidget {
                         headingRowHeight: 42,
                         columnSpacing: 16,
                         horizontalMargin: 24,
-                        dataRowHeight: 40,
+                        dataRowHeight: controller.compact ? 40 : 80,
+                        dividerThickness: controller.rowDividers ? 1 : 0,
                         onSelectAll: (selected) {
                           controller.toggleSelectAll(selected);
                         },
@@ -134,8 +143,9 @@ class RostersDesktop extends StatelessWidget {
                             );
                           }
                         }).toList(),
-                        rows: List<DataRow>.generate(controller.roster.length, (index) {
-                          final rosterItem = controller.roster[index];
+                      rows: List<DataRow>.generate(
+                          controller.filteredRoster.length, (index) {
+                        final rosterItem = controller.filteredRoster[index];
                           final isSelected = controller.selectedRowIds.contains(rosterItem.id);
                           return DataRow(
                             selected: isSelected,
@@ -143,11 +153,17 @@ class RostersDesktop extends StatelessWidget {
                             color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
                               // Color for selected rows.
                               if (states.contains(WidgetState.selected)) {
-                                return BessColors.primary.withAlpha(30);
+                                if (index.isOdd && controller.alternateRowColors) {
+                                  return controller.highContrast
+                                    ? BessHelperFunctions.blendColors(BessColors.crust, BessColors.primary, 40)
+                                    : BessHelperFunctions.blendColors(BessColors.background, BessColors.primary, 30);
+                                } else {
+                                  return BessHelperFunctions.blendColors(BessColors.core, BessColors.primary, 30);
+                                }
                               }
                               // Alternate colors for even and odd rows.
-                              if (index.isOdd) {
-                                return BessColors.background;
+                              if (index.isOdd && controller.alternateRowColors) {
+                                return controller.highContrast ? BessColors.crust : BessColors.background;
                               }
                               // Return null for odd rows to use the default transparent color.
                               return null;
@@ -161,7 +177,7 @@ class RostersDesktop extends StatelessWidget {
                               Text(
                                 cellData,
                                 style: BessTextStyles.standard,
-                                maxLines: 1,
+                                maxLines: controller.compact ? 1 : 4,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ))

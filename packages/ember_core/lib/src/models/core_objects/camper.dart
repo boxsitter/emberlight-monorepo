@@ -94,13 +94,15 @@ class Camper extends CoreObject implements Rosterable {
       case RosterField.gender:
         return gender;
       case RosterField.age:
-        return age.toString() ?? '';
+        return age.toString();
       case RosterField.birthdate:
         return formattedBirthdate.toString();
       case RosterField.cabinName:
         return cabinName ?? 'N/A';
       case RosterField.ultracampId:
         return ultracampId.toString();
+      case RosterField.note:
+        return note.toString();
       case RosterField.arrived:
         return arrived == null ? 'N/A' : arrived! ? 'yes' : 'no';
       case RosterField.canSwim:
