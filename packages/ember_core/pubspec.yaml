@@ -17,12 +17,20 @@ dependencies:
   # Utility Packages
   intl: any
   pdf: ^3.11.3
-  file_picker: ^10.1.2
+  file_picker: ^10.2.0
   csv: ^6.0.0
-  logger: ^2.5.0
+  logger: ^2.6.0
   shared_preferences: ^2.5.3
+  collection: ^1.19.1
+
+  # Firebase
+  firebase_core: ^3.14.0
+  cloud_firestore: ^5.6.9
+  firebase_crashlytics: ^4.3.7
+  firebase_analytics: ^11.5.0
+  firebase_auth: ^5.6.0
 
 
 dev_dependencies:
-  lints: ^5.1.1
+  lints: ^6.0.0
   test: ^1.25.15

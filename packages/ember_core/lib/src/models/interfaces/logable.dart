@@ -1,7 +1,6 @@
-import 'package:ember_core/ember_core_utils.dart';
 
-import '../../../ember_core_debug.dart';
-import '../../../ember_core_models.dart';
+
+import '../../../ember_core.dart';
 
 abstract class Logable {
   final DateTime timestamp;

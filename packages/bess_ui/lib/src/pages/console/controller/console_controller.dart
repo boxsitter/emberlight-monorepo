@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:get/get.dart';
 import 'package:xterm/core.dart';
 

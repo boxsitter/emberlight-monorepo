@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/styles/text_styles.dart';
-import 'package:bess_ui/src/common/widgets/state/controller_dependant_wrapper.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

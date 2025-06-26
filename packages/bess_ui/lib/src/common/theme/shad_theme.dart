@@ -46,16 +46,19 @@ class BessShadTheme {
 
     menubarTheme: ShadMenubarTheme(
       buttonForegroundColor: BessColors.textPrimary,
-      backgroundColor: BessColors.core,
+      backgroundColor: Colors.transparent,
       buttonHoverBackgroundColor: BessColors.crust,
       buttonHoverForegroundColor: BessColors.textPrimary,
       buttonSelectedBackgroundColor: BessColors.crust,
       buttonPressedBackgroundColor: BessColors.primary,
       buttonPressedForegroundColor: BessColors.textInverted,
-      buttonBackgroundColor: BessColors.core,
+      buttonBackgroundColor: Colors.transparent,
       buttonSize: ShadButtonSize.sm,
-      buttonHeight: 30,
-      radius: BorderRadius.all(Radius.circular(BessSizes.cardRadiusMd)),
+      buttonPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      border: ShadBorder.none,
+      padding: EdgeInsets.zero,
+      radius: BorderRadius.all(Radius.zero),
+      buttonHeight: 40,
     ),
 
     contextMenuTheme: ShadContextMenuTheme(

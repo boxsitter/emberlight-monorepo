@@ -1,7 +1,6 @@
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart'; // For Module enum
 
-// Base class for all repair-related exceptions
+import '../../ember_core.dart';
+
 abstract class RepairException extends EmberException {
   RepairException({
     required super.devMessage,

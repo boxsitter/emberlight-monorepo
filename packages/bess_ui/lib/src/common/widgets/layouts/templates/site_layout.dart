@@ -1,17 +1,36 @@
+import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/responsive/responsive_design.dart';
 import 'package:bess_ui/src/common/widgets/responsive/screens/mobile_layout.dart';
 import 'package:bess_ui/src/common/widgets/responsive/screens/tablet_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../../header/menu_bar.dart';
 import '../../responsive/screens/desktop_layout.dart';
 
 /// Template for overall site layout, responsive to different screen sizes
 class BessSiteTemplate extends StatelessWidget {
-  const BessSiteTemplate({super.key, this.desktop, this.tablet, this.mobile, this.useLayout = true, this.desktopPadding = true});
+  const BessSiteTemplate({
+    super.key,
+    required this.menuBar,
+    this.desktop,
+    this.tablet,
+    this.mobile,
+    this.useLayout = true,
+    this.desktopPadding = true,
+    this.tabletPadding = true,
+    this.centerActions,
+    this.trailingWidgets,
+  });
 
   /// Widget for desktop layout
   final Widget? desktop;
   final bool desktopPadding;
+  final bool tabletPadding;
+  final BessMenuBar menuBar;
+  final List<Widget>? centerActions;
+  final List<Widget>? trailingWidgets;
 
   /// Widget for tablet layout
   final Widget? tablet;
@@ -21,14 +40,40 @@ class BessSiteTemplate extends StatelessWidget {
 
   /// Flag to determine whether to use layout
   final bool useLayout;
-    
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BessResponsiveWidget(
-          desktop: useLayout ? DesktopLayout(body: desktop, usePadding: desktopPadding) : desktop ?? Container(),
-          tablet: useLayout ? TabletLayout(body: tablet ?? desktop) : tablet ?? desktop ?? Container(),
-          mobile: useLayout ? MobileLayout(body: mobile ?? desktop) : mobile ?? desktop ?? Container(),
+        desktop: useLayout
+            ? DesktopLayout(
+                body: desktop,
+                usePadding: desktopPadding,
+                menuBar: menuBar,
+                centerActions: centerActions ?? [],
+                trailingWidgets: trailingWidgets ?? [],
+                hideSidebarByDefault: false,
+              )
+            : desktop ?? Container(),
+        tablet: useLayout
+            ? DesktopLayout(
+                body: desktop,
+                usePadding: desktopPadding,
+                menuBar: menuBar,
+                centerActions: centerActions ?? [],
+                trailingWidgets: trailingWidgets ?? [],
+          hideSidebarByDefault: true,
+              )
+            : desktop ?? Container(),
+
+        // tablet: useLayout
+        //     ? TabletLayout(
+        //         body: tablet ?? desktop,
+        //         usePadding: tabletPadding,
+        //         menuBar: menuBar,
+        //       )
+        //     : tablet ?? desktop ?? Container(),
+        mobile: useLayout ? MobileLayout(body: mobile ?? desktop) : mobile ?? desktop ?? Container(),
       ),
     );
   }

@@ -1,5 +1,4 @@
-import '../../ember_core_debug.dart';
-import 'frontend_interface.dart';
+import '../../ember_core.dart';
 
 class FrontendManager {
   static CoreFrontend? _frontend;

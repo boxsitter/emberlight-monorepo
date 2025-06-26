@@ -1,14 +1,11 @@
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/ember_core_backend.dart';
-import 'package:ember_core/ember_core_services.dart';
 import 'package:ember_core/src/hardcode/hardcoded_principal_activites.dart';
 import 'package:ember_core/src/hardcode/hardcoded_principal_cabins.dart';
 import 'package:ember_core/src/hardcode/hardcoded_schedule.dart';
+import 'package:ember_core/src/repositories/commit_repository.dart';
 import 'package:get/get.dart';
 
-import '../../ember_core_frontend.dart';
-import '../../ember_core_models.dart';
-import '../../ember_core_validators.dart';
+import '../../ember_core.dart';
 import '../models/core_objects/schedule_day.dart';
 
 class DevCommands {
@@ -23,7 +20,7 @@ class DevCommands {
 class RepairHardCode extends EmberCommand {
   final UserService userService = Get.find<UserService>();
   final ClientContext clientContext = Get.find<ClientContext>();
-  final FrontendCommitService commitService = Get.find<FrontendCommitService>();
+  final CommitRepository commitRepo = Get.find<CommitRepository>();
 
   @override
   final String name = 'rephc';
@@ -41,8 +38,6 @@ class RepairHardCode extends EmberCommand {
 
   @override
   Future<dynamic> run() async {
-    final backend = BackendManager.instance;
-
     final List<FormFieldDescriptor> formFieldDescriptors = [
      BooleanFormFieldDescriptor(label: 'Repair principal activities?'),
       BooleanFormFieldDescriptor(label: 'Repair principal cabins?'),
@@ -91,7 +86,7 @@ class RepairHardCode extends EmberCommand {
     }
 
     if (commit.objectsToPush.isNotEmpty) {
-      await commitService.commit(commit);
+      await commitRepo.commit(commit);
       userOutput.log('Repair process completed!');
     }
   }

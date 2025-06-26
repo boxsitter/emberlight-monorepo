@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_fire/src/services/path_service.dart';
 import 'package:get/get.dart';
 
+import '../../ember_core.dart';
+import '../services/path_service.dart';
 import 'pull_repository.dart';
 
 /// A generic repository for live-updating Firestore data.

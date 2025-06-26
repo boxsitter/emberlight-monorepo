@@ -1,7 +1,7 @@
 import 'package:bess_ui/src/common/routes/routes_middleware.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:get/get.dart';
 
+import '../../pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
 import '../../pages/activity_preferences/views/activity_preferences_selector.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
@@ -9,10 +9,13 @@ import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
 import '../../pages/console/view/console.dart';
 import '../../pages/home/home.dart';
+import '../../pages/rosters/controllers/rosters_controller.dart';
 import '../../pages/rosters/rosters.dart';
 import '../../pages/schedule/schedule_page.dart';
 import '../../pages/session_manager/session_manager.dart';
+import '../../pages/session_manager/session_manager_controller.dart';
 import '../../pages/unknown_route/unknown_route.dart';
+import '../mixins/route_aware_controller_mixin.dart';
 
 class BessRoutes {
   static const home = '/';
@@ -36,10 +39,7 @@ class BessRoutes {
   static Set sideMenuItems = {
     console,
     rosters,
-    home,
     activityPreferencesCabins,
-    activityRosters,
-    responsiveDesignExample,
     sessionManager,
     schedulePage,
   };
@@ -64,7 +64,7 @@ class BessRoutes {
     ),
     GetPage(
       name: BessRoutes.rosters,
-      page: () => const Rosters(pageControllerTag: 'rosters-controller'),
+      page: () => const Rosters(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
@@ -74,17 +74,17 @@ class BessRoutes {
     ),
     GetPage(
       name: BessRoutes.sessionManager,
-      page: () => const SessionManager(pageControllerTag: 'session-manager-controller',),
+      page: () => const SessionManager(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferencesCabins,
-      page: () => const ActivityPreferencesCabins(pageControllerTag: 'activity-preferences-controller'),
+      page: () => const ActivityPreferencesCabins(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferencesSelector,
-      page: () => const ActivityPreferencesSelector(pageControllerTag: 'activity-preferences-controller'),
+      page: () => const ActivityPreferencesSelector(),
       middlewares: [AuthMiddleware()],
     ),
 
@@ -101,4 +101,20 @@ class BessRoutes {
       page: () => const UnknownRoute(),
     ),
   ];
+
+  static RouteAwareControllerMixin? getControllerForRoute(String? routeName) {
+    if (routeName == null) return null;
+
+    if (routeName == BessRoutes.rosters && Get.isRegistered<RostersController>()) {
+      return Get.find<RostersController>();
+    }
+    if ((routeName == BessRoutes.activityPreferencesCabins || routeName == BessRoutes.activityPreferencesSelector) && Get.isRegistered<ActivityPreferencesController>()) {
+      return Get.find<ActivityPreferencesController>();
+    }
+    if (routeName == BessRoutes.sessionManager && Get.isRegistered<SessionManagerController>()) {
+      return Get.find<SessionManagerController>();
+    }
+    // Add other route-to-controller mappings here
+    return null;
+  }
 }

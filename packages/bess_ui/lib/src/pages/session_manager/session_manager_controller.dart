@@ -2,15 +2,13 @@ import 'dart:collection';
 
 import 'package:bess_ui/src/common/mixins/route_aware_controller_mixin.dart';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SessionManagerController extends GetxController with RouteAwareControllerMixin {
   final CabinService cabinsService = Get.find<CabinService>();
-  final FrontendCommitService commitService = Get.find<FrontendCommitService>();
+  final CommitRepository commitRepo = Get.find<CommitRepository>();
 
   // --- State Variables (No longer Rx) ---
   Map<String, String> cabinPrinIdsToNames = {};
@@ -66,6 +64,6 @@ class SessionManagerController extends GetxController with RouteAwareControllerM
       }
     }
 
-    commitService.commit(commit);
+    commitRepo.commit(commit);
   }
 }

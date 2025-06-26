@@ -1,5 +1,5 @@
-import '../../../ember_core_models.dart';
-import '../../../ember_core_utils.dart';
+
+import '../../../ember_core.dart';
 import '../core_objects/schedule_day.dart';
 
 typedef CoreObjectObjId = String;

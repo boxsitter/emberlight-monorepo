@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/constants/colors.dart';
 import '../../common/constants/sizes.dart';
+import '../../common/widgets/header/menu_bar.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class SchedulePage extends StatelessWidget {
@@ -11,7 +12,7 @@ class SchedulePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BessSiteTemplate(desktop: SchedulePageDesktop(), desktopPadding: false,);
+    return BessSiteTemplate(desktop: SchedulePageDesktop(), desktopPadding: false, menuBar: BessMenuBar(),);
   }
 }
 

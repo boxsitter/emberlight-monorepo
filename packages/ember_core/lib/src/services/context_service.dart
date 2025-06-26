@@ -1,14 +1,12 @@
 import 'dart:async';
 
-import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
-import 'package:ember_core/user_houck_leyton.dart';
+import 'package:ember_core/src/repositories/commit_repository.dart';
+import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../../ember_core_backend.dart';
-import '../../ember_core_debug.dart';
-import '../../ember_core_frontend.dart';
+import '../repositories/pull_repository.dart';
 
 typedef OrganizationId = String;
 typedef BranchId = String;
@@ -45,13 +43,14 @@ class ClientContext extends GetxService {
 }
 
 class ContextService extends GetxService {
-  static CoreBackend backend = BackendManager.instance;
+  PullRepository pullRepo = Get.find<PullRepository>();
+  CommitRepository commitRepo = Get.find<CommitRepository>();
   final ClientContext clientContext = Get.find<ClientContext>();
 
-  Future<Session> get session async => backend.getObject(await clientContext.getSessionId());
-  Future<Schedule> get schedule async => (await backend.getObjectsInCollection('schedule', 'ses')).first as Schedule;
-  Future<String> get sessionName async => await backend.getFieldValue(clientContext.sessionId, 'name');
-  Future<String> get seasonName async => await backend.getFieldValue(clientContext.seasonId, 'name');
+  Future<Session> get session async => pullRepo.getObject(await clientContext.getSessionId());
+  Future<Schedule> get schedule async => (await pullRepo.getObjectsInCollection('schedule', 'ses')).first as Schedule;
+  Future<String> get sessionName async => await pullRepo.getFieldValue(clientContext.sessionId, 'name');
+  Future<String> get seasonName async => await pullRepo.getFieldValue(clientContext.seasonId, 'name');
 
   // TODO: This is sketchy rn. I will still need to implement robust checks for no assigned orgs/branches and no current or existing seasons or sessions
   Future<void> setDefaultContext() async {
@@ -64,7 +63,7 @@ class ContextService extends GetxService {
 
     // TODO: This is really painful, fix it
     if (doDomainRepair) {
-      final Map<String, dynamic> dynamicOrgNames = await backend.getFieldFromCollection('organization', 'rot', 'name');
+      final Map<String, dynamic> dynamicOrgNames = await pullRepo.getFieldFromCollection('organization', 'rot', 'name');
       final Map<String, String> orgNames = {};
       dynamicOrgNames.forEach((key, value) {
         if (value is String) {
@@ -79,7 +78,7 @@ class ContextService extends GetxService {
     clientContext.organizationId = HardcodedDomains.ygs.id; // TODO: THIS NEEDS TO BE FIXED BEFORE ALLOWING MULTIPLE BRANCHES AND ORGS
 
     if (doDomainRepair) {
-      final Map<String, dynamic> dynamicBranchNames = await backend.getFieldFromCollection('branch', 'org', 'name');
+      final Map<String, dynamic> dynamicBranchNames = await pullRepo.getFieldFromCollection('branch', 'org', 'name');
       final Map<String, String> branchNames = {};
       dynamicBranchNames.forEach((key, value) {
         if (value is String) {
@@ -95,7 +94,7 @@ class ContextService extends GetxService {
 
     // Retrieve the unique active Season.
     if (doDomainRepair) {
-      final Map<String, dynamic> dynamicSeasonNames = await backend.getFieldFromCollection('season', 'brn', 'name');
+      final Map<String, dynamic> dynamicSeasonNames = await pullRepo.getFieldFromCollection('season', 'brn', 'name');
       final Map<String, String> seasonNames = {};
       dynamicSeasonNames.forEach((key, value) {
         if (value is String) {
@@ -111,7 +110,7 @@ class ContextService extends GetxService {
     clientContext.seasonId = HardcodedDomains.season.id;
 
     if (doDomainRepair) {
-      final Map<String, dynamic> dynamicSessionNames = await backend.getFieldFromCollection('session', 'sea', 'name');
+      final Map<String, dynamic> dynamicSessionNames = await pullRepo.getFieldFromCollection('session', 'sea', 'name');
       final Map<String, String> sessionNames = {};
       dynamicSessionNames.forEach((key, value) {
         if (value is String) {
@@ -124,23 +123,23 @@ class ContextService extends GetxService {
         clientContext.sessionId = HardcodedDomains.testSession.id;
         Commit scheduleCommit = Commit(disarmRequirementsLevel: 0);
         scheduleCommit.addObjectToPush(HardcodedDomains.schedule);
-        await backend.commit(scheduleCommit);
+        await commitRepo.commit(scheduleCommit);
       } else {
-        clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
+        clientContext.sessionId = await pullRepo.getActiveObjectId('session', 'sea');
       }
     } else {
-      clientContext.sessionId = await backend.getActiveObjectId('session', 'sea');
+      clientContext.sessionId = await pullRepo.getActiveObjectId('session', 'sea');
     }
   }
 
   Future<void> basicDomainCreate(Domain domain) async {
     Commit commit = Commit(disarmRequirementsLevel: 0);
     commit.addObjectToPush(domain);
-    await backend.commit(commit);
+    await commitRepo.commit(commit);
   }
 
   Future<void> migrateContext(SessionId sessionId) async {
-    Session? session = await backend.getObject(sessionId);
+    Session? session = await pullRepo.getObject(sessionId);
     if (session != null) {
       clientContext.sessionId = sessionId;
     } else {
@@ -148,12 +147,12 @@ class ContextService extends GetxService {
     }
     clientContext.justMigrated = true;
     FrontendManager.instance.onNewContext();
-    await EmberCore.onNewContext(backend);
+    await EmberCore.onNewContext(Get.find<DatabaseRepairService>(), Get.find<CommitRepository>());
     Get.offAllNamed('/');
   }
 
   Future<Map<String, String>> getSessionNames() async {
-    final dynamicMap = await backend.getFieldFromCollection('session', 'sea', 'name');
+    final dynamicMap = await pullRepo.getFieldFromCollection('session', 'sea', 'name');
     return dynamicMap.map((key, value) {
       return MapEntry(key, value.toString());
     });

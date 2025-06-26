@@ -23,8 +23,6 @@ dependencies:
     path: ../../packages/bess_ui
   ember_core:
     path: ../../packages/ember_core
-  ember_fire:
-    path: ../../packages/ember_fire
 
 dev_dependencies:
   lints: ^5.1.1

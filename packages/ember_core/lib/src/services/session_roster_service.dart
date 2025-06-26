@@ -2,25 +2,24 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:csv/csv.dart';
-import 'package:ember_core/ember_core_backend.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/src/repositories/live_data_repository.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../ember_core_debug.dart';
+import '../../ember_core.dart';
 import '../debug/service_exceptions.dart';
-import '../models/roster_field.dart';
+import '../repositories/pull_repository.dart';
 
 class SessionRosterService extends GetxService {
-  static CoreBackend backend = BackendManager.instance;
+  PullRepository pullRepo = Get.find<PullRepository>();
+  LiveDataRepository liveDataRepo = Get.find<LiveDataRepository>();
   CabinService cabinsService = Get.find<CabinService>();
   ContextService clientContextService = Get.find<ContextService>();
   CommitService requestService = Get.find<CommitService>();
 
-  Future<Set<Camper>> get registeredCampers async => await backend.getObjectsInCollection('camper', 'ses');
-  Future<Stream<Map<String, Camper>>> get camperStream async => await backend.watchCollection(collectionName: 'camper', domain: 'ses');
+  Future<Set<Camper>> get registeredCampers async => await pullRepo.getObjectsInCollection('camper', 'ses');
+  Future<Stream<Map<String, Camper>>> get camperStream async => await liveDataRepo.watchCollection(collectionName: 'camper', domain: 'ses');
 
 
   Future<void> registerCamper({
@@ -57,7 +56,7 @@ class SessionRosterService extends GetxService {
 
     try {
       if (cabinRef != null) {
-        CabinDependent cabinDependent = commit.getObject(cabinRef) ?? await backend.getObject(cabinRef);
+        CabinDependent cabinDependent = commit.getObject(cabinRef) ?? await pullRepo.getObject(cabinRef);
         await cabinsService.addCamperToCabin(commit, cabinDependent, camperToAdd);
       }
     } on Exception catch (e) {

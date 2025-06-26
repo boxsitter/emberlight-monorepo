@@ -1,6 +1,8 @@
-import 'package:ember_core/ember_core_models.dart';
 
-import '../../../ember_core_services.dart';
+import 'package:ember_core/src/models/user_prefs.dart';
+
+
+import '../../../ember_core.dart';
 import '../interfaces/elevated.dart';
 
 class CoreUser extends CoreObject implements Elevated {
@@ -16,7 +18,7 @@ class CoreUser extends CoreObject implements Elevated {
   Role role;
   bool active;
   String? deactivationReason;
-
+  UserPreferences frontendPrefs;
 
   CoreUser({
     required this.firebaseUid,
@@ -29,14 +31,12 @@ class CoreUser extends CoreObject implements Elevated {
     required this.role,
     this.active = true,
     this.deactivationReason,
+    UserPreferences? frontendPrefs,
     super.id,
     super.createdAt,
     super.updatedAt,
-  }) : super(
-      domain: 'rot',
-      type: 'core_user',
-      idTag: '${firstName}_${lastName[0]}'
-  );
+  })  : frontendPrefs = frontendPrefs ?? UserPreferences.fromJson(const {}),
+       super(domain: 'rot', type: 'core_user', idTag: '${firstName}_${lastName[0]}');
 
   /// returns preferred name if set, first name if not
   String get name => preferredName != null ? preferredName! : firstName;
@@ -48,6 +48,34 @@ class CoreUser extends CoreObject implements Elevated {
   String coreToString() {
     // TODO: implement coreToString
     throw UnimplementedError();
+  }
+
+  /// Creates a copy of this CoreUser with updated fields.
+  CoreUser copyWith({
+    String? firebaseUid,
+    String? firstName,
+    String? preferredName,
+    String? lastName,
+    String? note,
+    Role? role,
+    bool? active,
+    String? deactivationReason,
+    UserPreferences? frontendPrefs,
+  }) {
+    return CoreUser(
+      firebaseUid: firebaseUid ?? this.firebaseUid,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      preferredName: preferredName ?? this.preferredName,
+      note: note ?? this.note,
+      role: role ?? this.role,
+      active: active ?? this.active,
+      deactivationReason: deactivationReason ?? this.deactivationReason,
+      frontendPrefs: frontendPrefs ?? this.frontendPrefs,
+      id: id,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
   }
 
   @override
@@ -64,6 +92,7 @@ class CoreUser extends CoreObject implements Elevated {
       'role': role.name,
       'active': active,
       'deactivationReason': deactivationReason,
+      'frontendPrefs': frontendPrefs.toJson(), // Changed
     });
     return json;
   }
@@ -79,7 +108,11 @@ class CoreUser extends CoreObject implements Elevated {
       // organizationRef: json['organizationRef'] as String,
       role: Role.values.byName(json['role'] as String),
       active: json['active'] as bool,
-      deactivationReason: (json['deactivationReason'] ?? '') as String,
+      deactivationReason: json['deactivationReason'],
+      // ADDED: frontendPrefs deserialization
+      frontendPrefs: json['frontendPrefs'] != null
+          ? UserPreferences.fromJson(json['frontendPrefs'])
+          : UserPreferences.fromJson(const {}),
     );
     user.overwriteCoreObjectFromJson(json);
     return user;
@@ -87,6 +120,6 @@ class CoreUser extends CoreObject implements Elevated {
 
   @override
   void purgeRef(String id) {
-
+    // TODO: implement purgeRef
   }
 }

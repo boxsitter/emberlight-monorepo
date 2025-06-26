@@ -1,7 +1,6 @@
-import 'package:ember_core/ember_core_models.dart';
 
-import '../../../ember_core_utils.dart';
-import '../roster_field.dart';
+
+import '../../../ember_core.dart';
 
 typedef CabinId = String;
 typedef AMABlockId = String;

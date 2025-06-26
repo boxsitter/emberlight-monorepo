@@ -1,8 +1,6 @@
-
-import 'package:ember_core/ember_core_services.dart';
-import 'package:ember_core/ember_core_utils.dart';
-import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
+
+import '../../ember_core.dart';
 
 class PathService extends GetxService {
   ClientContext clientContext = Get.find<ClientContext>();

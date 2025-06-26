@@ -3,6 +3,8 @@ import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:flutter/material.dart';
 
+import '../../constants/sizes.dart';
+
 class InkwellButton extends StatelessWidget {
   const InkwellButton({
     super.key,
@@ -10,7 +12,9 @@ class InkwellButton extends StatelessWidget {
     required this.onTap,
     this.width,
     this.height,
-    this.child
+    this.child,
+    this.radius,
+    this.padding,
   });
 
   final String? text;
@@ -18,6 +22,8 @@ class InkwellButton extends StatelessWidget {
   final double? width;
   final double? height;
   final Widget? child;
+  final double? radius;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,9 @@ class InkwellButton extends StatelessWidget {
       width: width,
       height: height,
       onTap: onTap,
+      padding: padding ?? EdgeInsets.all(BessSizes.md),
       backgroundColor: BessColors.element1,
+      radius: radius ?? BessSizes.cardRadiusLg,
       child: Center(
         child: getChild(),
       ),

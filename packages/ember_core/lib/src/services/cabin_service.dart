@@ -1,16 +1,14 @@
-import 'package:ember_core/ember_core_backend.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
-import '../../ember_core_debug.dart';
+import '../../ember_core.dart';
+import '../repositories/pull_repository.dart';
 
 class CabinService extends GetxService {
-  CoreBackend backend = BackendManager.instance;
   CommitService requestService = Get.find<CommitService>();
+  PullRepository pullRepo = Get.find<PullRepository>();
 
-  Future<Set<CabinDependent>> get cabinDependents async => await backend.getObjectsInCollection('cabin_dependent', 'ses',);
-  Future<Set<PrincipalCabin>> get principalCabins async => await backend.getObjectsInCollection('principal_cabin', 'brn');
+  Future<Set<CabinDependent>> get cabinDependents async => await pullRepo.getObjectsInCollection('cabin_dependent', 'ses',);
+  Future<Set<PrincipalCabin>> get principalCabins async => await pullRepo.getObjectsInCollection('principal_cabin', 'brn');
 
   Future<String?> getCabinDependentIdByName(String name, Commit commit) async {
     String? principalId = commit.queryFieldByType(PrincipalCabin, 'name', name);
@@ -19,43 +17,43 @@ class CabinService extends GetxService {
     }
 
     // TODO: The code for caching cabins in the push request is rough, clean it up
-    principalId = await backend.queryField('principal_cabin', 'brn', 'name', name);
+    principalId = await pullRepo.queryField('principal_cabin', 'brn', 'name', name);
     String? output;
     if (principalId != null) {
-      commit.addObjectToPush(await backend.getObject(principalId));
-      output =  await backend.queryField('cabin_dependent', 'ses', 'principalPar', principalId);
+      commit.addObjectToPush(await pullRepo.getObject(principalId));
+      output =  await pullRepo.queryField('cabin_dependent', 'ses', 'principalPar', principalId);
     }
 
     if (output != null) {
-      commit.addObjectToPush(await backend.getObject(output));
+      commit.addObjectToPush(await pullRepo.getObject(output));
     }
 
     return output;
   }
 
   Future<Set<Camper>> getCampersInCabin(String id) async {
-    Set<String> camperIds = await backend.getSetFieldValue(id, 'camperRefs');
-    return await backend.getObjects(camperIds);
+    Set<String> camperIds = await pullRepo.getSetFieldValue(id, 'camperRefs');
+    return await pullRepo.getObjects(camperIds);
   }
 
   Future<Map<String, String>> getPrincipalCabinNames() async {
-    final rawData = await backend.getFieldFromCollection('principal_cabin', 'brn', 'name');
+    final rawData = await pullRepo.getFieldFromCollection('principal_cabin', 'brn', 'name');
     Map<String, String> valuesToString = rawData.map((key, value) => MapEntry(key, value as String));
     return valuesToString;
   }
 
   Future<PrincipalCabin> getPrincipalCabin(String id) {
     // TODO: check and make sure id points to a prin cabin
-    return backend.getObject(id);
+    return pullRepo.getObject(id);
   }
 
   Future<PrincipalCabin> getDependantCabin(String id) {
     // TODO: check and make sure id points to a cabin dep
-    return backend.getObject(id);
+    return pullRepo.getObject(id);
   }
 
   Future<Map<String, String>> getCabinDependentIdsToPrincipalIds() async {
-    final rawData = await backend.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
+    final rawData = await pullRepo.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
     Map<String, String> valuesToString = rawData.map((key, value) => MapEntry(key, value as String));
     return valuesToString;
   }
@@ -84,7 +82,7 @@ class CabinService extends GetxService {
   }
 
   Future<Set<String>> getRegisteredPrincipalCabinIds() async {
-    final rawData = await backend.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
+    final rawData = await pullRepo.getFieldFromCollection('cabin_dependent', 'ses', 'principalPar');
     Set<dynamic> dynamicSet = rawData.values.toSet();
     Set<String> stringSet = {};
     for (var item in dynamicSet) {
@@ -115,7 +113,7 @@ class CabinService extends GetxService {
   }
 
   Future<void> registerCabinToSessionFromId(Commit commit, String principalCabinId) async {
-    PrincipalCabin principalCabin = commit.getObject(principalCabinId) ?? await backend.getObject(principalCabinId);
+    PrincipalCabin principalCabin = commit.getObject(principalCabinId) ?? await pullRepo.getObject(principalCabinId);
     await registerCabinToSession(commit, principalCabin);
   }
 
@@ -124,7 +122,7 @@ class CabinService extends GetxService {
   // }
 
   Future<void> addCamperToCabin(Commit commit, CabinDependent cabinDependent, Camper camperToAdd) async {
-    PrincipalCabin principalCabin = commit.getObject(cabinDependent.principalPar) ?? await backend.getObject(cabinDependent.principalPar);
+    PrincipalCabin principalCabin = commit.getObject(cabinDependent.principalPar) ?? await pullRepo.getObject(cabinDependent.principalPar);
     if((cabinDependent.camperRefs.length + 1) > principalCabin.capacity) {
       //TODO: Over capacity conflict
       throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.name} because it will put it over capacity');

@@ -1,5 +1,7 @@
-import 'package:ember_core/ember_core_models.dart';
+
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
+
+import '../../../ember_core.dart';
 
 class Schedule extends CoreObject {
   List<ScheduleDayId> scheduleDayCmps;

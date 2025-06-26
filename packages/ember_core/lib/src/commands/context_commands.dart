@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/ember_core_frontend.dart';
+
+import '../../ember_core.dart';
 
 class ContextCommands {
   static Map<String, EmberCommand> list = {

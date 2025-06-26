@@ -1,20 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
-import 'package:ember_core/ember_core_utils.dart';
-import 'package:ember_core/ember_core_validators.dart';
-import 'package:ember_fire/src/repositories/pull_repository.dart';
-import 'package:ember_fire/src/services/database_repair_service.dart';
+import 'package:ember_core/src/repositories/pull_repository.dart';
 import 'package:get/get.dart';
 
 
+import '../../ember_core.dart';
+import '../services/database_repair_service.dart';
 import '../services/path_service.dart';
 
 class CommitRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final PullRepository pullRepo = Get.find<PullRepository>();
-  final ContextService clientContextService = Get.find<ContextService>();
+  ContextService get clientContextService => Get.find<ContextService>();
   final PathService pathService = Get.find<PathService>();
   CommitService requestService = Get.find<CommitService>();
 

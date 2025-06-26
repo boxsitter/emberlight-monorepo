@@ -1,9 +1,8 @@
-import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/buttons/inkwell_button.dart';
+import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../routes/routes.dart';
@@ -20,16 +19,15 @@ class BessSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final menuController = Get.put(SidebarController());
+    final sideBarController = Get.find<SidebarController>();
+    final menuBarController = Get.find<MenuBarController>();
     return Drawer(
       width: 300,
-      shape: BessDeviceUtils.isDesktopScreen(context)
-          ? const BeveledRectangleBorder()
-          : null,
+      shape: BessDeviceUtils.isDesktopScreen(context) ? const BeveledRectangleBorder() : null,
       child: SafeArea(
         child: Container(
           decoration: BoxDecoration(
-            color: BessColors.core,
+            color: BessColors.background,
             border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
           ),
           child: LayoutBuilder(
@@ -46,30 +44,13 @@ class BessSidebar extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(height: BessSizes.xl),
-                            Text(
-                              'MENU',
-                              style: BessTextStyles.lightHeader,
-                              overflow: TextOverflow.clip,
-                              maxLines: 1,
-                            ),
-                            const SizedBox(height: BessSizes.sm),
-                            const BessMenuItem(
-                                route: BessRoutes.home,
-                                icon: LucideIcons.house,
-                                itemName: 'Home'),
-                            const BessMenuItem(
-                                route: BessRoutes.rosters,
-                                icon: LucideIcons.bookUser,
-                                itemName: 'Rosters'),
+                            const BessMenuItem(route: BessRoutes.rosters, icon: LucideIcons.bookUser, itemName: 'Rosters'),
                             const BessMenuItem(
                                 route: BessRoutes.activityPreferencesCabins,
                                 icon: LucideIcons.listOrdered,
                                 itemName: 'Activity Preferences'),
                             const BessMenuItem(
-                                route: BessRoutes.schedulePage,
-                                icon: LucideIcons.columns3,
-                                itemName: 'Schedule'),
+                                route: BessRoutes.schedulePage, icon: LucideIcons.columns3, itemName: 'Schedule'),
                             const BessMenuItem(
                                 route: BessRoutes.sessionManager,
                                 icon: LucideIcons.calendarCog,
@@ -79,9 +60,7 @@ class BessSidebar extends StatelessWidget {
                             //     icon: LucideIcons.flameKindling,
                             //     itemName: 'Branch Manager'),
                             const BessMenuItem(
-                                route: BessRoutes.console,
-                                icon: LucideIcons.squareTerminal,
-                                itemName: 'Console'),
+                                route: BessRoutes.console, icon: LucideIcons.squareTerminal, itemName: 'Console'),
                           ],
                         ),
                         const Spacer(),
@@ -93,12 +72,11 @@ class BessSidebar extends StatelessWidget {
                               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                               height: 55,
                               width: 55,
-                              onTap: () => menuController.logOut(),
-                              child: Icon(LucideIcons.logOut, color: BessHelperFunctions.blendColors(BessColors.textPrimary, BessColors.red, 150)),
+                              onTap: () => sideBarController.logOut(),
+                              child: Icon(LucideIcons.logOut,
+                                  color: BessHelperFunctions.blendColors(BessColors.textPrimary, BessColors.red, 150)),
                             ),
-
                             SizedBox(width: BessSizes.md),
-
                             Expanded(child: ContextDisplay()),
                           ],
                         ),

@@ -1,9 +1,5 @@
 import 'package:bess_ui/src/common/services/popup_service.dart';
-import 'package:ember_core/ember_core_backend.dart';
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
-import 'package:ember_core/ember_core_utils.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -18,8 +14,8 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();
   final PopupService popupService = Get.find<PopupService>();
-  final FrontendCommitService commitService = Get.find<FrontendCommitService>();
   final ActivityPreferenceService activityPreferenceService = Get.find<ActivityPreferenceService>();
+  final CommitRepository commitRepo = Get.find<CommitRepository>();
 
   // --- State Variables ---
   Map<CabinDependantId, String> cabinNames = {};
@@ -207,7 +203,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
         camperId: currentCamperId,
         orderedPrincipalActivityIds: orderedSkillsActivityIds,
       );
-      await commitService.commit(commit);
+      await commitRepo.commit(commit);
 
       camperIsCompleted.add(currentCamperId);
       popupService.showToast(title: 'Success', message: 'Activity ranking for $currentCamperName has been saved!');

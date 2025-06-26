@@ -1,7 +1,7 @@
-import 'package:ember_core/ember_core_models.dart';
+
 import 'package:ember_core/src/models/interfaces/time_interval.dart';
 
-import '../../../../ember_core_debug.dart';
+import '../../../../ember_core.dart';
 
 class Season extends CoreObject implements Domain, TimeInterval{
   final String name;

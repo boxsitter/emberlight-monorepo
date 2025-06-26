@@ -1,5 +1,4 @@
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'routes.dart'; // Your BessRoutes class is here
@@ -18,8 +17,7 @@ class AuthMiddleware extends GetMiddleware {
       BessRoutes.login,
       BessRoutes.forgotPassword,
       BessRoutes.resetPassword,
-      // If you add a sign-up page, include its route string here:
-      // BessRoutes.signUp,
+      BessRoutes.unknown,
     ];
 
     final bool isTryingToAccessPublicAuthRoute = publicAuthRoutes.contains(route);

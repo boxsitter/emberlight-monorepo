@@ -1,4 +1,4 @@
-import '../../ember_core_models.dart';
+import '../../ember_core.dart';
 
 class HardcodedPrincipalCabins {
   static final PrincipalCabin henderson = PrincipalCabin(

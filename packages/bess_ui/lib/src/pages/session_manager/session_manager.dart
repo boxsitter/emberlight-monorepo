@@ -1,6 +1,6 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/styles/text_styles.dart';
-import 'package:bess_ui/src/common/widgets/state/controller_dependant_wrapper.dart';
+import 'package:bess_ui/src/common/widgets/header/menu_bar.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,29 +9,20 @@ import '../../common/widgets/buttons/inkwell_button.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class SessionManager extends StatelessWidget {
-  final String pageControllerTag;
-  const SessionManager({super.key, required this.pageControllerTag});
+  const SessionManager({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BessSiteTemplate(desktop: SessionManagerDesktop(pageControllerTag: pageControllerTag));
+    return BessSiteTemplate(desktop: SessionManagerDesktop(), menuBar: BessMenuBar(),);
   }
 }
 
 class SessionManagerDesktop extends StatelessWidget {
-  final String pageControllerTag;
-  const SessionManagerDesktop({super.key, required this.pageControllerTag});
+  const SessionManagerDesktop({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SessionManagerController controller = Get.put(
-      SessionManagerController(),
-      tag: pageControllerTag,
-    );
-
-    return ControllerDependantWrapper<SessionManagerController>(
-      controller: controller,
-      tag: pageControllerTag,
+    return GetBuilder<SessionManagerController>(
       builder: (controller) {
         Widget content;
         if (controller.isLoading) {

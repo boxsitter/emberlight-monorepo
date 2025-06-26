@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
+
+import '../../ember_core.dart';
 
 
 

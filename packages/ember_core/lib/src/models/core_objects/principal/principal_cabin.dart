@@ -1,6 +1,5 @@
-import 'package:ember_core/ember_core_models.dart';
 
-import '../../../../ember_core_debug.dart';
+import '../../../../ember_core.dart';
 import '../../interfaces/elevated.dart';
 
 class PrincipalCabin extends CoreObject implements Principal, Elevated{

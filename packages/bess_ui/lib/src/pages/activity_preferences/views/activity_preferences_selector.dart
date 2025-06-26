@@ -1,5 +1,4 @@
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:bess_ui/src/pages/activity_preferences/widgets/activity_reorderable_list.dart';
 import 'package:bess_ui/src/common/widgets/misc/horizontal_card_selector.dart';
@@ -8,45 +7,27 @@ import 'package:get/get.dart';
 
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
+import '../../../common/widgets/header/menu_bar.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
-import '../../../common/widgets/state/controller_dependant_wrapper.dart';
-import '../widgets/small_card_button.dart';
 
 class ActivityPreferencesSelector extends StatelessWidget {
-  const ActivityPreferencesSelector({
-    super.key,
-    required this.pageControllerTag,
-  });
-
-  final String pageControllerTag;
+  const ActivityPreferencesSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ActivityPreferencesController(), tag: pageControllerTag);
     return BessSiteTemplate(
-      desktop: ActivityPreferencesSelectorDesktop(
-        controller: controller,
-        tag: pageControllerTag,
-      ),
+      desktop: ActivityPreferencesSelectorDesktop(),
+      menuBar: BessMenuBar(),
     );
   }
 }
 
 class ActivityPreferencesSelectorDesktop extends StatelessWidget {
-  const ActivityPreferencesSelectorDesktop({
-    super.key,
-    required this.controller,
-    required this.tag,
-  });
-
-  final ActivityPreferencesController controller;
-  final String tag;
+  const ActivityPreferencesSelectorDesktop({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ControllerDependantWrapper<ActivityPreferencesController>(
-        controller: controller,
-        tag: tag,
+    return GetBuilder<ActivityPreferencesController>(
         builder: (controller) {
           if (!controller.isCamperDataLoaded) {
             return const Center(child: CircularProgressIndicator());

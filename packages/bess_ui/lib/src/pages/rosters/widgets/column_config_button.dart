@@ -3,7 +3,7 @@ import 'package:bess_ui/src/common/widgets/misc/contained_tile_list.dart';
 import 'package:bess_ui/src/common/widgets/misc/horizontal_card_selector.dart';
 import 'package:bess_ui/src/common/widgets/switches/icon_switch.dart';
 import 'package:bess_ui/src/pages/rosters/controllers/rosters_controller.dart';
-import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -73,86 +73,75 @@ class _ColumnForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<RostersController>(
-      init: controller,
-      builder: (controller) {
-        return Container(
-          padding: const EdgeInsets.all(BessSizes.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.all(BessSizes.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  VerticalListReorderer(
-                    width: 350,
-                    height: 400,
-                    title: 'Visible Columns',
-                    items: controller.fields,
-                    onReorder: controller.setColumnOrder,
-                    trailingBuilder: (Titled item) {
-                      // You can safely assume the item is the RosterField for this row
-                      final field = item as RosterField;
-                      return IconButton(
-                        icon: const Icon(LucideIcons.circleChevronRight, size: 20),
-                        // The onPressed callback now knows which 'field' to remove
-                        onPressed: () => controller.removeVisibleColumn(field),
-                        splashRadius: 20,
-                      );
-                    },
-                  ),
-
-                  SizedBox(width: BessSizes.spaceBtwItems),
-                  ContainedTileList(
-                    width: 350,
-                    height: 400,
-                    title: 'Hidden Columns',
-                    items: controller.displayAmas
-                        ? controller.amas
-                        .where((ama) => !controller.fields
-                        .map((field) => field.dataId)
-                        .toSet()
-                        .contains(ama.id))
-                        .toList()
-                        : RosterField.values
-                        .where((field) => !controller.fields
-                        .contains(field))
-                        .toList(),
-                    leadingBuilder: (Titled item) {
-                      RosterField field;
-                      if (controller.displayAmas) {
-                        final ama = item as AMABlock;
-                        field = RosterField(name: 'activityPeriod', title: ama.displayTitle, required: false, defaultWidth: 210, dataId: ama.id);
-                      } else {
-                        field = item as RosterField;
-                      }
-                      return IconButton(
-                        icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
-                        // The onPressed callback now knows which 'field' to remove
-                        onPressed: () => controller.addVisibleColumn(field),
-                        splashRadius: 20,
-                      );
-                    },
-                    headerTrailingWidget: BessIconSwitch(
-                      iconOne: LucideIcons.circleUserRound,
-                      iconTwo: LucideIcons.volleyball,
-                      colorOne: BessColors.primary,
-                      colorTwo: BessColors.secondary,
-                      value: controller.displayAmas,
-                      onToggle: () => controller.toggleDisplayAmas(),
-                    ),
-                  ),
-                ],
+              VerticalListReorderer(
+                width: 350,
+                height: 400,
+                title: 'Visible Columns',
+                items: controller.fields,
+                onReorder: controller.setColumnOrder,
+                trailingBuilder: (Titled item) {
+                  // You can safely assume the item is the RosterField for this row
+                  final field = item as RosterField;
+                  return IconButton(
+                    icon: const Icon(LucideIcons.circleChevronRight, size: 20),
+                    // The onPressed callback now knows which 'field' to remove
+                    onPressed: () => controller.removeVisibleColumn(field),
+                    splashRadius: 20,
+                  );
+                },
               ),
-              const SizedBox(height: BessSizes.spaceBtwSections),
-              Text('Presets', style: BessTextStyles.tableHeaderSecondary),
-              const SizedBox(height: BessSizes.sm),
+              SizedBox(width: BessSizes.spaceBtwItems),
+              ContainedTileList(
+                width: 350,
+                height: 400,
+                title: 'Hidden Columns',
+                items: controller.displayAmas
+                    ? controller.amas
+                        .where((ama) => !controller.fields.map((field) => field.dataId).toSet().contains(ama.id))
+                        .toList()
+                    : RosterField.values.where((field) => !controller.fields.contains(field)).toList(),
+                leadingBuilder: (Titled item) {
+                  RosterField field;
+                  if (controller.displayAmas) {
+                    final ama = item as AMABlock;
+                    field = RosterField(
+                        name: 'activityPeriod', title: ama.displayTitle, required: false, defaultWidth: 210, dataId: ama.id);
+                  } else {
+                    field = item as RosterField;
+                  }
+                  return IconButton(
+                    icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
+                    // The onPressed callback now knows which 'field' to remove
+                    onPressed: () => controller.addVisibleColumn(field),
+                    splashRadius: 20,
+                  );
+                },
+                headerTrailingWidget: BessIconSwitch(
+                  iconOne: LucideIcons.circleUserRound,
+                  iconTwo: LucideIcons.volleyball,
+                  colorOne: BessColors.primary,
+                  colorTwo: BessColors.secondary,
+                  value: controller.displayAmas,
+                  onToggle: () => controller.toggleDisplayAmas(),
+                ),
+              ),
             ],
           ),
-        );
-      },
+          const SizedBox(height: BessSizes.spaceBtwSections),
+          Text('Presets', style: BessTextStyles.tableHeaderSecondary),
+          const SizedBox(height: BessSizes.sm),
+        ],
+      ),
     );
   }
 }

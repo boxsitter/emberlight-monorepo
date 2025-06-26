@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:ember_core/ember_core_validators.dart';
+import '../../ember_core.dart';
 
 class IdFunctions {
   static final Random _secureRandom = Random.secure();

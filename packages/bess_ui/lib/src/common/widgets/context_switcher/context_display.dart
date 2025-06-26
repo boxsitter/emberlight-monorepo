@@ -15,7 +15,7 @@ class ContextDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SessionSelectorController controller = Get.put(SessionSelectorController());
+    SessionSelectorController controller = Get.find<SessionSelectorController>();
     return BessRoundedContainer(
       backgroundColor: BessColors.crust,
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),

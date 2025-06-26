@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xterm/ui.dart';
 
+import '../../../common/widgets/header/menu_bar.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
 import '../controller/console_controller.dart';
 
@@ -11,7 +12,7 @@ class ConsoleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BessSiteTemplate(desktop: ConsoleScreenDesktop());
+    return BessSiteTemplate(desktop: ConsoleScreenDesktop(), menuBar: BessMenuBar(),);
   }
 }
 

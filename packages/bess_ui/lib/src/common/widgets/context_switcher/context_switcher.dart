@@ -9,7 +9,7 @@ import '../../../common/theme/shad_theme.dart';
 Future<dynamic> showContextSwitcher() {
   // Initialize the controller when the dialog is shown.
   // GetX will handle its lifecycle.
-  final controller = Get.put(SessionSelectorController());
+  final controller = Get.find<SessionSelectorController>();
 
   return Get.find<PopupService>().showFullScreenDialog(
     title: 'Change active session',

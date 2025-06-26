@@ -1,5 +1,5 @@
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
-import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_validators.dart';
 import 'package:get/get.dart';
 
+import '../../ember_core.dart';
 import '../services/path_service.dart';
 
 class PullRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final PathService pathService = Get.find<PathService>();
+  PathService get pathService => Get.find<PathService>();
 
   FirebaseFirestore get db => _db;
 

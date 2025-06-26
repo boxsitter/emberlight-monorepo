@@ -1,23 +1,23 @@
 import 'dart:math';
 
-import 'package:ember_core/ember_core_backend.dart';
-import 'package:ember_core/ember_core_models.dart';
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:ember_core/src/utils/model_helper_functions.dart';
 import 'package:get/get.dart';
-import '../../ember_core_services.dart';
+
+import '../../ember_core.dart';
+import '../repositories/pull_repository.dart';
 
 
 class ScheduleService extends GetxService {
-  CoreBackend backend = BackendManager.instance;
+  PullRepository pullRepo = Get.find<PullRepository>();
   ContextService clientContextService = Get.find<ContextService>();
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
 
   Future<Schedule> get schedule async => await clientContextService.schedule;
-  Future<Set<ScheduleDay>> get scheduleDays async => await backend.getObjectsInCollection('schedule_day', 'ses');
-  Future<Set<AMABlock>> get amas async => await backend.getObjectsInCollection('ama_block', 'ses');
-  Future<Set<ActivityDependent>> get activityDependents async => await backend.getObjectsInCollection('activity_dependent', 'ses');
-  Future<Set<PrincipalActivity>> get principleActivities async => await backend.getObjectsInCollection('principal_activity', 'brn');
+  Future<Set<ScheduleDay>> get scheduleDays async => await pullRepo.getObjectsInCollection('schedule_day', 'ses');
+  Future<Set<AMABlock>> get amas async => await pullRepo.getObjectsInCollection('ama_block', 'ses');
+  Future<Set<ActivityDependent>> get activityDependents async => await pullRepo.getObjectsInCollection('activity_dependent', 'ses');
+  Future<Set<PrincipalActivity>> get principleActivities async => await pullRepo.getObjectsInCollection('principal_activity', 'brn');
 
   Future<List<dynamic>> getActivityData() async {
     return await Future.wait([amas, activityDependents, principleActivities]);
@@ -25,7 +25,7 @@ class ScheduleService extends GetxService {
 
   Future<Set<String>> getSkillsActivityIds() async {
     Schedule schedule = await clientContextService.schedule;
-    Set<PrincipalActivity> scheduledPrincipalActivities = await backend.getObjects(schedule.principalActivityRefs);
+    Set<PrincipalActivity> scheduledPrincipalActivities = await pullRepo.getObjects(schedule.principalActivityRefs);
     final Set<String> output = {};
     for (PrincipalActivity activity in scheduledPrincipalActivities) {
       if (activity.isSkillsRec) {
@@ -39,7 +39,7 @@ class ScheduleService extends GetxService {
   Future<Map<PrincipalActivityId, String>> getScheduledPrincipalActivitiesToNames(bool onlySkillsRecs) async {
     Schedule schedule = await clientContextService.schedule;
     Set<String> scheduledPrincipalActivityIds = schedule.principalActivityRefs;
-    Set<PrincipalActivity> scheduledPrincipalActivities = await backend.getObjects(scheduledPrincipalActivityIds);
+    Set<PrincipalActivity> scheduledPrincipalActivities = await pullRepo.getObjects(scheduledPrincipalActivityIds);
     Map<PrincipalActivityId, String> scheduledPrincipalActivityMap = {};
     for (PrincipalActivity activity in scheduledPrincipalActivities) {
       if (activity.isSkillsRec == onlySkillsRecs) {
@@ -51,7 +51,7 @@ class ScheduleService extends GetxService {
 
   Future<List<PrincipalActivityId>> getOrderedActivities(CamperId camperId, bool onlySkillsRecs) async {
     final results = await Future.wait([
-      backend.getObject(camperId),
+      pullRepo.getObject(camperId),
       clientContextService.schedule,
       getSkillsActivityIds(),
     ]);
@@ -94,7 +94,7 @@ class ScheduleService extends GetxService {
   }
 
   Future<void> addBlockToDay(Commit commit, String scheduleDayToAddToId, ScheduleBlock blockToAdd) async {
-    ScheduleDay day = commit.getObject(scheduleDayToAddToId) ?? await backend.getObject(scheduleDayToAddToId);
+    ScheduleDay day = commit.getObject(scheduleDayToAddToId) ?? await pullRepo.getObject(scheduleDayToAddToId);
     day.blockCmps.add(blockToAdd.id);
     commit.addObjectsToPush({blockToAdd, day});
   }
@@ -115,8 +115,8 @@ class ScheduleService extends GetxService {
   }
 
   Future<void> scheduleActivity(Commit commit, String principalActivityId, String blockToAddToId) async {
-    PrincipalActivity principalActivity = commit.getObject(principalActivityId) ?? (await backend.getObject(principalActivityId));
-    AMABlock blockToAddTo = commit.getObject(blockToAddToId) ?? (await backend.getObject(blockToAddToId));
+    PrincipalActivity principalActivity = commit.getObject(principalActivityId) ?? (await pullRepo.getObject(principalActivityId));
+    AMABlock blockToAddTo = commit.getObject(blockToAddToId) ?? (await pullRepo.getObject(blockToAddToId));
     ActivityDependent activityToSchedule = ActivityDependent(principalPar: principalActivity.id, blockRef: blockToAddTo.id);
     blockToAddTo.activityDependentCmps.add(activityToSchedule.id);
 
@@ -132,7 +132,7 @@ class ScheduleService extends GetxService {
     for (ScheduleDay scheduleDay in scheduleDays) {
       blockRefs.addAll(scheduleDay.blockCmps);
     }
-    Set<ScheduleBlock> blocks = await backend.getObjects(blockRefs);
+    Set<ScheduleBlock> blocks = await pullRepo.getObjects(blockRefs);
     Map<String, ScheduleBlock> output = {};
     for (ScheduleBlock block in blocks) {
       output[block.id] = block;
@@ -157,7 +157,7 @@ class ScheduleService extends GetxService {
   //   bool reassignAssignedCampers
   // }) async {
   //   // 1. Fetch the Block object
-  //   AMABlock? block = commit.getObject<AMABlock>(blockId) ?? await backend.getObject<AMABlock>(blockId);
+  //   AMABlock? block = commit.getObject<AMABlock>(blockId) ?? await pullRepo.getObject<AMABlock>(blockId);
   //
   //   // 2. Fetch all relevant campers (e.g., from the current session roster)
   //   // TODO: FIX THIS METHOD IN SESSION ROSTER SERVICE TO TAKE A COMMIT AND CHECK IT FIRST
@@ -185,7 +185,7 @@ class ScheduleService extends GetxService {
   //     // Fetch the preferences object
   //     // ASSUMPTION: An ActivityPreferenceSet model exists with isComplete (bool) and rankedPreferences (Map<String, int> { activityDependentId: rank })
   //     // TODO: Verify ActivityPreferenceSet model name and field names ('isComplete', 'rankedPreferences')
-  //     ActivityPreferenceSet? preferences = commit.getObject<ActivityPreferenceSet>(preferenceSetId) ?? await backend.getObject<ActivityPreferenceSet>(preferenceSetId);
+  //     ActivityPreferenceSet? preferences = commit.getObject<ActivityPreferenceSet>(preferenceSetId) ?? await pullRepo.getObject<ActivityPreferenceSet>(preferenceSetId);
   //     if (preferences == null) {
   //       // TODO: Log appropriately
   //       Debug.logInfo('Error: Could not load preference set $preferenceSetId for ${camper.fullName} in block ${block.name}.');
@@ -207,7 +207,7 @@ class ScheduleService extends GetxService {
   //     int rank = 1;
   //     for (String activityDepId in sortedActivityIds) {
   //       // Ensure the activity is actually part of the block we're processing
-  //       ActivityDependent? actDep = commit.getObject<ActivityDependent>(activityDepId) ?? await backend.getObject<ActivityDependent>(activityDepId);
+  //       ActivityDependent? actDep = commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
   //       if (actDep == null) {
   //         // TODO: Log appropriately
   //         Debug.logInfo('Warning: ActivityDependent $activityDepId (Rank $rank for ${camper.fullName}) not found. Skipping.');
@@ -253,8 +253,8 @@ class ScheduleService extends GetxService {
   // /// Returns true if successful, false otherwise.
   // Future<bool> assignCamperToActivity(Commit commit, String camperId, String activityDepId) async {
   //   // 1. Fetch objects needed
-  //   Camper? camper = commit.getObject<Camper>(camperId) ?? await backend.getObject<Camper>(camperId);
-  //   ActivityDependent? activityDep = commit.getObject<ActivityDependent>(activityDepId) ?? await backend.getObject<ActivityDependent>(activityDepId);
+  //   Camper? camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+  //   ActivityDependent? activityDep = commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
   //
   //   if (camper == null || activityDep == null) {
   //     // TODO: Log appropriately
@@ -265,7 +265,7 @@ class ScheduleService extends GetxService {
   //   // Fetch the PrincipalActivity to get capacity and name
   //   // ASSUMPTION: ActivityDependent has principalPar (String) field linking to PrincipalActivity ID
   //   // TODO: Verify 'principalPar' field name
-  //   PrincipalActivity? principalActivity = commit.getObject<PrincipalActivity>(activityDep.principalPar) ?? await backend.getObject<PrincipalActivity>(activityDep.principalPar);
+  //   PrincipalActivity? principalActivity = commit.getObject<PrincipalActivity>(activityDep.principalPar) ?? await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
   //   if (principalActivity == null) {
   //     // TODO: Log appropriately
   //     Debug.logInfo('Error: Could not find PrincipalActivity (${activityDep.principalPar}) for ActivityDependent ${activityDep.id}. Cannot check capacity.');
@@ -307,7 +307,7 @@ class ScheduleService extends GetxService {
   //         return false;
   //       }
   //       // Re-fetch camper object as it was modified in the commit by removeCamperFromActivity
-  //       // It *must* be in the commit now, so no fallback to backend.
+  //       // It *must* be in the commit now, so no fallback to pullRepo.
   //       camper = commit.getObject<Camper>(camperId);
   //       if (camper == null) {
   //         // This would be a critical internal error with the commit system
@@ -348,8 +348,8 @@ class ScheduleService extends GetxService {
   // /// Removes a camper from a specific activity's roster and updates their assignment map.
   // /// Modifies objects within the commit. Returns true on success or if state was already correct.
   // Future<bool> removeCamperFromActivity(Commit commit, String camperId, String activityDepId) async {
-  //   Camper? camper = commit.getObject<Camper>(camperId) ?? await backend.getObject<Camper>(camperId);
-  //   ActivityDependent? activityDep = commit.getObject<ActivityDependent>(activityDepId) ?? await backend.getObject<ActivityDependent>(activityDepId);
+  //   Camper? camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+  //   ActivityDependent? activityDep = commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
   //
   //   if (camper == null || activityDep == null) {
   //     // TODO: Log appropriately
@@ -358,7 +358,7 @@ class ScheduleService extends GetxService {
   //   }
   //
   //   // Fetch Principal name for logging clarity
-  //   PrincipalActivity? principalActivity = commit.getObject<PrincipalActivity>(activityDep.principalPar) ?? await backend.getObject<PrincipalActivity>(activityDep.principalPar);
+  //   PrincipalActivity? principalActivity = commit.getObject<PrincipalActivity>(activityDep.principalPar) ?? await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
   //   String activityName = principalActivity?.name ?? 'Unknown Activity';
   //
   //

@@ -1,15 +1,13 @@
 import 'dart:math';
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/src/repositories/pull_repository.dart';
 import 'package:get/get.dart';
 
-import '../../ember_core_backend.dart';
-import '../../ember_core_models.dart';
-import '../backend/backend_manager.dart';
+import '../../ember_core.dart';
 
 
 class ActivityPreferenceService extends GetxService {
-  CoreBackend backend = BackendManager.instance;
   SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  PullRepository pullRepo = Get.find<PullRepository>();
 
   // follows the rules of the simple assignment algorithm
   Future<void> setRanking ({
@@ -17,8 +15,8 @@ class ActivityPreferenceService extends GetxService {
     required CamperId camperId,
     required List<PrincipalActivityId> orderedPrincipalActivityIds,
   }) async {
-    Camper camper = commit.getObject(camperId) ?? await backend.getObject(camperId);
-    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await backend.getObject(camper.cabinRef!);
+    Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
+    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await pullRepo.getObject(camper.cabinRef!);
 
     int position = 0;
     int totalPositions = orderedPrincipalActivityIds.length - 1;
@@ -34,8 +32,8 @@ class ActivityPreferenceService extends GetxService {
   }
 
   Future<void> clearPreference(Commit commit, CamperId camperId) async {
-    Camper camper = commit.getObject(camperId) ?? await backend.getObject(camperId);
-    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await backend.getObject(camper.cabinRef!);
+    Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
+    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await pullRepo.getObject(camper.cabinRef!);
 
     camper.preferenceRefs.forEach((key, value) {
       camper.preferenceRefs[key] = null;
@@ -56,6 +54,6 @@ class ActivityPreferenceService extends GetxService {
   }
 
   Future<PrincipalActivity> getPrincipalActivity(PrincipalActivityId id) {
-    return backend.getObject(id);
+    return pullRepo.getObject(id);
   }
 }

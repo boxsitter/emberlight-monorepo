@@ -1,4 +1,4 @@
-import 'package:ember_core/ember_core_utils.dart';
+import '../../ember_core.dart';
 
 class CoreIdValidation {
   static const String validCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

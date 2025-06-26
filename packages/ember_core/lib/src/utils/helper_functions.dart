@@ -1,4 +1,5 @@
-import '../../ember_core_debug.dart';
+
+import '../../ember_core.dart';
 
 /// Defines ANSI escape codes for text colors.
 class CoreHelperFunctions {

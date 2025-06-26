@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../common/styles/text_styles.dart';
+import '../../common/widgets/header/menu_bar.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,7 +12,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BessSiteTemplate(desktop: HomeScreenDesktop());
+    return const BessSiteTemplate(desktop: HomeScreenDesktop(), menuBar: BessMenuBar(),);
   }
 }
 
@@ -35,7 +36,7 @@ class HomeScreenDesktop extends StatelessWidget {
               const SizedBox(height: BessSizes.spaceBtwItems),
 
               Text(
-                'Nothing much to see here right now :)',
+                'Nothing much to see here right now',
                 style: BessTextStyles.standard,
                 overflow: TextOverflow.clip,
                 maxLines: 1,

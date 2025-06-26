@@ -1,5 +1,4 @@
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +39,7 @@ class AuthenticationController extends GetxController {
       await userService.login(email, password, rememberMe.value);
 
       if (userService.isAuthenticated) {
-        await Get.offAllNamed(BessRoutes.home);
+        await Get.offAllNamed(BessRoutes.rosters);
       }
     } catch (e, st) {
       Error.throwWithStackTrace(Debug.parseException(e), st);

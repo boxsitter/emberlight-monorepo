@@ -1,10 +1,6 @@
-
-import 'dart:ui';
-
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/ember_core_debug.dart';
 
-import '../../ember_core_models.dart';
+import '../../ember_core.dart';
 
 abstract class CoreFrontend {
   String get frontendName;

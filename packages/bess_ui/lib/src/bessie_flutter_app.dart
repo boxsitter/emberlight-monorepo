@@ -12,6 +12,8 @@ import 'common/utils/device/web_material_scroll.dart';
 class BessieFlutterApp extends StatelessWidget {
   const BessieFlutterApp({super.key});
 
+  static final BessNavigationObserver _navObserver = Get.find<BessNavigationObserver>();
+
   @override
   Widget build(BuildContext context) {
     return ShadApp.custom(
@@ -24,9 +26,9 @@ class BessieFlutterApp extends StatelessWidget {
           theme: BessieAppTheme.theme,
           debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
-          initialRoute: BessRoutes.home,
+          initialRoute: BessRoutes.rosters,
           unknownRoute: BessRoutes.pages.last,
-          navigatorObservers: [Get.find<BessNavigationObserver>()],
+          navigatorObservers: [_navObserver],
           defaultTransition: Transition.noTransition,
           getPages: BessRoutes.pages,
           builder: (context, child) {

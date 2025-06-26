@@ -1,8 +1,9 @@
+import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/sizes.dart';
-import '../../layouts/headers/header.dart';
+import '../../header/header.dart';
 
 class MobileLayout extends StatelessWidget {
   MobileLayout({super.key, this.body});
@@ -13,13 +14,26 @@ class MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //   return Scaffold(
+    //       key: scaffoldKey,
+    //       drawer: const BessSidebar(),
+    //       appBar: BessHeader(scaffoldKey: scaffoldKey),
+    //       body: Padding(
+    //         padding: const EdgeInsets.all(BessSizes.lg),
+    //         child: body ?? const SizedBox(),
+    //       ));
+    // }
+
     return Scaffold(
-        key: scaffoldKey,
-        drawer: const BessSidebar(),
-        appBar: BessHeader(scaffoldKey: scaffoldKey),
-        body: Padding(
-          padding: const EdgeInsets.all(BessSizes.lg),
-          child: body ?? const SizedBox(),
-        ));
+      key: scaffoldKey,
+      body: Padding(
+        padding: const EdgeInsets.all(BessSizes.lg),
+        child: Center(
+            child: Text(
+          'Bessie is not currently functional with a mobile or compact layout. Sorry :/',
+          style: BessTextStyles.lightTitle,
+        )),
+      ),
+    );
   }
 }

@@ -1,5 +1,4 @@
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
+import '../../ember_core.dart';
 
 abstract class AuthFailure extends EmberException {
   AuthFailure({required super.devMessage, String? userMessage, super.metadata})

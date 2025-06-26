@@ -1,16 +1,12 @@
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
-import 'package:ember_core/ember_core_utils.dart';
-import 'package:ember_fire/src/repositories/commit_repository.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
+import '../../ember_core.dart';
 import '../debug/auth_exceptions.dart';
 
 class AuthenticationRepository {
   final _auth = FirebaseAuth.instance;
-  UserService userService = Get.find<UserService>();
 
   bool get isUserLoggedIn => _auth.currentUser != null;
   String? get firebaseUid => _auth.currentUser?.uid;

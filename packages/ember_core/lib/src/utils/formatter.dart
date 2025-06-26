@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../../ember_core_models.dart';
+import '../../ember_core.dart';
 
 /// Defines ANSI escape codes for text styles.
 enum AnsiStyle {

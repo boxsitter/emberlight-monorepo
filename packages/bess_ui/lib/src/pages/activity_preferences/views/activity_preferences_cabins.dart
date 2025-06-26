@@ -4,45 +4,28 @@ import 'package:get/get.dart';
 
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
+import '../../../common/widgets/header/menu_bar.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
-import '../../../common/widgets/state/controller_dependant_wrapper.dart';
 import '../widgets/card_button.dart';
 
 class ActivityPreferencesCabins extends StatelessWidget {
-  const ActivityPreferencesCabins({
-    super.key,
-    required this.pageControllerTag,
-  });
-
-  final String pageControllerTag;
+  const ActivityPreferencesCabins({super.key,});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ActivityPreferencesController(), tag: pageControllerTag);
     return BessSiteTemplate(
-      desktop: ActivityPreferencesCabinsDesktop(
-        controller: controller,
-        tag: pageControllerTag,
-      ),
+      desktop: ActivityPreferencesCabinsDesktop(),
+      menuBar: BessMenuBar(),
     );
   }
 }
 
 class ActivityPreferencesCabinsDesktop extends StatelessWidget {
-  const ActivityPreferencesCabinsDesktop({
-    super.key,
-    required this.controller,
-    required this.tag,
-  });
-
-  final ActivityPreferencesController controller;
-  final String tag;
+  const ActivityPreferencesCabinsDesktop({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ControllerDependantWrapper<ActivityPreferencesController>(
-      controller: controller,
-      tag: tag,
+    return GetBuilder<ActivityPreferencesController>(
       builder: (controller) {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(

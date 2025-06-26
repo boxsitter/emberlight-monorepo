@@ -2,6 +2,7 @@ import 'package:bess_ui/src/pages/authentication/view/forgot_password/widgets/he
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants//sizes.dart';
+import '../../../../common/widgets/header/menu_bar.dart';
 import '../../../../common/widgets/layouts/templates/center_box.dart';
 import '../../../../common/widgets/layouts/templates/site_layout.dart';
 
@@ -11,9 +12,11 @@ class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const BessSiteTemplate(
-        useLayout: false,
-        desktop: ForgotPasswordScreenDesktopTablet(),
-        mobile: ForgotPasswordScreenMobile());
+      useLayout: false,
+      desktop: ForgotPasswordScreenDesktopTablet(),
+      mobile: ForgotPasswordScreenMobile(),
+      menuBar: BessMenuBar(),
+    );
   }
 }
 

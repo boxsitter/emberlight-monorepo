@@ -1,16 +1,11 @@
-import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
+import 'package:ember_core/src/repositories/authentication_repository.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../../ember_core_backend.dart';
-import '../../ember_core_frontend.dart';
-import '../../ember_core_models.dart';
-import '../../ember_core_services.dart';
 
 class UserService extends GetxService {
-  static CoreBackend backend = BackendManager.instance;
-
-  bool get isAuthenticated => backend.isAuthenticated();
+  AuthenticationRepository authRepo = Get.find<AuthenticationRepository>();
+  bool get isAuthenticated => authRepo.isUserLoggedIn;
 
   Future<void> registerCoreUser({
     required Commit commit,
@@ -22,7 +17,7 @@ class UserService extends GetxService {
     String note = '',
     required Role role,
   }) async {
-    String firebaseUid = await backend.registerWithEmailAndPassword(email: email, password: password);
+    String firebaseUid = await authRepo.registerWithEmailAndPassword(email: email, password: password);
 
     CoreUser userToRegister = CoreUser(
       firebaseUid: firebaseUid,
@@ -38,30 +33,30 @@ class UserService extends GetxService {
   }
 
   Future<bool> login(String email, String password, bool rememberMe) async {
-    await backend.login(email, password, rememberMe);
+    await authRepo.loginWithEmailAndPassword(email, password, rememberMe);
     if (isAuthenticated) {
+      await EmberCore.onLogin();
       FrontendManager.instance.onLogin();
-      BackendManager.instance.onLogin();
-      EmberCore.onLogin();
     }
     return isAuthenticated;
   }
 
   Future<void> logout() async {
-    await backend.logout();
+    await authRepo.logout();
   }
 
   Future<CoreUser> getCurrentUser() async {
-    String? firebaseUid = backend.getCurrentUid();
+    PullRepository pullRepo = Get.find<PullRepository>();
+    String? firebaseUid = authRepo.firebaseUid;
     if (firebaseUid == null) {
       throw Exception('User not logged in');
     }
-    String? userId = await backend.queryField('core_user', 'rot', 'firebaseUid', firebaseUid);
+    String? userId = await pullRepo.queryField('core_user', 'rot', 'firebaseUid', firebaseUid);
     print(userId);
     if (userId == null) {
       throw Exception('User does not have a CoreUser object associated with their firebase credentials');
     }
-    CoreUser user = await backend.getObject(userId);
+    CoreUser user = await pullRepo.getObject(userId);
     return user;
   }
 }

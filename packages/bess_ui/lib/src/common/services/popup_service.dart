@@ -4,7 +4,7 @@ import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/ember_core_models.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';

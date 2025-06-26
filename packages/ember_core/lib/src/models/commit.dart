@@ -1,5 +1,6 @@
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
+
+
+import '../../ember_core.dart';
 
 class Commit {
   bool _armed;

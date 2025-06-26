@@ -1,5 +1,4 @@
-import '../../../ember_core_models.dart';
-import '../interfaces/logable.dart';
+import '../../../ember_core.dart';
 
 abstract class EmberInfo extends Logable{
 

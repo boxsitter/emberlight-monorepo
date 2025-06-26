@@ -1,6 +1,5 @@
-import 'package:ember_core/src/models/interfaces/time_interval.dart';
-
-import '../../../ember_core_models.dart';
+import '../../../ember_core.dart';
+import '../interfaces/time_interval.dart';
 
 typedef BlockId = String;
 

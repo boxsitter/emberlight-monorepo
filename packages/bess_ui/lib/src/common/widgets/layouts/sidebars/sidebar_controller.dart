@@ -1,8 +1,7 @@
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/routes.dart';
-import '../../../utils/device/device_utility.dart';
 
 class SidebarController extends GetxController {
   final activeItem = BessRoutes.home.obs;
@@ -27,14 +26,8 @@ class SidebarController extends GetxController {
   bool isHovering(String route) => hoverItem.value == route;
 
   void menuOnTap(String route) {
-    changeActiveItem(route);
-
-    if (BessDeviceUtils.isMobileScreen(Get.context!) ||
-        BessDeviceUtils.isTabletScreen(Get.context!)) {
-      Get.back();
-    }
-
-    Get.toNamed(route);
+    print('Menu on tap called!');
+    Get.offNamed(route);
   }
 
   Future<void> logOut() async {

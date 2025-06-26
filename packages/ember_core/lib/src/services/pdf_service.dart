@@ -1,12 +1,11 @@
 import 'dart:io';
 
-import 'package:ember_core/ember_core_models.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../ember_core_debug.dart';
+import '../../ember_core.dart';
 import '../utils/pdf_styles.dart';
 
 class PdfService extends GetxService{

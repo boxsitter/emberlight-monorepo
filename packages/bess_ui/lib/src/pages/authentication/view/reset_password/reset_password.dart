@@ -3,6 +3,7 @@ import 'package:bess_ui/src/pages/authentication/view/reset_password/widgets/res
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants//sizes.dart';
+import '../../../../common/widgets/header/menu_bar.dart';
 import '../../../../common/widgets/layouts/templates/site_layout.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
@@ -11,9 +12,11 @@ class ResetPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const BessSiteTemplate(
-        useLayout: false,
-        desktop: ResetPasswordScreenDesktopTablet(),
-        mobile: ResetPasswordScreenMobile());
+      useLayout: false,
+      desktop: ResetPasswordScreenDesktopTablet(),
+      mobile: ResetPasswordScreenMobile(),
+      menuBar: BessMenuBar(),
+    );
   }
 }
 

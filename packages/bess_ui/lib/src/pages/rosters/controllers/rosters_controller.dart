@@ -2,10 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bess_ui/src/common/services/popup_service.dart';
-import 'package:ember_core/ember_core_backend.dart';
-import 'package:ember_core/ember_core_debug.dart';
-import 'package:ember_core/ember_core_models.dart';
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,15 +13,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final ContextService contextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
-  final RosterService rosterService = Get.find<RosterService>();
-  final FrontendCommitService commitService = Get.find<FrontendCommitService>();
+  final CommitRepository commitRepo = Get.find<CommitRepository>();
+  final PullRepository pullRepo = Get.find<PullRepository>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();
-
-  // --- State (Now using standard Dart types) ---
-  late String rosterTitle;
 
   List<Rosterable> roster = [];
   String searchQuery = '';
+  final searchController = TextEditingController();
   Timer? _debounce;
 
   List<Rosterable> get filteredRoster {
@@ -42,7 +37,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   List<AMABlock> amas = [];
   List<PrincipalActivity> principalActivities = [];
   List<ActivityDependent> activityDependents = [];
-  late final List<RosterField> fields;
+  final List<RosterField> fields = [
+    RosterField.fullName,
+    RosterField.preferredName,
+    RosterField.gender,
+    RosterField.age,
+    RosterField.cabinName
+  ];
   double minWidth = 0;
 
   int get count => filteredRoster.length;
@@ -66,14 +67,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
 
-  RostersController({
-    required String defaultTitle,
-    required List<RosterField> defaultFields,
-  }) {
-    rosterTitle = defaultTitle;
-    fields = defaultFields;
-  }
-
   /// A computed list of fields that are available to be added.
   List<RosterField> get availableFields {
     return RosterField.values.where((field) => !fields.contains(field)).toList();
@@ -87,18 +80,32 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   @override
-  void onNavigateTo(String to, String? from) {
-    Debug.logInfo('RosterTableController navigated to - Starting Listener');
-    populateActivities();
-    if (_campersSubscription == null) {
-      Debug.logInfo('Started listening to camper stream');
-      sessionRosterService.camperStream.then((stream) {
-        _campersSubscription = stream.listen((camperMap) {
-          onRosterUpdated(camperMap.values.toList());
-        });
+  void onInit() {
+    super.onInit();
+    // Subscribe to the stream ONLY ONCE when the controller is created.
+    Debug.logInfo('RostersController initialized. Starting listener.');
+    sessionRosterService.camperStream.then((stream) {
+      // Ensure we don't create a duplicate if onInit were ever called again
+      _campersSubscription?.cancel();
+      _campersSubscription = stream.listen((camperMap) {
+        onRosterUpdated(camperMap.values.toList());
       });
-    }
+    });
+  }
+
+  @override
+  void onNavigateTo(String to, String? from) {
+    // This method is now much simpler. It's only responsible for
+    // logic that MUST run every time the page becomes visible.
+    Debug.logInfo('RostersController navigated to.');
+    populateActivities();
     updateMinimumWidth();
+  }
+
+  @override
+  void onNavigateFrom(String to, String? from) {
+    // We no longer need to manage the subscription here.
+    Debug.logInfo('RostersController navigated from.');
   }
 
   // TODO: NEED TO MAKE THIS A STREAM
@@ -111,16 +118,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     activityDependents = (activityData[1] as Set<ActivityDependent>).toList();
     populatingActivities = false;
     update();
-  }
-
-  @override
-  void onNavigateFrom(String to, String? from) {
-    Debug.logInfo('RosterTableController navigated from - Stopping Listener');
-    if (_campersSubscription != null) {
-      Debug.logInfo('Stopped listening to camper stream');
-      _campersSubscription?.cancel();
-      _campersSubscription = null;
-    }
   }
 
   void setSearchQuery(String query) {
@@ -317,7 +314,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   List<String> getRowData(int rowIndex) {
-    return rosterService.getRowData(roster, rowIndex, fields);
+    Rosterable member = roster[rowIndex];
+    List<String> output = [];
+    for (RosterField field in fields) {
+      output.add(member.getFieldAsString(field));
+    }
+    return output;
   }
 
   Future<bool> showImporterPopup() {
@@ -336,7 +338,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update(); // Show loading state
 
     try {
-      await commitService.commit(await sessionRosterService.importFromCsv());
+      await commitRepo.commit(await sessionRosterService.importFromCsv());
     } on Exception catch (e, st) {
       Error.throwWithStackTrace(Debug.parseException(e), st);
     } finally {
@@ -352,9 +354,9 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
           disarmRequirementsLevel: 1,
           confirmationMessage:
               'Once deleted, campers cannot be restored. Their activity assignments and preferences for this session will be gone. Are you sure you want to proceed?');
-      Set<Camper> campersToDelete = await BackendManager.instance.getObjects(selectedRowIds);
+      Set<Camper> campersToDelete = await pullRepo.getObjects(selectedRowIds);
       commit.addObjectsToDelete(campersToDelete);
-      await commitService.commit(commit);
+      await commitRepo.commit(commit);
     } finally {
       selectedRowIds.clear();
       update(); // Update UI to clear selections

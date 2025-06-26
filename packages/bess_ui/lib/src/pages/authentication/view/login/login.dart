@@ -4,6 +4,7 @@ import 'package:bess_ui/src/pages/authentication/view/login/widgets/login_header
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants//sizes.dart';
+import '../../../../common/widgets/header/menu_bar.dart';
 import '../../../../common/widgets/layouts/templates/site_layout.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -11,10 +12,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BessSiteTemplate(
+    return BessSiteTemplate(
         useLayout: false,
-        desktop: LoginScreenDesktopTablet(),
-        mobile: LoginScreenMobile());
+        desktop: const LoginScreenDesktopTablet(),
+        mobile: const LoginScreenMobile(),
+      menuBar: BessMenuBar(),
+    );
   }
 }
 

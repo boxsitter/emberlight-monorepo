@@ -1,4 +1,4 @@
-import 'package:ember_core/ember_core_services.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:get/get.dart';
 
 class SessionSelectorController extends GetxController {

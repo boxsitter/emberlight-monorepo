@@ -19,7 +19,7 @@ class BessMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final menuController = Get.put(SidebarController());
+    final menuController = Get.find<SidebarController>();
 
     return InkWell(
       onTap: () => menuController.menuOnTap(route),

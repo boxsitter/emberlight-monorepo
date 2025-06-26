@@ -1,4 +1,4 @@
-import '../../ember_core_models.dart';
+import '../../ember_core.dart';
 import '../models/core_objects/schedule_day.dart';
 
 class HardcodedSchedule {

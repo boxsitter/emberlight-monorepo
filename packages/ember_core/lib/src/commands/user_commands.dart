@@ -1,10 +1,8 @@
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/ember_core_services.dart';
 import 'package:get/get.dart';
 
-import '../../ember_core_frontend.dart';
-import '../../ember_core_models.dart';
-import '../../ember_core_validators.dart';
+import '../../ember_core.dart';
+import '../repositories/commit_repository.dart';
 
 class UserCommands {
   static Map<String, EmberCommand> list = {
@@ -18,7 +16,7 @@ class UserCommands {
 class CreateUser extends EmberCommand {
   final UserService userService = Get.find<UserService>();
   final ClientContext clientContext = Get.find<ClientContext>();
-  final FrontendCommitService commitService = Get.find<FrontendCommitService>();
+  final CommitRepository commitRepo = Get.find<CommitRepository>();
   
   @override
   final String name = 'mkuser';
@@ -67,6 +65,6 @@ class CreateUser extends EmberCommand {
         // organizationRef: await clientContext.getOrganizationId(),
         role: Role.admin
     );
-    commitService.commit(commit);
+    commitRepo.commit(commit);
   }
 }
