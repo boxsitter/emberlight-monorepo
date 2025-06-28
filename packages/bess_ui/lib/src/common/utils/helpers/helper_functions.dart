@@ -183,6 +183,44 @@ class BessHelperFunctions {
     );
   }
 
+  /// Adjusts the HSL (Hue, Saturation, Lightness) values of a given color.
+  ///
+  /// Takes a [Color] and optional double values for HSL adjustments.
+  /// - [hue]: The amount to adjust the hue by (e.g., 15.5 or -20). This value wraps around the 360-degree color wheel.
+  /// - [saturation]: The amount to adjust the saturation by (e.g., 0.1 for 10% more saturation). The final value is clipped between 0.0 and 1.0.
+  /// - [luminance]: The amount to adjust the lightness/luminance by (e.g., -0.1 for 10% less luminance). The final value is clipped between 0.0 and 1.0.
+  ///
+  /// Returns a new [Color] with the transformations applied.
+  static Color adjustHSL(
+      Color color, {
+        double? hue,
+        double? saturation,
+        double? luminance,
+      }) {
+    HSLColor hslColor = HSLColor.fromColor(color);
+
+    if (hue != null) {
+      // Add the hue adjustment and wrap the value around the 360 degrees.
+      double newHue = (hslColor.hue + hue) % 360.0;
+      if (newHue < 0) newHue += 360.0;
+      hslColor = hslColor.withHue(newHue);
+    }
+
+    if (saturation != null) {
+      // Add the saturation adjustment and clamp the value between 0.0 and 1.0.
+      final double newSaturation = (hslColor.saturation + saturation).clamp(0.0, 1.0);
+      hslColor = hslColor.withSaturation(newSaturation);
+    }
+
+    if (luminance != null) {
+      // Add the luminance adjustment and clamp the value between 0.0 and 1.0.
+      final double newLuminance = (hslColor.lightness + luminance).clamp(0.0, 1.0);
+      hslColor = hslColor.withLightness(newLuminance);
+    }
+
+    return hslColor.toColor();
+  }
+
   static String toTitleCase(String text) {
     if (text.isEmpty) {
       return '';

@@ -1,11 +1,11 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
 import 'package:bess_ui/src/common/styles/text_styles.dart';
+import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/context_switcher/context_switcher.dart';
 import 'package:bess_ui/src/common/widgets/context_switcher/controller/session_selector_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ContextDisplay extends StatelessWidget {
@@ -16,11 +16,12 @@ class ContextDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SessionSelectorController controller = Get.find<SessionSelectorController>();
-    return BessRoundedContainer(
-      backgroundColor: BessColors.crust,
+    return CardButton(
+      backgroundColor: BessColors.element1,
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       height: 55,
       onTap: () => showContextSwitcher(),
+      showBorder: false,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

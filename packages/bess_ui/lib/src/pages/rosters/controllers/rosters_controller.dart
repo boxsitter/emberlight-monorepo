@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../common/mixins/route_aware_controller_mixin.dart';
-import '../widgets/popups/roster_importer.dart';
 
 class RostersController extends GetxController with RouteAwareControllerMixin {
   final ContextService contextService = Get.find<ContextService>();
@@ -58,11 +57,17 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   RosterField? groupBy;
   bool displayAmas = false;
 
+  // Activity Switcher
+  AMABlock? selectedAma;
+
   // View Settings
   bool alternateRowColors = true;
   bool highContrast = false;
   bool rowDividers = false;
   bool compact = true;
+
+  bool columnConfigOpened = false;
+  bool activitySwitcherOpened = false;
 
   // --- Stream Subscription ---
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
@@ -260,6 +265,25 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
+  void toggleSecondaryPage(int page) {
+    if (page == 1) {
+      columnConfigOpened = !columnConfigOpened;
+      activitySwitcherOpened = false;
+      update();
+    } else if (page == 2) {
+      activitySwitcherOpened = !activitySwitcherOpened;
+      columnConfigOpened = false;
+      update();
+    }
+  }
+
+  void setSelectedAma(Titled block) {
+    if (block is AMABlock) {
+      selectedAma = block;
+      update();
+    }
+  }
+
   bool isNothingSelected() {
     return selectedRowIds.isEmpty;
   }
@@ -320,17 +344,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       output.add(member.getFieldAsString(field));
     }
     return output;
-  }
-
-  Future<bool> showImporterPopup() {
-    PopupService popupService = Get.find<PopupService>();
-    return popupService.showFullScreenDialog(
-      title: 'Import Roster From UltraCamp',
-      child: RosterImporter(
-        isImporting: importingCampers,
-        onImport: importCsv,
-      ),
-    );
   }
 
   Future<void> importCsv() async {

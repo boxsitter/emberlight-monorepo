@@ -27,7 +27,7 @@ class RosterField implements Titled {
   static const double widthXl = 260;
 
   /// --- Static definitions for each field ---
-  static const RosterField id = RosterField(name: 'id', title: 'Bessie Id', required: false, defaultWidth: widthXl);
+  static const RosterField coreId = RosterField(name: 'coreId', title: 'Bessie Id', required: false, defaultWidth: widthXl);
   static const RosterField fullName = RosterField(name: 'fullName', title: 'Full Name', required: false, defaultWidth: widthLg);
   static const RosterField firstName = RosterField(
     name: 'firstName',
@@ -96,7 +96,7 @@ class RosterField implements Titled {
 
   /// A list of all possible RosterField values, similar to `Enum.values`.
   static const List<RosterField> values = [
-    id,
+    coreId,
     fullName,
     firstName,
     preferredName,

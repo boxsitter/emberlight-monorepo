@@ -7,7 +7,7 @@ typedef AMABlockId = String;
 typedef ActivityDependentId = String;
 typedef CamperId = String;
 
-class Camper extends CoreObject implements Rosterable {
+class Camper extends CoreObject implements Rosterable, Titled {
   @override
   String firstName;
   @override
@@ -62,6 +62,10 @@ class Camper extends CoreObject implements Rosterable {
   String get name => preferredName.isNotEmpty ? preferredName : firstName;
   @override
   String get fullName => '$firstName $lastName';
+  @override
+  String get title => fullName;
+  @override
+  String get displayTitle => fullName;
   String get fullNamePreferred => '$name $lastName';
   String get lastInitial => lastName[0];
   String get formattedBirthdate => DateTimeHelpers.formatDate(birthdate, false);
@@ -80,7 +84,7 @@ class Camper extends CoreObject implements Rosterable {
   @override
   String getFieldAsString(RosterField field) {
     switch (field) {
-      case RosterField.id:
+      case RosterField.coreId:
         return id;
       case RosterField.firstName:
         return firstName;

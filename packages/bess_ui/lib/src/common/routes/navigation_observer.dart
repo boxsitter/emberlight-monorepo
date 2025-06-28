@@ -2,34 +2,30 @@ import 'package:bess_ui/src/common/routes/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-import '../../pages/activity_preferences/controllers/activity_preferences_controller.dart';
-import '../../pages/rosters/controllers/rosters_controller.dart';
-import '../../pages/session_manager/session_manager_controller.dart';
-import '../mixins/route_aware_controller_mixin.dart';
 import '../widgets/layouts/sidebars/sidebar_controller.dart';
 
-// Change the superclass from GetObserver to NavigatorObserver
 class BessNavigationObserver extends NavigatorObserver {
+  String? _currentPageRoute;
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
-    _handleNavigation(route.settings.name, previousRoute?.settings.name);
+    _handleNavigation(route.settings.name, previousRoute?.settings.name, isPush: true);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
-    _handleNavigation(previousRoute?.settings.name, route.settings.name);
+    _handleNavigation(previousRoute?.settings.name, route.settings.name, isPush: false);
   }
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    _handleNavigation(newRoute?.settings.name, oldRoute?.settings.name);
+    _handleNavigation(newRoute?.settings.name, oldRoute?.settings.name, isPush: true);
   }
 
-  void _handleNavigation(String? to, String? from) {
+  void _handleNavigation(String? to, String? from, {required bool isPush}) {
     if (to == null) return;
 
     // Notify the controller of the page we are LEAVING
@@ -38,13 +34,26 @@ class BessNavigationObserver extends NavigatorObserver {
       fromController.onNavigateFrom(from!, to);
     }
 
-    // Notify the controller of the page we are ENTERING
     final toController = BessRoutes.getControllerForRoute(to);
     if (toController != null) {
-      toController.onNavigateTo(to, from);
-  }
+      bool shouldCallOnNavigateTo = true;
 
-    // Update the sidebar's active item
+      // If this is a 'pop' event AND we are returning to the route
+      // we already considered the main page, it means an overlay was
+      // just closed. In this case, we should NOT call onNavigateTo.
+      if (!isPush && to == _currentPageRoute) {
+        shouldCallOnNavigateTo = false;
+      }
+
+      if (shouldCallOnNavigateTo) {
+        toController.onNavigateTo(to, from);
+        // Since a true navigation occurred to a registered page,
+        // update our state to reflect the new current page.
+        _currentPageRoute = to;
+      }
+    }
+
+    // Update the sidebar's active item regardless of the controller logic.
     if (Get.isRegistered<SidebarController>()) {
       Get.find<SidebarController>().changeActiveItem(to);
     }

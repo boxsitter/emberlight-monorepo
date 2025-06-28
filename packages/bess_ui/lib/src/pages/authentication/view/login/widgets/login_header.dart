@@ -18,7 +18,7 @@ class BessLoginHeader extends StatelessWidget {
           Image(
             width: 100,
             height: 100,
-            filterQuality: FilterQuality.high,
+            filterQuality: FilterQuality.medium,
             isAntiAlias: true,
             fit: BoxFit.contain,
             image: AssetImage(BessImages.lightAppLogo),

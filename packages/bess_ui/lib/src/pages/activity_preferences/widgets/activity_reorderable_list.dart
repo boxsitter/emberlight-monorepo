@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bess_ui/src/common/widgets/containers/titled_container.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,8 @@ class ActivityReorderableList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return TitledContainer(
+      title: title,
       width: 400,
       child: ReorderableListView.builder(
         buildDefaultDragHandles: false,
@@ -41,7 +43,7 @@ class ActivityReorderableList extends StatelessWidget {
               key: ValueKey(activityId),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               width: 400,
-              height: 40,
+              height: 50,
               borderThickness: 2,
               showBorder: true,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -55,6 +57,10 @@ class ActivityReorderableList extends StatelessWidget {
                   const Spacer(),
                   IconButton(
                     icon: const Icon(LucideIcons.info),
+                    // Remove padding
+                    padding: EdgeInsets.zero,
+                    // Remove minimum size constraints
+                    constraints: const BoxConstraints(),
                     onPressed: () => displayInfo(activityId),
                   ),
                   MouseRegion(
@@ -75,10 +81,6 @@ class ActivityReorderableList extends StatelessWidget {
             child: child,
           );
         },
-        header: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(title, style: BessTextStyles.boldCardTitle),
-        ),
       ),
     );
   }

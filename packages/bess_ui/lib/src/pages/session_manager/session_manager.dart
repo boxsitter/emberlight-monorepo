@@ -1,11 +1,12 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/styles/text_styles.dart';
+import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
 import 'package:bess_ui/src/common/widgets/header/menu_bar.dart';
 import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/widgets/buttons/inkwell_button.dart';
+import '../../common/constants/colors.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class SessionManager extends StatelessWidget {
@@ -82,10 +83,9 @@ class SessionManagerDesktop extends StatelessWidget {
               const SizedBox(height: BessSizes.spaceBtwSections),
               content,
               const SizedBox(height: BessSizes.spaceBtwInputFields),
-              InkwellButton(
-                text: 'Commit Changes',
-                width: 140,
-                height: 20,
+              CardButton(
+                child: Text('Commit Changes', style: BessTextStyles.standard, maxLines: 1,),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 onTap: () => controller.commitSelection(),
               ),
             ],

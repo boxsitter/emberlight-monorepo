@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';

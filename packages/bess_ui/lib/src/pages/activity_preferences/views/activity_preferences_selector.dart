@@ -1,7 +1,7 @@
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
+import 'package:bess_ui/src/common/widgets/misc/card_selector.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:bess_ui/src/pages/activity_preferences/widgets/activity_reorderable_list.dart';
-import 'package:bess_ui/src/common/widgets/misc/horizontal_card_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,17 +37,21 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Ranking activities for ${controller.selectedCamperName}',
+                'Ranking activities for ${controller.selectedCamper?.name}',
                 style: BessTextStyles.lightTitle,
                 overflow: TextOverflow.clip,
                 maxLines: 1,
               ),
               const SizedBox(height: BessSizes.spaceBtwItems),
-              HorizontalCardSelector(
-                itemIdsToNames: controller.camperNames,
-                selectedId: controller.selectedCamperId,
-                completedIds: controller.camperIsCompleted,
-                selectItem: controller.selectCamper,
+              CardSelector(
+                cardHeight: 60,
+                cardWidth: 140,
+                maxLines: 2,
+                items: controller.campers,
+                completedItems: controller.camperIsCompleted,
+                selectedItem: controller.selectedCamper,
+                onSelectItem: controller.selectCamper,
+                isHorizontal: true,
               ),
               const SizedBox(height: BessSizes.spaceBtwItems),
               Expanded(
@@ -76,15 +80,12 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
               const SizedBox(height: BessSizes.spaceBtwItems),
 
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ActionInitiator(
-                  enabled: !controller.saveInProgress,
-                  onPressed: controller.saveActivityRanking,
-                  enabledText: 'Save Ranking',
-                  disabledText: 'Saving...',
-                  width: 400,
-                ),
+              ActionInitiator(
+                enabled: !controller.saveInProgress,
+                onPressed: controller.saveActivityRanking,
+                enabledText: 'Save Ranking',
+                disabledText: 'Saving...',
+                width: 400,
               ),
             ],
           );

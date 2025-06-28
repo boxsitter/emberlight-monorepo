@@ -1,6 +1,9 @@
 import 'package:bess_ui/src/common/constants/animation_curves.dart';
 import 'package:bess_ui/src/common/constants/durations.dart';
 import 'package:bess_ui/src/common/constants/sizes.dart';
+import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
+import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
+import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
@@ -13,8 +16,8 @@ class BessIconSwitch extends StatelessWidget {
     super.key,
     required this.iconOne,
     required this.iconTwo,
-    required this.colorOne,
-    required this.colorTwo,
+    this.colorOne,
+    this.colorTwo,
     required this.value,
     required this.onToggle,
   });
@@ -25,8 +28,8 @@ class BessIconSwitch extends StatelessWidget {
   /// The icon to display on the "toggled" (right) side.
   final IconData iconTwo;
 
-  final Color colorOne;
-  final Color colorTwo;
+  final Color? colorOne;
+  final Color? colorTwo;
 
   /// The current state of the switch. `false` for left, `true` for right.
   final bool value;
@@ -41,51 +44,45 @@ class BessIconSwitch extends StatelessWidget {
     final double iconSize = height - 9;
     final double padding = (height - iconSize) / 2;
 
-    return GestureDetector(
+    return CardButton(
       onTap: onToggle,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: AnimatedContainer(
-          duration: BessDurations.animShort,
-          curve: BessAnimationCurves.easeOut,
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(90),
-            color: value ? colorTwo : colorOne,
-          ),
-          child: AnimatedAlign(
-            duration: BessDurations.animShort,
-            curve: BessAnimationCurves.easeOut,
-            alignment: value ? Alignment.centerRight : Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: padding),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  AnimatedOpacity(
-                    duration: BessDurations.animShort,
-                    curve: BessAnimationCurves.easeOut,
-                    opacity: value ? 0.0 : 1.0,
-                    child: Icon(
-                      iconOne,
-                      color: BessColors.textInverted,
-                      size: iconSize,
-                    ),
-                  ),
-                  AnimatedOpacity(
-                    duration: BessDurations.animShort,
-                    curve: BessAnimationCurves.easeOut,
-                    opacity: value ? 1.0 : 0.0,
-                    child: Icon(
-                      iconTwo,
-                      color: BessColors.textInverted,
-                      size: iconSize,
-                    ),
-                  ),
-                ],
+      width: width,
+      height: height,
+      radius: 90,
+      backgroundColor: BessColors.core,
+      tintStates: [(value, colorTwo), (!value, colorOne)],
+      borderThickness: 1,
+      padding: EdgeInsets.zero,
+      child: AnimatedAlign(
+        duration: BessDurations.animShort,
+        curve: BessAnimationCurves.easeOut,
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: padding),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedOpacity(
+                duration: BessDurations.animShort,
+                curve: BessAnimationCurves.easeOut,
+                opacity: value ? 0.0 : 1.0,
+                child: Icon(
+                  iconOne,
+                  color: value ? colorTwo : colorOne,
+                  size: iconSize,
+                ),
               ),
-            ),
+              AnimatedOpacity(
+                duration: BessDurations.animShort,
+                curve: BessAnimationCurves.easeOut,
+                opacity: value ? 1.0 : 0.0,
+                child: Icon(
+                  iconTwo,
+                  color: value ? colorTwo : colorOne,
+                  size: iconSize,
+                ),
+              ),
+            ],
           ),
         ),
       ),

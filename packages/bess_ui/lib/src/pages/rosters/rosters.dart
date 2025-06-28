@@ -1,7 +1,8 @@
+import 'package:bess_ui/src/pages/rosters/widgets/activity_switcher.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/column_config.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/header_builders.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/roster_importer.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/rosters_table.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/rosters_center_actions.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/rosters_menu_bar.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/rosters_trailing_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,20 +20,18 @@ class Rosters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<RostersController>(
-      builder: (controller) {
-        return BessSiteTemplate(
-          desktop: RostersDesktop(
-            controller: controller,
-          ),
-          desktopPadding: false,
-          tabletPadding: false,
-          menuBar: buildRostersMenuBar(controller: controller),
-          centerActions: buildRostersCenterActions(controller: controller),
-          trailingWidgets: buildRostersTrailingWidgets(controller: controller),
-        );
-      }
-    );
+    return GetBuilder<RostersController>(builder: (controller) {
+      return BessSiteTemplate(
+        desktop: RostersDesktop(
+          controller: controller,
+        ),
+        desktopPadding: false,
+        tabletPadding: false,
+        menuBar: buildRostersMenuBar(controller: controller),
+        centerActions: buildRostersCenterActions(controller: controller),
+        trailingWidgets: buildRostersTrailingWidgets(controller: controller),
+      );
+    });
   }
 }
 
@@ -40,18 +39,26 @@ class RostersDesktop extends StatelessWidget {
   RostersDesktop({
     super.key,
     required this.controller,
-    this.screen,
   });
 
-  final Widget? screen;
   final RostersController controller;
 
   @override
   Widget build(BuildContext context) {
-    // 3. Wrap ONLY the part of the UI that needs to rebuild with GetBuilder.
     return Container(
       color: BessColors.core,
-      child: RostersTable(controller: controller),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          if (controller.columnConfigOpened)
+            ColumnConfig(controller: controller),
+
+          if (controller.activitySwitcherOpened)
+            ActivitySwitcher(controller: controller),
+
+          Expanded(child: RostersTable(controller: controller)),
+        ],
+      ),
     );
   }
 }

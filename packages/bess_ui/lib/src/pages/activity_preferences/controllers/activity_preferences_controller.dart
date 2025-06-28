@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:ember_core/ember_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../common/mixins/route_aware_controller_mixin.dart';
@@ -24,10 +23,10 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
 
   String? selectedCabinId;
   String? selectedCabinName;
-  Map<CamperId, String> camperNames = {};
-  Set<CamperId> camperIsCompleted = {};
-  String? selectedCamperId;
-  String? selectedCamperName;
+
+  List<Camper> campers = [];
+  Set<Camper> camperIsCompleted = {};
+  Camper? selectedCamper;
 
   Map<PrincipalActivityId, String> standardActivityNames = {};
   Map<PrincipalActivityId, String> skillsActivityNames = {};
@@ -51,7 +50,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
 
   @override
   void onNavigateFrom(String from, String to) {
-    // Nothing to dispose or cancel in this controller.
+    // Nothing here
   }
 
   Future<void> _loadCabinsData() async {
@@ -86,9 +85,8 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
     // Reset state for the selector screen
     isCamperDataLoaded = false;
     isActivityDataLoaded = false;
-    camperNames = {};
+    campers = [];
     camperIsCompleted = {};
-    standardActivityNames = {};
     skillsActivityNames = {};
     orderedStandardActivityIds = [];
     orderedSkillsActivityIds = [];
@@ -101,22 +99,23 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
       scheduleService.getScheduledPrincipalActivitiesToNames(true),
     ]);
 
-    final Set<Camper> campersInSelectedCabin = results[0] as Set<Camper>;
+    final List<Camper> campersInSelectedCabin = (results[0] as Set<Camper>).toList();
     final Schedule schedule = results[1] as Schedule;
     standardActivityNames = results[2] as Map<PrincipalActivityId, String>;
     skillsActivityNames = results[3] as Map<PrincipalActivityId, String>;
 
     for (Camper camper in campersInSelectedCabin) {
-      camperNames[camper.id] = camper.fullName;
       if (ModelHelperFunctions.preferenceCompleted(camper, schedule)) {
-        camperIsCompleted.add(camper.id);
+        camperIsCompleted.add(camper);
       }
     }
+    campers = campersInSelectedCabin;
 
-    if (camperNames.isNotEmpty) {
-      selectedCamperId = camperNames.keys.first;
-      selectedCamperName = camperNames[selectedCamperId];
+
+    if (campers.isNotEmpty) {
+      selectedCamper = campers.first;
     }
+
     isCamperDataLoaded = true;
     update();
 
@@ -127,7 +126,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   }
 
   Future<void> updateActivityOrder() async {
-    if (selectedCamperId == null || selectedCamperId!.isEmpty) {
+    if (selectedCamper == null) {
       throw StateError('Error updating activity order: No camper selected');
     }
     isActivityDataLoaded = false;
@@ -138,8 +137,8 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
 
     try {
       final results = await Future.wait([
-        scheduleService.getOrderedActivities(selectedCamperId!, false),
-        scheduleService.getOrderedActivities(selectedCamperId!, true),
+        scheduleService.getOrderedActivities(selectedCamper!.id, false),
+        scheduleService.getOrderedActivities(selectedCamper!.id, true),
       ]);
 
       orderedStandardActivityIds.addAll(results[0]);
@@ -150,7 +149,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
       throw StateError('Error ordering activities');
     } finally {
       isActivityDataLoaded = true;
-      Debug.logInfo('Finished POPULATING ACTIVITY MAPS for camper: $selectedCamperId');
+      Debug.logInfo('Finished POPULATING ACTIVITY MAPS for camper: ${selectedCamper!}');
       update();
     }
   }
@@ -176,7 +175,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   }
 
   Future<void> saveActivityRanking() async {
-    if (selectedCamperId == null) {
+    if (selectedCamper == null) {
       popupService.showToast(title: 'Error', message: 'No camper selected');
       return;
     }
@@ -188,25 +187,22 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
     saveInProgress = true;
     update();
 
-    final String currentCamperId = selectedCamperId!;
-    final String currentCamperName = selectedCamperName!;
-
     try {
       Commit commit = Commit(disarmRequirementsLevel: 0);
       await activityPreferenceService.setRanking(
         commit: commit,
-        camperId: currentCamperId,
+        camperId: selectedCamper!.id,
         orderedPrincipalActivityIds: orderedStandardActivityIds,
       );
       await activityPreferenceService.setRanking(
         commit: commit,
-        camperId: currentCamperId,
+        camperId: selectedCamper!.id,
         orderedPrincipalActivityIds: orderedSkillsActivityIds,
       );
       await commitRepo.commit(commit);
 
-      camperIsCompleted.add(currentCamperId);
-      popupService.showToast(title: 'Success', message: 'Activity ranking for $currentCamperName has been saved!');
+      camperIsCompleted.add(selectedCamper!);
+      popupService.showToast(title: 'Success', message: 'Activity ranking for ${selectedCamper!.name} has been saved!');
     } catch (e) {
       Debug.logInfo("Error saving ranking: $e");
       popupService.showToast(title: 'Error', message: 'Failed to save ranking: $e');
@@ -223,16 +219,12 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
     Get.toNamed(BessRoutes.activityPreferencesSelector);
   }
 
-  Future<void> selectCamper(String camperId, String camperName) async {
-    while (isActivityDataLoaded == false) {
-      await Future.delayed(const Duration(milliseconds: 100));
+  Future<void> selectCamper(Titled camper) async {
+    if (camper is Camper) {
+      selectedCamper = camper;
+      update(); // Update the UI to show the new camper name is selected
+      await updateActivityOrder(); // This will call update() when it's done.
     }
-
-    selectedCamperId = camperId;
-    selectedCamperName = camperName;
-    update(); // Update the UI to show the new camper name is selected
-
-    await updateActivityOrder(); // This will call update() when it's done.
   }
 
   Future<void> showActivityInfo(PrincipalActivityId principalActivityId) async {

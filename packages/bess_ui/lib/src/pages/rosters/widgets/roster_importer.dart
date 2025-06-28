@@ -2,7 +2,7 @@ import 'package:bess_ui/bess_ui.dart';
 import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../common/constants/sizes.dart';
+import '../../../common/constants/sizes.dart';
 
 /// A widget to create a standardized popup for importing CSV files.
 class RosterImporter extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
 import 'package:bess_ui/src/common/widgets/header/menu_bar.dart';
+import 'package:bess_ui/src/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/sizes.dart';
-import '../../utils/device/device_utility.dart';
+import '../../constants/image_strings.dart';
 
 class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   const BessHeader({super.key, required this.menuBar, this.scaffoldKey, this.centerActions = const [], this.trailingWidgets = const []});

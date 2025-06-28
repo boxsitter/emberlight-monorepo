@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/pages/rosters/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -6,7 +7,42 @@ import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/header/menu_bar.dart';
 import '../controllers/rosters_controller.dart';
 
-/// A builder function that constructs and returns a configured [BessMenuBar] for the Rosters page.
+List<Widget> buildRostersCenterActions({
+  required RostersController controller,
+}) {
+  return [
+    ShadIconButton.secondary(
+      height: 30,
+      width: 30,
+      padding: EdgeInsets.zero,
+      icon: const Icon(
+        LucideIcons.columns3Cog500,
+        size: 18,
+      ),
+
+      onPressed: () => controller.toggleSecondaryPage(1),
+      backgroundColor: controller.columnConfigOpened ? BessColors.primary : BessColors.core,
+      foregroundColor: controller.columnConfigOpened ? BessColors.textInverted : BessColors.textPrimary,
+      hoverBackgroundColor: controller.columnConfigOpened ? BessColors.primary : BessColors.crust,
+    ),
+
+    ShadIconButton.secondary(
+      height: 30,
+      width: 30,
+      padding: EdgeInsets.zero,
+      icon: const Icon(
+        LucideIcons.arrowRightLeft500,
+        size: 18,
+      ),
+
+      onPressed: () => controller.toggleSecondaryPage(2),
+      backgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.core,
+      foregroundColor: controller.activitySwitcherOpened ? BessColors.textInverted : BessColors.textPrimary,
+      hoverBackgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.crust,
+    ),
+  ];
+}
+
 BessMenuBar<RostersController> buildRostersMenuBar({
   required RostersController controller,
 }) {
@@ -68,7 +104,6 @@ BessMenuBar<RostersController> buildRostersMenuBar({
               ),
       ),
     ],
-
     editItems: [
       ShadContextMenuItem(
         child: Text('Delete',
@@ -88,4 +123,16 @@ BessMenuBar<RostersController> buildRostersMenuBar({
           enabled: controller.selectedRowIds.isNotEmpty),
     ],
   );
+}
+
+List<Widget> buildRostersTrailingWidgets({
+  required RostersController controller,
+}) {
+  return [
+    BessSearchbar(
+      onSearchChange: controller.setSearchQuery,
+      noMatches: controller.filteredRoster.isEmpty,
+      controller: controller.searchController,
+    ),
+  ];
 }

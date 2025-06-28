@@ -1,4 +1,3 @@
-import 'package:bess_ui/src/common/widgets/buttons/inkwell_button.dart';
 import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import '../../../constants/colors.dart';
 import '../../../constants/sizes.dart';
 import '../../../utils/device/device_utility.dart';
 import '../../../utils/helpers/helper_functions.dart';
+import '../../buttons/card_button.dart';
 import '../../containers/rounded_container.dart';
 import '../../context_switcher/context_display.dart';
 import 'menu/menu_item.dart';
@@ -49,26 +49,25 @@ class BessSidebar extends StatelessWidget {
                                 route: BessRoutes.activityPreferencesCabins,
                                 icon: LucideIcons.listOrdered,
                                 itemName: 'Activity Preferences'),
+                            const BessMenuItem(route: BessRoutes.schedulePage, icon: LucideIcons.columns3, itemName: 'Schedule'),
                             const BessMenuItem(
-                                route: BessRoutes.schedulePage, icon: LucideIcons.columns3, itemName: 'Schedule'),
-                            const BessMenuItem(
-                                route: BessRoutes.sessionManager,
-                                icon: LucideIcons.calendarCog,
-                                itemName: 'Session Manager'),
+                                route: BessRoutes.sessionManager, icon: LucideIcons.calendarCog, itemName: 'Session Manager'),
                             // const BessMenuItem(
                             //     route: BessRoutes.console,
                             //     icon: LucideIcons.flameKindling,
                             //     itemName: 'Branch Manager'),
+                            const BessMenuItem(route: BessRoutes.console, icon: LucideIcons.squareTerminal, itemName: 'Console'),
                             const BessMenuItem(
-                                route: BessRoutes.console, icon: LucideIcons.squareTerminal, itemName: 'Console'),
+                                route: BessRoutes.dev_testing, icon: LucideIcons.flaskConical, itemName: 'Dev Testing'),
                           ],
                         ),
                         const Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            BessRoundedContainer(
+                            CardButton(
                               backgroundColor: BessHelperFunctions.blendColors(BessColors.crust, BessColors.red, 100),
+                              showBorder: false,
                               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                               height: 55,
                               width: 55,

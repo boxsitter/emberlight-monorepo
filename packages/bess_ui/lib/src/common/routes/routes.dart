@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/routes/routes_middleware.dart';
+import 'package:bess_ui/src/pages/dev_testing/dev_testing.dart';
 import 'package:get/get.dart';
 
 import '../../pages/activity_preferences/controllers/activity_preferences_controller.dart';
@@ -23,10 +24,10 @@ class BessRoutes {
 
   static const responsiveDesignExample = '/responsive-design';
   static const console = '/console';
+  static const dev_testing = '/dev_testing';
   static const rosters = '/session-roster';
   static const schedulePage = '/schedule-page';
   static const sessionManager = '/session-manager';
-  static const activityRosters = '/activity-rosters';
 
   static const activityPreferencesCabins = '/activity-preferences-cabins';
   static const activityPreferencesCampers = '/activity-preferences-campers';
@@ -38,6 +39,7 @@ class BessRoutes {
 
   static Set sideMenuItems = {
     console,
+    dev_testing,
     rosters,
     activityPreferencesCabins,
     sessionManager,
@@ -60,6 +62,11 @@ class BessRoutes {
     GetPage(
       name: BessRoutes.console,
       page: () => const ConsoleScreen(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.dev_testing,
+      page: () => const DevTesting(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(

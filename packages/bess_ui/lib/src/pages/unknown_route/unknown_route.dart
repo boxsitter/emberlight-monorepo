@@ -4,7 +4,6 @@ import 'package:bess_ui/src/pages/session_manager/session_manager_controller.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/widgets/buttons/inkwell_button.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 
 class UnknownRoute extends StatelessWidget {

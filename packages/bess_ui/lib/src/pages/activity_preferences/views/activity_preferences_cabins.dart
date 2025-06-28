@@ -2,14 +2,18 @@ import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_pref
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
+import '../../../common/utils/helpers/helper_functions.dart';
+import '../../../common/widgets/buttons/card_button.dart';
 import '../../../common/widgets/header/menu_bar.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
-import '../widgets/card_button.dart';
 
 class ActivityPreferencesCabins extends StatelessWidget {
-  const ActivityPreferencesCabins({super.key,});
+  const ActivityPreferencesCabins({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +53,27 @@ class ActivityPreferencesCabinsDesktop extends StatelessWidget {
                   final bool isInProgress = preferencesCount > 0 && preferencesCount < count;
 
                   return CardButton(
-                    title: name,
-                    subtitle: '$preferencesCount/$count campers completed',
-                    isCompleted: isCompleted,
-                    isInProgress: isInProgress,
+                    tintStates: [(isInProgress, BessColors.yellow), (isCompleted, BessColors.green)],
                     height: 90,
                     width: 250,
                     onTap: () => controller.navigateToSelection(cabinId, name),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          name,
+                          style: BessTextStyles.boldCardTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '$preferencesCount/$count campers completed',
+                          style: BessTextStyles.largerLabel,
+                        ),
+                      ],
+                    ),
                   );
                 }).toList(),
               ),
