@@ -23,4 +23,12 @@ class ModelHelperFunctions {
       return hasNonNullPreference && hasWeight;
     });
   }
+
+  static bool? simplePreferencesCompleted(Camper camper) {
+    if (camper.preferenceRefs.isEmpty) return null;
+    for (double? preference in camper.preferenceRefs.values) {
+      if (preference==null) return false;
+    }
+    return true;
+  }
 }

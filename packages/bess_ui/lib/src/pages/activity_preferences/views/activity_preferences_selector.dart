@@ -35,6 +35,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               Text(
                 'Ranking activities for ${controller.selectedCamper?.name}',
@@ -57,23 +58,31 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    ActivityReorderableList(
-                      title: 'Choice Activities',
-                      orderedItemIds: controller.orderedStandardActivityIds,
-                      displayInfo: controller.showActivityInfo,
-                      itemIdsToNames: controller.standardActivityNames,
-                      onReorder: controller.onReorderStandardActivities,
+                    Flexible(
+                      flex: 2,
+                      child: ActivityReorderableList(
+                        title: 'Choice Activities',
+                        orderedItemIds: controller.orderedStandardActivityIds,
+                        displayInfo: controller.showActivityInfo,
+                        itemIdsToNames: controller.standardActivityNames,
+                        onReorder: controller.onReorderStandardActivities,
+                      ),
                     ),
 
                     const SizedBox(width: BessSizes.spaceBtwItems),
 
-                    ActivityReorderableList(
-                      title: 'Skills Recs',
-                      orderedItemIds: controller.orderedSkillsActivityIds,
-                      displayInfo: controller.showActivityInfo,
-                      itemIdsToNames: controller.skillsActivityNames,
-                      onReorder: controller.onReorderSkillsActivities,
+                    Flexible(
+                      flex: 2,
+                      child: ActivityReorderableList(
+                        title: 'Skills Recs',
+                        orderedItemIds: controller.orderedSkillsActivityIds,
+                        displayInfo: controller.showActivityInfo,
+                        itemIdsToNames: controller.skillsActivityNames,
+                        onReorder: controller.onReorderSkillsActivities,
+                      ),
                     ),
+
+                    const Spacer(flex: 1,),
                   ],
                 ),
               ),
@@ -81,11 +90,12 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
               const SizedBox(height: BessSizes.spaceBtwItems),
 
               ActionInitiator(
-                awaiting: !controller.saveInProgress,
+                awaiting: controller.saveInProgress,
                 onPressed: controller.saveActivityRanking,
                 enabledText: 'Save Ranking',
                 awaitingText: 'Saving...',
                 width: 400,
+                height: 50,
               ),
             ],
           );

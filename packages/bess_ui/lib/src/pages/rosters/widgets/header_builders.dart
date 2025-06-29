@@ -19,13 +19,11 @@ List<Widget> buildRostersCenterActions({
         LucideIcons.columns3Cog500,
         size: 18,
       ),
-
       onPressed: () => controller.toggleSecondaryPage(1),
       backgroundColor: controller.columnConfigOpened ? BessColors.primary : BessColors.core,
       foregroundColor: controller.columnConfigOpened ? BessColors.textInverted : BessColors.textPrimary,
       hoverBackgroundColor: controller.columnConfigOpened ? BessColors.primary : BessColors.crust,
     ),
-
     ShadIconButton.secondary(
       height: 30,
       width: 30,
@@ -34,7 +32,6 @@ List<Widget> buildRostersCenterActions({
         LucideIcons.arrowRightLeft500,
         size: 18,
       ),
-
       onPressed: () => controller.toggleSecondaryPage(2),
       backgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.core,
       foregroundColor: controller.activitySwitcherOpened ? BessColors.textInverted : BessColors.textPrimary,
@@ -106,6 +103,42 @@ BessMenuBar<RostersController> buildRostersMenuBar({
     ],
     editItems: [
       ShadContextMenuItem(
+        child: const Text('Invert Selection'),
+        onPressed: controller.invertSelection,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
+      ShadSeparator.horizontal(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        color: BessColors.borderPrimary,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Assign To Activity'),
+        onPressed: controller.assignSelected,
+        enabled: controller.selectedItems.isNotEmpty && controller.selectedAma != null && controller.selectedActivity != null,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Unassign From Selected Activity'),
+        onPressed: controller.unassignSelectedFromActivity,
+        enabled: controller.selectedItems.isNotEmpty && controller.selectedAma != null && controller.selectedActivity != null,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Unassign For Selected Period'),
+        onPressed: controller.unassignSelectedFromAma,
+        enabled: controller.selectedItems.isNotEmpty && controller.selectedAma != null,
+      ),
+      ShadContextMenuItem(
+        child: Text('Unassign From All Periods',
+            style: controller.isSingleSelected() || controller.isMultiSelected()
+                ? BessTextStyles.standard.copyWith(color: BessColors.red)
+                : BessTextStyles.standardSecondary),
+        onPressed: controller.unassignSelectedFromAll,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
+      ShadSeparator.horizontal(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        color: BessColors.borderPrimary,
+      ),
+      ShadContextMenuItem(
         child: Text('Delete',
             style: controller.isSingleSelected() || controller.isMultiSelected()
                 ? BessTextStyles.standard.copyWith(color: BessColors.red)
@@ -113,14 +146,6 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         onPressed: controller.deleteSelected,
         enabled: controller.isSingleSelected() || controller.isMultiSelected(),
       ),
-      ShadSeparator.horizontal(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        color: BessColors.borderPrimary,
-      ),
-      ShadContextMenuItem(
-          child: const Text('Invert Selection'),
-          onPressed: controller.invertSelection,
-          enabled: controller.selectedItems.isNotEmpty),
     ],
   );
 }

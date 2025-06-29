@@ -12,22 +12,6 @@ class BessHelperFunctions {
         startOfWeek.year, startOfWeek.month, startOfWeek.day, 0, 0, 0, 0, 0);
   }
 
-  static Color getOrderStatusColor(OrderStatus value) {
-    if (OrderStatus.pending == value) {
-      return Colors.blue;
-    } else if (OrderStatus.processing == value) {
-      return Colors.orange;
-    } else if (OrderStatus.shipped == value) {
-      return Colors.purple;
-    } else if (OrderStatus.delivered == value) {
-      return Colors.green;
-    } else if (OrderStatus.cancelled == value) {
-      return Colors.red;
-    } else {
-      return Colors.grey;
-    }
-  }
-
   static Color? getColor(String value) {
     /// Define your product specific colors here and it will match the attribute colors and show specific 🟠🟡🟢🔵🟣🟤
 
@@ -62,30 +46,6 @@ class BessHelperFunctions {
     } else {
       return null;
     }
-  }
-
-  static void showSnackBar(String message) {
-    ScaffoldMessenger.of(Get.context!).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
-  static void showAlert(String title, String message) {
-    showDialog(
-      context: Get.context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   static void navigateToScreen(BuildContext context, Widget screen) {

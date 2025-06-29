@@ -13,6 +13,14 @@ class RostersTable extends StatelessWidget {
     required this.controller,
   });
 
+  // TODO: Awful
+  final Set<String> makeRed = const {
+    'Unassigned',
+    'Error (not found)',
+    'Error (no principal activity)',
+    'No',
+  };
+
   final RostersController controller;
 
   @override
@@ -96,7 +104,7 @@ class RostersTable extends StatelessWidget {
                   .map((cellData) => DataCell(
                         Text(
                           cellData,
-                          style: BessTextStyles.standard,
+                          style: BessTextStyles.standard.copyWith(color: makeRed.contains(cellData) ? BessColors.red : BessColors.textPrimary),
                           maxLines: controller.compact ? 1 : 4,
                           overflow: TextOverflow.ellipsis,
                         ),

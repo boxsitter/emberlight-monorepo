@@ -45,22 +45,26 @@ class RostersDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: BessColors.core,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          if (controller.columnConfigOpened) Flexible(flex: 3, child: ColumnConfig(controller: controller)),
-          if (controller.activitySwitcherOpened) Flexible(flex: 3, child: ActivitySwitcher(controller: controller)),
-
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        if (controller.columnConfigOpened)
           Flexible(
-            flex: 5,
-            child: RostersTable(
-              controller: controller,
-            ),
+            flex: 3,
+            child: ColumnConfig(controller: controller),
           ),
-        ],
-      ),
+        if (controller.activitySwitcherOpened)
+          Flexible(
+            flex: 3,
+            child: ActivitySwitcher(controller: controller),
+          ),
+        Flexible(
+          flex: 5,
+          child: RostersTable(
+            controller: controller,
+          ),
+        ),
+      ],
     );
   }
 }

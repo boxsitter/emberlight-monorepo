@@ -50,6 +50,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   bool importingCampers = false;
   bool populatingActivities = false;
+  bool assigningCamper = false;
 
   // Column config
   RosterField? sortByField;
@@ -204,31 +205,29 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     final List<String> rowData = [];
     for (final field in fields) {
       if (field.name == 'activityPeriod') {
-        // TODO: This sucks
-        if (!populatingActivities) {
+      if (populatingActivities) {
+        rowData.add('loading...');
+      } else {
           String activityDependentId = rosterItem.getFieldAsString(field);
-          if (activityDependentId == '') {
-            rowData.add('unassigned');
-            continue;
-          }
-          ActivityDependent? activityDependent;
-          for (ActivityDependent activityDep in activityDependents) {
-            if (activityDep.id == activityDependentId) {
-              activityDependent = activityDep;
+        if (activityDependentId.isEmpty) {
+            rowData.add('Unassigned');
+        } else {
+          // Find the ActivityDependent using a more reliable method
+          final activityDependent = activityDependents.firstWhereOrNull(
+            (dep) => dep.id == activityDependentId,
+          );
+
+          if (activityDependent == null) {
+            rowData.add('Error (not found)');
             } else {
-              rowData.add('error');
-              continue;
+            final principalActivity = principalActivities[activityDependent.principalPar];
+          if (principalActivity == null) {
+              rowData.add('Error (no principal activity)');
+            } else {
+          rowData.add(principalActivity.name);
             }
           }
-
-          PrincipalActivity? principalActivity = principalActivities[activityDependent!.principalPar];
-          if (principalActivity == null) {
-            rowData.add('error');
-            continue;
-          }
-          rowData.add(principalActivity.name);
-        } else {
-          rowData.add('loading...');
+        }
         }
       } else {
         rowData.add(rosterItem.getFieldAsString(field));
@@ -325,7 +324,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     if (select! && selectedItems.isNotEmpty) {
       selectedItems.clear();
     } else if (select) {
-      selectedItems.addAll(roster);
+      selectedItems.addAll(filteredRoster);
     } else {
       selectedItems.clear();
     }
@@ -385,13 +384,91 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   Future<void> assignSelected() async {
-    if (selectedItems.isEmpty) return;
+    if (selectedItems.isEmpty || selectedAma == null || selectedActivity == null) {
+      Debug.logWarning('Can\'t assign selected campers');
+      return;
+    }
+    try {
+      assigningCamper = true;
+      update();
+      Commit commit = Commit(disarmRequirementsLevel: 0);
+      for (Rosterable rosterable in selectedItems) {
+        if (rosterable is Camper) {
+          await rosterService.assignCamperToActivity(commit, rosterable.id, selectedActivity!.id);
+        }
+      }
+      await commitRepo.commit(commit);
+      await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      assigningCamper = false;
+      update();
+    }
+  }
+
+  Future<void> unassignSelectedFromActivity() async {
+    if (selectedItems.isEmpty || selectedActivity == null) {
+      Debug.logWarning('Can\'t unassign selected campers');
+      return;
+    }
     try {
       Commit commit = Commit(disarmRequirementsLevel: 0);
-
+      for (Rosterable rosterable in selectedItems) {
+        if (rosterable is Camper && rosterable.activityAssignmentRefs.containsValue(selectedActivity!.id)) {
+          await rosterService.removeCamperFromActivity(commit, rosterable.id, selectedActivity!.id);
+        }
+      }
       await commitRepo.commit(commit);
+      await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
     } finally {
-      selectedItems.clear();
+      update(); // Update UI to clear selections
+    }
+  }
+
+  Future<void> unassignSelectedFromAma() async {
+    if (selectedItems.isEmpty || selectedAma == null) {
+      Debug.logWarning('Can\'t unassign selected campers');
+      return;
+    }
+    try {
+      Commit commit = Commit(disarmRequirementsLevel: 0);
+      for (Rosterable rosterable in selectedItems) {
+        if (rosterable is Camper && rosterable.activityAssignmentRefs.containsKey(selectedAma!.id)) {
+          await rosterService.unassignCamperFromAmaBlock(commit, rosterable.id, selectedAma!.id);
+        }
+      }
+      await commitRepo.commit(commit);
+      await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      update(); // Update UI to clear selections
+    }
+  }
+
+  Future<void> unassignSelectedFromAll() async {
+    if (selectedItems.isEmpty) {
+      Debug.logWarning('Can\'t unassign selected campers');
+      return;
+    }
+    try {
+      Commit commit = Commit(
+          disarmRequirementsLevel: 1,
+          confirmationMessage:
+              'Are you sure you want to unassign the selected campers from all of their activities? This action cannot be undone.');
+      for (Rosterable rosterable in selectedItems) {
+        if (rosterable is Camper) {
+          await rosterService.removeAllActivitiesFromCamper(commit, rosterable.id);
+        }
+      }
+      await commitRepo.commit(commit);
+      await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
       update(); // Update UI to clear selections
     }
   }

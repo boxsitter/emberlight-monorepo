@@ -14,7 +14,7 @@ class BessColors {
   static Color textSecondary = flavor.subtext0;
   static Color textSubtle = flavor.overlay1;
   static Color textLink = flavor.blue;
-  static Color textInverted = flavor.mantle;
+  static Color textInverted = flavor.crust;
 
   // Background colors
   static Color background = flavor.mantle;

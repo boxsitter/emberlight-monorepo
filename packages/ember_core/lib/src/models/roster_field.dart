@@ -93,6 +93,12 @@ class RosterField implements Titled {
     required: false,
     defaultWidth: widthMd,
   );
+  static const RosterField preferencesCompleted = RosterField(
+    name: 'preferencesCompleted',
+    title: 'Activities Ranked',
+    required: false,
+    defaultWidth: widthMd,
+  );
 
   /// A list of all possible RosterField values, similar to `Enum.values`.
   static const List<RosterField> values = [

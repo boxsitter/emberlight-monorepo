@@ -1,8 +1,8 @@
 
 import '../../../ember_core.dart';
-import '../roster_field.dart';
 
 abstract class Rosterable implements Titled, CoreObject {
+  @override
   String get id;
   String get firstName;
   String get preferredName;
@@ -17,6 +17,7 @@ abstract class Rosterable implements Titled, CoreObject {
   Map<AMABlockId, ActivityDependentId?> get activityAssignmentRefs;
   bool? get arrived;
   bool? get canSwim;
+  bool? get preferencesCompleted;
 
   String getFieldAsString(RosterField field);
 }

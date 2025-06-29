@@ -69,6 +69,8 @@ class Camper extends CoreObject implements Rosterable, Titled {
   String get fullNamePreferred => '$name $lastName';
   String get lastInitial => lastName[0];
   String get formattedBirthdate => DateTimeHelpers.formatDate(birthdate, false);
+  @override
+  bool? get preferencesCompleted => ModelHelperFunctions.simplePreferencesCompleted(this);
 
   @override
   int get age =>
@@ -107,9 +109,11 @@ class Camper extends CoreObject implements Rosterable, Titled {
       case RosterField.note:
         return note.toString();
       case RosterField.arrived:
-        return arrived == null ? 'N/A' : arrived! ? 'yes' : 'no';
+        return arrived == null ? 'N/A' : arrived! ? 'Yes' : 'No';
       case RosterField.canSwim:
-        return arrived == null ? 'N/A' : arrived! ? 'yes' : 'no';
+        return arrived == null ? 'N/A' : arrived! ? 'Yes' : 'No';
+      case RosterField.preferencesCompleted:
+        return preferencesCompleted == null ? 'N/A' : arrived! ? 'Yes' : 'No';
       default:
         if (field.name == 'activityPeriod') { // TODO: This sucks
           return activityAssignmentRefs[field.dataId] ?? '';
@@ -180,5 +184,11 @@ class Camper extends CoreObject implements Rosterable, Titled {
     if (IdFunctions.getIdPart(id, 1) == 'activity_dependent') {
       activityAssignmentRefs.removeWhere((key, value) => value == id);
     }
+
+    if (IdFunctions.getIdPart(id, 1) == 'principal_activity') {
+      preferenceRefs.remove(id);
+      preferenceWeightRefs.remove(id);
+    }
   }
+
 }

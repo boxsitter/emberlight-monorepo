@@ -31,7 +31,6 @@ class ActivityReorderableList extends StatelessWidget {
   Widget build(BuildContext context) {
     return TitledContainer(
       title: title,
-      width: 400,
       child: ReorderableListView.builder(
         buildDefaultDragHandles: false,
         itemCount: orderedItemIds.length,
@@ -42,7 +41,6 @@ class ActivityReorderableList extends StatelessWidget {
           return BessRoundedContainer(
               key: ValueKey(activityId),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              width: 400,
               height: 50,
               borderThickness: 2,
               showBorder: true,

@@ -29,7 +29,7 @@ class ActivitySwitcher extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
-            flex: 1,
+            flex: 2,
             child: TitledContainer(
               title: 'Select Activity Period',
               child: CardSelector(
@@ -43,7 +43,7 @@ class ActivitySwitcher extends StatelessWidget {
           ),
           SizedBox(width: BessSizes.spaceBtwItems),
           Flexible(
-            flex: 4,
+            flex: 6,
             child: TitledContainer(
               title: 'Select Activity',
               child: controller.selectedAma != null
@@ -53,8 +53,9 @@ class ActivitySwitcher extends StatelessWidget {
                       columns: 2,
                       itemBuilder: (context, item) {
                         PrincipalActivity? principalActivity = controller.principalActivities[item.principalPar];
+                        int countAdded = controller.selectedItems.length - (controller.selectedItems.where((camper) => item.camperRefs.contains(camper.id))).length;
                         bool? atCap = principalActivity != null
-                            ? item.camperRefs.length + controller.selectedItems.length > principalActivity.capacity
+                            ? item.camperRefs.length + countAdded > principalActivity.capacity
                             : null;
                         return CardButton(
                           tintStates: atCap != null
@@ -70,24 +71,24 @@ class ActivitySwitcher extends StatelessWidget {
                             children: [
                               Text(principalActivity?.name ?? 'Error', style: BessTextStyles.boldCardTitle),
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   if (controller.selectedItems.isNotEmpty && atCap != null && !atCap)
                                     Text(
-                                      '${controller.selectedItems.length}+',
+                                      '$countAdded+',
                                       overflow: TextOverflow.clip,
                                       style: BessTextStyles.standard.copyWith(color: BessColors.green),
                                     ),
                                   if (controller.selectedItems.isNotEmpty && atCap != null && atCap)
                                     Text(
-                                      '${controller.selectedItems.length}+',
+                                      '$countAdded+',
                                       overflow: TextOverflow.clip,
                                       style: BessTextStyles.standard.copyWith(color: BessColors.red),
                                     ),
                                   Text(
                                     '${item.camperRefs.length}/${principalActivity?.capacity}',
                                     overflow: TextOverflow.clip,
-                                    style: BessTextStyles.standard,
+                                    style: BessTextStyles.standardBold,
                                   ),
                                 ],
                               ),
@@ -96,13 +97,14 @@ class ActivitySwitcher extends StatelessWidget {
                           onTap: () => controller.setSelectedActivity(item),
                           height: 50,
                         );
-                      })
+                      },
+                    )
                   : Center(child: Text('Select an activity period first!', style: BessTextStyles.tableHeaderSecondary)),
             ),
           ),
           SizedBox(width: BessSizes.spaceBtwItems),
           Flexible(
-            flex: 2,
+            flex: 4,
             child: Column(
               children: [
                 Expanded(
@@ -132,6 +134,9 @@ class ActivitySwitcher extends StatelessWidget {
                               if (oldActivityId == null || oldActivityTitle == null) {
                                 return Text('Assign to $selectedActivityTitle', style: BessTextStyles.standardBold);
                               }
+                              if (oldActivityId == controller.selectedActivity!.id) {
+                                return Text('No change', style: BessTextStyles.standardBold);
+                              }
 
                               return Text('$oldActivityTitle ➔ $selectedActivityTitle', style: BessTextStyles.standardBold);
                             },
@@ -143,10 +148,10 @@ class ActivitySwitcher extends StatelessWidget {
                   height: BessSizes.spaceBtwItems,
                 ),
                 ActionInitiator(
-                  onPressed: () => print('Commit!'),
-                  disabled: controller.selectedAma == null ||
-                      controller.selectedActivity == null ||
-                      controller.selectedItems.isEmpty,
+                  onPressed: () => controller.assignSelected(),
+                  disabled:
+                      controller.selectedAma == null || controller.selectedActivity == null || controller.selectedItems.isEmpty,
+                  awaiting: controller.assigningCamper,
                   enabledText: 'Commit',
                   disabledText: 'Nothing to commit yet',
                   awaitingText: 'One moment...',

@@ -31,9 +31,9 @@ class ActionInitiator extends StatelessWidget {
   Widget build(BuildContext context) {
     if (awaiting != true && disabled != true) {
       return CardButton(
-        onTap: () => onPressed,
-        baseTint: BessColors.primary,
-        child: Center(child: Text(enabledText, style: BessTextStyles.standard)),
+        onTap: onPressed,
+        backgroundColor: BessColors.primary,
+        child: Center(child: Text(enabledText, style: BessTextStyles.standardInverted)),
         width: width,
         height: height,
       );
@@ -67,11 +67,14 @@ class ActionInitiator extends StatelessWidget {
           SizedBox(
             height: height,
             width: width ?? double.infinity,
-            child: Center(
-              child: Text(
-                awaitingText ?? enabledText,
-                style: BessTextStyles.standardInverted.copyWith(
-                  color: BessColors.textInverted.withAlpha(150),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  awaitingText ?? enabledText,
+                  style: BessTextStyles.standardInverted.copyWith(
+                    color: BessColors.textInverted.withAlpha(150),
+                  ),
                 ),
               ),
             ),
@@ -80,6 +83,7 @@ class ActionInitiator extends StatelessWidget {
       );
     } else {
       return CardButton(
+        backgroundColor: BessColors.core,
         child: Center(
           child: Builder(
             builder: (BuildContext context) {
