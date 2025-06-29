@@ -9,7 +9,7 @@ const double kHoverSpread = 50.0;
 /// animating in. e.g., 0.8 means it starts at 80% of kHoverSpread.
 const double kHoverSpreadBeginFactor = 0.7;
 /// The intensity (opacity) of the glow when hovering.
-const double kHoverIntensity = 0.15;
+const double kHoverIntensity = 0.10;
 /// The duration of the fade-in/out when entering/exiting the hover state.
 const Duration kHoverFadeDuration = Duration(milliseconds: 200);
 /// The curve for the hover fade animation.
@@ -29,7 +29,7 @@ const Duration kHoldScaleDownDuration = Duration(milliseconds: 1200);
 /// If a click is released within this duration, it's a "quick click".
 const Duration kQuickClickThreshold = Duration(milliseconds: 250);
 /// The duration of the morph animation to the quick burst's start state.
-const Duration kQuickClickMorphDuration = Duration(milliseconds: 0);
+const Duration kQuickClickMorphDuration = Duration(milliseconds: 1);
 /// The starting spread of the quick click burst (after the morph).
 const double kQuickClickStartSpread = 35.0;
 /// The starting intensity of the quick click burst (after the morph).
@@ -53,15 +53,15 @@ const Duration kChargedReleaseLifespanBonus = Duration(milliseconds: 400);
 
 // -- RELEASE RECOVERY PHASE --
 /// The fade-in duration for the hover glow after a release burst.
-const Duration kRecoveryFadeInDuration = Duration(milliseconds: 200);
+const Duration kRecoveryFadeInDuration = Duration(milliseconds: 250);
 
-// -- EXIT TRAVEL PHASE --
-/// The duration of the exit travel animation.
-const Duration kExitTravelDuration = Duration(milliseconds: 250);
-/// The distance the glow travels off-screen.
-const double kExitTravelDistance = 100.0;
-/// The curve for the exit travel animation.
-const Curve kExitTravelCurve = Curves.linear;
+// -- EXIT FADE OUT AND SHRINK PHASE --
+/// The duration for the fade-out and shrink effect when the mouse leaves or hold ends outside.
+const Duration kFadeOutShrinkDuration = Duration(milliseconds: 200);
+/// The curve for the fade-out and shrink animation.
+const Curve kFadeOutShrinkCurve = Curves.easeOutCubic;
+/// The target spread for the glow when it fades out and shrinks.
+const double kFadeOutShrinkEndSpread = 0.0; // Shrinks completely to zero
 
 // -- MISC --
 /// The blend mode for the effect, creating an additive glow.

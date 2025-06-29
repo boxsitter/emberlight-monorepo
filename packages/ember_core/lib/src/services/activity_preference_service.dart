@@ -6,7 +6,7 @@ import '../../ember_core.dart';
 
 
 class ActivityPreferenceService extends GetxService {
-  SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  RosterService rosterService = Get.find<RosterService>();
   PullRepository pullRepo = Get.find<PullRepository>();
 
   // follows the rules of the simple assignment algorithm
@@ -50,7 +50,7 @@ class ActivityPreferenceService extends GetxService {
   // for testing
   Future<void> rankRandom(Commit commit) async {
     final _ = Random();
-    Set<Camper> campers = await sessionRosterService.registeredCampers;
+    Set<Camper> campers = await rosterService.registeredCampers;
   }
 
   Future<PrincipalActivity> getPrincipalActivity(PrincipalActivityId id) {

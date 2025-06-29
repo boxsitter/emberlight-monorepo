@@ -2,7 +2,7 @@
 import '../../../ember_core.dart';
 import '../roster_field.dart';
 
-abstract class Rosterable {
+abstract class Rosterable implements Titled, CoreObject {
   String get id;
   String get firstName;
   String get preferredName;

@@ -1,12 +1,10 @@
 import 'dart:async';
 
 import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
-import 'package:ember_core/src/repositories/commit_repository.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../repositories/pull_repository.dart';
 
 typedef OrganizationId = String;
 typedef BranchId = String;
@@ -48,7 +46,7 @@ class ContextService extends GetxService {
   final ClientContext clientContext = Get.find<ClientContext>();
 
   Future<Session> get session async => pullRepo.getObject(await clientContext.getSessionId());
-  Future<Schedule> get schedule async => (await pullRepo.getObjectsInCollection('schedule', 'ses')).first as Schedule;
+  Future<Schedule> get schedule async => (await pullRepo.getObjectsInCollection<Schedule>('schedule', 'ses')).values.first;
   Future<String> get sessionName async => await pullRepo.getFieldValue(clientContext.sessionId, 'name');
   Future<String> get seasonName async => await pullRepo.getFieldValue(clientContext.seasonId, 'name');
 

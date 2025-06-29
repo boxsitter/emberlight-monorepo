@@ -10,7 +10,7 @@ typedef CabinDependantId = String;
 class ActivityPreferencesController extends GetxController with RouteAwareControllerMixin {
   final ContextService clientContextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
-  final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  final RosterService rosterService = Get.find<RosterService>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();
   final PopupService popupService = Get.find<PopupService>();
   final ActivityPreferenceService activityPreferenceService = Get.find<ActivityPreferenceService>();

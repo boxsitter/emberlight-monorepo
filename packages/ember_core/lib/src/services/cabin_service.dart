@@ -7,8 +7,8 @@ class CabinService extends GetxService {
   CommitService requestService = Get.find<CommitService>();
   PullRepository pullRepo = Get.find<PullRepository>();
 
-  Future<Set<CabinDependent>> get cabinDependents async => await pullRepo.getObjectsInCollection('cabin_dependent', 'ses',);
-  Future<Set<PrincipalCabin>> get principalCabins async => await pullRepo.getObjectsInCollection('principal_cabin', 'brn');
+  Future<Set<CabinDependent>> get cabinDependents async => (await pullRepo.getObjectsInCollection<CabinDependent>('cabin_dependent', 'ses')).values.toSet();
+  Future<Set<PrincipalCabin>> get principalCabins async => (await pullRepo.getObjectsInCollection<PrincipalCabin>('principal_cabin', 'brn')).values.toSet();
 
   Future<String?> getCabinDependentIdByName(String name, Commit commit) async {
     String? principalId = commit.queryFieldByType(PrincipalCabin, 'name', name);

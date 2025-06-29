@@ -50,13 +50,15 @@ class RostersDesktop extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          if (controller.columnConfigOpened)
-            ColumnConfig(controller: controller),
+          if (controller.columnConfigOpened) Flexible(flex: 3, child: ColumnConfig(controller: controller)),
+          if (controller.activitySwitcherOpened) Flexible(flex: 3, child: ActivitySwitcher(controller: controller)),
 
-          if (controller.activitySwitcherOpened)
-            ActivitySwitcher(controller: controller),
-
-          Expanded(child: RostersTable(controller: controller)),
+          Flexible(
+            flex: 5,
+            child: RostersTable(
+              controller: controller,
+            ),
+          ),
         ],
       ),
     );

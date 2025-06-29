@@ -120,7 +120,7 @@ BessMenuBar<RostersController> buildRostersMenuBar({
       ShadContextMenuItem(
           child: const Text('Invert Selection'),
           onPressed: controller.invertSelection,
-          enabled: controller.selectedRowIds.isNotEmpty),
+          enabled: controller.selectedItems.isNotEmpty),
     ],
   );
 }

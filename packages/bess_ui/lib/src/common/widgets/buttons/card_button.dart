@@ -13,11 +13,11 @@ import '../wrappers/tint.dart';
 /// This widget is a "dumb" component, meaning its appearance is configured
 /// entirely by the properties passed to it. The parent widget is responsible
 /// for determining the style (e.g., colors) based on application state.
-class CardButton extends StatefulWidget {
+class CardButton extends StatelessWidget {
   const CardButton({
     super.key,
     required this.child,
-    required this.onTap,
+    this.onTap,
     this.height,
     this.width,
     this.backgroundColor,
@@ -34,7 +34,7 @@ class CardButton extends StatefulWidget {
   final Widget child;
 
   /// The callback that is executed when the card is tapped.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// The height of the card.
   final double? height;
@@ -62,33 +62,44 @@ class CardButton extends StatefulWidget {
   final List<TintState>? tintStates;
 
   @override
-  State<CardButton> createState() => _CardButtonState();
-}
-
-class _CardButtonState extends State<CardButton> {
-  bool _isHovering = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Buttonize(
-      onTap: widget.onTap,
-      baseBackgroundColor: widget.backgroundColor,
-      baseBorderColor: widget.borderColor,
-      baseForegroundColor: BessColors.textPrimary,
-      tintStates: widget.tintStates,
-      tint: widget.baseTint,
-      borderRadius: BorderRadius.circular(widget.radius ?? BessSizes.cardRadiusLg),
-      child: BessRoundedContainer(
-        height: widget.height,
-        width: widget.width,
-        borderThickness: widget.borderThickness,
-        padding: widget.padding,
-        radius: widget.radius,
-        showBorder: widget.showBorder,
-        showShadow: false,
-        clipContent: false,
-        child: widget.child,
-      ),
-    );
+    if (onTap != null) {
+      return Buttonize(
+        onTap: onTap!,
+        baseBackgroundColor: backgroundColor,
+        baseBorderColor: borderColor,
+        baseForegroundColor: BessColors.textPrimary,
+        tintStates: tintStates,
+        tint: baseTint,
+        borderRadius: BorderRadius.circular(radius ?? BessSizes.cardRadiusLg),
+        child: BessRoundedContainer(
+          height: height,
+          width: width,
+          borderThickness: borderThickness,
+          padding: padding ?? EdgeInsets.all(8),
+          radius: radius,
+          showBorder: showBorder,
+          showShadow: false,
+          clipContent: false,
+          child: child,
+        ),
+      );
+    } else {
+      return Tint(
+        tint: BessColors.overlay1,
+        darken: true,
+        child: BessRoundedContainer(
+          height: height,
+          width: width,
+          borderThickness: borderThickness,
+          padding: padding ?? EdgeInsets.all(8),
+          radius: radius,
+          showBorder: showBorder,
+          showShadow: false,
+          clipContent: false,
+          child: child,
+        ),
+      );
+    }
   }
 }

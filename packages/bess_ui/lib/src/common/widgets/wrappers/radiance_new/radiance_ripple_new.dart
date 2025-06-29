@@ -1,10 +1,39 @@
+// radiance_ripple_new.dart
 import 'dart:ui';
 import 'package:bess_ui/src/common/widgets/wrappers/radiance_new/radiance_consts_new.dart';
 import 'package:flutter/material.dart';
 
 import '../../effects/radiance/radiance.dart';
 
-enum _ExitDirection { top, right, bottom, left }
+/// A helper class to manage the state and animation of a single static burst effect.
+class _BurstAnimation {
+  late final AnimationController controller;
+  late final Animation<double> spread;
+  late final Animation<double> intensity;
+  final Offset position;
+
+  _BurstAnimation({
+    required TickerProvider vsync,
+    required this.position,
+    required Duration duration,
+    required double beginSpread,
+    required double endSpread,
+    required double beginIntensity,
+    required double endIntensity,
+    required Curve spreadCurve,
+    required Curve intensityCurve,
+  }) {
+    controller = AnimationController(vsync: vsync, duration: duration);
+    spread = CurvedAnimation(parent: controller, curve: spreadCurve)
+        .drive(Tween<double>(begin: beginSpread, end: endSpread));
+    intensity = CurvedAnimation(parent: controller, curve: intensityCurve)
+        .drive(Tween<double>(begin: beginIntensity, end: endIntensity));
+  }
+
+  void dispose() {
+    controller.dispose();
+  }
+}
 
 class RadianceRipple extends StatefulWidget {
   const RadianceRipple({
@@ -12,7 +41,7 @@ class RadianceRipple extends StatefulWidget {
     required this.child,
     required this.isHeld,
     required this.isHovering,
-    required this.tapPositionNotifier,
+    this.tapPosition,
     this.borderRadius = BorderRadius.zero,
     this.color,
   });
@@ -20,7 +49,7 @@ class RadianceRipple extends StatefulWidget {
   final Widget child;
   final bool isHeld;
   final bool isHovering;
-  final ValueNotifier<Offset?> tapPositionNotifier;
+  final Offset? tapPosition;
   final BorderRadius borderRadius;
   final Color? color;
 
@@ -29,77 +58,44 @@ class RadianceRipple extends StatefulWidget {
 }
 
 class _RadianceRippleState extends State<RadianceRipple> with TickerProviderStateMixin {
+  // --- Controllers for Mouse-Bound Effects ---
   late final AnimationController _hoverController;
-  late final AnimationController _releaseController;
   late final AnimationController _holdController;
-  late final AnimationController _exitTravelController;
 
   late Animation<double> _hoverIntensityAnimation;
   late Animation<double> _hoverSpreadAnimation;
-  late Animation<double> _releaseSpreadAnimation;
-  late Animation<double> _releaseIntensityAnimation;
-  late Animation<Offset> _exitTravelAnimation;
 
-  final GlobalKey _widgetKey = GlobalKey();
+  // --- State for Static "Fire-and-Forget" Bursts ---
+  final List<_BurstAnimation> _bursts = [];
+
+  // --- Interaction State ---
   Offset? _lastPosition;
-  Offset? _releasePosition;
-  Size? _widgetSize;
-  double _charge = 0.0;
   DateTime? _holdStartTime;
-  bool _isQuickBurst = false;
 
   @override
   void initState() {
     super.initState();
+    // Controller for hover glow (mouse-bound)
     _hoverController = AnimationController(vsync: this, duration: kHoverFadeDuration);
-    _hoverIntensityAnimation = CurvedAnimation(
-      parent: _hoverController,
-      curve: kHoverFadeCurve,
-    ).drive(Tween<double>(begin: 0.0, end: kHoverIntensity));
-    _hoverSpreadAnimation = CurvedAnimation(
-      parent: _hoverController,
-      curve: kHoverFadeCurve,
-    ).drive(Tween<double>(begin: kHoverSpread * kHoverSpreadBeginFactor, end: kHoverSpread));
+    if (widget.isHovering) {
+      _hoverController.value = 1.0;
+    }
+    _hoverIntensityAnimation =
+        CurvedAnimation(parent: _hoverController, curve: kHoverFadeCurve).drive(Tween<double>(begin: 0.0, end: kHoverIntensity));
+    _hoverSpreadAnimation = CurvedAnimation(parent: _hoverController, curve: kHoverFadeCurve)
+        .drive(Tween<double>(begin: kHoverSpread * kHoverSpreadBeginFactor, end: kHoverSpread));
 
-    _releaseController = AnimationController(vsync: this, duration: kReleaseLifespan);
-    _releaseSpreadAnimation = Tween<double>(begin: 0, end: 0).animate(_releaseController);
-    _releaseIntensityAnimation = Tween<double>(begin: 0, end: 0).animate(_releaseController);
-    _releaseController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        if (_isQuickBurst) {
-          _isQuickBurst = false;
-          _triggerQuickReleaseBurst();
-        } else if (widget.isHovering) {
-          _hoverController.duration = kRecoveryFadeInDuration;
-          _hoverController.forward(from: 0.0);
-          _hoverController.duration = kHoverFadeDuration;
-        }
-      }
-    });
-
+    // Controller for hold/charge effect (mouse-bound)
     _holdController = AnimationController(vsync: this, duration: kHoldChargeDuration);
-
-    _exitTravelController = AnimationController(vsync: this, duration: kExitTravelDuration);
-    _exitTravelAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero).animate(_exitTravelController);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final context = _widgetKey.currentContext;
-      if (context != null) {
-        final renderBox = context.findRenderObject() as RenderBox;
-        if (renderBox.hasSize) {
-          _widgetSize = renderBox.size;
-        }
-      }
-    });
   }
 
   @override
   void dispose() {
     _hoverController.dispose();
-    _releaseController.dispose();
     _holdController.dispose();
-    _exitTravelController.dispose();
+    for (final burst in _bursts) {
+      burst.dispose();
+    }
     super.dispose();
   }
 
@@ -107,218 +103,175 @@ class _RadianceRippleState extends State<RadianceRipple> with TickerProviderStat
   void didUpdateWidget(RadianceRipple oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.isHovering != oldWidget.isHovering) {
-      if (widget.isHovering) {
-        _exitTravelController.stop();
-        if (!widget.isHeld) {
-          _hoverController.forward();
-        }
-      } else {
-        _triggerExitAnimation();
-      }
+    if (widget.tapPosition != null) {
+      _lastPosition = widget.tapPosition;
     }
 
-    if (widget.isHeld != oldWidget.isHeld) {
+    // --- State Transitions ---
+    final justEntered = !oldWidget.isHovering && widget.isHovering;
+    final justExited = oldWidget.isHovering && !widget.isHovering;
+    final justPressed = !oldWidget.isHeld && widget.isHeld;
+    final justReleased = oldWidget.isHeld && !widget.isHeld;
+
+    // --- Handle Mouse-Bound Effects ---
+    if (justEntered) {
+      _hoverController.forward();
       if (widget.isHeld) {
-        _holdStartTime = DateTime.now();
-        _releaseController.stop();
-        _hoverController.reverse();
-        _holdController.forward(from: 0.0);
-      } else {
-        final holdDuration = DateTime.now().difference(_holdStartTime!);
-        _charge = _holdController.value;
-        _holdController.reset();
+        // If user drags back in while holding, resume the hold animation
+        _holdController.forward();
+      }
+    }
 
+    if (justExited) {
+      _hoverController.reverse();
+      // Animate the hold effect out instead of stopping abruptly
+      _holdController.reverse();
+    }
+
+    if (justPressed && widget.isHovering) {
+      _holdController.forward(from: 0.0);
+      _holdStartTime = DateTime.now();
+    }
+
+    // --- Handle Static Effects ---
+    if (justReleased) {
+      if (_holdStartTime != null) {
+        final holdDuration = DateTime.now().difference(_holdStartTime!);
+        final charge = _holdController.value;
+
+        // Reset mouse-bound hold state
+        _holdController.reset();
+        _holdStartTime = null;
+
+        // If released inside, spawn a static burst that will animate independently
         if (widget.isHovering) {
-          if (holdDuration < kQuickClickThreshold) {
-            _isQuickBurst = true;
-            _triggerQuickReleaseMorph();
-          } else {
-            _triggerChargedRelease();
-          }
-        } else {
-          _triggerCancelAnimation();
+          _createAndAddBurst(charge, holdDuration);
         }
       }
     }
   }
 
-  void _triggerExitAnimation() {
-    if (_lastPosition == null || _widgetSize == null) return;
+  /// Creates a new static burst animation and adds it to the render list.
+  void _createAndAddBurst(double charge, Duration holdDuration) {
+    final position = _lastPosition;
+    if (position == null) return;
 
-    _hoverController.reverse();
+    late final _BurstAnimation burst;
 
-    final center = _widgetSize!.center(Offset.zero);
-    final exitVector = _lastPosition! - center;
-
-    _ExitDirection direction;
-    if (exitVector.dx.abs() > exitVector.dy.abs()) {
-      direction = exitVector.dx > 0 ? _ExitDirection.right : _ExitDirection.left;
+    if (holdDuration < kQuickClickThreshold) {
+      // Quick Click Burst
+      burst = _BurstAnimation(
+        vsync: this,
+        position: position,
+        duration: kQuickClickBurstDuration,
+        beginSpread: kQuickClickStartSpread,
+        endSpread: kQuickClickEndSpread,
+        beginIntensity: kQuickClickStartIntensity,
+        endIntensity: 0.0,
+        spreadCurve: Curves.easeOut,
+        intensityCurve: kReleaseFadeOutCurve,
+      );
     } else {
-      direction = exitVector.dy > 0 ? _ExitDirection.bottom : _ExitDirection.top;
+      // Charged Release Burst
+      final chargedSpread = lerpDouble(kReleaseSpreadMax, kReleaseSpreadMax + kChargedReleaseSpreadBonus, charge)!;
+      final chargedLifespan = Duration(
+          milliseconds: lerpDouble(kReleaseLifespan.inMilliseconds,
+              kReleaseLifespan.inMilliseconds + kChargedReleaseLifespanBonus.inMilliseconds, charge)!
+              .toInt());
+      final initialIntensity = lerpDouble(kHoverIntensity, kHoldIntensityMax, charge)!;
+      final initialSpread = lerpDouble(kHoverSpread, kHoldSpreadMin, charge)!;
+
+      burst = _BurstAnimation(
+        vsync: this,
+        position: position,
+        duration: chargedLifespan,
+        beginSpread: initialSpread,
+        endSpread: chargedSpread,
+        beginIntensity: initialIntensity,
+        endIntensity: 0.0,
+        spreadCurve: Curves.easeOut,
+        intensityCurve: kReleaseFadeOutCurve,
+      );
     }
 
-    Offset targetPosition;
-    switch (direction) {
-      case _ExitDirection.top:
-        targetPosition = Offset(_lastPosition!.dx, _lastPosition!.dy - kExitTravelDistance);
-        break;
-      case _ExitDirection.right:
-        targetPosition = Offset(_lastPosition!.dx + kExitTravelDistance, _lastPosition!.dy);
-        break;
-      case _ExitDirection.bottom:
-        targetPosition = Offset(_lastPosition!.dx, _lastPosition!.dy + kExitTravelDistance);
-        break;
-      case _ExitDirection.left:
-        targetPosition = Offset(_lastPosition!.dx - kExitTravelDistance, _lastPosition!.dy);
-        break;
-    }
+    // Add the listener after the burst is constructed to avoid assignment errors.
+    burst.controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _removeBurst(burst);
+      }
+    });
 
-    _exitTravelAnimation = CurvedAnimation(parent: _exitTravelController, curve: kExitTravelCurve)
-        .drive(Tween<Offset>(begin: _lastPosition, end: targetPosition));
-
-    _exitTravelController.forward(from: 0.0);
+    setState(() {
+      _bursts.add(burst);
+    });
+    burst.controller.forward();
   }
 
-  void _triggerChargedRelease() {
-    _releasePosition = _lastPosition;
-    if (_releasePosition == null) return;
-
-    final chargedSpread = lerpDouble(kReleaseSpreadMax, kReleaseSpreadMax + kChargedReleaseSpreadBonus, _charge)!;
-    final chargedLifespan = Duration(
-        milliseconds: lerpDouble(kReleaseLifespan.inMilliseconds,
-                kReleaseLifespan.inMilliseconds + kChargedReleaseLifespanBonus.inMilliseconds, _charge)!
-            .toInt());
-    final initialIntensity = lerpDouble(kHoverIntensity, kHoldIntensityMax, _charge)!;
-    final initialSpread = lerpDouble(kHoverSpread, kHoldSpreadMin, _charge)!;
-
-    _releaseController.duration = chargedLifespan;
-
-    _releaseSpreadAnimation = CurvedAnimation(parent: _releaseController, curve: Curves.easeOut)
-        .drive(Tween<double>(begin: initialSpread, end: chargedSpread));
-    _releaseIntensityAnimation = CurvedAnimation(parent: _releaseController, curve: kReleaseFadeOutCurve)
-        .drive(Tween<double>(begin: initialIntensity, end: 0.0));
-
-    _releaseController.forward(from: 0.0);
-  }
-
-  void _triggerQuickReleaseMorph() {
-    _releasePosition = _lastPosition;
-    if (_releasePosition == null) return;
-
-    final scaleDownProgress =
-        (_charge * kHoldChargeDuration.inMilliseconds / kHoldScaleDownDuration.inMilliseconds).clamp(0.0, 1.0);
-    final initialSpread = lerpDouble(kHoverSpread, kHoldSpreadMin, scaleDownProgress)!;
-    final initialIntensity = lerpDouble(kHoverIntensity, kHoldIntensityMax, _charge)!;
-
-    _releaseController.duration = kQuickClickMorphDuration;
-
-    _releaseSpreadAnimation = CurvedAnimation(parent: _releaseController, curve: Curves.easeOut)
-        .drive(Tween<double>(begin: initialSpread, end: kQuickClickStartSpread));
-    _releaseIntensityAnimation = CurvedAnimation(parent: _releaseController, curve: Curves.easeOut)
-        .drive(Tween<double>(begin: initialIntensity, end: kQuickClickStartIntensity));
-
-    _releaseController.forward(from: 0.0);
-  }
-
-  void _triggerQuickReleaseBurst() {
-    _releaseController.duration = kQuickClickBurstDuration;
-
-    _releaseSpreadAnimation = CurvedAnimation(parent: _releaseController, curve: Curves.easeOut)
-        .drive(Tween<double>(begin: kQuickClickStartSpread, end: kQuickClickEndSpread));
-    _releaseIntensityAnimation = CurvedAnimation(parent: _releaseController, curve: kReleaseFadeOutCurve)
-        .drive(Tween<double>(begin: kQuickClickStartIntensity, end: 0.0));
-
-    _releaseController.forward(from: 0.0);
-  }
-
-  void _triggerCancelAnimation() {
-    _releasePosition = _lastPosition;
-    if (_releasePosition == null) return;
-
-    final scaleDownProgress =
-        (_charge * kHoldChargeDuration.inMilliseconds / kHoldScaleDownDuration.inMilliseconds).clamp(0.0, 1.0);
-    final initialSpread = lerpDouble(kHoverSpread, kHoldSpreadMin, scaleDownProgress)!;
-    final initialIntensity = lerpDouble(kHoverIntensity, kHoldIntensityMax, _charge)!;
-
-    _releaseController.duration = const Duration(milliseconds: 150);
-
-    _releaseSpreadAnimation = CurvedAnimation(parent: _releaseController, curve: Curves.easeOut)
-        .drive(Tween<double>(begin: initialSpread, end: initialSpread * 0.8));
-    _releaseIntensityAnimation = CurvedAnimation(parent: _releaseController, curve: Curves.easeOut)
-        .drive(Tween<double>(begin: initialIntensity, end: 0.0));
-
-    _releaseController.forward(from: 0.0);
+  /// Removes a burst from the list and disposes its controller.
+  void _removeBurst(_BurstAnimation burst) {
+    setState(() {
+      _bursts.remove(burst);
+    });
+    burst.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      key: _widgetKey,
       borderRadius: widget.borderRadius,
       child: Stack(
         fit: StackFit.passthrough,
         children: [
           widget.child,
+          // --- 1. Render all static, "fire-and-forget" bursts ---
           Positioned.fill(
             child: AnimatedBuilder(
-              animation: Listenable.merge([
-                _hoverController,
-                _releaseController,
-                _holdController,
-                _exitTravelController,
-                widget.tapPositionNotifier,
-              ]),
+              animation: Listenable.merge(_bursts.map((b) => b.controller).toList()),
               builder: (context, child) {
-                final currentPosition = widget.tapPositionNotifier.value;
-                if (currentPosition != null) {
-                  _lastPosition = currentPosition;
-                }
+                return Stack(
+                  children: _bursts.map((burst) {
+                    return Radiance(
+                      shapePath: Path()
+                        ..addOval(Rect.fromCircle(center: burst.position, radius: burst.spread.value)),
+                      intensity: burst.intensity.value,
+                      spread: burst.spread.value,
+                      color: widget.color ?? Colors.white,
+                      passes: 1,
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+          ),
+          // --- 2. Render the mouse-bound hover and hold effects on top ---
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: Listenable.merge([_hoverController, _holdController]),
+              builder: (context, child) {
+                final position = widget.tapPosition ?? _lastPosition;
+                if (position == null) return const SizedBox.shrink();
 
-                final bool isExiting = _exitTravelController.isAnimating;
-                final paintPosition = isExiting ? _exitTravelAnimation.value : _lastPosition;
+                double spread = _hoverSpreadAnimation.value;
+                double intensity = _hoverIntensityAnimation.value;
 
-                final bool isReleasing = _releaseController.isAnimating;
-
-                final bool shouldPaint = widget.isHovering ||
-                    widget.isHeld ||
-                    _hoverController.isAnimating ||
-                    _holdController.isAnimating ||
-                    isReleasing ||
-                    isExiting;
-
-                if (!shouldPaint || (paintPosition == null && !isReleasing)) {
-                  return const SizedBox.shrink();
-                }
-
-                // Determine the radiance properties based on the current state
-                double intensity = 0.0;
-                double spread = 0.0;
-                Offset? position = paintPosition;
-                Path path = Path();
-
-                if (widget.isHeld && position != null) {
+                // The hold effect is a modification of the base hover glow
+                if (_holdController.value > 0) {
+                  final holdCharge = _holdController.value;
                   final scaleDownProgress =
-                      (_holdController.value * kHoldChargeDuration.inMilliseconds / kHoldScaleDownDuration.inMilliseconds)
-                          .clamp(0.0, 1.0);
-                  spread = lerpDouble(kHoverSpread, kHoldSpreadMin, scaleDownProgress)!;
-                  intensity = lerpDouble(kHoverIntensity, kHoldIntensityMax, _holdController.value)!;
-                  path.addOval(Rect.fromCircle(center: position, radius: spread));
-                } else if (isReleasing && _releasePosition != null) {
-                  intensity = _releaseIntensityAnimation.value;
-                  spread = _releaseSpreadAnimation.value;
-                  path.addOval(Rect.fromCircle(center: _releasePosition!, radius: spread));
-                } else if ((widget.isHovering || _hoverController.isAnimating || isExiting) && position != null) {
-                  intensity = _hoverIntensityAnimation.value;
-                  spread = _hoverSpreadAnimation.value;
-                  path.addOval(Rect.fromCircle(center: position, radius: spread));
+                  (holdCharge * kHoldChargeDuration.inMilliseconds / kHoldScaleDownDuration.inMilliseconds)
+                      .clamp(0.0, 1.0);
+                  spread = lerpDouble(_hoverSpreadAnimation.value, kHoldSpreadMin, scaleDownProgress)!;
+                  intensity = lerpDouble(_hoverIntensityAnimation.value, kHoldIntensityMax, holdCharge)!;
                 }
+
+                if (intensity <= 0) return const SizedBox.shrink();
 
                 return Radiance(
-                  shapePath: path,
+                  shapePath: Path()..addOval(Rect.fromCircle(center: position, radius: spread)),
                   intensity: intensity,
                   spread: spread,
                   color: widget.color ?? Colors.white,
+                  passes: 1,
                 );
               },
             ),

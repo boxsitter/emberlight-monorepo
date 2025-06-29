@@ -111,9 +111,9 @@ class BessLoginForm extends StatelessWidget {
               /// Sign in button
                Obx(() => ActionInitiator(
                 onPressed: () => submitForm(),
-                enabled: !controller.isLoading.value,
+                awaiting: !controller.isLoading.value,
                 enabledText: 'Sign In',
-                disabledText: 'One Moment...',
+                awaitingText: 'One Moment...',
                ))
 
               // const SizedBox(height: BessSizes.spaceBtwInputFields / 2),

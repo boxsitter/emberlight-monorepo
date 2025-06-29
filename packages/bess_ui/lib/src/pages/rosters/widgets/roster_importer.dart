@@ -55,9 +55,9 @@ class RosterImporter extends StatelessWidget {
             // No Obx needed, as the parent GetBuilder will handle rebuilds.
             child: ActionInitiator(
               enabledText: 'Add File',
-              disabledText: 'Importing... (this may take a while)',
+              awaitingText: 'Importing... (this may take a while)',
               onPressed: onImport,
-              enabled: !isImporting,
+              awaiting: !isImporting,
             ),
           ),
         ],

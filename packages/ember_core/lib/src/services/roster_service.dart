@@ -11,14 +11,14 @@ import '../../ember_core.dart';
 import '../debug/service_exceptions.dart';
 import '../repositories/pull_repository.dart';
 
-class SessionRosterService extends GetxService {
+class RosterService extends GetxService {
   PullRepository pullRepo = Get.find<PullRepository>();
   LiveDataRepository liveDataRepo = Get.find<LiveDataRepository>();
   CabinService cabinsService = Get.find<CabinService>();
   ContextService clientContextService = Get.find<ContextService>();
   CommitService requestService = Get.find<CommitService>();
 
-  Future<Set<Camper>> get registeredCampers async => await pullRepo.getObjectsInCollection('camper', 'ses');
+  Future<Set<Camper>> get registeredCampers async => (await pullRepo.getObjectsInCollection<Camper>('camper', 'ses')).values.toSet();
   Future<Stream<Map<String, Camper>>> get camperStream async => await liveDataRepo.watchCollection(collectionName: 'camper', domain: 'ses');
 
 

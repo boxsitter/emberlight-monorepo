@@ -152,7 +152,7 @@ class CommitRepository {
     }
 
     bool containsOnlyDomain = false;
-    if (commit.objectsToPush.length == 1 && commit.objectsToDelete.length == 0) {
+    if (commit.objectsToPush.length == 1 && commit.objectsToDelete.isEmpty) {
       for (CoreObject object in commit.objectsToPush.values) {
         if (object is Domain) {
           containsOnlyDomain = true;

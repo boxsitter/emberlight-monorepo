@@ -5,7 +5,7 @@ import '../../interfaces/elevated.dart';
 
 typedef PrincipalActivityId = String;
 
-class PrincipalActivity extends CoreObject implements Principal, Elevated{
+class PrincipalActivity extends CoreObject implements Principal, Elevated, Titled{
   final String name;
   final int capacity;
   final String description;
@@ -58,4 +58,10 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated{
     Debug.logInfo('Purging $id from ${this.id}');
     Debug.logInfo('unnecessary purge');
   }
+
+  @override
+  String get displayTitle => name;
+
+  @override
+  String get title => name;
 }

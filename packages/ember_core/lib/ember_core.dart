@@ -45,7 +45,7 @@ export 'src/services/console_service.dart';
 export 'src/services/pdf_service.dart';
 export 'src/services/commit_service.dart';
 export 'src/services/schedule_service.dart';
-export 'src/services/session_roster_service.dart';
+export 'src/services/roster_service.dart';
 export 'src/services/user_service.dart';
 export 'src/utils/id_functions.dart';
 export 'src/utils/helper_functions.dart';
@@ -84,7 +84,7 @@ class EmberCore {
     Get.put(ContextlessRepository(), permanent: true);
     Get.put(CabinService(), permanent: true);
     Get.put(LiveDataRepository(), permanent: true);
-    Get.put(SessionRosterService(), permanent: true);
+    Get.put(RosterService(), permanent: true);
     Get.put(ActivityPreferenceService(), permanent: true);
     Get.put(ScheduleService(), permanent: true);
     final DatabaseRepairService repairService = Get.put(DatabaseRepairService(), permanent: true);

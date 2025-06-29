@@ -23,34 +23,35 @@ class TitledContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          child: Row(
-            children: [
-              Text(title, style: BessTextStyles.tableHeaderSecondary),
-              if (trailing != null)
-                Spacer(),
-              if (trailing != null)
-                trailing!,
-            ],
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            child: Row(
+              children: [
+                Expanded(child: Text(title, style: BessTextStyles.tableHeaderSecondary, overflow: TextOverflow.clip, maxLines: 1,)),
+                if (trailing != null)
+                  Spacer(),
+                if (trailing != null)
+                  trailing!,
+              ],
+            ),
+            height: 40,
           ),
-          height: 40,
-          width: width,
-        ),
-        Expanded(
-          child: BessRoundedContainer(
-            width: width,
-            height: height,
-            padding: padding,
-            clipContent: true,
-            showBorder: true,
-            child: child,
+          Expanded(
+            child: BessRoundedContainer(
+              width: width,
+              height: height,
+              padding: padding,
+              clipContent: true,
+              showBorder: true,
+              child: child,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -81,10 +81,10 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
               const SizedBox(height: BessSizes.spaceBtwItems),
 
               ActionInitiator(
-                enabled: !controller.saveInProgress,
+                awaiting: !controller.saveInProgress,
                 onPressed: controller.saveActivityRanking,
                 enabledText: 'Save Ranking',
-                disabledText: 'Saving...',
+                awaitingText: 'Saving...',
                 width: 400,
               ),
             ],

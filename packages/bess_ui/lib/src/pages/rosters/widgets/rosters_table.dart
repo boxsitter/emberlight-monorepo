@@ -66,7 +66,7 @@ class RostersTable extends StatelessWidget {
           }).toList(),
           rows: List<DataRow>.generate(controller.filteredRoster.length, (index) {
             final rosterItem = controller.filteredRoster[index];
-            final isSelected = controller.selectedRowIds.contains(rosterItem.id);
+            final isSelected = controller.selectedItems.contains(rosterItem);
             return DataRow(
               selected: isSelected,
               // Set the color property using MaterialStateProperty.
@@ -89,7 +89,7 @@ class RostersTable extends StatelessWidget {
                 return null;
               }),
               onSelectChanged: (selected) {
-                controller.toggleRowSelection(rosterItem.id, selected);
+                controller.toggleRowSelection(rosterItem, selected);
               },
               cells: controller
                   .getRowDataFromItem(rosterItem)

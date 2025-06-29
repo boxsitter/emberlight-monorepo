@@ -7,17 +7,19 @@ import 'package:get/get.dart';
 import '../../ember_core.dart';
 import '../repositories/pull_repository.dart';
 
-
 class ScheduleService extends GetxService {
   PullRepository pullRepo = Get.find<PullRepository>();
   ContextService clientContextService = Get.find<ContextService>();
-  SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  RosterService rosterService = Get.find<RosterService>();
 
   Future<Schedule> get schedule async => await clientContextService.schedule;
-  Future<Set<ScheduleDay>> get scheduleDays async => await pullRepo.getObjectsInCollection('schedule_day', 'ses');
-  Future<Set<AMABlock>> get amas async => await pullRepo.getObjectsInCollection('ama_block', 'ses');
-  Future<Set<ActivityDependent>> get activityDependents async => await pullRepo.getObjectsInCollection('activity_dependent', 'ses');
-  Future<Set<PrincipalActivity>> get principleActivities async => await pullRepo.getObjectsInCollection('principal_activity', 'brn');
+  Future<Set<ScheduleDay>> get scheduleDays async =>
+      (await pullRepo.getObjectsInCollection<ScheduleDay>('schedule_day', 'ses')).values.toSet();
+  Future<Set<AMABlock>> get amas async => (await pullRepo.getObjectsInCollection<AMABlock>('ama_block', 'ses')).values.toSet();
+  Future<Set<ActivityDependent>> get activityDependents async =>
+      (await pullRepo.getObjectsInCollection<ActivityDependent>('activity_dependent', 'ses')).values.toSet();
+  Future<Map<PrincipalActivityId, PrincipalActivity>> get principleActivities async =>
+      await pullRepo.getObjectsInCollection('principal_activity', 'brn');
 
   Future<List<dynamic>> getActivityData() async {
     return await Future.wait([amas, activityDependents, principleActivities]);
@@ -50,11 +52,7 @@ class ScheduleService extends GetxService {
   }
 
   Future<List<PrincipalActivityId>> getOrderedActivities(CamperId camperId, bool onlySkillsRecs) async {
-    final results = await Future.wait([
-      pullRepo.getObject(camperId),
-      clientContextService.schedule,
-      getSkillsActivityIds(),
-    ]);
+    final results = await Future.wait([pullRepo.getObject(camperId), clientContextService.schedule, getSkillsActivityIds()]);
     final Camper camper = results[0] as Camper;
     final Schedule schedule = results[1] as Schedule;
     final List<String> skillsActivityIds = (results[2] as Set<String>).toList();
@@ -99,7 +97,14 @@ class ScheduleService extends GetxService {
     commit.addObjectsToPush({blockToAdd, day});
   }
 
-  Future<void> scheduleAMABlock(Commit commit, String name, String scheduleDayId, DateTime start, DateTime end, bool isSkillsRec) async {
+  Future<void> scheduleAMABlock(
+    Commit commit,
+    String name,
+    String scheduleDayId,
+    DateTime start,
+    DateTime end,
+    bool isSkillsRec,
+  ) async {
     // TODO: infer the day from the start and end
     //  TODO: Add robust checking to make sure the AMA block doesn't overlap with other blocks or span days
     AMABlock amaBlockToCreate = AMABlock(title: name, isTemplate: false, start: start, end: end, isSkillsRec: isSkillsRec);
@@ -110,12 +115,18 @@ class ScheduleService extends GetxService {
 
   void createPrincipalActivity(Commit commit, String name, int capacity, String description, bool isSkillsRec) {
     // TODO: Check with a query to make sure name is unique
-    PrincipalActivity activityToCreate = PrincipalActivity(name: name, capacity: capacity, description: description, isSkillsRec: isSkillsRec);
+    PrincipalActivity activityToCreate = PrincipalActivity(
+      name: name,
+      capacity: capacity,
+      description: description,
+      isSkillsRec: isSkillsRec,
+    );
     commit.addObjectToPush(activityToCreate);
   }
 
   Future<void> scheduleActivity(Commit commit, String principalActivityId, String blockToAddToId) async {
-    PrincipalActivity principalActivity = commit.getObject(principalActivityId) ?? (await pullRepo.getObject(principalActivityId));
+    PrincipalActivity principalActivity =
+        commit.getObject(principalActivityId) ?? (await pullRepo.getObject(principalActivityId));
     AMABlock blockToAddTo = commit.getObject(blockToAddToId) ?? (await pullRepo.getObject(blockToAddToId));
     ActivityDependent activityToSchedule = ActivityDependent(principalPar: principalActivity.id, blockRef: blockToAddTo.id);
     blockToAddTo.activityDependentCmps.add(activityToSchedule.id);
@@ -161,7 +172,7 @@ class ScheduleService extends GetxService {
   //
   //   // 2. Fetch all relevant campers (e.g., from the current session roster)
   //   // TODO: FIX THIS METHOD IN SESSION ROSTER SERVICE TO TAKE A COMMIT AND CHECK IT FIRST
-  //   List<Camper> campersToProcess = (await sessionRosterService.registeredCampers).toList();
+  //   List<Camper> campersToProcess = (await rosterService.registeredCampers).toList();
   //
   //   // Randomize the order to ensure fairness if multiple campers have same prefs
   //   campersToProcess.shuffle(Random());
@@ -400,5 +411,4 @@ class ScheduleService extends GetxService {
   //     return true;
   //   }
   // }
-
 }

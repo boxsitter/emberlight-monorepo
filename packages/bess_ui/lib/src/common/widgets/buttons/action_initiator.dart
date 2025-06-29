@@ -1,49 +1,75 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
+import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
 import 'package:bess_ui/src/common/widgets/shimmers/shimmer.dart';
 import 'package:flutter/material.dart';
 
 import '../../styles/text_styles.dart';
+import '../wrappers/tint.dart';
 
 class ActionInitiator extends StatelessWidget {
-  const ActionInitiator({super.key, required this.onPressed, this.enabled = true, this.enabledText = '', this.disabledText = '', this.width});
+  const ActionInitiator(
+      {super.key,
+      required this.onPressed,
+      this.awaiting = false,
+      this.enabledText = '',
+      this.awaitingText,
+      this.width,
+      this.disabled,
+      this.disabledText,
+      this.height});
 
   final void Function()? onPressed;
-  final bool? enabled;
+  final bool? awaiting;
+  final bool? disabled;
   final String enabledText;
-  final String disabledText;
+  final String? awaitingText;
+  final String? disabledText;
   final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
-    if (enabled != null && enabled == true) {
-      return SizedBox(
-        height: 37,
-        width: width ?? double.infinity,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Text(enabledText, style: BessTextStyles.standardInverted),
-        ),
+    if (awaiting != true && disabled != true) {
+      return CardButton(
+        onTap: () => onPressed,
+        baseTint: BessColors.primary,
+        child: Center(child: Text(enabledText, style: BessTextStyles.standard)),
+        width: width,
+        height: height,
       );
-    } else {
+    } else if (awaiting == true) {
       return Stack(
         alignment: Alignment.center,
         children: <Widget>[
           Positioned.fill(
             child: BessShimmerWrapper(
               period: Duration(milliseconds: 800),
-              child: ElevatedButton(
-                onPressed: null,
-                child: Text(disabledText, style: BessTextStyles.standardInverted),
+              child: CardButton(
+                child: Center(
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      return Text(
+                        awaitingText ?? 'One moment...',
+                        style: BessTextStyles.standard.copyWith(
+                          color: Tint.of(context)?.foregroundColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                      );
+                    },
+                  ),
+                ),
+                width: width,
+                height: height,
               ),
             ),
           ),
-
           SizedBox(
-            height: 37,
+            height: height,
             width: width ?? double.infinity,
             child: Center(
               child: Text(
-                disabledText,
+                awaitingText ?? enabledText,
                 style: BessTextStyles.standardInverted.copyWith(
                   color: BessColors.textInverted.withAlpha(150),
                 ),
@@ -52,9 +78,25 @@ class ActionInitiator extends StatelessWidget {
           ),
         ],
       );
+    } else {
+      return CardButton(
+        child: Center(
+          child: Builder(
+            builder: (BuildContext context) {
+              return Text(
+                disabledText ?? enabledText,
+                style: BessTextStyles.standard.copyWith(
+                  color: Tint.of(context)?.foregroundColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+              );
+            },
+          ),
+        ),
+        width: width,
+        height: height,
+      );
     }
-
-
-
   }
 }

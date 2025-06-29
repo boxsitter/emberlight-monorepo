@@ -5,7 +5,7 @@ import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
 import '../../styles/text_styles.dart';
 
-class CardList extends StatelessWidget {
+class CardList<T extends Titled> extends StatelessWidget {
   const CardList({
     super.key,
     this.leadingBuilder,
@@ -13,9 +13,9 @@ class CardList extends StatelessWidget {
     required this.items,
   });
 
-  final Widget? Function(Titled item)? leadingBuilder;
-  final Widget? Function(Titled item)? trailingBuilder;
-  final List<Titled> items;
+  final Widget? Function(T item)? leadingBuilder;
+  final Widget? Function(T item)? trailingBuilder;
+  final List<T> items;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,8 @@ class CardList extends StatelessWidget {
             side: BorderSide.none,
           ),
           key: ValueKey(item),
+          // Because T is guaranteed to extend Titled, you can directly access displayTitle.
           title: Text(item.displayTitle, style: BessTextStyles.standard),
-          // The leading widget is now provided by the new leadingBuilder.
           leading: leadingBuilder?.call(item),
           trailing: trailingBuilder?.call(item),
         );

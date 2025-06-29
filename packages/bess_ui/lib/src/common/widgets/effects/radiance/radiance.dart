@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 /// The default blend mode for radiance effects.
@@ -13,7 +15,10 @@ class Radiance extends StatelessWidget {
     required this.color,
     this.blendMode = kRadianceBlendMode,
     this.clip = false,
-  });
+    this.passes = 1,
+    this.falloffCurve = Curves.easeOut,
+    this.ditherOpacity = 0.0,
+  }) : assert(passes > 0, 'The number of passes must be greater than 0.');
 
   /// The widget below this widget in the tree.
   final Widget? child;
@@ -21,11 +26,10 @@ class Radiance extends StatelessWidget {
   /// The [Path] that defines the shape of the radiance.
   final Path shapePath;
 
-  /// The opacity of the radiance. Clamped between 0.0 and 1.0.
+  /// The total opacity of the radiance. This value is distributed among the passes.
   final double intensity;
 
-  /// The "spread" or blur radius of the radiance. In the context of the old
-  /// painter, this is analogous to the radius.
+  /// The maximum "spread" or blur radius of the radiance.
   final double spread;
 
   /// The color of the radiance.
@@ -35,13 +39,29 @@ class Radiance extends StatelessWidget {
   final BlendMode blendMode;
 
   /// Whether to clip the radiance effect to the [shapePath].
-  ///
-  /// Defaults to `false`, allowing the glow to spread beyond the path's bounds.
   final bool clip;
+
+  /// The number of layers to use when painting the glow.
+  /// More passes can create a smoother, richer glow at the cost of performance.
+  final int passes;
+
+  /// The curve that determines the spread distribution across multiple passes.
+  /// This only has an effect when `passes` > 1.
+  final Curve falloffCurve;
+
+  /// The opacity of the dithering noise layer.
+  /// A small value like 0.02 can help reduce color banding.
+  /// Defaults to 0.0 (disabled).
+  final double ditherOpacity;
 
   @override
   Widget build(BuildContext context) {
-    final painter = CustomPaint(
+    final List<Widget> layers = [];
+
+    // --- Glow Pass Layers ---
+    if (passes == 1) {
+      layers.add(
+        CustomPaint(
       painter: RadiancePainter(
         shapePath: shapePath,
         intensity: intensity,
@@ -49,21 +69,61 @@ class Radiance extends StatelessWidget {
         color: color,
         blendMode: blendMode,
       ),
-      child: child,
+        ),
+    );
+    } else {
+    final double passIntensity = intensity / passes;
+    for (int i = 1; i <= passes; i++) {
+      final double passSpread = spread * falloffCurve.transform(i / passes);
+      layers.add(
+        CustomPaint(
+          painter: RadiancePainter(
+            shapePath: shapePath,
+            intensity: passIntensity,
+            spread: passSpread,
+            color: color,
+            blendMode: blendMode,
+          ),
+        ),
+      );
+    }
+    }
+
+    // --- Dither Layer ---
+    if (ditherOpacity > 0) {
+      layers.add(
+        // This forces the dither painter to fill the entire area.
+        Positioned.fill(
+          child: Opacity(
+          opacity: ditherOpacity.clamp(0.0, 1.0),
+          child: CustomPaint(
+            painter: _DitherPainter(),
+          ),
+        ),
+        ),
+      );
+    }
+
+    // --- Child Layer ---
+    if (child != null) {
+      layers.add(child!);
+    }
+
+    final effectStack = Stack(
+      children: layers,
     );
 
     if (clip) {
       return ClipPath(
         clipper: _PathClipper(shapePath),
-        child: painter,
+        child: effectStack,
       );
     }
 
-    return painter;
+    return effectStack;
   }
 }
 
-/// A [CustomPainter] that draws the radiance effect.
 class RadiancePainter extends CustomPainter {
   const RadiancePainter({
     required this.shapePath,
@@ -87,8 +147,6 @@ class RadiancePainter extends CustomPainter {
 
     final paint = Paint()
       ..color = color.withOpacity(intensity.clamp(0.0, 1.0))
-      // This replicates the old painter's logic where the blur sigma
-      // was 75% of the radius. Here, 'spread' is used as the radius.
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, spread * 0.75)
       ..blendMode = blendMode;
 
@@ -105,7 +163,28 @@ class RadiancePainter extends CustomPainter {
   }
 }
 
-/// A custom clipper that uses a path to define the clip area.
+/// A simple painter that adds noise to reduce color banding.
+class _DitherPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // The painter now uses a solid color. The final opacity is controlled
+    // entirely by the Opacity widget wrapper.
+    final paint = Paint()..color = Colors.black;
+    final random = Random(1337);
+    final dotCount = (size.width * size.height * 0.05).toInt();
+
+    for (int i = 0; i < dotCount; i++) {
+      final x = random.nextDouble() * size.width;
+      final y = random.nextDouble() * size.height;
+      canvas.drawRect(Rect.fromLTWH(x, y, 1, 1), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DitherPainter oldDelegate) => false;
+}
+
+
 class _PathClipper extends CustomClipper<Path> {
   const _PathClipper(this.path);
 

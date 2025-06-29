@@ -277,11 +277,13 @@ class PullRepository {
   /// converting each document’s data into an object of type [T] via the [fromJson] function.
   /// Throws an error if any document is missing.
   /// Returns a set of the converted objects.
-  Future<Set<T>> getObjectsInCollection<T>(String collectionName, String domain) async {
+  Future<Map<String, T>> getObjectsInCollection<T>(String collectionName, String domain) async {
     final documentMap = await getDocsInCollection(collectionName, domain);
-    return documentMap.entries.map((entry) {
-      return CoreObject.fromJson(entry.value) as T;
-    }).toSet();
+    final Map<String, T> output = {};
+    for (final entry in documentMap.entries) {
+      output[entry.key] = CoreObject.fromJson(entry.value) as T;
+    }
+    return output;
   }
 
   /// Queries the collection (determined by [collectionName] and [domain]) with the provided [conditions].

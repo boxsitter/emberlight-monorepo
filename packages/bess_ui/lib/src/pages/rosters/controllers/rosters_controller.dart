@@ -11,7 +11,7 @@ import '../../../common/mixins/route_aware_controller_mixin.dart';
 class RostersController extends GetxController with RouteAwareControllerMixin {
   final ContextService contextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
-  final SessionRosterService sessionRosterService = Get.find<SessionRosterService>();
+  final RosterService rosterService = Get.find<RosterService>();
   final CommitRepository commitRepo = Get.find<CommitRepository>();
   final PullRepository pullRepo = Get.find<PullRepository>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();
@@ -34,7 +34,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   List<AMABlock> amas = [];
-  List<PrincipalActivity> principalActivities = [];
+  Map<PrincipalActivityId, PrincipalActivity> principalActivities = {};
   List<ActivityDependent> activityDependents = [];
   final List<RosterField> fields = [
     RosterField.fullName,
@@ -46,7 +46,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   double minWidth = 0;
 
   int get count => filteredRoster.length;
-  Set<String> selectedRowIds = {};
+  Set<Rosterable> selectedItems = {};
 
   bool importingCampers = false;
   bool populatingActivities = false;
@@ -59,6 +59,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   // Activity Switcher
   AMABlock? selectedAma;
+  ActivityDependent? selectedActivity;
 
   // View Settings
   bool alternateRowColors = true;
@@ -89,7 +90,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     super.onInit();
     // Subscribe to the stream ONLY ONCE when the controller is created.
     Debug.logInfo('RostersController initialized. Starting listener.');
-    sessionRosterService.camperStream.then((stream) {
+    rosterService.camperStream.then((stream) {
       // Ensure we don't create a duplicate if onInit were ever called again
       _campersSubscription?.cancel();
       _campersSubscription = stream.listen((camperMap) {
@@ -119,7 +120,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
     final List<dynamic> activityData = (await scheduleService.getActivityData());
     amas = (activityData[0] as Set<AMABlock>).toList();
-    principalActivities = (activityData[2] as Set<PrincipalActivity>).toList();
+    principalActivities = (activityData[2] as Map<PrincipalActivityId, PrincipalActivity>);
     activityDependents = (activityData[1] as Set<ActivityDependent>).toList();
     populatingActivities = false;
     update();
@@ -220,16 +221,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
             }
           }
 
-          PrincipalActivity? principalActivity;
-          for (PrincipalActivity prinActivity in principalActivities) {
-            if (activityDependent!.principalPar == prinActivity.id) {
-              principalActivity = prinActivity;
-            } else {
-              rowData.add('error');
-              continue;
-            }
+          PrincipalActivity? principalActivity = principalActivities[activityDependent!.principalPar];
+          if (principalActivity == null) {
+            rowData.add('error');
+            continue;
           }
-          rowData.add(principalActivity!.name);
+          rowData.add(principalActivity.name);
         } else {
           rowData.add('loading...');
         }
@@ -279,21 +276,34 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   void setSelectedAma(Titled block) {
     if (block is AMABlock) {
-      selectedAma = block;
+      if (selectedAma == block) {
+        selectedAma = null;
+      } else {
+        selectedAma = block;
+      }
       update();
     }
   }
 
+  void setSelectedActivity(ActivityDependent activity) {
+    if (selectedActivity == activity) {
+      selectedActivity = null;
+    } else {
+      selectedActivity = activity;
+    }
+    update();
+  }
+
   bool isNothingSelected() {
-    return selectedRowIds.isEmpty;
+    return selectedItems.isEmpty;
   }
 
   bool isSingleSelected() {
-    return selectedRowIds.length == 1;
+    return selectedItems.length == 1;
   }
 
   bool isMultiSelected() {
-    return selectedRowIds.length > 1;
+    return selectedItems.length > 1;
   }
 
   /// Call this method whenever the roster data is fetched or changed.
@@ -302,23 +312,22 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update(); // This will trigger its own update()
   }
 
-  void toggleRowSelection(String rowId, bool? newValue) {
+  void toggleRowSelection(Rosterable rosterable, bool? newValue) {
     if (newValue == true) {
-      selectedRowIds.add(rowId);
+      selectedItems.add(rosterable);
     } else {
-      selectedRowIds.remove(rowId);
+      selectedItems.remove(rosterable);
     }
     update(); // Update UI to reflect selection change
   }
 
   void toggleSelectAll(bool? select) {
-    final filteredIds = filteredRoster.map((e) => e.id).toSet();
-    if (select! && selectedRowIds.isNotEmpty) {
-      selectedRowIds.clear();
+    if (select! && selectedItems.isNotEmpty) {
+      selectedItems.clear();
     } else if (select) {
-      selectedRowIds.addAll(filteredIds);
+      selectedItems.addAll(roster);
     } else {
-      selectedRowIds.clear();
+      selectedItems.clear();
     }
     update();
   }
@@ -326,7 +335,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   bool? get headingCheckboxState {
     final filteredIds = filteredRoster.map((e) => e.id).toSet();
     if (filteredIds.isEmpty) return false;
-    final selectedFiltered = selectedRowIds.intersection(filteredIds);
+    final selectedFiltered = selectedItems.intersection(filteredIds);
 
     if (selectedFiltered.isEmpty) {
       return false;
@@ -351,7 +360,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update(); // Show loading state
 
     try {
-      await commitRepo.commit(await sessionRosterService.importFromCsv());
+      await commitRepo.commit(await rosterService.importFromCsv());
     } on Exception catch (e, st) {
       Error.throwWithStackTrace(Debug.parseException(e), st);
     } finally {
@@ -367,11 +376,22 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
           disarmRequirementsLevel: 1,
           confirmationMessage:
               'Once deleted, campers cannot be restored. Their activity assignments and preferences for this session will be gone. Are you sure you want to proceed?');
-      Set<Camper> campersToDelete = await pullRepo.getObjects(selectedRowIds);
-      commit.addObjectsToDelete(campersToDelete);
+      commit.addObjectsToDelete(selectedItems);
       await commitRepo.commit(commit);
     } finally {
-      selectedRowIds.clear();
+      selectedItems.clear();
+      update(); // Update UI to clear selections
+    }
+  }
+
+  Future<void> assignSelected() async {
+    if (selectedItems.isEmpty) return;
+    try {
+      Commit commit = Commit(disarmRequirementsLevel: 0);
+
+      await commitRepo.commit(commit);
+    } finally {
+      selectedItems.clear();
       update(); // Update UI to clear selections
     }
   }
@@ -392,13 +412,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   void invertSelection() {
-    // Create a set of all possible IDs from the main roster list.
-    final allIds = roster.map((rosterable) => rosterable.id).toSet();
-
-    // The new set of selected IDs will be all IDs from the roster
-    // that are not currently in the selectedRowIds set.
-    // The `difference` method on sets is perfect for this.
-    selectedRowIds = allIds.difference(selectedRowIds);
+    selectedItems = roster.toSet().difference(selectedItems);
 
     // Update the UI to reflect the change in selection.
     update();
