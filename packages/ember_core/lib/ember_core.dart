@@ -4,6 +4,7 @@ import 'package:ember_core/src/repositories/commit_repository.dart';
 import 'package:ember_core/src/repositories/contextless_repository.dart';
 import 'package:ember_core/src/repositories/live_data_repository.dart';
 import 'package:ember_core/src/repositories/pull_repository.dart';
+import 'package:ember_core/src/services/assignment_service.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:ember_core/src/services/path_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -43,6 +44,7 @@ export 'src/services/cabin_service.dart';
 export 'src/services/context_service.dart';
 export 'src/services/console_service.dart';
 export 'src/services/pdf_service.dart';
+export 'src/services/assignment_service.dart';
 export 'src/services/commit_service.dart';
 export 'src/services/schedule_service.dart';
 export 'src/services/roster_service.dart';
@@ -87,6 +89,7 @@ class EmberCore {
     Get.put(RosterService(), permanent: true);
     Get.put(ActivityPreferenceService(), permanent: true);
     Get.put(ScheduleService(), permanent: true);
+    Get.put(AssignmentService(), permanent: true);
     final DatabaseRepairService repairService = Get.put(DatabaseRepairService(), permanent: true);
     onNewContext(repairService, commitRepo);
   }

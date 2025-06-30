@@ -30,7 +30,6 @@ class Commit {
 
   void addObjectToPush(CoreObject object) {
     objectsToPush[object.id] = object;
-    Debug.logInfo('Object $object staged for push in commit', verbosity: Verbosity.excessive);
   }
 
   void addObjectsToPush(Set<CoreObject> objects) {
@@ -41,7 +40,6 @@ class Commit {
 
   void addObjectToDelete(CoreObject object) {
     objectsToDelete[object.id] = object;
-    Debug.logInfo('Object $object staged for delete in commit', verbosity: Verbosity.excessive);
   }
 
   void addObjectsToDelete(Set<CoreObject> objects) {
@@ -55,20 +53,16 @@ class Commit {
       Debug.logInfo('Fetching CoreObject: $objectOrId from commit', verbosity: Verbosity.excessive);
       CoreObject? objectToReturn = objectsToPush[objectOrId.id];
       if (objectToReturn != null && objectToReturn is T) {
-        Debug.logSuccess('Successfully fetched $objectOrId from commit', verbosity: Verbosity.excessive);
         return objectToReturn as T;
       } else {
-        Debug.logWarning('Object $objectOrId could not be found in commit cache, returning null', verbosity: Verbosity.verbose);
         return null;
       }
     } else if (objectOrId is String) {
       Debug.logInfo('Fetching CoreObject with id: $objectOrId from commit', verbosity: Verbosity.excessive);
       CoreObject? objectToReturn = objectsToPush[objectOrId];
       if (objectToReturn != null && objectToReturn is T) {
-        Debug.logSuccess('Successfully fetched object with id: $objectOrId from commit', verbosity: Verbosity.excessive);
         return objectToReturn as T;
       } else {
-        Debug.logWarning('Object with id: $objectOrId could not be found in commit cache, returning null', verbosity: Verbosity.verbose);
         return null;
       }
     } else {
@@ -81,11 +75,9 @@ class Commit {
     Debug.logInfo('Fetching first object of type $T from commit', verbosity: Verbosity.excessive);
     for (var value in objectsToPush.values) {
       if (value is T) {
-        Debug.logSuccess('Successfully fetched object of type $T from commit', verbosity: Verbosity.excessive);
         return value as T;
       }
     }
-    Debug.logWarning('No object of type $T found in commit, returning null', verbosity: Verbosity.verbose);
     return null;
   }
 
@@ -98,9 +90,6 @@ class Commit {
       }
     });
     if (returnSet.isEmpty) {
-      Debug.logWarning('No objects of type $T found in commit, returning empty set', verbosity: Verbosity.verbose);
-    } else {
-      Debug.logSuccess('Successfully fetched all objects of type $T from commit', verbosity: Verbosity.excessive);
     }
     return returnSet;
   }
@@ -117,13 +106,11 @@ class Commit {
         // 3. Check if the field exists in the JSON and if its value matches the provided value
         if (json.containsKey(field) && json[field] == value) {
           // 4. If both conditions are met, return the object's ID
-          Debug.logSuccess('Successfully fetched ID of object with field: $field set to $value', verbosity: Verbosity.excessive);
           return object.id;
         }
       }
     }
     // 5. If the loop completes without finding a match, return null
-    Debug.logWarning('No object found with field: $field set to $value. Returning null', verbosity: Verbosity.verbose);
     return null;
   }
 }

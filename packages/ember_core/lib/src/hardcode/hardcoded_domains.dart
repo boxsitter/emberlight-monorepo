@@ -28,9 +28,16 @@ class HardcodedDomains {
     end: DateTime(2026, 1, 1).toUtc(),
   );
 
+  static final sessionAA = Session(
+    name: 'Session AA',
+    createdAt: DateTime.parse('2025-03-17T05:35:01.000Z').toUtc(),
+    start: DateTime(2025, 6, 29).toUtc(),
+    end: DateTime(2025, 7, 2).toUtc(),
+  );
+
   // There needs to be a method in the context service or somewhere to create a session because the schedule needs to be created with the session
   static final Schedule schedule = Schedule(
-    id: 'schedule-schedule-ses-gDiYskN',
+    id: 'schedule-schedule-ses-gDiYskB',
     createdAt: DateTime.parse('2025-03-17T05:35:01.000Z').toUtc(),
   );
 }

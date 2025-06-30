@@ -31,7 +31,6 @@ class Camper extends CoreObject implements Rosterable, Titled {
   bool? canSwim;
   final Map<PrincipalActivityId, double?> preferenceRefs;
   final Map<PrincipalActivityId, double> preferenceWeightRefs;
-
   @override
   Map<AMABlockId, ActivityDependentId?> activityAssignmentRefs;
 
@@ -111,9 +110,9 @@ class Camper extends CoreObject implements Rosterable, Titled {
       case RosterField.arrived:
         return arrived == null ? 'N/A' : arrived! ? 'Yes' : 'No';
       case RosterField.canSwim:
-        return arrived == null ? 'N/A' : arrived! ? 'Yes' : 'No';
+        return arrived == null ? 'N/A' : canSwim! ? 'Yes' : 'No';
       case RosterField.preferencesCompleted:
-        return preferencesCompleted == null ? 'N/A' : arrived! ? 'Yes' : 'No';
+        return preferencesCompleted == null ? 'N/A' : preferencesCompleted! ? 'Yes' : 'No';
       default:
         if (field.name == 'activityPeriod') { // TODO: This sucks
           return activityAssignmentRefs[field.dataId] ?? '';

@@ -26,7 +26,7 @@ class CardList<T extends Titled> extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = items[index];
         return ListTile(
-          tileColor: BessColors.core,
+          tileColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(BessSizes.cardRadiusLg),
             side: BorderSide.none,

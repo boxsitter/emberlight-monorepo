@@ -12,9 +12,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final ContextService contextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final RosterService rosterService = Get.find<RosterService>();
+  final ActivityPreferenceService preferenceService = Get.find<ActivityPreferenceService>();
+  final AssignmentService assignmentService = Get.find<AssignmentService>();
   final CommitRepository commitRepo = Get.find<CommitRepository>();
   final PullRepository pullRepo = Get.find<PullRepository>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();
+  final PopupService popupService = Get.find<PopupService>();
 
   List<Rosterable> roster = [];
   String searchQuery = '';
@@ -466,6 +469,112 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       }
       await commitRepo.commit(commit);
       await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      update(); // Update UI to clear selections
+    }
+  }
+
+  Future<void> rankRandomSelected() async {
+    if (selectedItems.isEmpty) {
+      Debug.logWarning('Can\'t rank selected campers');
+      return;
+    }
+    try {
+      Commit commit = Commit(
+          disarmRequirementsLevel: 1,
+          confirmationMessage:
+          'Are you sure you want to overwrite these activity preferences? This action cannot be undone.');
+      for (Rosterable rosterable in selectedItems) {
+        if (rosterable is Camper) {
+          await preferenceService.rankRandom(commit, rosterable.id);
+        }
+      }
+      await commitRepo.commit(commit);
+      await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      update(); // Update UI to clear selections
+    }
+  }
+
+  Future<void> clearPrefsSelected() async {
+    if (selectedItems.isEmpty) {
+      Debug.logWarning('Can\'t clear selected campers\' preferences');
+      return;
+    }
+    try {
+      Commit commit = Commit(
+          disarmRequirementsLevel: 1,
+          confirmationMessage:
+          'Are you sure you want to remove these activity preferences? This action cannot be undone.');
+      for (Rosterable rosterable in selectedItems) {
+        if (rosterable is Camper) {
+          await preferenceService.clearPreference(commit, rosterable.id);
+        }
+      }
+      await commitRepo.commit(commit);
+      await populateActivities();
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      update(); // Update UI to clear selections
+    }
+  }
+  
+  Future<void> smartAssignAll() async {
+    try {
+      Commit commit = Commit(
+          disarmRequirementsLevel: 1,
+          confirmationMessage:
+          'Are you sure you want to overwrite all camper assignments? This action cannot be undone.');
+      bool allCampersRanked = await rosterService.allCampersRanked();
+      bool? confirmResult;
+      if (allCampersRanked == false) {
+        confirmResult = await popupService.showConfirmationDialog(title: 'Confirm', message: 'Some campers have not finished indicating their preferences yet. '
+            'Their preference for these activities will be treated as neutral which could cause fully random assignments. Are you sure you want to proceed?');
+        if (!confirmResult) {
+          return;
+        }
+      }
+      Debug.logInfo('Auto assignment starting', userMessage: 'This process could take some time, please wait');
+      await assignmentService.runAssignmentAlgorithm(commit: commit, assignmentPenalty: 0.5, nonAssignmentFriction: 0.5);
+      await commitRepo.commit(commit);
+      await populateActivities();
+      Debug.logSuccess('Auto assignment complete', userMessage: 'Auto assignment complete!');
+    } catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
+    } finally {
+      update(); // Update UI to clear selections
+    }
+  }
+
+  Future<void> autoAssignSelected() async {
+    if (selectedItems.isEmpty) {
+      Debug.logWarning('Can\'t assign selected campers');
+      return;
+    }
+    try {
+      Commit commit = Commit(
+          disarmRequirementsLevel: 1,
+          confirmationMessage:
+          'Are you sure you want to overwrite selected camper assignments? This action cannot be undone.');
+      bool selectedCampersRanked = await rosterService.selectedCampersRanked(selectedItems.map((rosterable) => rosterable.id).toSet());
+      bool? confirmResult;
+      if (selectedCampersRanked == false) {
+        confirmResult = await popupService.showConfirmationDialog(title: 'Confirm', message: 'Some selected campers have not finished indicating their preferences yet. '
+            'Their preference for these activities will be treated as neutral which could cause fully random assignments. Are you sure you want to proceed?');
+        if (!confirmResult) {
+          return;
+        }
+      }
+      Debug.logInfo('Auto assignment starting', userMessage: 'This process could take some time, please wait');
+      await assignmentService.runAssignmentForCampers(commit: commit, camperIds: selectedItems.map((rosterable) => rosterable.id).toSet(), assignmentPenalty: 0.5, nonAssignmentFriction: 0.5);
+      await commitRepo.commit(commit);
+      await populateActivities();
+      Debug.logSuccess('Auto assignment complete', userMessage: 'Auto assignment complete!');
     } catch (e, st) {
       Error.throwWithStackTrace(Debug.parseException(e), st);
     } finally {

@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:ember_core/src/repositories/pull_repository.dart';
+
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
@@ -48,9 +48,21 @@ class ActivityPreferenceService extends GetxService {
 
   // assigns all campers a random preference for each activity
   // for testing
-  Future<void> rankRandom(Commit commit) async {
-    final _ = Random();
-    Set<Camper> campers = await rosterService.registeredCampers;
+  Future<void> rankRandom(Commit commit, CamperId camperId) async {
+    Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
+    if(camper.cabinRef == null) return;
+    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await pullRepo.getObject(camper.cabinRef!);
+    final random = Random();
+
+    camper.preferenceRefs.forEach((key, value) {
+      if (value == null) {
+        camper.preferenceRefs[key] = random.nextDouble();
+      }
+    });
+
+    camperCabin.campersWithPreferences.add(camper.id);
+
+    commit.addObjectsToPush({camper, camperCabin});
   }
 
   Future<PrincipalActivity> getPrincipalActivity(PrincipalActivityId id) {

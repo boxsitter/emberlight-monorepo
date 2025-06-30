@@ -95,9 +95,9 @@ class RosterField implements Titled {
   );
   static const RosterField preferencesCompleted = RosterField(
     name: 'preferencesCompleted',
-    title: 'Activities Ranked',
+    title: 'Prefs Complete',
     required: false,
-    defaultWidth: widthMd,
+    defaultWidth: widthLg,
   );
 
   /// A list of all possible RosterField values, similar to `Enum.values`.
@@ -115,6 +115,7 @@ class RosterField implements Titled {
     ultracampId,
     arrived,
     canSwim,
+    preferencesCompleted,
   ];
 
   @override

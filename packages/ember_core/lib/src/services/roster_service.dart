@@ -73,7 +73,7 @@ class RosterService extends GetxService {
 
     for (PrincipalActivityId uniqueActivityTypeRef in schedule.principalActivityRefs) {
       camper.preferenceRefs[uniqueActivityTypeRef] = null;
-      camper.preferenceWeightRefs[uniqueActivityTypeRef] = 0;
+      camper.preferenceWeightRefs[uniqueActivityTypeRef] = 1.0;
     }
     Session session = commit.getObjectOfType() ?? await clientContextService.session;
 
@@ -301,118 +301,114 @@ class RosterService extends GetxService {
   }
 
   /// Attempts to assign a specific camper to a specific activity.
-  /// Checks capacity, handles re-assignment within the same block, and updates objects in the commit.
-  /// Returns true if successful, false otherwise.
+  /// This method is designed to be robust, handling re-assignment and correcting inconsistent states.
+  /// Returns true if the assignment was successful.
   Future<bool> assignCamperToActivity(Commit commit, String camperId, String activityDepId) async {
-    // 1. Fetch objects needed
+    // 1. Fetch all necessary objects, prioritizing the commit cache.
     Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
     ActivityDependent activityDep =
         commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
-
-    // Fetch the PrincipalActivity to get capacity and name
     PrincipalActivity? principalActivity =
         commit.getObject<PrincipalActivity>(activityDep.principalPar) ??
         await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
 
-    String activityName = principalActivity.name;
-    bool alreadyInRoster = activityDep.camperRefs.contains(camperId);
+    final String activityName = principalActivity?.name ?? 'Unknown Activity';
+    final String blockId = activityDep.blockRef;
 
-    // 2. Handle potential reassignment within the same block
-    String blockId = activityDep.blockRef;
-    if (camper.activityAssignmentRefs.containsKey(blockId)) {
-      String? currentAssignedActivityId = camper.activityAssignmentRefs[blockId];
-
-      if (currentAssignedActivityId == activityDepId) {
-        // Already assigned to this exact activity. Consider it success.
-        Debug.logInfo(
-          'Info: ${camper.fullName} is already assigned to $activityName ($activityDepId). No action needed.',
-          userMessage:
-              '${camper.fullName} is already in $activityName. No changes were made.',
-        );
-        return true;
-      }
-
-      if (currentAssignedActivityId != null) {
-        // Camper is assigned to a *different* activity in this block, remove them first.
+    // 2. Handle potential reassignment within the same block.
+    final String? currentAssignedActivityId = camper.activityAssignmentRefs[blockId];
+    if (currentAssignedActivityId != null && currentAssignedActivityId != activityDepId) {
         Debug.logInfo(
           'Info: ${camper.fullName} is currently in activity $currentAssignedActivityId, removing before assigning to $activityName ($activityDepId).',
           userMessage:
               '${camper.fullName} is being moved to $activityName from another activity in the same block.',
         );
-        bool removed = await removeCamperFromActivity(commit, camperId, currentAssignedActivityId);
+      // Remove the camper from their old activity to ensure a clean slate.
+      final bool removed = await removeCamperFromActivity(commit, camperId, currentAssignedActivityId);
         if (!removed) {
-          Debug.logInfo(
-            'Error: Failed to remove ${camper.fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDepId aborted.',
-            userMessage:
-                'Could not remove ${camper.fullName} from their previous activity. The new assignment to $activityName was cancelled.',
+        Debug.logWarning(
+          'Warning: Failed to remove ${camper.fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDepId may be unstable.',
           );
-          return false;
+        // Continue, but be aware of the potential issue.
         }
-        // Re-fetch camper object as it was modified in the commit by removeCamperFromActivity
+      // IMPORTANT: Re-fetch the camper object as it was just modified in the commit.
         camper = commit.getObject<Camper>(camperId)!;
       }
+
+    // 3. Perform the robust assignment, ensuring state consistency.
+    bool camperChanged = false;
+    if (camper.activityAssignmentRefs[blockId] != activityDepId) {
+      camper.activityAssignmentRefs[blockId] = activityDepId;
+      camperChanged = true;
     }
 
-    // 4. Perform the assignment
-    if (!alreadyInRoster) {
+    bool activityChanged = false;
+    if (!activityDep.camperRefs.contains(camperId)) {
       activityDep.camperRefs.add(camperId);
+      activityChanged = true;
     }
-    camper.activityAssignmentRefs[blockId] = activityDepId;
 
-    // 5. Add the modified objects to the commit
-    commit.addObjectsToPush({camper, activityDep});
-
+    // 4. Add the modified objects to the commit only if their state changed.
+    if (camperChanged || activityChanged) {
+      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+      Debug.logSuccess(
+          '${camper.fullName} successfully assigned to $activityName ($activityDepId). State synchronized.',
+          userMessage: 'Success! ${camper.fullName} has been assigned to $activityName.');
+    } else {
     Debug.logInfo(
-        '${camper.fullName} successfully assigned to $activityName ($activityDepId)',
-        userMessage:
-            'Success! ${camper.fullName} has been assigned to $activityName.');
+        'Info: ${camper.fullName} is already correctly assigned to $activityName ($activityDepId). No action needed.',
+      );
+    }
+
     return true;
   }
 
-  /// Removes a camper from a specific activity's roster and updates their assignment map.
-  ///
-  /// Modifies objects within the commit. Returns true on success or if state was already correct.
+  /// Robustly removes a camper from a specific activity. This method enforces a consistent state
+  /// by ensuring the camper is removed from the activity's roster AND the activity is removed
+  /// from the camper's assignment map, regardless of the initial state.
+  /// Returns true, as the desired state is always achieved.
   Future<bool> removeCamperFromActivity(Commit commit, String camperId, String activityDepId) async {
-    Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
-    ActivityDependent activityDep =
+    // 1. Fetch objects, prioritizing the commit cache.
+    final Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+    final ActivityDependent activityDep =
         commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
-
-    // Fetch Principal name for logging clarity
-    PrincipalActivity principalActivity =
+    final PrincipalActivity? principalActivity =
         commit.getObject<PrincipalActivity>(activityDep.principalPar) ??
         await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
-    String activityName = principalActivity.name;
+    final String activityName = principalActivity?.name ?? 'Unknown Activity';
+    final String blockId = activityDep.blockRef;
 
-    String blockId = activityDep.blockRef;
-    bool changed = false;
+    bool camperChanged = false;
+    bool activityChanged = false;
 
-    // Remove camper from activity roster
+    // 2. Unconditionally remove the reference from the activity's roster.
     if (activityDep.camperRefs.remove(camperId)) {
-      changed = true;
+      activityChanged = true;
     }
 
-    // Remove assignment from camper object
+    // 3. Unconditionally remove the reference from the camper's assignment map,
+    // but only if it matches the activity we are targeting. This prevents incorrectly
+    // clearing a valid assignment to a different activity in the same block.
     if (camper.activityAssignmentRefs.containsKey(blockId) && camper.activityAssignmentRefs[blockId] == activityDepId) {
       camper.activityAssignmentRefs.remove(blockId);
-      changed = true;
+      camperChanged = true;
     }
 
-    if (changed) {
-      // Add modified objects to commit ONLY if changes were made
-      commit.addObjectsToPush({camper, activityDep});
-      Debug.logInfo(
-        '${camper.fullName} removed from $activityName ($activityDepId)',
+    // 4. If any change occurred, add the affected objects to the commit to be pushed.
+    if (camperChanged || activityChanged) {
+      commit.addObjectsToPush({if(camperChanged) camper, if(activityChanged) activityDep});
+      Debug.logSuccess(
+        '${camper.fullName} removed from $activityName ($activityDepId). State synchronized.',
         userMessage:
             'Success! ${camper.fullName} has been removed from $activityName.',
       );
     } else {
       Debug.logInfo(
-        'Warning: Attempted to remove ${camper.fullName} from $activityName ($activityDepId), but they were not assigned to it.',
-        userMessage:
-            '${camper.fullName} was not in $activityName, so no changes were needed.',
+        'Info: Attempted to remove ${camper.fullName} from $activityName ($activityDepId), but no assignment links were found.',
       );
     }
-    // Return true because the desired state (camper not assigned) is achieved.
+
+    // The goal is to ensure the camper is not in the activity; this state is now guaranteed.
     return true;
   }
 
@@ -423,27 +419,22 @@ class RosterService extends GetxService {
   Future<bool> unassignCamperFromAmaBlock(
       Commit commit, String camperId, String amaBlockId) async {
     // 1. Fetch the camper object to access their activity assignments.
-    Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+    final Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
 
     // 2. Check if the camper is assigned to an activity in the specified block.
-    if (camper.activityAssignmentRefs.containsKey(amaBlockId)) {
       final String? activityDepId = camper.activityAssignmentRefs[amaBlockId];
 
       if (activityDepId != null) {
         Debug.logInfo(
           'Info: Camper ${camper.fullName} is assigned to activity $activityDepId in block $amaBlockId. Proceeding with removal.',
-          userMessage:
-              'Found ${camper.fullName} in an activity for this block. Proceeding with removal.',
         );
+      // Use the robust removal method to ensure a clean state.
         return await removeCamperFromActivity(commit, camperId, activityDepId);
       }
-    }
 
     // 3. If the camper was not assigned to any activity in this block, no action is needed.
     Debug.logInfo(
       'Info: Camper ${camper.fullName} was not assigned to an activity in block $amaBlockId. No action needed.',
-      userMessage:
-          '${camper.fullName} was not assigned to an activity in this block. No changes were made.',
     );
     return true;
   }
@@ -454,7 +445,7 @@ class RosterService extends GetxService {
   /// [unassignCamperFromAmaBlock] for each one.
   Future<bool> removeAllActivitiesFromCamper(Commit commit, String camperId) async {
     // 1. Fetch the camper to get their list of current activities.
-    Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+    final Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
 
     // 2. Create a copy of the block IDs to prevent issues with modifying the collection while iterating.
     final List<String> blockIds = camper.activityAssignmentRefs.keys.toList();
@@ -478,7 +469,7 @@ class RosterService extends GetxService {
     for (final String amaId in blockIds) {
       final bool success = await unassignCamperFromAmaBlock(commit, camperId, amaId);
       if (!success) {
-        // If any removal fails, log the error and abort the process.
+        // This path is less likely now with the robust `removeCamperFromActivity` method.
         Debug.logInfo(
           'Error: Failed to unassign ${camper.fullName} from block $amaId. Aborting removal of all activities.',
           userMessage:
@@ -488,10 +479,31 @@ class RosterService extends GetxService {
       }
     }
 
-    Debug.logInfo(
+    Debug.logSuccess(
       'Success: ${camper.fullName} has been removed from all activities.',
       userMessage: 'Success! ${camper.fullName} has been removed from all activities.',
     );
     return true;
   }
+
+  Future<bool> allCampersRanked() async {
+    final Set<Camper> campers = await registeredCampers;
+    for (Camper camper in campers) {
+      if (camper.preferencesCompleted == false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<bool> selectedCampersRanked(Set<CamperId> selectedCampers) async {
+    final Set<Camper> campers = await registeredCampers;
+    for (Camper camper in campers) {
+      if (camper.preferencesCompleted == false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }

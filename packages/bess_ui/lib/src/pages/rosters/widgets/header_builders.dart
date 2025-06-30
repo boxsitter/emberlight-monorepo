@@ -112,9 +112,32 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         color: BessColors.borderPrimary,
       ),
       ShadContextMenuItem(
+        child: const Text('Rank Random'),
+        onPressed: controller.rankRandomSelected,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Clear Preferences'),
+        onPressed: controller.clearPrefsSelected,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
+      ShadSeparator.horizontal(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        color: BessColors.borderPrimary,
+      ),
+      ShadContextMenuItem(
         child: const Text('Assign To Activity'),
         onPressed: controller.assignSelected,
         enabled: controller.selectedItems.isNotEmpty && controller.selectedAma != null && controller.selectedActivity != null,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Smart Assign All'),
+        onPressed: controller.smartAssignAll,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Auto Assign'),
+        onPressed: controller.smartAssignAll,
+        enabled: controller.selectedItems.isNotEmpty,
       ),
       ShadContextMenuItem(
         child: const Text('Unassign From Selected Activity'),
