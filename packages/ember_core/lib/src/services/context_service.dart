@@ -5,6 +5,7 @@ import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
+import '../hardcode/hardcoded_test_schedule.dart';
 
 typedef OrganizationId = String;
 typedef BranchId = String;
@@ -120,13 +121,13 @@ class ContextService extends GetxService {
         await basicDomainCreate(HardcodedDomains.testSession);
         clientContext.sessionId = HardcodedDomains.testSession.id;
         Commit scheduleCommit = Commit(disarmRequirementsLevel: 0);
-        scheduleCommit.addObjectToPush(HardcodedDomains.schedule);
+        scheduleCommit.addObjectToPush(HardcodedTestSchedule.schedule);
         await commitRepo.commit(scheduleCommit);
       } else {
         clientContext.sessionId = await pullRepo.getActiveObjectId('session', 'sea');
       }
     } else {
-      clientContext.sessionId = await pullRepo.getActiveObjectId('session', 'sea');
+      clientContext.sessionId = HardcodedDomains.testSession.id;
     }
   }
 

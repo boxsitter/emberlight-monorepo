@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:ui' as html;
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -120,4 +122,18 @@ class BessDeviceUtils {
   static bool isMobileScreen(BuildContext context) {
     return MediaQuery.of(context).size.width < BessSizes.tabletScreenSize;
   }
+
+  /// UPDATED METHOD
+  static Future<bool> isMobileDevice() async {
+    if (kIsWeb) {
+      final deviceInfo = await DeviceInfoPlugin().webBrowserInfo;
+      final userAgent = deviceInfo.userAgent?.toLowerCase() ?? '';
+      return userAgent.contains('mobi') ||
+          userAgent.contains('android') ||
+          userAgent.contains('iphone');
+    } else {
+    // Fallback for non-web platforms
+    return isAndroid() || isIOS();
+  }
+}
 }

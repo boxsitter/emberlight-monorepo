@@ -34,18 +34,41 @@ class ColumnConfig extends StatelessWidget {
             flex: 4,
             child: TitledContainer(
               title: 'Visible Columns',
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: VerticalListReorderer(
                 items: controller.fields,
                 onReorder: controller.setColumnOrder,
                 trailingBuilder: (Titled item) {
                   // You can safely assume the item is the RosterField for this row
                   final field = item as RosterField;
-                  return IconButton(
-                    icon: const Icon(LucideIcons.circleChevronRight, size: 20),
-                    // The onPressed callback now knows which 'field' to remove
-                    onPressed: () => controller.removeVisibleColumn(field),
-                    splashRadius: 20,
+                  return Row(
+                    mainAxisSize: MainAxisSize.min, // This is the fix!
+                    children: [
+                      IconButton(
+                        icon: const Icon(LucideIcons.group, size: 20),
+                        // The onPressed callback now knows which 'field' to remove
+                        onPressed: () => controller.setGroupBy(field),
+                        splashRadius: 20,
+                        iconSize: 20,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
+                          size: 20,
+                        ),
+                        // The onPressed callback now knows which 'field' to remove
+                        onPressed: () => controller.setSortBy(field),
+                        splashRadius: 20,
+                        iconSize: 20,
+                      ),
+                      IconButton(
+                        icon: const Icon(LucideIcons.circleChevronRight, size: 20),
+                        // The onPressed callback now knows which 'field' to remove
+                        onPressed: () => controller.removeVisibleColumn(field),
+                        splashRadius: 20,
+                        iconSize: 20,
+                      ),
+                    ],
                   );
                 },
               ),
@@ -113,7 +136,11 @@ class ColumnConfig extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
                     child: CardButton(
-                      child: Center(child: Text(item, style: BessTextStyles.standard,)),
+                      child: Center(
+                          child: Text(
+                        item,
+                        style: BessTextStyles.standard,
+                      )),
                       onTap: () => {},
                       height: 50,
                     ),

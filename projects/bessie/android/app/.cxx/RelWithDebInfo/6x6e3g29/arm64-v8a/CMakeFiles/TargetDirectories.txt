@@ -1,2 +1,0 @@
-C:/Users/Leyto/User Projects/bessie/android/app/.cxx/RelWithDebInfo/6x6e3g29/arm64-v8a/CMakeFiles/edit_cache.dir
-C:/Users/Leyto/User Projects/bessie/android/app/.cxx/RelWithDebInfo/6x6e3g29/arm64-v8a/CMakeFiles/rebuild_cache.dir

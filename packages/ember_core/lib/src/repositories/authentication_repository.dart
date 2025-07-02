@@ -23,7 +23,7 @@ class AuthenticationRepository {
   /// Throws:
   ///   A specific exception extending [EmberException] (e.g., [AuthCredentialsFailure], [AuthServiceError])
   ///   if the login fails or an unexpected error occurs.
-  Future<UserCredential> loginWithEmailAndPassword(String email, String password, bool rememberMe) async {
+  Future<UserCredential> loginWithEmailAndPassword(String email, String password, bool rememberMe, bool isWeb) async {
 
     Debug.logInfo(
       'Attempting Firebase login for email: ${CoreFormatter.maskEmail(email)}',
@@ -31,12 +31,20 @@ class AuthenticationRepository {
     );
 
     try {
-      if (rememberMe) {
-        await _auth.setPersistence(Persistence.LOCAL);
-        Debug.logInfo('[AuthRepo] Set persistence to LOCAL');
+      if (isWeb) { // Only execute this block if the app is running on the web
+        if (rememberMe) {
+          await _auth.setPersistence(Persistence.LOCAL);
+          Debug.logInfo('[AuthRepo] Set persistence to LOCAL');
+        } else {
+          await _auth.setPersistence(Persistence.SESSION);
+          Debug.logInfo('[AuthRepo] Set persistence to SESSION');
+        }
       } else {
-        await _auth.setPersistence(Persistence.SESSION);
-        Debug.logInfo('[AuthRepo] Set persistence to SESSION');
+        // For non-web platforms (Android, iOS, Desktop), Firebase handles persistence automatically.
+        // You generally don't need to explicitly call setPersistence.
+        // You might want to log a message here if 'rememberMe' is still a relevant concept
+        // for your non-web users, but the actual persistence mechanism is internal to Firebase.
+        Debug.logInfo('[AuthRepo] Persistence handled automatically by Firebase for non-web platform.');
       }
 
       // Attempt to sign in using Firebase Auth

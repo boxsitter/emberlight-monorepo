@@ -4,9 +4,8 @@ import 'package:get/get.dart';
 import '../../ember_core.dart';
 import '../debug/repair_exceptions.dart';
 import '../repositories/contextless_repository.dart';
-import '../repositories/pull_repository.dart';
 
-class DatabaseRepairService extends GetxService{
+class DatabaseRepairService extends GetxService {
   static const double matchThreshold = 0.75;
   static const double fieldPresenceWeight = 0.20;
   static const double valueEqualityWeight = 0.25;
@@ -15,12 +14,15 @@ class DatabaseRepairService extends GetxService{
   static const double specialValueEqualityWeight = 0.40;
   static const Set<String> alwaysIgnore = {'id', 'updatedAt'};
 
+  RosterService rosterService = Get.find<RosterService>();
+  ScheduleService scheduleService = Get.find<ScheduleService>();
+  CabinService cabinService = Get.find<CabinService>();
 
   PullRepository pullRepo = Get.find<PullRepository>();
   ContextlessRepository contextlessRepo = Get.find<ContextlessRepository>();
 
   Future<void> cleanOrphanedDependents(Commit commit, Session session) async {
-    final Map<String, Set<String>>principalDependentLinkTracker = session.principalDependentLinkTracker;
+    final Map<String, Set<String>> principalDependentLinkTracker = session.principalDependentLinkTracker;
     Set<String> deletedPrincipalIds = await pullRepo.findMissingKeys(principalDependentLinkTracker.keys.toSet());
     for (String principalId in deletedPrincipalIds) {
       commit.addObjectsToDelete(await pullRepo.getObjects(principalDependentLinkTracker[principalId]!));
@@ -64,13 +66,15 @@ class DatabaseRepairService extends GetxService{
           // contextlessRepo.pull returns null if doc doesn't exist or on error.
           throw RepairDocNotFoundError(path: path, keyInfo: documentKeyFromSource);
         }
-      } else { // id != null
+      } else {
+        // id != null
         documentKeyFromSource = id!;
         // Attempt to get the actual path for better error reporting if possible
         // This depends on PathService being accessible or if pullRepo can provide it.
         // For now, we'll just use the ID for keyInfo.
         docData = await pullRepo.getDoc(id); //
-        if (docData.isEmpty) { // pullRepo.getDoc returns {} if not found
+        if (docData.isEmpty) {
+          // pullRepo.getDoc returns {} if not found
           throw RepairDocNotFoundError(id: id, keyInfo: documentKeyFromSource);
         }
       }
@@ -80,10 +84,7 @@ class DatabaseRepairService extends GetxService{
         throw RepairIdIssue(reason: "internal_id_missing_or_null", documentKey: documentKeyFromSource);
       }
       if (docData['id'] is! String) {
-        throw RepairIdIssue(
-            reason: "internal_id_not_string",
-            documentKey: documentKeyFromSource,
-        );
+        throw RepairIdIssue(reason: "internal_id_not_string", documentKey: documentKeyFromSource);
       }
       final String internalId = docData['id'] as String;
 
@@ -91,19 +92,12 @@ class DatabaseRepairService extends GetxService{
       try {
         CoreIdValidation.simpleValidate(internalId); //
       } catch (e) {
-        throw RepairIdIssue(
-            reason: "internal_id_invalid_format",
-            internalId: internalId,
-            documentKey: documentKeyFromSource,
-        );
+        throw RepairIdIssue(reason: "internal_id_invalid_format", internalId: internalId, documentKey: documentKeyFromSource);
       }
 
       // 3. Match internal ID with document key from source (path/id)
       if (internalId != documentKeyFromSource) {
-        throw RepairIdIssue(
-            reason: "internal_id_mismatch",
-            internalId: internalId,
-            documentKey: documentKeyFromSource);
+        throw RepairIdIssue(reason: "internal_id_mismatch", internalId: internalId, documentKey: documentKeyFromSource);
       }
 
       // 4. Field count and name mismatch with templateJson
@@ -112,19 +106,22 @@ class DatabaseRepairService extends GetxService{
 
       if (docKeys.length != templateKeys.length) {
         throw RepairFieldIssue(
-            reason: "field_count_mismatch",
-            documentKey: documentKeyFromSource,
-            docKeys: docKeys,
-            templateKeys: templateKeys);
+          reason: "field_count_mismatch",
+          documentKey: documentKeyFromSource,
+          docKeys: docKeys,
+          templateKeys: templateKeys,
+        );
       }
-      if (!SetEquality().equals(docKeys, templateKeys)) { //
+      if (!SetEquality().equals(docKeys, templateKeys)) {
+        //
         final Set<String> missingInDoc = templateKeys.difference(docKeys);
         final Set<String> extraInDoc = docKeys.difference(templateKeys);
         throw RepairFieldIssue(
-            reason: "field_name_mismatch",
-            documentKey: documentKeyFromSource,
-            missingInDoc: missingInDoc,
-            extraInDoc: extraInDoc);
+          reason: "field_name_mismatch",
+          documentKey: documentKeyFromSource,
+          missingInDoc: missingInDoc,
+          extraInDoc: extraInDoc,
+        );
       }
 
       // 5. Deserialization, Type Check, Reserialization
@@ -132,63 +129,47 @@ class DatabaseRepairService extends GetxService{
       try {
         deserializedObject = CoreObject.fromJson(docData); //
       } catch (e, s) {
-        throw RepairSerializationIssue(
-            stage: "deserialization",
-            errorMessage: e.toString(),
-            documentKey: documentKeyFromSource,
-        );
+        throw RepairSerializationIssue(stage: "deserialization", errorMessage: e.toString(), documentKey: documentKeyFromSource);
       }
 
       if (deserializedObject.runtimeType != expectedType) {
         throw RepairTypeIssue(
-            expectedType: expectedType.toString(),
-            actualType: deserializedObject.runtimeType.toString(),
-            documentKey: documentKeyFromSource);
+          expectedType: expectedType.toString(),
+          actualType: deserializedObject.runtimeType.toString(),
+          documentKey: documentKeyFromSource,
+        );
       }
 
       final String objectTypeFromId = IdFunctions.getIdPart(internalId, 1); //
       if (objectTypeFromId != objectTypeStringForId) {
-        throw RepairIdIssue(
-            reason: "id_type_part_mismatch",
-            internalId: internalId,
-            documentKey: documentKeyFromSource,
-        );
+        throw RepairIdIssue(reason: "id_type_part_mismatch", internalId: internalId, documentKey: documentKeyFromSource);
       }
 
       try {
         final Map<String, dynamic> reserializedJson = deserializedObject.toJson();
         if (reserializedJson.isEmpty && docData.isNotEmpty) {
           throw RepairSerializationIssue(
-              stage: "serialization",
-              errorMessage: "Reserialization resulted in an empty map for a non-empty document.",
-              documentKey: documentKeyFromSource);
+            stage: "serialization",
+            errorMessage: "Reserialization resulted in an empty map for a non-empty document.",
+            documentKey: documentKeyFromSource,
+          );
         }
       } catch (e, s) {
-        throw RepairSerializationIssue(
-            stage: "serialization",
-            errorMessage: e.toString(),
-            documentKey: documentKeyFromSource,
-        );
+        throw RepairSerializationIssue(stage: "serialization", errorMessage: e.toString(), documentKey: documentKeyFromSource);
       }
 
       for (final key in templateKeys) {
         if (templateJson[key] != null && docData[key] == null) {
-          throw RepairFieldIssue(
-              reason: "unexpected_null_value",
-              documentKey: documentKeyFromSource,
-          );
+          throw RepairFieldIssue(reason: "unexpected_null_value", documentKey: documentKeyFromSource);
         }
       }
-
     } catch (e, st) {
       if (e is RepairException) {
         Error.throwWithStackTrace(Debug.parseException(e), st);
       }
       // For other unexpected errors during the check process itself
       String keyInfo = resolvedPath ?? id ?? "unknown_source_key";
-      throw RepairUnexpectedError(
-          errorMessage: e.toString(),
-          keyInfo: keyInfo);
+      throw RepairUnexpectedError(errorMessage: e.toString(), keyInfo: keyInfo);
     }
 
     return true; // All checks passed, document is not corrupt
@@ -231,7 +212,11 @@ class DatabaseRepairService extends GetxService{
     } else {
       String jsonACollection = IdFunctions.getIdPart(idA, 1);
       String jsonADomain = IdFunctions.getIdPart(idA, 2);
-      Map<String, dynamic>? likelyMatch = await getLikelyMatchFromCollection(jsonA: jsonA, collectionName: jsonACollection, domain: jsonADomain);
+      Map<String, dynamic>? likelyMatch = await getLikelyMatchFromCollection(
+        jsonA: jsonA,
+        collectionName: jsonACollection,
+        domain: jsonADomain,
+      );
       if (likelyMatch != null) {
         jsonB = likelyMatch;
       }
@@ -310,11 +295,11 @@ class DatabaseRepairService extends GetxService{
   }
 
   Future<Map<String, dynamic>?> getLikelyMatchFromCollection({
-    required Map <String, dynamic> jsonA,
-    required  String collectionName,
+    required Map<String, dynamic> jsonA,
+    required String collectionName,
     required String domain,
   }) async {
-    Set<Map <String, dynamic>> jsons = (await pullRepo.getDocsInCollection(collectionName, domain)).values.toSet();
+    Set<Map<String, dynamic>> jsons = (await pullRepo.getDocsInCollection(collectionName, domain)).values.toSet();
     for (var jsonB in jsons) {
       if (computeJsonSimilarity(jsonA, jsonB) >= matchThreshold) {
         Debug.logInfo('MATCHING DOC FOUND!');
@@ -341,19 +326,26 @@ class DatabaseRepairService extends GetxService{
     if (specialFields == null && fieldPresenceWeight + valueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of fieldPresenceWeight and valueEqualityWeight must be 1.0');
     } else if (specialFields != null && (specialFieldPresenceWeight == null || specialValueEqualityWeight == null)) {
-      throw ArgumentError('specialFieldPresenceWeight and specialValueEqualityWeight cannot be null if specialFields is not null');
-    } else if (specialFields != null && fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight + specialValueEqualityWeight != 1.0) {
+      throw ArgumentError(
+        'specialFieldPresenceWeight and specialValueEqualityWeight cannot be null if specialFields is not null',
+      );
+    } else if (specialFields != null &&
+        fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight + specialValueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of all weights must be 1.0');
     }
 
-    bool specialFieldsPresent = specialFields != null && specialFields.any((field) => jsonA.containsKey(field) || jsonB.containsKey(field));
+    bool specialFieldsPresent =
+        specialFields != null && specialFields.any((field) => jsonA.containsKey(field) || jsonB.containsKey(field));
 
     double effectiveFieldPresenceWeight;
     double effectiveValueEqualityWeight;
     double effectiveSpecialFieldPresenceWeight = 0;
     double effectiveSpecialValueEqualityWeight = 0;
 
-    if (specialFieldsPresent && specialFields != null && specialFieldPresenceWeight != null && specialValueEqualityWeight != null) {
+    if (specialFieldsPresent &&
+        specialFields != null &&
+        specialFieldPresenceWeight != null &&
+        specialValueEqualityWeight != null) {
       effectiveFieldPresenceWeight = fieldPresenceWeight;
       effectiveValueEqualityWeight = valueEqualityWeight;
       effectiveSpecialFieldPresenceWeight = specialFieldPresenceWeight;
@@ -379,9 +371,21 @@ class DatabaseRepairService extends GetxService{
     double specialValueEqualityIndex = 0;
 
     if (specialFieldsPresent && specialFields != null) {
-      double specialFieldPresenceIndex = compareFieldPresence(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: alwaysIgnore);
-      double specialValueEqualityIndex = compareValueEquality(jsonA: jsonA, jsonB: jsonB, limitedTo: specialFields, exclude: alwaysIgnore);
-      sum += specialFieldPresenceIndex * effectiveSpecialFieldPresenceWeight + specialValueEqualityIndex * effectiveSpecialValueEqualityWeight;
+      double specialFieldPresenceIndex = compareFieldPresence(
+        jsonA: jsonA,
+        jsonB: jsonB,
+        limitedTo: specialFields,
+        exclude: alwaysIgnore,
+      );
+      double specialValueEqualityIndex = compareValueEquality(
+        jsonA: jsonA,
+        jsonB: jsonB,
+        limitedTo: specialFields,
+        exclude: alwaysIgnore,
+      );
+      sum +=
+          specialFieldPresenceIndex * effectiveSpecialFieldPresenceWeight +
+          specialValueEqualityIndex * effectiveSpecialValueEqualityWeight;
     }
 
     return sum;
@@ -519,4 +523,48 @@ class DatabaseRepairService extends GetxService{
     return a == b;
   }
 
+  /// Queues reset operations for all camper and activity data in a single commit.
+  ///
+  /// This method resets all camper preferences and assignments and clears all
+  /// activity rosters by adding update operations to the provided [commit] batch.
+  /// It fetches the current list of campers and activities from their respective
+  /// services to ensure all documents are targeted.
+  ///
+  /// Returns `true` if the reset operations were successfully added to the
+  /// batch, and `false` if an error occurred.
+  Future<bool> resetAllAssignmentsAndPreferences({required Commit commit}) async {
+    final results = await Future.wait([
+      rosterService.registeredCampers,
+      scheduleService.amas,
+      scheduleService.getScheduledPrincipalActivitiesToNames(false),
+      cabinService.cabinDependents,
+      scheduleService.activityDependents,
+    ]);
+    final Set<Camper> allCampers = results[0] as Set<Camper>;
+    final Set<AMABlock> allAmaBlocks = results[1] as Set<AMABlock>;
+    final Set<String> scheduledPrincipalActivityIds = (results[2] as Map<String, String>).keys.toSet();
+    final Set<CabinDependent> cabins = results[3] as Set<CabinDependent>;
+    final Set<ActivityDependent> activityDependants = results[4] as Set<ActivityDependent>;
+
+    for (Camper camper in allCampers) {
+      camper.preferenceWeightRefs.clear();
+      camper.activityAssignmentRefs.clear();
+      for (String principalActivityId in scheduledPrincipalActivityIds) {
+        camper.preferenceWeightRefs[principalActivityId] = 1.0;
+      }
+      for (AMABlock block in allAmaBlocks) {
+        camper.activityAssignmentRefs[block.id] = null;
+      }
+    }
+    commit.addObjectsToPush(allCampers);
+    for (CabinDependent cabin in cabins) {
+      cabin.campersWithPreferences.clear;
+    }
+    commit.addObjectsToPush(cabins);
+    for (ActivityDependent activity in activityDependants) {
+      activity.camperRefs.clear();
+    }
+    commit.addObjectsToPush(activityDependants);
+    return true;
+  }
 }

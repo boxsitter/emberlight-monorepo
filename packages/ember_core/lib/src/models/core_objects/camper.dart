@@ -48,7 +48,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
     this.canSwim,
     Map<PrincipalActivityId, double?>? preferenceRefs,
     Map<PrincipalActivityId, double>? preferenceWeightRefs,
-    Map<AMABlockId, ActivityDependentId>? activityAssignmentRefs,
+    Map<AMABlockId, ActivityDependentId?>? activityAssignmentRefs,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -161,7 +161,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
       ultracampId: json['ultracampId'],
       preferenceRefs: (json['preferenceRefs'] as Map?)?.cast<String, double?>() ?? {},
       preferenceWeightRefs: (json['preferenceWeightRefs'] as Map?)?.cast<String, double>() ?? {},
-      activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String>() ?? {},
+      activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String?>() ?? {},
     );
     camper.overwriteCoreObjectFromJson(json);
     return camper;

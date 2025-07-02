@@ -1,2 +1,0 @@
-C:/Users/Leyto/User Projects/bessie/android/app/.cxx/Debug/6b5p1nd1/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/Leyto/User Projects/bessie/android/app/.cxx/Debug/6b5p1nd1/armeabi-v7a/CMakeFiles/rebuild_cache.dir

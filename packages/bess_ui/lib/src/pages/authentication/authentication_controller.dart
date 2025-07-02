@@ -1,4 +1,5 @@
 import 'package:ember_core/ember_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +37,7 @@ class AuthenticationController extends GetxController {
       final String password = passwordController.text;
 
       // Perform login using your Ember Core UserService
-      await userService.login(email, password, rememberMe.value);
+      await userService.login(email, password, rememberMe.value, kIsWeb);
 
       if (userService.isAuthenticated) {
         await Get.offAllNamed(BessRoutes.rosters);

@@ -191,7 +191,7 @@ class AssignmentService extends GetxService {
 
       for (final camperId in camperOrder) {
         final camper = camperMap[camperId]!;
-        await _assignBestActivityForCamper(
+        final bool assigned = await _assignBestActivityForCamper(
           commit,
           camper,
           activitiesInBlock,
@@ -201,6 +201,9 @@ class AssignmentService extends GetxService {
           assignmentPenalty: assignmentPenalty,
           nonAssignmentFriction: nonAssignmentFriction,
         );
+        if (assigned) {
+          camperMap[camperId] = commit.getObject(camperId)!;
+        }
       }
       forward = !forward; // Snake draft reversal.
     }
@@ -216,15 +219,57 @@ class AssignmentService extends GetxService {
     double? assignmentPenalty,
     double? nonAssignmentFriction,
   }) async {
-    activitiesInBlock.sort((a, b) {
+    // 1. Get the activities sorted by preference for this specific camper.
+    final List<ActivityDependent> sortedActivities = _getSortedActivitiesForCamper(
+      activitiesInBlock: activitiesInBlock,
+      camper: camper,
+      camperWorkingPrefs: camperWorkingPrefs,
+    );
+
+    // 2. Attempt to assign the camper from the now-sorted list of activities.
+    return await _attemptAssignmentFromSortedList(
+      commit: commit,
+      camper: camper,
+      sortedActivities: sortedActivities,
+      allPrincipals: allPrincipals,
+      camperWorkingPrefs: camperWorkingPrefs,
+      assignmentPenalty: assignmentPenalty,
+      nonAssignmentFriction: nonAssignmentFriction,
+    );
+  }
+
+  /// Creates a shuffled copy of activities and sorts it based on the camper's preferences.
+  List<ActivityDependent> _getSortedActivitiesForCamper({
+    required List<ActivityDependent> activitiesInBlock,
+    required Camper camper,
+    Map<PrincipalActivityId, double>? camperWorkingPrefs,
+  }) {
+    // Create a new, shuffled list for each camper to prevent mutation issues and ensure fairness.
+    final List<ActivityDependent> shuffledActivities = List.from(activitiesInBlock)..shuffle();
+
+    shuffledActivities.sort((a, b) {
       final double weightA = camperWorkingPrefs?[a.principalPar] ?? 1.0;
       final double weightB = camperWorkingPrefs?[b.principalPar] ?? 1.0;
       final double prefA = _calculateScaledPreference(camper.preferenceRefs[a.principalPar], weightA);
       final double prefB = _calculateScaledPreference(camper.preferenceRefs[b.principalPar], weightB);
-      return prefB.compareTo(prefA); // Descending sort.
-    });
 
-    for (final activityDep in activitiesInBlock) {
+      // Descending sort.
+      return prefB.compareTo(prefA);
+    });
+    return shuffledActivities;
+  }
+
+  /// Iterates through a sorted list of activities and assigns the camper to the first one with capacity.
+  Future<bool> _attemptAssignmentFromSortedList({
+    required Commit commit,
+    required Camper camper,
+    required List<ActivityDependent> sortedActivities,
+    required Map<PrincipalActivityId, PrincipalActivity> allPrincipals,
+    Map<PrincipalActivityId, double>? camperWorkingPrefs,
+    double? assignmentPenalty,
+    double? nonAssignmentFriction,
+  }) async {
+    for (final activityDep in sortedActivities) {
       final principalAct = allPrincipals[activityDep.principalPar];
       if (principalAct == null) {
         Debug.logWarning('Principal activity not found for dependent ${activityDep.id}, skipping.', verbosity: Verbosity.verbose);

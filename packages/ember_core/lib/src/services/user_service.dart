@@ -32,8 +32,8 @@ class UserService extends GetxService {
     commit.addObjectToPush(userToRegister);
   }
 
-  Future<bool> login(String email, String password, bool rememberMe) async {
-    await authRepo.loginWithEmailAndPassword(email, password, rememberMe);
+  Future<bool> login(String email, String password, bool rememberMe, bool isWeb) async {
+    await authRepo.loginWithEmailAndPassword(email, password, rememberMe,  isWeb);
     if (isAuthenticated) {
       await EmberCore.onLogin();
       FrontendManager.instance.onLogin();
