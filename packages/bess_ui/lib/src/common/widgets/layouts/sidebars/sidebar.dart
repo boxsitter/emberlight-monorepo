@@ -10,7 +10,6 @@ import '../../../constants/sizes.dart';
 import '../../../utils/device/device_utility.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../../buttons/card_button.dart';
-import '../../containers/rounded_container.dart';
 import '../../context_switcher/context_display.dart';
 import 'menu/menu_item.dart';
 
@@ -27,7 +26,7 @@ class BessSidebar extends StatelessWidget {
       child: SafeArea(
         child: Container(
           decoration: BoxDecoration(
-            color: BessColors.background,
+            color: BessColors.core,
             border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
           ),
           child: LayoutBuilder(

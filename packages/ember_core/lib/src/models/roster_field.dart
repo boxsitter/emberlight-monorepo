@@ -21,9 +21,9 @@ class RosterField implements Titled {
     this.csvHeaderAlt,
   });
 
-  static const double widthSm = 60;
+  static const double widthSm = 65;
   static const double widthMd = 100;
-  static const double widthLg = 140;
+  static const double widthLg = 160;
   static const double widthXl = 260;
 
   /// --- Static definitions for each field ---

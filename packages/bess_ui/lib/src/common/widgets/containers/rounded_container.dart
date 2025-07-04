@@ -41,13 +41,11 @@ class BessRoundedContainer extends StatelessWidget {
 
     // Use tint colors if available, otherwise fall back to the widget's
     // own properties, and finally to the hardcoded defaults.
-    final effectiveBackgroundColor =
-        tintInfo?.backgroundColor ?? backgroundColor ?? BessColors.core;
-    final effectiveBorderColor =
-        tintInfo?.borderColor ?? borderColor ?? BessColors.borderPrimary;
+    final effectiveBackgroundColor = tintInfo?.backgroundColor ?? backgroundColor ?? BessColors.core;
+    final effectiveBorderColor = tintInfo?.borderColor ?? borderColor ?? BessColors.borderPrimary;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 1),
       curve: Curves.easeOut,
       width: width,
       height: height,

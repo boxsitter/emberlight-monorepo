@@ -45,10 +45,6 @@ class BessMenuBar<T extends RouteAwareControllerMixin> extends StatelessWidget {
               buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
               child: const Text('File'),
               items: [
-                const ShadContextMenuItem(child: Text('Import From Ultracamp')),
-                divider,
-                const ShadContextMenuItem(child: Text('Export')),
-                const ShadContextMenuItem(child: Text('Print')),
                 if (fileItems != null) ...fileItems!,
               ],
             ),

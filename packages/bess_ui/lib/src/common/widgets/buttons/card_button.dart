@@ -18,6 +18,7 @@ class CardButton extends StatelessWidget {
     super.key,
     required this.child,
     this.onTap,
+    this.enabled = true,
     this.height,
     this.width,
     this.backgroundColor,
@@ -35,6 +36,8 @@ class CardButton extends StatelessWidget {
 
   /// The callback that is executed when the card is tapped.
   final VoidCallback? onTap;
+
+  final bool enabled;
 
   /// The height of the card.
   final double? height;
@@ -63,15 +66,10 @@ class CardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (onTap != null) {
-      return Buttonize(
-        onTap: onTap!,
-        baseBackgroundColor: backgroundColor,
-        baseBorderColor: borderColor,
-        baseForegroundColor: BessColors.textPrimary,
-        tintStates: tintStates,
-        tint: baseTint,
-        borderRadius: BorderRadius.circular(radius ?? BessSizes.cardRadiusLg),
+    if (enabled == false) {
+      return Tint(
+        tint: BessColors.overlay1,
+        darken: true,
         child: BessRoundedContainer(
           height: height,
           width: width,
@@ -85,9 +83,14 @@ class CardButton extends StatelessWidget {
         ),
       );
     } else {
-      return Tint(
-        tint: BessColors.overlay1,
-        darken: true,
+      return Buttonize(
+        onTap: onTap,
+        baseBackgroundColor: backgroundColor,
+        baseBorderColor: borderColor,
+        baseForegroundColor: BessColors.textPrimary,
+        tintStates: tintStates,
+        tint: baseTint,
+        enabled: enabled,
         child: BessRoundedContainer(
           height: height,
           width: width,

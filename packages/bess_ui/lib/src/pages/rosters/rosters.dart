@@ -2,7 +2,7 @@ import 'package:bess_ui/src/pages/rosters/widgets/activity_switcher.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/column_config.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/header_builders.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/roster_importer.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/rosters_table.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/table/rosters_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -45,6 +45,15 @@ BessMenuBar<RostersController> buildRostersMenuBar({
 }) {
   return BessMenuBar<RostersController>(
     externalPageController: controller,
+    fileItems: [
+      ShadContextMenuItem(child: const Text('Import From Ultracamp'), onPressed: controller.importCsv),
+      ShadSeparator.horizontal(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        color: BessColors.borderPrimary,
+      ),
+      const ShadContextMenuItem(child: Text('Export')),
+      const ShadContextMenuItem(child: Text('Print')),
+    ],
     viewItems: [
       const ShadContextMenuItem(
         leading: Icon(LucideIcons.check, color: Colors.transparent),
@@ -72,12 +81,11 @@ BessMenuBar<RostersController> buildRostersMenuBar({
                 color: BessColors.textPrimary,
               )
             : const Icon(LucideIcons.check, color: Colors.transparent),
-        enabled: controller.alternateRowColors,
       ),
       ShadContextMenuItem(
         child: const Text('Row Dividers'),
-        onPressed: controller.toggleRowDividers,
-        leading: controller.rowDividers
+        onPressed: controller.toggleRowSeparators,
+        leading: controller.rowSeparators
             ? Icon(
                 LucideIcons.check,
                 color: BessColors.textPrimary,
@@ -87,6 +95,19 @@ BessMenuBar<RostersController> buildRostersMenuBar({
                 color: Colors.transparent,
               ),
       ),
+      // ShadContextMenuItem(
+      //   child: const Text('Column Dividers'),
+      //   onPressed: controller.toggleColumnSeparators,
+      //   leading: controller.columnSeparators
+      //       ? Icon(
+      //     LucideIcons.check,
+      //     color: BessColors.textPrimary,
+      //   )
+      //       : const Icon(
+      //     LucideIcons.check,
+      //     color: Colors.transparent,
+      //   ),
+      // ),
       ShadContextMenuItem(
         child: const Text('Compact'),
         onPressed: controller.toggleCompact,

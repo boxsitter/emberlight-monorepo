@@ -53,14 +53,10 @@ class Tint extends StatelessWidget {
   Widget build(BuildContext context) {
     Color effectiveBackgroundColor = baseBackgroundColor ?? BessColors.core;
     if (tint != null) {
-      effectiveBackgroundColor =
-          BessHelperFunctions.blendColors(effectiveBackgroundColor, tint!, 60);
+      effectiveBackgroundColor = BessHelperFunctions.blendColors(effectiveBackgroundColor, tint!, 60);
     }
     if (darken) {
-      effectiveBackgroundColor = BessHelperFunctions.adjustHSL(
-          effectiveBackgroundColor,
-          luminance: -0.07,
-          saturation: 0.2);
+      effectiveBackgroundColor = BessHelperFunctions.adjustHSL(effectiveBackgroundColor, luminance: -0.07, saturation: 0.2);
     }
 
     Color effectiveBorderColor;
@@ -70,22 +66,18 @@ class Tint extends StatelessWidget {
       effectiveBorderColor = baseBorderColor ?? BessColors.borderPrimary;
     }
     if (darken) {
-      effectiveBorderColor = BessHelperFunctions.adjustHSL(effectiveBorderColor,
-          luminance: -0.07, saturation: 0.2);
+      effectiveBorderColor = BessHelperFunctions.adjustHSL(effectiveBorderColor, luminance: -0.07, saturation: 0.2);
     }
 
-    Color effectiveForegroundColor =
-        baseForegroundColor ?? BessColors.textPrimary;
+    Color effectiveForegroundColor = baseForegroundColor ?? BessColors.textPrimary;
     if (tint != null) {
       effectiveForegroundColor = tint!;
     }
     if (darken) {
-      effectiveForegroundColor = BessHelperFunctions.adjustHSL(
-          effectiveForegroundColor,
-          luminance: -0.07,
-          saturation: 0.2);
+      effectiveForegroundColor = BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: -0.07, saturation: 0.2);
     }
-    effectiveForegroundColor = BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: -0.2); // Darken the foreground slightly
+    effectiveForegroundColor =
+        BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: -0.2); // Darken the foreground slightly
 
     final tintInfo = TintInfo(
       backgroundColor: effectiveBackgroundColor,

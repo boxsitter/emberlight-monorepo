@@ -1,30 +1,29 @@
-import 'package:bess_ui/src/common/widgets/wrappers/radiance_new/radiance_ripple_new.dart';
 import 'package:bess_ui/src/common/widgets/wrappers/tint.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/helpers/helper_functions.dart';
-import 'local_pointer_data.dart';
+import '../../constants/colors.dart';
 
 typedef TintState = (bool isActive, Color? tint);
 
-class Buttonize extends StatelessWidget {
+class Buttonize extends StatefulWidget {
   const Buttonize({
     super.key,
     required this.child,
-    required this.onTap,
+    this.onTap,
     this.tint,
     this.tintStates,
     this.baseBackgroundColor,
     this.baseBorderColor,
     this.baseForegroundColor,
-    this.borderRadius,
+    this.enabled = true,
   });
 
   /// The widget that will be made interactive.
   final Widget child;
 
   /// The callback that is executed when the widget is tapped.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// The default tint to apply when no other state is active.
   final Color? tint;
@@ -42,62 +41,67 @@ class Buttonize extends StatelessWidget {
   /// The base foreground color used for tint calculations.
   final Color? baseForegroundColor;
 
-  final BorderRadius? borderRadius;
+  final bool enabled;
+
+  @override
+  State<Buttonize> createState() => _ButtonizeState();
+}
+
+class _ButtonizeState extends State<Buttonize> {
+  bool _isHovering = false;
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
-    TintState? activeState;
-    if (tintStates != null) {
-      for (final state in tintStates!) {
-        if (state.$1) {
-          activeState = state;
-          break;
+    // Determine the tint color based on the widget's state
+    Color? finalTint;
+    if (_isPressed) {
+      finalTint = BessColors.primary;
+    } else {
+      TintState? activeState;
+      if (widget.tintStates != null) {
+        for (final state in widget.tintStates!) {
+          if (state.$1) {
+            activeState = state;
+            break;
+          }
         }
       }
+      finalTint = activeState?.$2 ?? widget.tint;
     }
 
-    final activeTint = activeState?.$2 ?? tint;
-
-    return LocalPointerData(
-      builder: (
-        context,
-        isHovering,
-        isDown,
-        localPosition,
-        lastKnownClickState,
-        lastKnownPosition,
-      ) {
-        final Offset? effectivePosition = localPosition ?? lastKnownPosition;
-        final bool effectiveIsHeld = isDown ?? lastKnownClickState ?? false;
-
-        return GestureDetector(
-          onTap: onTap,
-          behavior: HitTestBehavior.translucent,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: RadianceRipple(
-              isHeld: effectiveIsHeld,
-              isHovering: isHovering,
-              tapPosition: effectivePosition,
-              borderRadius: borderRadius ?? BorderRadius.zero,
-              color: activeTint != null
-                  ? BessHelperFunctions.blendColors(
-                      activeTint,
-                      Colors.white,
-                      150,
-                    )
-                  : Colors.white,
-              child: Tint(
-                tint: activeTint,
-                baseBackgroundColor: baseBackgroundColor,
-                baseBorderColor: baseBorderColor,
-                baseForegroundColor: baseForegroundColor,
-                child: child,
-              ),
-            ),
+    if (widget.enabled != false) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        behavior: HitTestBehavior.translucent,
+        // This property helps resolve gesture conflicts with scrollables faster.
+        dragStartBehavior: DragStartBehavior.down,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _isHovering = true),
+          onExit: (_) => setState(() => _isHovering = false),
+          child: Tint(
+            darken: _isHovering && !_isPressed,
+            tint: finalTint,
+            baseBackgroundColor: widget.baseBackgroundColor,
+            baseBorderColor: widget.baseBorderColor,
+            baseForegroundColor: widget.baseForegroundColor,
+            child: widget.child,
           ),
-        );
-      },
-    );
+        ),
+      );
+    } else {
+      return Tint(
+        darken: _isHovering && !_isPressed,
+        tint: finalTint,
+        baseBackgroundColor: widget.baseBackgroundColor,
+        baseBorderColor: widget.baseBorderColor,
+        baseForegroundColor: widget.baseForegroundColor,
+        child: widget.child,
+      );
+    }
   }
 }

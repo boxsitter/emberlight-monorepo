@@ -30,7 +30,6 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
             width: 300,
             height: 40,
             decoration: BoxDecoration(
-              color: BessColors.core,
               border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
             ),
             child: Row(

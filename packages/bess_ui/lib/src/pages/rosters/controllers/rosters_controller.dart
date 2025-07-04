@@ -61,7 +61,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   bool displayAmas = false;
   bool alternateRowColors = true;
   bool highContrast = false;
-  bool rowDividers = false;
+  bool rowSeparators = false;
+  bool columnSeparators = false;
   bool compact = true;
 
   // --- Activity Switcher State ---
@@ -76,6 +77,21 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
   double minWidth = 0;
 
+  // New: GlobalKey for AnimatedList
+  // This key allows us to programmatically trigger animations (insert/remove)
+  final GlobalKey<AnimatedListState> animatedListKey = GlobalKey<AnimatedListState>();
+
+  // New: Property to store the calculated widths from LayoutBuilder in RostersTable
+  // This is important because the `removeItem` builder needs access to these widths
+  // even after the item is logically removed from the `roster` list.
+  List<double?> _adjustedDataWidths = [];
+  List<double?> get adjustedDataWidths => _adjustedDataWidths;
+
+  // New: Setter to update _adjustedDataWidths from RostersTable
+  void setAdjustedDataWidths(List<double?> widths) {
+    _adjustedDataWidths = widths;
+  }
+
   // ===========================================================================
   // Computed Properties (Getters)
   // ===========================================================================
@@ -85,12 +101,9 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       return roster;
     } else {
       return roster.where((item) {
-        final fullName =
-            item.getFieldAsString(RosterField.fullName).toLowerCase();
-        final nickname =
-            item.getFieldAsString(RosterField.preferredName).toLowerCase();
-        return fullName.contains(searchQuery.toLowerCase()) ||
-            nickname.contains(searchQuery.toLowerCase());
+        final fullName = item.getFieldAsString(RosterField.fullName).toLowerCase();
+        final nickname = item.getFieldAsString(RosterField.preferredName).toLowerCase();
+        return fullName.contains(searchQuery.toLowerCase()) || nickname.contains(searchQuery.toLowerCase());
       }).toList();
     }
   }
@@ -126,7 +139,15 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     rosterService.camperStream.then((stream) {
       _campersSubscription?.cancel();
       _campersSubscription = stream.listen((camperMap) {
-        onRosterUpdated(camperMap.values.toList());
+        // When the stream updates, we replace the entire roster.
+        // AnimatedList is not designed to animate full list replacements easily.
+        // For "least invasive", we simply update the list and call update(),
+        // which will rebuild the AnimatedList with the new initialItemCount.
+        // This means stream-driven updates will not be animated.
+        // Animations will only occur for explicit add/remove operations
+        // triggered by methods like insertRosterItem or removeRosterItemAt.
+        roster = camperMap.values.toList();
+        update();
       });
     });
   }
@@ -154,9 +175,9 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   // Public Methods
   // ===========================================================================
 
-  // --- Data Handling & Updates ---
-
-  void onRosterUpdated(List<Rosterable> newRoster) {
+  // Renamed onRosterUpdated to updateRosterData to clarify its purpose
+  // This method is primarily for full data refreshes, not individual animated changes.
+  void updateRosterData(List<Rosterable> newRoster) {
     roster = newRoster;
     update();
   }
@@ -227,7 +248,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   void setSortBy(RosterField? field) {
     sortByField = field;
-    if (field != null && sortDirection == field) sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
+    if (field != null && sortDirection == field)
+      sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
     update();
   }
 
@@ -243,30 +265,28 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   // --- Selection ---
 
-  void toggleRowSelection(Rosterable rosterable, bool? newValue) {
-    if (newValue == true) {
+  void toggleRowSelection(Rosterable rosterable) {
+    if (!selectedItems.contains(rosterable)) {
       selectedItems.add(rosterable);
-      } else {
+    } else {
       selectedItems.remove(rosterable);
     }
     update();
   }
 
-  void toggleSelectAll(bool? select) {
-    if (select! && selectedItems.isNotEmpty) {
+  void toggleSelectAll() {
+    if (selectedItems.isNotEmpty) {
       selectedItems.clear();
-    } else if (select) {
+    } else {
       selectedItems.addAll(filteredRoster);
-        } else {
-      selectedItems.clear();
-            }
+    }
     update();
-          }
+  }
 
   void invertSelection() {
     selectedItems = roster.toSet().difference(selectedItems);
     update();
-        }
+  }
 
   bool isNothingSelected() {
     return selectedItems.isEmpty;
@@ -308,8 +328,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
-  void toggleRowDividers() {
-    rowDividers = !rowDividers;
+  void toggleRowSeparators() {
+    rowSeparators = !rowSeparators;
+    update();
+  }
+
+  void toggleColumnSeparators() {
+    columnSeparators = !columnSeparators;
     update();
   }
 
@@ -469,8 +494,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     try {
       Commit commit = Commit(
           disarmRequirementsLevel: 1,
-          confirmationMessage:
-          'Are you sure you want to overwrite these activity preferences? This action cannot be undone.');
+          confirmationMessage: 'Are you sure you want to overwrite these activity preferences? This action cannot be undone.');
       for (Rosterable rosterable in selectedItems) {
         if (rosterable is Camper) {
           await preferenceService.rankRandom(commit, rosterable.id);
@@ -493,8 +517,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     try {
       Commit commit = Commit(
           disarmRequirementsLevel: 1,
-          confirmationMessage:
-          'Are you sure you want to remove these activity preferences? This action cannot be undone.');
+          confirmationMessage: 'Are you sure you want to remove these activity preferences? This action cannot be undone.');
       for (Rosterable rosterable in selectedItems) {
         if (rosterable is Camper) {
           await preferenceService.clearPreference(commit, rosterable.id);
@@ -508,20 +531,18 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       update();
     }
   }
-  
+
   Future<void> smartAssignAll() async {
     try {
       Commit commit = Commit(
           disarmRequirementsLevel: 1,
-          confirmationMessage:
-          'Are you sure you want to overwrite all camper assignments? This action cannot be undone.');
+          confirmationMessage: 'Are you sure you want to overwrite all camper assignments? This action cannot be undone.');
       bool allCampersRanked = await rosterService.allCampersRanked();
       if (allCampersRanked == false) {
         bool? confirmResult = await popupService.showConfirmationDialog(
             title: 'Confirm',
-            message:
-                'Some campers have not finished indicating their preferences yet. '
-            'Their preference for these activities will be treated as neutral which could cause fully random assignments. Are you sure you want to proceed?');
+            message: 'Some campers have not finished indicating their preferences yet. '
+                'Their preference for these activities will be treated as neutral which could cause fully random assignments. Are you sure you want to proceed?');
         if (confirmResult != true) {
           return;
         }
@@ -546,22 +567,23 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     try {
       Commit commit = Commit(
           disarmRequirementsLevel: 1,
-          confirmationMessage:
-          'Are you sure you want to overwrite selected camper assignments? This action cannot be undone.');
-      bool selectedCampersRanked = await rosterService
-          .selectedCampersRanked(selectedItems.map((r) => r.id).toSet());
+          confirmationMessage: 'Are you sure you want to overwrite selected camper assignments? This action cannot be undone.');
+      bool selectedCampersRanked = await rosterService.selectedCampersRanked(selectedItems.map((r) => r.id).toSet());
       if (selectedCampersRanked == false) {
         bool? confirmResult = await popupService.showConfirmationDialog(
             title: 'Confirm',
-            message:
-                'Some selected campers have not finished indicating their preferences yet. '
-            'Their preference for these activities will be treated as neutral which could cause fully random assignments. Are you sure you want to proceed?');
+            message: 'Some selected campers have not finished indicating their preferences yet. '
+                'Their preference for these activities will be treated as neutral which could cause fully random assignments. Are you sure you want to proceed?');
         if (confirmResult != true) {
           return;
         }
       }
       Debug.logInfo('Auto assignment starting', userMessage: 'This process could take some time, please wait');
-      await assignmentService.runAssignmentForCampers(commit: commit, camperIds: selectedItems.map((rosterable) => rosterable.id).toSet(), assignmentPenalty: 0.5, nonAssignmentFriction: 0.5);
+      await assignmentService.runAssignmentForCampers(
+          commit: commit,
+          camperIds: selectedItems.map((rosterable) => rosterable.id).toSet(),
+          assignmentPenalty: 0.5,
+          nonAssignmentFriction: 0.5);
       await commitRepo.commit(commit);
       await populateActivities();
       Debug.logSuccess('Auto assignment complete', userMessage: 'Auto assignment complete!');
@@ -584,15 +606,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     minWidth = newVal;
   }
 
-  List<String> getRowData(int rowIndex) {
-    Rosterable member = roster[rowIndex];
-    List<String> output = [];
-    for (RosterField field in fields) {
-      output.add(member.getFieldAsString(field));
-    }
-    return output;
-  }
-
   List<String> getRowDataFromItem(Rosterable rosterItem) {
     final List<String> rowData = [];
     for (final field in fields) {
@@ -611,8 +624,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
             if (activityDependent == null) {
               rowData.add('Error (not found)');
             } else {
-              final principalActivity =
-                  principalActivities[activityDependent.principalPar];
+              final principalActivity = principalActivities[activityDependent.principalPar];
               if (principalActivity == null) {
                 rowData.add('Error (no principal activity)');
               } else {
@@ -629,12 +641,10 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   Map<String, bool> getColumnsVisibility() {
-    return {
-      for (var field in RosterField.values) field.title: fields.contains(field)
-    };
+    return {for (var field in RosterField.values) field.title: fields.contains(field)};
   }
 
   bool noMatches() {
     return filteredRoster.isEmpty && searchQuery.isNotEmpty;
   }
-  }
+}

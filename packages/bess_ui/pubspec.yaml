@@ -42,7 +42,6 @@ dependencies:
   rxdart: ^0.28.0
   xterm: ^4.0.0
   ansicolor: ^2.0.3
-  data_table_2: ^2.6.0
   device_info_plus: ^11.5.0
 
   # Web Specific
