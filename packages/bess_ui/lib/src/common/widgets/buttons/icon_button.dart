@@ -11,6 +11,7 @@ class BessIconButton extends StatelessWidget {
   final IconData iconData;
   final double? size;
   final double? margin;
+  final double? radius;
 
   const BessIconButton({
     super.key,
@@ -20,6 +21,7 @@ class BessIconButton extends StatelessWidget {
     required this.iconData,
     this.size,
     this.margin = 2.0,
+    this.radius = 16.0,
   });
 
   @override
@@ -33,7 +35,7 @@ class BessIconButton extends StatelessWidget {
         tintStates: [(selected == true, BessColors.primary)],
         showBorder: selected == true,
         borderThickness: 2,
-        radius: 16,
+        radius: radius,
         padding: EdgeInsets.zero,
         backgroundColor: BessColors.core,
         borderColor: BessColors.textPrimary,

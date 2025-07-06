@@ -34,9 +34,6 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
             ),
             child: Row(
               children: [
-                SizedBox(
-                  width: 16,
-                ),
                 menuBar,
               ],
             ),

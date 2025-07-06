@@ -58,8 +58,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    Flexible(
-                      flex: 2,
+                    Expanded(
                       child: ActivityReorderableList(
                         title: 'Choice Activities',
                         orderedItemIds: controller.orderedStandardActivityIds,
@@ -71,8 +70,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
 
                     const SizedBox(width: BessSizes.spaceBtwItems),
 
-                    Flexible(
-                      flex: 2,
+                    Expanded(
                       child: ActivityReorderableList(
                         title: 'Skills Recs',
                         orderedItemIds: controller.orderedSkillsActivityIds,
@@ -80,9 +78,7 @@ class ActivityPreferencesSelectorDesktop extends StatelessWidget {
                         itemIdsToNames: controller.skillsActivityNames,
                         onReorder: controller.onReorderSkillsActivities,
                       ),
-                    ),
-
-                    const Spacer(flex: 1,),
+                    )
                   ],
                 ),
               ),

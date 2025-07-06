@@ -1,14 +1,13 @@
 import 'package:bess_ui/src/common/styles/text_styles.dart';
-import 'package:bess_ui/src/common/widgets/buttons/action_initiator.dart';
 import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
 import 'package:bess_ui/src/common/widgets/containers/titled_container.dart';
-import 'package:bess_ui/src/common/widgets/misc/card_grid_selector.dart';
 import 'package:bess_ui/src/common/widgets/misc/card_selector.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
+import '../../../common/widgets/buttons/action_initiator.dart';
 import '../../../common/widgets/misc/card_list.dart';
 import '../controllers/rosters_controller.dart';
 
@@ -22,14 +21,16 @@ class ActivitySwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<ActivityDependent>? filteredDependents = controller.selectedAma != null
+        ? controller.activityDependents.where((d) => d.blockRef == controller.selectedAma!.id).toList()
+        : null;
     return Container(
       padding: const EdgeInsets.all(BessSizes.md),
       decoration: BoxDecoration(border: BorderDirectional(bottom: BorderSide(color: BessColors.borderPrimary, width: 2))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
-            flex: 2,
+          Expanded(
             child: TitledContainer(
               title: 'Select Activity Period',
               child: CardSelector(
@@ -42,71 +43,80 @@ class ActivitySwitcher extends StatelessWidget {
             ),
           ),
           SizedBox(width: BessSizes.spaceBtwItems),
-          Flexible(
-            flex: 6,
-            child: TitledContainer(
-              title: 'Select Activity',
-              child: controller.selectedAma != null
-                  ? CardGridSelector<ActivityDependent>(
-                      items: controller.activityDependents.where((d) => d.blockRef == controller.selectedAma!.id).toList(),
-                      childAspectRatio: 6.0,
-                      columns: 2,
-                      itemBuilder: (context, item) {
-                        PrincipalActivity? principalActivity = controller.principalActivities[item.principalPar];
-                        int countAdded = controller.selectedItems.length - (controller.selectedItems.where((camper) => item.camperRefs.contains(camper.id))).length;
-                        bool? atCap = principalActivity != null
-                            ? item.camperRefs.length + countAdded > principalActivity.capacity
-                            : null;
-                        return CardButton(
-                          tintStates: atCap != null
-                              ? [
-                                  (controller.selectedActivity == item, BessColors.primary),
-                                  (atCap, BessColors.red),
-                                  (!atCap, BessColors.green)
-                                ]
-                              : null,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(principalActivity?.name ?? 'Error', style: BessTextStyles.boldCardTitle),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  if (controller.selectedItems.isNotEmpty && atCap != null && !atCap)
-                                    Text(
-                                      '$countAdded+',
-                                      overflow: TextOverflow.clip,
-                                      style: BessTextStyles.standard.copyWith(color: BessColors.green),
-                                    ),
-                                  if (controller.selectedItems.isNotEmpty && atCap != null && atCap)
-                                    Text(
-                                      '$countAdded+',
-                                      overflow: TextOverflow.clip,
-                                      style: BessTextStyles.standard.copyWith(color: BessColors.red),
-                                    ),
-                                  Text(
-                                    '${item.camperRefs.length}/${principalActivity?.capacity}',
-                                    overflow: TextOverflow.clip,
-                                    style: BessTextStyles.standardBold,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          onPressed: () => controller.setSelectedActivity(item),
-                          height: 50,
-                        );
-                      },
-                    )
-                  : Center(child: Text('Select an activity period first!', style: BessTextStyles.tableHeaderSecondary)),
-            ),
-          ),
-          SizedBox(width: BessSizes.spaceBtwItems),
-          Flexible(
-            flex: 4,
+          Expanded(
             child: Column(
               children: [
+                Expanded(
+                  child: TitledContainer(
+                    title: 'Select Activity',
+                    child: controller.selectedAma != null
+                        ? ListView.builder(
+                            clipBehavior: Clip.none,
+                            itemCount: filteredDependents!.length,
+                            itemBuilder: (context, index) {
+                              final item = filteredDependents[index];
+                              final PrincipalActivity? principalActivity = controller.principalActivities[item.principalPar];
+                              final int countAdded = controller.selectedItems.length -
+                                  (controller.selectedItems.where((camper) => item.camperRefs.contains(camper.id))).length;
+                              final bool? atCap = principalActivity != null
+                                  ? item.camperRefs.length + countAdded > principalActivity.capacity
+                                  : null;
+
+                              return Padding(
+                                // Add some vertical padding between items for better spacing
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child: CardButton(
+                                  tintStates: atCap != null
+                                      ? [
+                                          (controller.selectedActivity == item, BessColors.primary),
+                                          (atCap, BessColors.red),
+                                          (!atCap, BessColors.green)
+                                        ]
+                                      : null,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // Expanded helps prevent text overflow issues if the name is long
+                                      Expanded(
+                                        child: Text(
+                                          principalActivity?.name ?? 'Error',
+                                          style: BessTextStyles.boldCardTitle,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      // Add some spacing between the title and the capacity info
+                                      const SizedBox(width: 16),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          if (controller.selectedItems.isNotEmpty && atCap != null)
+                                            Text(
+                                              '$countAdded+',
+                                              overflow: TextOverflow.clip,
+                                              // Use the atCap boolean to decide the color
+                                              style: BessTextStyles.standard.copyWith(
+                                                color: atCap ? BessColors.red : BessColors.green,
+                                              ),
+                                            ),
+                                          const SizedBox(width: 4), // A little space for readability
+                                          Text(
+                                            '${item.camperRefs.length}/${principalActivity?.capacity}',
+                                            overflow: TextOverflow.clip,
+                                            style: BessTextStyles.standardBold,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () => controller.setSelectedActivity(item),
+                                  height: 50,
+                                ),
+                              );
+                            },
+                          )
+                        : Center(child: Text('Select an activity period first!', style: BessTextStyles.tableHeaderSecondary)),
+                  ),
+                ),
                 Expanded(
                   child: TitledContainer(
                     title: 'Summary',

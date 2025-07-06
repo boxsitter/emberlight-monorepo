@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/mixins/route_aware_controller_mixin.dart';
+import 'package:bess_ui/src/common/widgets/buttons/icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -40,6 +41,10 @@ class BessMenuBar<T extends RouteAwareControllerMixin> extends StatelessWidget {
 
           List<Widget> menuItems = [];
 
+          menuItems.add(
+            BessIconButton(iconData: internalController.sidebarHidden == true ? LucideIcons.arrowRightFromLine : LucideIcons.arrowLeftFromLine, radius: 0, margin: 0, onPressed: internalController.toggleHideSidebar,),
+          );
+          
           menuItems.add(
             ShadMenubarItem(
               buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),

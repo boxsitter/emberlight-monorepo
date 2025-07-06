@@ -54,7 +54,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   RosterField? groupByField;
 
   // --- View Settings ---
-  bool displayAmas = false;
   bool alternateRowColors = true;
   bool highContrast = false;
   bool rowSeparators = false;
@@ -86,8 +85,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   int get count => filteredRoster.length;
 
-  List<RosterField> get availableFields {
-    if (displayAmas) {
+  List<RosterField> availableFields(bool returnAmas) {
+    if (returnAmas) {
       return amas.where((ama) => !fields.contains(ama)).toList();
     }
     return RosterField.values.where((field) => !fields.contains(field)).toList();
@@ -290,11 +289,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
-  void toggleDisplayAmas() {
-    displayAmas = !displayAmas;
-    update();
-  }
-
   void toggleAlternateRowColors() {
     alternateRowColors = !alternateRowColors;
     update();
@@ -371,23 +365,18 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       Debug.logWarning('Can\'t assign selected campers');
       return;
     }
-    try {
-      assigningCamper = true;
-      update();
-      Commit commit = Commit(disarmRequirementsLevel: 0);
-      for (Rosterable rosterable in selectedItems) {
-        if (rosterable is Camper) {
-          await rosterService.assignCamperToActivity(commit, rosterable.id, selectedActivity!.id);
-        }
+    assigningCamper = true;
+    update();
+    Commit commit = Commit(disarmRequirementsLevel: 0);
+    for (Rosterable rosterable in selectedItems) {
+      if (rosterable is Camper) {
+        await rosterService.assignCamperToActivity(commit, rosterable.id, selectedActivity!.id);
       }
-      await commitRepo.commit(commit);
-      await populateActivities();
-    } catch (e, st) {
-      Error.throwWithStackTrace(Debug.parseException(e), st);
-    } finally {
-      assigningCamper = false;
-      update();
     }
+    await commitRepo.commit(commit);
+    await populateActivities();
+    assigningCamper = false;
+    update();
   }
 
   Future<void> unassignSelectedFromActivity() async {

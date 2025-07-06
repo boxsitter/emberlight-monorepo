@@ -31,8 +31,7 @@ class ColumnConfig extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Flexible(
-            flex: 2,
+          Expanded(
             child: TitledContainer(
               title: 'Visible Columns',
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
@@ -66,87 +65,84 @@ class ColumnConfig extends StatelessWidget {
             ),
           ),
           SizedBox(width: BessSizes.spaceBtwItems),
-          Flexible(
-            flex: 2,
-            child: TitledContainer(
-              title: 'Hidden Columns',
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-              trailing: BessIconSwitch(
-                iconOne: LucideIcons.circleUserRound,
-                iconTwo: LucideIcons.volleyball,
-                colorOne: BessColors.primary,
-                colorTwo: BessColors.secondary,
-                value: controller.displayAmas,
-                onToggle: () => controller.toggleDisplayAmas(),
-              ),
-              child: CardList(
-                items: controller.availableFields,
-                leadingBuilder: (Titled item) {
-                  final field = item as RosterField;
-                  return IconButton(
-                    icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
-                    onPressed: () => controller.addVisibleColumn(field),
-                    splashRadius: 20,
-                  );
-                },
-                trailingBuilder: (Titled item) {
-                  final field = item as RosterField;
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (field.allowGrouping)
-                        BessIconButton(
-                          iconData: LucideIcons.group,
-                          onPressed: () => controller.setGroupBy(field),
-                          selected: controller.groupByField == field,
-                        ),
-                      BessIconButton(
-                        iconData: controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
-                        onPressed: () => controller.setSortBy(field),
-                        selected: controller.sortByField == field,
-                      ),
-                    ],
-                  );
-                },
-              ),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: TitledContainer(
+                    title: 'Hidden Columns',
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    child: CardList(
+                      items: controller.availableFields(false),
+                      leadingBuilder: (Titled item) {
+                        final field = item as RosterField;
+                        return IconButton(
+                          icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
+                          onPressed: () => controller.addVisibleColumn(field),
+                          splashRadius: 20,
+                        );
+                      },
+                      trailingBuilder: (Titled item) {
+                        final field = item as RosterField;
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (field.allowGrouping)
+                              BessIconButton(
+                                iconData: LucideIcons.group,
+                                onPressed: () => controller.setGroupBy(field),
+                                selected: controller.groupByField == field,
+                              ),
+                            BessIconButton(
+                              iconData: controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
+                              onPressed: () => controller.setSortBy(field),
+                              selected: controller.sortByField == field,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                Expanded(
+                  child: TitledContainer(
+                    title: 'Hidden Activity Periods',
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    child: CardList(
+                      items: controller.availableFields(true),
+                      leadingBuilder: (Titled item) {
+                        final field = item as RosterField;
+                        return IconButton(
+                          icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
+                          onPressed: () => controller.addVisibleColumn(field),
+                          splashRadius: 20,
+                        );
+                      },
+                      trailingBuilder: (Titled item) {
+                        final field = item as RosterField;
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (field.allowGrouping)
+                              BessIconButton(
+                                iconData: LucideIcons.group,
+                                onPressed: () => controller.setGroupBy(field),
+                                selected: controller.groupByField == field,
+                              ),
+                            BessIconButton(
+                              iconData: controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
+                              onPressed: () => controller.setSortBy(field),
+                              selected: controller.sortByField == field,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(width: BessSizes.spaceBtwSections),
-          Flexible(
-            flex: 4,
-            // child: TitledContainer(
-            //   title: 'Presets',
-            //   child: CardGridSelector<String>(
-            //     columns: 3,
-            //     childAspectRatio: 4,
-            //     items: [
-            //       'Example Preset 1',
-            //       'Example Preset 2',
-            //       'Example Preset 3',
-            //       'Example Preset 4',
-            //       'Example Preset 5',
-            //       'Example Preset 6',
-            //       'Example Preset 7',
-            //       'Example Preset 8',
-            //       'Example Preset 9',
-            //     ],
-            //     itemBuilder: (context, item) {
-            //       return Padding(
-            //         padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
-            //         child: CardButton(
-            //           child: Center(
-            //               child: Text(
-            //             item,
-            //             style: BessTextStyles.standard,
-            //           )),
-            //           onPressed: () => {},
-            //           height: 50,
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
-            child: SizedBox(),
           ),
         ],
       ),

@@ -49,6 +49,8 @@ class RosterService extends GetxService {
       birthdate: birthdate,
       note: note,
       ultracampId: ultracampId,
+      canSwim: false,
+      arrived: false,
     );
 
     initCamperPreference(commit, camperToAdd);

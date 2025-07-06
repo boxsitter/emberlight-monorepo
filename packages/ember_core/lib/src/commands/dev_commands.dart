@@ -288,17 +288,17 @@ class InitSessionA extends EmberCommand {
     scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.natureHike.id, HardcodedSessionA.choiceActivity2Thu.id);
     scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity2Thu.id);
 
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.origami.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivityFri.id);
+    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.aggressiveCompliments.id, HardcodedSessionA.choiceActivityFri.id);
+    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.hidingFromAuthority.id, HardcodedSessionA.choiceActivityFri.id);
     scheduleService.scheduleActivity(
       commit,
-      HardcodedPrincipalActivities.birdWatching.id,
+      HardcodedPrincipalActivities.archery.id,
       HardcodedSessionA.choiceActivityFri.id,
     );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.beachWalk.id, HardcodedSessionA.choiceActivityFri.id);
+    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.fairyHouses.id, HardcodedSessionA.choiceActivityFri.id);
     scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivityFri.id);
     scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.volleyball.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.lowRopes.id, HardcodedSessionA.choiceActivityFri.id);
+    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivityFri.id);
     scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.planes.id, HardcodedSessionA.choiceActivityFri.id);
 
     await commitRepo.commit(commit);
