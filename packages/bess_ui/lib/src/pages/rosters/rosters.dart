@@ -95,34 +95,37 @@ class RostersDesktop extends StatelessWidget {
         } else if (controller.activitySwitcherOpened) {
           return ActivitySwitcher(controller: controller);
         } else {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Builder(builder: (context) {
-              if (!isGrouped) {
-                return table(constraints.maxWidth, 0);
-              } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        clipBehavior: Clip.none,
-                        itemCount: controller.rosterGroups.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              table(constraints.maxWidth, index),
-                              SizedBox(height: isExpanded(index) ? 16 : 8),
-                            ],
-                          );
-                        },
+          return ClipRect(
+            clipBehavior: Clip.hardEdge,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Builder(builder: (context) {
+                if (!isGrouped) {
+                  return table(constraints.maxWidth, 0);
+                } else {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          clipBehavior: Clip.none,
+                          itemCount: controller.rosterGroups.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                table(constraints.maxWidth, index),
+                                SizedBox(height: isExpanded(index) ? 16 : 8),
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              }
-            }),
+                    ],
+                  );
+                }
+              }),
+            ),
           );
         }
       },

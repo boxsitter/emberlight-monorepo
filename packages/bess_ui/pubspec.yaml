@@ -43,6 +43,7 @@ dependencies:
   xterm: ^4.0.0
   ansicolor: ^2.0.3
   device_info_plus: ^11.5.0
+  reorderable_grid_view: ^2.2.8
 
   # Web Specific
   web: ^1.1.1

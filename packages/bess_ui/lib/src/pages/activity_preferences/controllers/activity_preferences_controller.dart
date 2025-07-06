@@ -37,6 +37,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   bool isCamperDataLoaded = false;
   bool isActivityDataLoaded = false;
   bool saveInProgress = false;
+  bool showingSkillsRecs = false;
 
   /// Determines which data to load based on whether a cabin has been selected.
   @override
@@ -230,5 +231,10 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   Future<void> showActivityInfo(PrincipalActivityId principalActivityId) async {
     final activity = await activityPreferenceService.getPrincipalActivity(principalActivityId);
     popupService.showActivityInfo(activity);
+  }
+
+  void setShowingSkillsRecs(bool state) {
+    showingSkillsRecs = state;
+    update();
   }
 }
