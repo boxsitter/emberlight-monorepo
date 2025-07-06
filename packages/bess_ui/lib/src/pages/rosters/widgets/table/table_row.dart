@@ -1,10 +1,11 @@
+import 'package:bess_ui/src/pages/rosters/widgets/table/rosters_table_legacy.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/table/table_cell.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants/colors.dart';
 import '../../../../common/widgets/buttons/card_button.dart';
 
-class BessRow extends StatelessWidget {
+class BessTableRow extends StatelessWidget {
   final double height;
   final List<String> data;
   final List<double?>? widths;
@@ -18,6 +19,8 @@ class BessRow extends StatelessWidget {
   final bool? showHorizontalSeparator;
   final Color? separatorsColor;
   final bool toggleableRow;
+  final double indentWidth;
+  final bool showCheckbox;
 
   final Set<String> makeRed = const {
     'Unassigned',
@@ -26,7 +29,7 @@ class BessRow extends StatelessWidget {
     'No',
   };
 
-  const BessRow.BessTableRow({
+  const BessTableRow({
     super.key,
     required this.height,
     required this.data,
@@ -41,6 +44,8 @@ class BessRow extends StatelessWidget {
     this.showHorizontalSeparator,
     this.separatorsColor,
     this.toggleableRow = true,
+    this.indentWidth = 0,
+    this.showCheckbox = true,
   });
 
   @override
@@ -48,17 +53,17 @@ class BessRow extends StatelessWidget {
     final Widget dataRow = Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        // The first cell is always the checkbox
+        SizedBox(width: indentWidth),
         BessTableCell(
           width: 50,
           showVerticalSeparator: showVerticalSeparators,
           separatorColor: separatorsColor,
           padding: EdgeInsets.zero,
-          child: CheckboxCellContent(
+          child: showCheckbox ? CheckboxCellContent(
             value: isSelected,
             onChanged: onToggle,
             enabled: !toggleableRow,
-          ),
+          ) : StringCellContent(content: ''),
         ),
         // The rest are the data cells
         ...List.generate(data.length, (index) {
@@ -80,23 +85,24 @@ class BessRow extends StatelessWidget {
     );
 
     return Container(
-        height: height,
-        decoration: BoxDecoration(
-          color: toggleableRow == true ? null : color,
-          border: showHorizontalSeparator == true
-              ? BorderDirectional(bottom: BorderSide(color: separatorsColor ?? BessColors.borderPrimary, width: 1))
-              : null,
-        ),
-        child: toggleableRow == true
-            ? CardButton(
-                onTap: onToggle,
-                padding: EdgeInsets.zero,
-                radius: 0,
-                showBorder: false,
-                backgroundColor: color,
-                enabled: toggleableRow,
-                child: dataRow,
-              )
-            : dataRow);
+      height: height,
+      decoration: BoxDecoration(
+        color: toggleableRow == true ? null : color,
+        border: showHorizontalSeparator == true
+            ? BorderDirectional(bottom: BorderSide(color: separatorsColor ?? BessColors.borderPrimary, width: 1))
+            : null,
+      ),
+      child: toggleableRow == true
+          ? CardButton(
+              onPressed: onToggle,
+              padding: EdgeInsets.zero,
+              radius: 0,
+              showBorder: false,
+              backgroundColor: color,
+              enabled: toggleableRow,
+              child: dataRow,
+            )
+          : dataRow,
+    );
   }
 }

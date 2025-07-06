@@ -38,7 +38,7 @@ class DevTestingDesktop extends StatelessWidget {
               width: 600,
               height: 400,
               baseTint: BessColors.green,
-              onTap: () => {},
+              onPressed: () => {},
             ),
             SizedBox(
               width: BessSizes.spaceBtwItems,
@@ -48,7 +48,7 @@ class DevTestingDesktop extends StatelessWidget {
               width: 150,
               height: 60,
               baseTint: BessColors.green,
-              onTap: () => {},
+              onPressed: () => {},
             ),
             SizedBox(
               width: BessSizes.spaceBtwItems,
@@ -58,7 +58,7 @@ class DevTestingDesktop extends StatelessWidget {
               width: 300,
               height: 70,
               baseTint: BessColors.green,
-              onTap: () => {},
+              onPressed: () => {},
             ),
             SizedBox(
               width: BessSizes.spaceBtwItems,
@@ -72,7 +72,7 @@ class DevTestingDesktop extends StatelessWidget {
               width: 150,
               height: 30,
               baseTint: BessColors.green,
-              onTap: () => {},
+              onPressed: () => {},
               padding: EdgeInsets.all(0),
             ),
           ],

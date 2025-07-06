@@ -7,16 +7,18 @@ import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
 import '../../styles/text_styles.dart';
 
-class VerticalListReorderer extends StatelessWidget {
+class VerticalListReorderer<T> extends StatelessWidget {
   const VerticalListReorderer({
     super.key,
     this.trailingBuilder,
     required this.items,
     required this.onReorder,
+    required this.titleBuilder,
   });
 
-  final Widget? Function(Titled item)? trailingBuilder;
-  final List<Titled> items;
+  final Widget? Function(T item)? trailingBuilder;
+  final Widget? Function(T item) titleBuilder;
+  final List<T> items;
   final Function(int, int) onReorder;
 
   @override
@@ -41,20 +43,20 @@ class VerticalListReorderer extends StatelessWidget {
           child: child,
         );
       },
-      children: items.map((Titled field) {
+      children: items.map((T item) {
         return ListTile(
           tileColor: BessColors.core,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(BessSizes.cardRadiusLg),
             side: BorderSide.none,
           ),
-          key: ValueKey(field),
-          title: Text(field.displayTitle, style: BessTextStyles.standard),
+          key: ValueKey(item),
+          title: titleBuilder(item),
           leading: ReorderableDragStartListener(
-            index: items.indexOf(field),
+            index: items.indexOf(item),
             child: MouseRegion(cursor: SystemMouseCursors.grab, child: const Icon(LucideIcons.gripVertical)),
           ),
-          trailing: trailingBuilder?.call(field),
+          trailing: trailingBuilder?.call(item),
         );
       }).toList(),
     );

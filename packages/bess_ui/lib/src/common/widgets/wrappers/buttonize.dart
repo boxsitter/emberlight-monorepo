@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bess_ui/src/common/widgets/wrappers/tint.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ class Buttonize extends StatefulWidget {
   const Buttonize({
     super.key,
     required this.child,
-    this.onTap,
+    this.onPressed,
     this.tint,
     this.tintStates,
     this.baseBackgroundColor,
@@ -23,7 +25,7 @@ class Buttonize extends StatefulWidget {
   final Widget child;
 
   /// The callback that is executed when the widget is tapped.
-  final VoidCallback? onTap;
+  final VoidCallback? onPressed;
 
   /// The default tint to apply when no other state is active.
   final Color? tint;
@@ -50,6 +52,36 @@ class Buttonize extends StatefulWidget {
 class _ButtonizeState extends State<Buttonize> {
   bool _isHovering = false;
   bool _isPressed = false;
+  Timer? _pressReleaseTimer; // Added for delayed press release
+
+  @override
+  void dispose() {
+    _pressReleaseTimer?.cancel(); // Cancel any active timer to prevent memory leaks
+    super.dispose();
+  }
+
+  void _onPressDown(_) {
+    _pressReleaseTimer?.cancel(); // Cancel any existing timer if a new press starts
+    setState(() => _isPressed = true);
+  }
+
+  void _onPressUp(_) {
+    // Start a timer to delay setting _isPressed back to false
+    _pressReleaseTimer = Timer(const Duration(milliseconds: 30), () {
+      if (mounted) { // Check if the widget is still mounted before calling setState
+        setState(() => _isPressed = false);
+      }
+    });
+  }
+
+  void _onPressCancel() {
+    // Start a timer to delay setting _isPressed back to false
+    _pressReleaseTimer = Timer(const Duration(milliseconds: 30), () {
+      if (mounted) { // Check if the widget is still mounted before calling setState
+        setState(() => _isPressed = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +104,10 @@ class _ButtonizeState extends State<Buttonize> {
 
     if (widget.enabled != false) {
       return GestureDetector(
-        onTap: widget.onTap,
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: widget.onPressed,
+        onTapDown: _onPressDown, // Use the new handler for press down
+        onTapUp: _onPressUp,     // Use the new handler for press up (with delay)
+        onTapCancel: _onPressCancel, // Use the new handler for press cancel (with delay)
         behavior: HitTestBehavior.translucent,
         // This property helps resolve gesture conflicts with scrollables faster.
         dragStartBehavior: DragStartBehavior.down,

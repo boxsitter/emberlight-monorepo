@@ -20,7 +20,7 @@ class ContextDisplay extends StatelessWidget {
       backgroundColor: BessColors.element1,
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       height: 55,
-      onTap: () => showContextSwitcher(),
+      onPressed: () => showContextSwitcher(),
       showBorder: false,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

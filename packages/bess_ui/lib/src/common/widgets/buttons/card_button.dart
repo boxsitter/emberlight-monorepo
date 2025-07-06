@@ -17,7 +17,7 @@ class CardButton extends StatelessWidget {
   const CardButton({
     super.key,
     required this.child,
-    this.onTap,
+    this.onPressed,
     this.enabled = true,
     this.height,
     this.width,
@@ -35,7 +35,7 @@ class CardButton extends StatelessWidget {
   final Widget child;
 
   /// The callback that is executed when the card is tapped.
-  final VoidCallback? onTap;
+  final VoidCallback? onPressed;
 
   final bool enabled;
 
@@ -84,7 +84,7 @@ class CardButton extends StatelessWidget {
       );
     } else {
       return Buttonize(
-        onTap: onTap,
+        onPressed: onPressed,
         baseBackgroundColor: backgroundColor,
         baseBorderColor: borderColor,
         baseForegroundColor: BessColors.textPrimary,

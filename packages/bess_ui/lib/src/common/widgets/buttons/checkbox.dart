@@ -7,14 +7,14 @@ import '../../constants/colors.dart';
 class BessCheckbox extends StatelessWidget {
   final bool? value;
   final bool? tristate;
-  final VoidCallback? onTap;
+  final VoidCallback? onPressed;
   final bool enabled;
 
   const BessCheckbox({
     super.key,
     this.value,
     this.tristate = false,
-    this.onTap,
+    this.onPressed,
     this.enabled = true,
   });
 
@@ -30,13 +30,13 @@ class BessCheckbox extends StatelessWidget {
       icon = null;
     }
     return CardButton(
-      width: 19,
-      height: 19,
-      onTap: onTap,
+      width: 19.0,
+      height: 19.0,
+      onPressed: onPressed,
       tintStates: [(tinted, BessColors.primary)],
       showBorder: true,
-      borderThickness: 2,
-      radius: 5,
+      borderThickness: 2.0,
+      radius: 5.0,
       padding: EdgeInsets.zero,
       backgroundColor: tinted ? Colors.white : Colors.transparent,
       borderColor: BessColors.textPrimary,

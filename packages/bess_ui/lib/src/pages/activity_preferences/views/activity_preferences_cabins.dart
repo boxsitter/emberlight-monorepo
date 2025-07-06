@@ -56,7 +56,7 @@ class ActivityPreferencesCabinsDesktop extends StatelessWidget {
                     tintStates: [(isInProgress, BessColors.yellow), (isCompleted, BessColors.green)],
                     height: 90,
                     width: 250,
-                    onTap: () => controller.navigateToSelection(cabinId, name),
+                    onPressed: () => controller.navigateToSelection(cabinId, name),
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

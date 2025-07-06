@@ -102,7 +102,7 @@ class BessTextStyles {
 
   static final TextStyle tableHeader = TextStyle(
     fontFamily: 'Inter',
-    fontSize: 18.0,
+    fontSize: 24.0,
     color: BessColors.textPrimary,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,
@@ -110,7 +110,7 @@ class BessTextStyles {
 
   static final TextStyle tableHeaderSecondary = TextStyle(
     fontFamily: 'Inter',
-    fontSize: 17.0,
+    fontSize: 18.0,
     color: BessColors.textSecondary,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,

@@ -48,14 +48,14 @@ class CardSelector extends StatelessWidget {
           height: cardHeight,
           width: cardWidth,
           tintStates: [(isSelected, BessColors.primary), (isCompleted, BessColors.green)],
-          onTap: () => onSelectItem(item),
+          onPressed: () => onSelectItem(item),
           padding: EdgeInsets.all(8),
           child: Center(
             child: Builder(
               builder: (BuildContext context) {
                 // This 'context' is now "under" the Tint widget and can find it.
                 return Text(
-                  item.title,
+                  item.displayTitle,
                   style: BessTextStyles.standard.copyWith(
                     // This will now correctly find the foregroundColor provided by Tint.
                     color: Tint.of(context)?.foregroundColor,

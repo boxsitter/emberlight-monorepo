@@ -70,7 +70,7 @@ class BessSidebar extends StatelessWidget {
                               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                               height: 55,
                               width: 55,
-                              onTap: () => sideBarController.logOut(),
+                              onPressed: () => sideBarController.logOut(),
                               child: Icon(LucideIcons.logOut,
                                   color: BessHelperFunctions.blendColors(BessColors.textPrimary, BessColors.red, 150)),
                             ),

@@ -1,6 +1,6 @@
 import '../../../../ember_core.dart';
 
-class AMABlock extends CoreObject implements ScheduleBlock, Titled {
+class AMABlock extends CoreObject implements ScheduleBlock, Titled, RosterField {
   @override
   final String title;
   @override
@@ -30,7 +30,7 @@ class AMABlock extends CoreObject implements ScheduleBlock, Titled {
         );
 
   @override
-  String get displayTitle => '${DateTimeHelpers.dateTimeToWeekdayString(start, true)} - $title';
+  String get displayTitle => isSkillsRec == false ? '${DateTimeHelpers.dateTimeToWeekdayString(start, true)} - $title' : title;
 
   @override
   String coreToString() {
@@ -69,5 +69,22 @@ class AMABlock extends CoreObject implements ScheduleBlock, Titled {
     Debug.logInfo('Purging $id from ${this.id}');
     // TODO: implement purgeRef
   }
+
+  @override
+  String? get csvHeader => null;
+  @override
+  String? get csvHeaderAlt => null;
+  @override
+  String? get dataId => id;
+
+  @override
+  double get defaultWidth => RosterField.widthXl;
+  @override
+  String get name => title;
+  @override
+  // TODO: implement required
+  bool get required => false;
+  @override
+  bool get allowGrouping => true;
 
 }

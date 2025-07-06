@@ -94,7 +94,7 @@ class ActivitySwitcher extends StatelessWidget {
                               ),
                             ],
                           ),
-                          onTap: () => controller.setSelectedActivity(item),
+                          onPressed: () => controller.setSelectedActivity(item),
                           height: 50,
                         );
                       },

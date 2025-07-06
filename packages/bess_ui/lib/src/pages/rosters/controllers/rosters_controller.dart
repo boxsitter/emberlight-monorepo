@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bess_ui/src/common/services/popup_service.dart';
+import 'package:bess_ui/src/pages/rosters/controllers/roster_group.dart';
+import 'package:bess_ui/src/pages/rosters/controllers/table_widths.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,10 +10,7 @@ import 'package:get/get.dart';
 import '../../../common/mixins/route_aware_controller_mixin.dart';
 
 class RostersController extends GetxController with RouteAwareControllerMixin {
-  // ===========================================================================
   // Dependencies
-  // ===========================================================================
-
   final ContextService contextService = Get.find<ContextService>();
   final CabinService cabinsService = Get.find<CabinService>();
   final RosterService rosterService = Get.find<RosterService>();
@@ -23,16 +21,14 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final ScheduleService scheduleService = Get.find<ScheduleService>();
   final PopupService popupService = Get.find<PopupService>();
 
-  // ===========================================================================
   // State Variables
-  // ===========================================================================
-
   // --- Core Data ---
   List<Rosterable> roster = [];
   Set<Rosterable> selectedItems = {};
   List<AMABlock> amas = [];
   Map<PrincipalActivityId, PrincipalActivity> principalActivities = {};
   List<ActivityDependent> activityDependents = [];
+  Map<String, bool> _isRosterGroupTitleExpanded = {};
 
   // --- Search & Filtering ---
   String searchQuery = '';
@@ -53,9 +49,9 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     RosterField.age,
     RosterField.cabinName
   ];
-  RosterField? sortByField;
+  RosterField sortByField = RosterField.lastName;
   SortDirection sortDirection = SortDirection.asc;
-  RosterField? groupBy;
+  RosterField? groupByField;
 
   // --- View Settings ---
   bool displayAmas = false;
@@ -64,38 +60,18 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   bool rowSeparators = false;
   bool columnSeparators = false;
   bool compact = true;
+  bool expandedByDefault = false;
 
   // --- Activity Switcher State ---
   AMABlock? selectedAma;
   ActivityDependent? selectedActivity;
 
-  // ===========================================================================
   // Private Internal State
-  // ===========================================================================
-
   Timer? _debounce;
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
-  double minWidth = 0;
+  static const double _checkboxColumnWidth = 50.0;
 
-  // New: GlobalKey for AnimatedList
-  // This key allows us to programmatically trigger animations (insert/remove)
-  final GlobalKey<AnimatedListState> animatedListKey = GlobalKey<AnimatedListState>();
-
-  // New: Property to store the calculated widths from LayoutBuilder in RostersTable
-  // This is important because the `removeItem` builder needs access to these widths
-  // even after the item is logically removed from the `roster` list.
-  List<double?> _adjustedDataWidths = [];
-  List<double?> get adjustedDataWidths => _adjustedDataWidths;
-
-  // New: Setter to update _adjustedDataWidths from RostersTable
-  void setAdjustedDataWidths(List<double?> widths) {
-    _adjustedDataWidths = widths;
-  }
-
-  // ===========================================================================
   // Computed Properties (Getters)
-  // ===========================================================================
-
   List<Rosterable> get filteredRoster {
     if (searchQuery.isEmpty) {
       return roster;
@@ -111,27 +87,41 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   int get count => filteredRoster.length;
 
   List<RosterField> get availableFields {
+    if (displayAmas) {
+      return amas.where((ama) => !fields.contains(ama)).toList();
+    }
     return RosterField.values.where((field) => !fields.contains(field)).toList();
   }
 
-  bool? get headingCheckboxState {
-    final filteredIds = filteredRoster.map((e) => e.id).toSet();
-    if (filteredIds.isEmpty) return false;
-    final selectedFiltered = selectedItems.intersection(filteredIds);
+  List<RosterGroup> get rosterGroups {
+    if (groupByField == null) {
+      return [
+        RosterGroup(
+          title: 'All Campers',
+          items: filteredRoster,
+        )
+      ];
+    }
 
-    if (selectedFiltered.isEmpty) {
-      return false;
+    final Map<String, List<Rosterable>> groupsMap = {};
+    for (final item in filteredRoster) {
+      final groupKey = item.getFieldAsString(groupByField!);
+      groupsMap.putIfAbsent(groupKey, () => []).add(item);
     }
-    if (selectedFiltered.length == filteredIds.length) {
-      return true;
-    }
-    return null;
+
+    final List<RosterGroup> groups = groupsMap.entries.map((entry) {
+      return RosterGroup(
+        title: entry.key.isEmpty ? 'Unspecified' : entry.key,
+        groupByField: groupByField!,
+        items: entry.value,
+      );
+    }).toList();
+
+    groups.sort((a, b) => a.title.compareTo(b.title));
+    return groups;
   }
 
-  // ===========================================================================
   // Lifecycle Methods
-  // ===========================================================================
-
   @override
   void onInit() {
     super.onInit();
@@ -139,14 +129,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     rosterService.camperStream.then((stream) {
       _campersSubscription?.cancel();
       _campersSubscription = stream.listen((camperMap) {
-        // When the stream updates, we replace the entire roster.
-        // AnimatedList is not designed to animate full list replacements easily.
-        // For "least invasive", we simply update the list and call update(),
-        // which will rebuild the AnimatedList with the new initialItemCount.
-        // This means stream-driven updates will not be animated.
-        // Animations will only occur for explicit add/remove operations
-        // triggered by methods like insertRosterItem or removeRosterItemAt.
         roster = camperMap.values.toList();
+        sort(sortByField);
         update();
       });
     });
@@ -163,7 +147,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void onNavigateTo(String to, String? from) {
     Debug.logInfo('RostersController navigated to.');
     populateActivities();
-    updateMinimumWidth();
   }
 
   @override
@@ -171,17 +154,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     Debug.logInfo('RostersController navigated from.');
   }
 
-  // ===========================================================================
   // Public Methods
-  // ===========================================================================
-
-  // Renamed onRosterUpdated to updateRosterData to clarify its purpose
-  // This method is primarily for full data refreshes, not individual animated changes.
-  void updateRosterData(List<Rosterable> newRoster) {
-    roster = newRoster;
-    update();
-  }
-
   Future<void> populateActivities() async {
     populatingActivities = true;
     update();
@@ -215,7 +188,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void addVisibleColumn(RosterField field) {
     if (!fields.contains(field)) {
       fields.add(field);
-      updateMinimumWidth();
       update();
     }
   }
@@ -223,19 +195,11 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void removeVisibleColumn(RosterField field) {
     if (fields.contains(field)) {
       fields.remove(field);
-      updateMinimumWidth();
       update();
     }
   }
 
   void sort(RosterField field) {
-    if (sortByField == field) {
-      sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
-    } else {
-      sortByField = field;
-      sortDirection = SortDirection.asc;
-    }
-
     roster.sort((a, b) {
       final aValue = a.getFieldAsString(field);
       final bValue = b.getFieldAsString(field);
@@ -246,39 +210,60 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
-  void setSortBy(RosterField? field) {
+  void setSortBy(RosterField field) {
+    if (sortByField != field) {
+      sortDirection = SortDirection.asc;
+    } else {
+      sortDirection = sortDirection == SortDirection.desc ? SortDirection.asc : SortDirection.desc;
+    }
     sortByField = field;
-    if (field != null && sortDirection == field)
-      sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
-    update();
-  }
-
-  void toggleSortDirection() {
-    sortDirection = sortDirection == SortDirection.asc ? SortDirection.desc : SortDirection.asc;
+    sort(field);
     update();
   }
 
   void setGroupBy(RosterField? field) {
-    groupBy = field;
+    groupByField = (groupByField == field) ? null : field;
     update();
+  }
+
+  void toggleGroupExpanded(RosterGroup group) {
+    bool? expansionState = _isRosterGroupTitleExpanded[group.title];
+    if (expansionState == null) {
+      _isRosterGroupTitleExpanded[group.title] = !expandedByDefault;
+    } else {
+      _isRosterGroupTitleExpanded[group.title] = !expansionState;
+    }
+    update();
+  }
+
+  bool isGroupExpanded(RosterGroup group) {
+    if (rosterGroups.length == 1) {
+      return true;
+    }
+    return _isRosterGroupTitleExpanded[group.title] == null ? expandedByDefault : _isRosterGroupTitleExpanded[group.title]!;
   }
 
   // --- Selection ---
 
   void toggleRowSelection(Rosterable rosterable) {
-    if (!selectedItems.contains(rosterable)) {
-      selectedItems.add(rosterable);
-    } else {
-      selectedItems.remove(rosterable);
-    }
+    selectedItems.contains(rosterable) ? selectedItems.remove(rosterable) : selectedItems.add(rosterable);
     update();
   }
 
   void toggleSelectAll() {
-    if (selectedItems.isNotEmpty) {
-      selectedItems.clear();
-    } else {
+    if (selectedItems.isEmpty) {
       selectedItems.addAll(filteredRoster);
+    } else {
+      selectedItems.removeAll(filteredRoster);
+    }
+    update();
+  }
+
+  void toggleSelectGroup(RosterGroup group) {
+    if (selectedItems.intersection(group.items.toSet()).isEmpty) {
+      selectedItems.addAll(group.items);
+    } else {
+      selectedItems.removeAll(group.items);
     }
     update();
   }
@@ -288,17 +273,9 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     update();
   }
 
-  bool isNothingSelected() {
-    return selectedItems.isEmpty;
-  }
-
-  bool isSingleSelected() {
-    return selectedItems.length == 1;
-  }
-
-  bool isMultiSelected() {
-    return selectedItems.length > 1;
-  }
+  bool isNothingSelected() => selectedItems.isEmpty;
+  bool isSingleSelected() => selectedItems.length == 1;
+  bool isMultiSelected() => selectedItems.length > 1;
 
   // --- UI & View Toggles ---
 
@@ -345,28 +322,20 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   // --- Activity Switcher Actions ---
 
+  // Activity Switcher Actions
   void setSelectedAma(Titled block) {
     if (block is AMABlock) {
-      if (selectedAma == block) {
-        selectedAma = null;
-      } else {
-        selectedAma = block;
-      }
+      selectedAma = (selectedAma == block) ? null : block;
       update();
     }
   }
 
   void setSelectedActivity(ActivityDependent activity) {
-    if (selectedActivity == activity) {
-      selectedActivity = null;
-    } else {
-      selectedActivity = activity;
-    }
+    selectedActivity = (selectedActivity == activity) ? null : activity;
     update();
   }
 
-  // --- Core User Actions ---
-
+  // Core User Actions
   Future<void> importCsv() async {
     importingCampers = true;
     update();
@@ -594,57 +563,63 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     }
   }
 
-  // ===========================================================================
   // Helper & Utility Methods
-  // ===========================================================================
-
-  void updateMinimumWidth() {
-    double newVal = 0;
-    for (RosterField field in fields) {
-      newVal += field.defaultWidth;
+  /// Pure calculation to determine table and column widths based on available space.
+  TableWidths calculateTableWidths(double maxWidth, double indentWidth) {
+    if (fields.isEmpty) {
+      return TableWidths(adjustedDataWidths: [], actualTableWidth: _checkboxColumnWidth);
     }
-    minWidth = newVal;
+
+    final List<double> defaultDataWidths = fields.map((field) => field.defaultWidth).toList();
+    final double minDataWidthSum = defaultDataWidths.reduce((a, b) => a + b);
+    final double totalMinWidth = minDataWidthSum + _checkboxColumnWidth;
+
+    List<double> adjustedDataWidths = List.from(defaultDataWidths);
+    double actualTableWidth;
+
+    if (maxWidth >= totalMinWidth) {
+      final double excessSpace = maxWidth - totalMinWidth;
+      adjustedDataWidths[adjustedDataWidths.length - 1] += excessSpace;
+      actualTableWidth = maxWidth;
+    } else {
+      actualTableWidth = totalMinWidth;
+    }
+
+    if (groupByField != null) {
+      actualTableWidth += indentWidth;
+    }
+
+    return TableWidths(adjustedDataWidths: adjustedDataWidths, actualTableWidth: actualTableWidth);
+  }
+
+  String getActivityDependentName(Rosterable rosterItem, RosterField field) {
+    if (populatingActivities) {
+      return 'loading...';
+    }
+
+    String activityDependentId = rosterItem.getFieldAsString(field);
+    if (activityDependentId.isEmpty) {
+      return 'Unassigned';
+    }
+
+    final activityDependent = activityDependents.firstWhereOrNull((dep) => dep.id == activityDependentId);
+    if (activityDependent == null) {
+      return 'Error (not found)';
+    }
+
+    final principalActivity = principalActivities[activityDependent.principalPar];
+    return principalActivity?.name ?? 'Error (no principal)';
   }
 
   List<String> getRowDataFromItem(Rosterable rosterItem) {
     final List<String> rowData = [];
     for (final field in fields) {
-      if (field.name == 'activityPeriod') {
-        if (populatingActivities) {
-          rowData.add('loading...');
-        } else {
-          String activityDependentId = rosterItem.getFieldAsString(field);
-          if (activityDependentId.isEmpty) {
-            rowData.add('Unassigned');
-          } else {
-            final activityDependent = activityDependents.firstWhereOrNull(
-              (dep) => dep.id == activityDependentId,
-            );
-
-            if (activityDependent == null) {
-              rowData.add('Error (not found)');
-            } else {
-              final principalActivity = principalActivities[activityDependent.principalPar];
-              if (principalActivity == null) {
-                rowData.add('Error (no principal activity)');
-              } else {
-                rowData.add(principalActivity.name);
-              }
-            }
-          }
-        }
+      if (field is AMABlock) {
+        rowData.add(getActivityDependentName(rosterItem, field));
       } else {
         rowData.add(rosterItem.getFieldAsString(field));
       }
     }
     return rowData;
-  }
-
-  Map<String, bool> getColumnsVisibility() {
-    return {for (var field in RosterField.values) field.title: fields.contains(field)};
-  }
-
-  bool noMatches() {
-    return filteredRoster.isEmpty && searchQuery.isNotEmpty;
   }
 }

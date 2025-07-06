@@ -493,7 +493,7 @@ class RosterService extends GetxService {
   Future<bool> selectedCampersRanked(Set<CamperId> selectedCampers) async {
     final Set<Camper> campers = await registeredCampers;
     for (Camper camper in campers) {
-      if (camper.preferencesCompleted == false) {
+      if (camper.preferencesCompleted == false && selectedCampers.contains(camper.id)) {
         return false;
       }
     }

@@ -91,10 +91,11 @@ class CabinService extends GetxService {
     return stringSet;
   }
 
-  void createPrincipalCabin(Commit commit, String name, int capacity) {
+  void createPrincipalCabin(Commit commit, String name, int capacity, String village) {
     PrincipalCabin cabinToCreate = PrincipalCabin(
       name: name,
       capacity: capacity,
+      village: village,
     );
     commit.addObjectToPush(cabinToCreate);
   }

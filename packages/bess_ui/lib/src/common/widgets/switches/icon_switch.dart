@@ -45,7 +45,7 @@ class BessIconSwitch extends StatelessWidget {
     final double padding = (height - iconSize) / 2;
 
     return CardButton(
-      onTap: onToggle,
+      onPressed: onToggle,
       width: width,
       height: height,
       radius: 90,

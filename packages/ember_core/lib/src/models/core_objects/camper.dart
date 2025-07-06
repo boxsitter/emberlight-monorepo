@@ -114,7 +114,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
       case RosterField.preferencesCompleted:
         return preferencesCompleted == null ? 'N/A' : preferencesCompleted! ? 'Yes' : 'No';
       default:
-        if (field.name == 'activityPeriod') { // TODO: This sucks
+        if (field is AMABlock) { // TODO: This sucks
           return activityAssignmentRefs[field.dataId] ?? '';
         } else {
           return '';

@@ -86,7 +86,7 @@ class SessionManagerDesktop extends StatelessWidget {
               CardButton(
                 child: Text('Commit Changes', style: BessTextStyles.standard, maxLines: 1,),
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                onTap: () => controller.commitSelection(),
+                onPressed: () => controller.commitSelection(),
               ),
             ],
           ),

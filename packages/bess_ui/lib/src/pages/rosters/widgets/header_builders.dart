@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/common/widgets/buttons/checkbox.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -5,6 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../common/constants/colors.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/header/menu_bar.dart';
+import '../controllers/roster_group.dart';
 import '../controllers/rosters_controller.dart';
 
 List<Widget> buildRostersCenterActions({
@@ -36,6 +38,12 @@ List<Widget> buildRostersCenterActions({
       backgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.core,
       foregroundColor: controller.activitySwitcherOpened ? BessColors.textInverted : BessColors.textPrimary,
       hoverBackgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.crust,
+    ),
+    SizedBox(width: 10,),
+    BessCheckbox(
+      tristate: true,
+      value: controller.selectedItems.containsAll(controller.roster) ? true : controller.selectedItems.isEmpty ? false : null,
+      onPressed: controller.toggleSelectAll,
     ),
   ];
 }
@@ -95,19 +103,19 @@ BessMenuBar<RostersController> buildRostersMenuBar({
                 color: Colors.transparent,
               ),
       ),
-      // ShadContextMenuItem(
-      //   child: const Text('Column Dividers'),
-      //   onPressed: controller.toggleColumnSeparators,
-      //   leading: controller.columnSeparators
-      //       ? Icon(
-      //     LucideIcons.check,
-      //     color: BessColors.textPrimary,
-      //   )
-      //       : const Icon(
-      //     LucideIcons.check,
-      //     color: Colors.transparent,
-      //   ),
-      // ),
+      ShadContextMenuItem(
+        child: const Text('Column Dividers'),
+        onPressed: controller.toggleColumnSeparators,
+        leading: controller.columnSeparators
+            ? Icon(
+                LucideIcons.check,
+                color: BessColors.textPrimary,
+              )
+            : const Icon(
+                LucideIcons.check,
+                color: Colors.transparent,
+              ),
+      ),
       ShadContextMenuItem(
         child: const Text('Compact'),
         onPressed: controller.toggleCompact,
@@ -157,7 +165,7 @@ BessMenuBar<RostersController> buildRostersMenuBar({
       ),
       ShadContextMenuItem(
         child: const Text('Auto Assign'),
-        onPressed: controller.smartAssignAll,
+        onPressed: controller.autoAssignSelected,
         enabled: controller.selectedItems.isNotEmpty,
       ),
       ShadContextMenuItem(

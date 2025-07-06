@@ -1,13 +1,17 @@
+import 'package:bess_ui/src/common/widgets/buttons/checkbox.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/activity_switcher.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/column_config.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/header_builders.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/roster_importer.dart';
-import 'package:bess_ui/src/pages/rosters/widgets/table/rosters_table.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/table/data_table.dart';
+import 'package:bess_ui/src/pages/rosters/widgets/table/rosters_table_legacy.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/constants/colors.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
+import 'controllers/roster_group.dart';
 import 'controllers/rosters_controller.dart';
 
 /// A stateless widget that represents the main Rosters page.
@@ -36,7 +40,7 @@ class Rosters extends StatelessWidget {
 }
 
 class RostersDesktop extends StatelessWidget {
-  RostersDesktop({
+  const RostersDesktop({
     super.key,
     required this.controller,
   });
@@ -45,26 +49,95 @@ class RostersDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        if (controller.columnConfigOpened)
-          Flexible(
-            flex: 3,
-            child: ColumnConfig(controller: controller),
-          ),
-        if (controller.activitySwitcherOpened)
-          Flexible(
-            flex: 3,
-            child: ActivitySwitcher(controller: controller),
-          ),
-        Flexible(
-          flex: 5,
-          child: RostersTable(
-            controller: controller,
-          ),
-        ),
-      ],
+    final List<RosterGroup> groups = controller.rosterGroups;
+    final bool isGrouped = groups.length > 1;
+    final isExpanded = (int index) => controller.isGroupExpanded(groups[index]);
+
+    final table = (double constraintsMaxWidth, int index) {
+      final RosterGroup group = groups[index];
+      final groupField = group.groupByField;
+      String? headerTitle = null;
+      if (groupField != null) {
+        if (groupField is AMABlock) {
+          headerTitle = controller.getActivityDependentName(group.items.first, groupField);
+        } else {
+          headerTitle = '${group.groupByField!.displayTitle} - ${group.title}';
+        }
+      } else {
+        headerTitle = group.title;
+      }
+
+      return BessDataTable(
+        group: group,
+        fields: controller.fields,
+        selectedItems: controller.selectedItems,
+        getRowDataFromItem: (Rosterable rosterItem) => controller.getRowDataFromItem(rosterItem),
+        onToggleRowSelection: (Rosterable rosterItem) => controller.toggleRowSelection(rosterItem),
+        onToggleGroupSelection: (RosterGroup rosterGroup) => controller.toggleSelectGroup(rosterGroup),
+        onToggleGroupExpanded: (RosterGroup rosterGroup) => controller.toggleGroupExpanded(rosterGroup),
+        calculateTableWidths: controller.calculateTableWidths,
+        constraintsMaxWidth: constraintsMaxWidth,
+        alternateRowColors: controller.alternateRowColors,
+        columnSeparators: controller.columnSeparators,
+        rowSeparators: controller.rowSeparators,
+        compact: controller.compact,
+        highContrast: controller.highContrast,
+        isGrouped: isGrouped,
+        isExpanded: isExpanded(index),
+        headerTitle: headerTitle,
+      );
+    };
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            if (controller.columnConfigOpened)
+              Flexible(
+                flex: 3,
+                child: ColumnConfig(controller: controller),
+              ),
+            if (controller.activitySwitcherOpened)
+              Flexible(
+                flex: 3,
+                child: ActivitySwitcher(controller: controller),
+              ),
+            Flexible(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Builder(builder: (context) {
+                  if (!isGrouped) {
+                    return table(constraints.maxWidth, 0);
+                  } else {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            clipBehavior: Clip.none,
+                            itemCount: controller.rosterGroups.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  table(constraints.maxWidth, index),
+                                  SizedBox(height: isExpanded(index) ? 16 : 8),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                }),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

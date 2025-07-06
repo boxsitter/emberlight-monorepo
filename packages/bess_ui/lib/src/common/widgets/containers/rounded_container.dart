@@ -17,6 +17,7 @@ class BessRoundedContainer extends StatelessWidget {
   final Color? backgroundColor;
   final double borderThickness;
   final bool clipContent;
+  final double strokeAlign;
 
   const BessRoundedContainer({
     super.key,
@@ -32,6 +33,7 @@ class BessRoundedContainer extends StatelessWidget {
     this.backgroundColor,
     this.borderThickness = BessSizes.borderThicknessSm,
     this.clipContent = true,
+    this.strokeAlign = -1.0,
   });
 
   @override
@@ -57,6 +59,7 @@ class BessRoundedContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius ?? BessSizes.cardRadiusLg),
         border: showBorder
             ? Border.all(
+                strokeAlign: strokeAlign,
                 color: effectiveBorderColor,
                 width: borderThickness,
               )

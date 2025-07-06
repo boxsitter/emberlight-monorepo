@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
+import 'package:ember_core/src/hardcode/session_a/hardcoded_session_a.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:get/get.dart';
 
@@ -127,7 +128,7 @@ class ContextService extends GetxService {
         clientContext.sessionId = await pullRepo.getActiveObjectId('session', 'sea');
       }
     } else {
-      clientContext.sessionId = HardcodedDomains.testSession.id;
+      clientContext.sessionId = HardcodedSessionA.sessionA.id;
     }
   }
 

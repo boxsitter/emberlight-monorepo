@@ -9,6 +9,7 @@ class RosterField implements Titled {
   final String? dataId;
   final String? csvHeader;
   final String? csvHeaderAlt;
+  final bool allowGrouping;
 
   /// Constructor using named parameters for improved readability.
   const RosterField({
@@ -19,6 +20,7 @@ class RosterField implements Titled {
     this.dataId,
     this.csvHeader,
     this.csvHeaderAlt,
+    this.allowGrouping = false,
   });
 
   static const double widthSm = 65;
@@ -28,7 +30,7 @@ class RosterField implements Titled {
 
   /// --- Static definitions for each field ---
   static const RosterField coreId = RosterField(name: 'coreId', title: 'Bessie Id', required: false, defaultWidth: widthXl);
-  static const RosterField fullName = RosterField(name: 'fullName', title: 'Full Name', required: false, defaultWidth: widthLg);
+  static const RosterField fullName = RosterField(name: 'fullName', title: 'Full Name', required: false, defaultWidth: widthXl);
   static const RosterField firstName = RosterField(
     name: 'firstName',
     title: 'First Name',
@@ -73,6 +75,7 @@ class RosterField implements Titled {
     required: false,
     defaultWidth: widthLg,
     csvHeader: 'Cabin',
+    allowGrouping: true,
   );
   static const RosterField ultracampId = RosterField(
     name: 'ultracampId',
@@ -86,18 +89,21 @@ class RosterField implements Titled {
     title: 'Arrived',
     required: false,
     defaultWidth: widthMd,
+    allowGrouping: true,
   );
   static const RosterField canSwim = RosterField(
     name: 'canSwim',
     title: 'Can Swim',
     required: false,
     defaultWidth: widthMd,
+    allowGrouping: true,
   );
   static const RosterField preferencesCompleted = RosterField(
     name: 'preferencesCompleted',
     title: 'Prefs Complete',
     required: false,
     defaultWidth: widthLg,
+    allowGrouping: true,
   );
 
   /// A list of all possible RosterField values, similar to `Enum.values`.

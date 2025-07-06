@@ -83,7 +83,7 @@ class CheckboxCellContent extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: BessCheckbox(
-        onTap: onChanged,
+        onPressed: onChanged,
         tristate: true,
         value: value,
       ),

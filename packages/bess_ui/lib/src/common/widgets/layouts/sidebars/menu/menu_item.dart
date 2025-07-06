@@ -22,7 +22,7 @@ class BessMenuItem extends StatelessWidget {
     final menuController = Get.find<SidebarController>();
 
     return InkWell(
-      onTap: () => menuController.menuOnTap(route),
+      onTap: () => menuController.menuonPressed(route),
       onHover: (hovering) => hovering ? menuController.changeHoverItem(route) : menuController.changeHoverItem(''),
       child: Obx(
         () => Padding(

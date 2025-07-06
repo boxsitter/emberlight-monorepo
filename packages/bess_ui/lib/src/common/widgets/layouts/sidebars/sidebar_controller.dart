@@ -25,7 +25,7 @@ class SidebarController extends GetxController {
 
   bool isHovering(String route) => hoverItem.value == route;
 
-  void menuOnTap(String route) {
+  void menuonPressed(String route) {
     print('Menu on tap called!');
     Get.offNamed(route);
   }

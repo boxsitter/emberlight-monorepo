@@ -10,12 +10,14 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated, Title
   final int capacity;
   final String description;
   final bool isSkillsRec;
+  final bool isHidden;
 
   PrincipalActivity({
     required this.name,
     required this.capacity,
     required this.description,
     required this.isSkillsRec,
+    this.isHidden = false,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -38,6 +40,7 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated, Title
       'capacity': capacity,
       'description': description,
       'isSkillsRec': isSkillsRec,
+      'isHidden': isHidden,
     });
     return json;
   }
@@ -48,6 +51,7 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated, Title
       capacity: json['capacity'] as int,
       description: json['description'] as String,
       isSkillsRec: json['isSkillsRec'] as bool,
+      isHidden: json['isHidden'] != null ? json['isHidden'] as bool : false,
     );
     activity.overwriteCoreObjectFromJson(json);
     return activity;

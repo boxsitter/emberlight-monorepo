@@ -31,7 +31,7 @@ class ActionInitiator extends StatelessWidget {
   Widget build(BuildContext context) {
     if (awaiting != true && disabled != true) {
       return CardButton(
-        onTap: onPressed,
+        onPressed: onPressed,
         backgroundColor: BessColors.primary,
         child: Center(child: Text(enabledText, style: BessTextStyles.standardInverted)),
         width: width,
