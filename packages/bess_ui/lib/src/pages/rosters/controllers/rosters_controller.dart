@@ -326,6 +326,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   void setSelectedAma(Titled block) {
     if (block is AMABlock) {
       selectedAma = (selectedAma == block) ? null : block;
+      selectedActivity = null;
       update();
     }
   }
