@@ -43,7 +43,7 @@ export 'src/services/activity_preference_service.dart';
 export 'src/services/cabin_service.dart';
 export 'src/services/context_service.dart';
 export 'src/services/console_service.dart';
-export 'src/services/pdf_service.dart';
+export 'src/services/export_service.dart';
 export 'src/services/assignment_service.dart';
 export 'src/services/commit_service.dart';
 export 'src/services/schedule_service.dart';
@@ -62,6 +62,7 @@ export 'src/repositories/pull_repository.dart';
 
 
 export 'src/models/commit.dart';
+export 'src/models/roster_group.dart';
 export 'src/models/roster_field.dart';
 
 // enums

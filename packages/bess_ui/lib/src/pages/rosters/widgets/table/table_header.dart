@@ -7,7 +7,6 @@ import '../../../../common/constants/colors.dart';
 import '../../../../common/styles/text_styles.dart';
 import '../../../../common/utils/helpers/helper_functions.dart';
 import '../../../../common/widgets/buttons/checkbox.dart';
-import '../../controllers/roster_group.dart';
 
 class BessTableHeader extends StatelessWidget {
   final bool isSingle;

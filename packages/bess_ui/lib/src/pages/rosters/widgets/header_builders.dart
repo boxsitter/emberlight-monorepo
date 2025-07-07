@@ -6,7 +6,6 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../common/constants/colors.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/header/menu_bar.dart';
-import '../controllers/roster_group.dart';
 import '../controllers/rosters_controller.dart';
 
 List<Widget> buildRostersCenterActions({
@@ -59,14 +58,15 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         margin: const EdgeInsets.symmetric(vertical: 4),
         color: BessColors.borderPrimary,
       ),
-      const ShadContextMenuItem(child: Text('Export')),
-      const ShadContextMenuItem(child: Text('Print')),
+      ShadContextMenuItem(child: const Text('Export Selected As CSV'), onPressed: controller.exportSelectedAsCsv, enabled: controller.selectedItems.isNotEmpty,),
+      ShadContextMenuItem(child: const Text('Export Activity Backup'), onPressed: controller.exportCamperBackup, enabled: controller.selectedItems.isNotEmpty,),
+      //const ShadContextMenuItem(child: Text('Print')),
     ],
     viewItems: [
-      const ShadContextMenuItem(
-        leading: Icon(LucideIcons.check, color: Colors.transparent),
-        child: Text('Paginated'),
-      ),
+      // const ShadContextMenuItem(
+      //   leading: Icon(LucideIcons.check, color: Colors.transparent),
+      //   child: Text('Paginated'),
+      // ),
       ShadContextMenuItem(
         child: const Text('Alternate Row Colors'),
         onPressed: controller.toggleAlternateRowColors,
@@ -184,6 +184,19 @@ BessMenuBar<RostersController> buildRostersMenuBar({
                 ? BessTextStyles.standard.copyWith(color: BessColors.red)
                 : BessTextStyles.standardSecondary),
         onPressed: controller.unassignSelectedFromAll,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
+      ShadContextMenuItem(
+        child: Text('Clear Selected Camper Weights',
+            style: controller.isSingleSelected() || controller.isMultiSelected()
+                ? BessTextStyles.standard.copyWith(color: BessColors.red)
+                : BessTextStyles.standardSecondary),
+        onPressed: controller.resetSelectedCamperPreferenceWeights,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Swap Cabins Of Campers'),
+        onPressed: controller.swapCabinsOfSelected,
         enabled: controller.selectedItems.isNotEmpty,
       ),
       ShadSeparator.horizontal(

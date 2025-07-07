@@ -345,8 +345,8 @@ class HardcodedPrincipalActivities {
 
   static final PrincipalActivity teenSkillsRec = PrincipalActivity(
     id: 'teen_skills_rec-principal_activity-brn-zDbCdF6',
-    name: 'Fairy Houses',
-    capacity: 999,
+    name: 'Teen Skills',
+    capacity: 18,
     description: 'Ever wondered what happens when you build tiny houses out of sticks and leaves and leave them alone in the forrest?',
     isSkillsRec: false,
   );

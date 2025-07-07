@@ -7,8 +7,10 @@ class CabinService extends GetxService {
   CommitService requestService = Get.find<CommitService>();
   PullRepository pullRepo = Get.find<PullRepository>();
 
-  Future<Set<CabinDependent>> get cabinDependents async => (await pullRepo.getObjectsInCollection<CabinDependent>('cabin_dependent', 'ses')).values.toSet();
-  Future<Set<PrincipalCabin>> get principalCabins async => (await pullRepo.getObjectsInCollection<PrincipalCabin>('principal_cabin', 'brn')).values.toSet();
+  Future<Set<CabinDependent>> get cabinDependents async =>
+      (await pullRepo.getObjectsInCollection<CabinDependent>('cabin_dependent', 'ses')).values.toSet();
+  Future<Set<PrincipalCabin>> get principalCabins async =>
+      (await pullRepo.getObjectsInCollection<PrincipalCabin>('principal_cabin', 'brn')).values.toSet();
 
   Future<String?> getCabinDependentIdByName(String name, Commit commit) async {
     String? principalId = commit.queryFieldByType(PrincipalCabin, 'name', name);
@@ -21,7 +23,7 @@ class CabinService extends GetxService {
     String? output;
     if (principalId != null) {
       commit.addObjectToPush(await pullRepo.getObject(principalId));
-      output =  await pullRepo.queryField('cabin_dependent', 'ses', 'principalPar', principalId);
+      output = await pullRepo.queryField('cabin_dependent', 'ses', 'principalPar', principalId);
     }
 
     if (output != null) {
@@ -65,9 +67,7 @@ class CabinService extends GetxService {
     Set<PrincipalCabin> principalCabins = results[1] as Set<PrincipalCabin>;
     Map<CabinDependent, PrincipalCabin> output = {};
 
-    Map<String, PrincipalCabin> principalCabinsById = {
-      for (var principal in principalCabins) principal.id: principal
-    };
+    Map<String, PrincipalCabin> principalCabinsById = {for (var principal in principalCabins) principal.id: principal};
 
     for (var dependent in cabinDependents) {
       PrincipalCabin? matchingPrincipal = principalCabinsById[dependent.principalPar];
@@ -92,11 +92,7 @@ class CabinService extends GetxService {
   }
 
   void createPrincipalCabin(Commit commit, String name, int capacity, String village) {
-    PrincipalCabin cabinToCreate = PrincipalCabin(
-      name: name,
-      capacity: capacity,
-      village: village,
-    );
+    PrincipalCabin cabinToCreate = PrincipalCabin(name: name, capacity: capacity, village: village);
     commit.addObjectToPush(cabinToCreate);
   }
 
@@ -122,30 +118,89 @@ class CabinService extends GetxService {
   //   // TODO: implement this
   // }
 
-  Future<void> addCamperToCabin(Commit commit, CabinDependent cabinDependent, Camper camperToAdd) async {
-    PrincipalCabin principalCabin = commit.getObject(cabinDependent.principalPar) ?? await pullRepo.getObject(cabinDependent.principalPar);
-    if((cabinDependent.camperRefs.length + 1) > principalCabin.capacity) {
-      //TODO: Over capacity conflict
-      throw StateError('Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.name} because it will put it over capacity');
-    } else if (camperToAdd.cabinRef == null) {
-      cabinDependent.camperRefs.add(camperToAdd.id);
-      camperToAdd.cabinRef = cabinDependent.id;
-      camperToAdd.cabinName = principalCabin.name;
-      commit.addObjectToPush(cabinDependent);
-      commit.addObjectToPush(camperToAdd);
+  // packages/ember_core/lib/src/services/cabin_service.dart
+
+  /// Robustly assigns a camper to a specific cabin, handling re-assignment.
+  ///
+  /// This method ensures a consistent state by first removing the camper from
+  /// their current cabin (if any) before adding them to the new one.
+  Future<void> addCamperToCabin(Commit commit, String cabinDependentId, String camperId) async {
+    final CabinDependent cabinDependent = commit.getObject(cabinDependentId) ?? await pullRepo.getObject(cabinDependentId);
+    final PrincipalCabin principalCabin =
+        commit.getObject(cabinDependent.principalPar) ?? await pullRepo.getObject(cabinDependent.principalPar);
+    final Camper camperToAdd = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
+
+    // 2. Check if the camper is already in the target cabin. If so, do nothing.
+    if (camperToAdd.cabinRef == cabinDependentId) {
+      Debug.logInfo('Info: ${camperToAdd.fullName} is already in cabin ${principalCabin.name}. No action needed.');
+      return;
+    }
+
+    // 3. Handle re-assignment: If the camper is currently in a different cabin, remove them first.
+    if (camperToAdd.cabinRef != null) {
+      Debug.logInfo(
+        'Info: ${camperToAdd.fullName} is being moved from another cabin. Removing from old cabin first.',
+        userMessage: '${camperToAdd.fullName} is being moved to ${principalCabin.name}.',
+      );
+      final oldCabinDependent =
+          commit.getObject<CabinDependent>(camperToAdd.cabinRef!) ??
+          await pullRepo.getObject<CabinDependent>(camperToAdd.cabinRef!);
+      await removeCamperFromCabin(commit, oldCabinDependent.id, camperToAdd.id);
+    }
+
+    // // 4. Check for capacity before adding.
+    // if (cabinDependent.camperRefs.length >= principalCabin.capacity) {
+    //   throw StateError(
+    //     'Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.name} because it will put it over capacity.',
+    //   );
+    // }
+
+    // 5. Perform the assignment and update object states.
+    cabinDependent.camperRefs.add(camperToAdd.id);
+    camperToAdd.cabinRef = cabinDependent.id;
+    camperToAdd.cabinName = principalCabin.name;
+
+    // 6. Add the modified objects to the commit.
+    commit.addObjectsToPush({cabinDependent, camperToAdd});
+    Debug.logSuccess(
+      '${camperToAdd.fullName} successfully assigned to cabin ${principalCabin.name}.',
+      userMessage: 'Success! ${camperToAdd.fullName} has been assigned to ${principalCabin.name}.',
+    );
+  }
+
+  /// Robustly removes a camper from a specific cabin.
+  ///
+  /// This method enforces a consistent state by ensuring the camper is removed
+  /// from the cabin's roster AND the cabin is removed from the camper's reference.
+  Future<void> removeCamperFromCabin(Commit commit, String cabinDependentId, String camperId) async {
+    // 1. Fetch the latest state of objects from the commit or repo.
+    final CabinDependent cabinDep = commit.getObject(cabinDependentId) ?? await pullRepo.getObject(cabinDependentId);
+    final Camper camperToRemove = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
+
+    bool cabinChanged = false;
+    bool camperChanged = false;
+
+    // 2. Unconditionally remove the reference from the cabin's roster.
+    if (cabinDep.camperRefs.remove(camperToRemove.id)) {
+      cabinChanged = true;
+    }
+
+    // 3. Unconditionally remove the reference from the camper's assignment.
+    if (camperToRemove.cabinRef != null) {
+      camperToRemove.cabinRef = null;
+      camperToRemove.cabinName = null;
+      camperChanged = true;
+    }
+
+    // 4. If any change occurred, add the affected objects to the commit.
+    if (camperChanged || cabinChanged) {
+      commit.addObjectsToPush({if (camperChanged) camperToRemove, if (cabinChanged) cabinDep});
+      Debug.logSuccess(
+        '${camperToRemove.fullName} removed from cabin. State synchronized.',
+        userMessage: 'Success! ${camperToRemove.fullName} has been removed from their cabin.',
+      );
     } else {
-      removeCamperFromCabin(commit, cabinDependent, camperToAdd);
-      addCamperToCabin(commit, cabinDependent, camperToAdd);
+      Debug.logInfo('Info: Attempted to remove ${camperToRemove.fullName} from cabin, but no assignment links were found.');
     }
   }
-
-  void removeCamperFromCabin(Commit commit, CabinDependent cabinDependent, Camper camperToRemove) {
-    cabinDependent.camperRefs.remove(camperToRemove.id);
-    camperToRemove.cabinRef = null;
-    camperToRemove.cabinName = null;
-    commit.addObjectToPush(cabinDependent);
-    commit.addObjectToPush(camperToRemove);
-  }
-
-
 }

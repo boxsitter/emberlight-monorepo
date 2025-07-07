@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:csv/csv.dart';
@@ -59,8 +60,7 @@ class RosterService extends GetxService {
 
     try {
       if (cabinRef != null) {
-        CabinDependent cabinDependent = commit.getObject(cabinRef) ?? await pullRepo.getObject(cabinRef);
-        await cabinsService.addCamperToCabin(commit, cabinDependent, camperToAdd);
+        await cabinsService.addCamperToCabin(commit, cabinRef, camperToAdd.id);
       }
     } on Exception catch (e) {
       throw CamperRegistrationError(
@@ -305,7 +305,12 @@ class RosterService extends GetxService {
   /// Attempts to assign a specific camper to a specific activity.
   /// This method is designed to be robust, handling re-assignment and correcting inconsistent states.
   /// Returns true if the assignment was successful.
-  Future<bool> assignCamperToActivity(Commit commit, String camperId, String activityDepId) async {
+  Future<bool> assignCamperToActivity(
+    Commit commit,
+    String camperId,
+    String activityDepId,
+    bool preventReassignmentIfAssigned,
+  ) async {
     // 1. Fetch all necessary objects, prioritizing the commit cache.
     Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
     ActivityDependent activityDep =
@@ -317,7 +322,16 @@ class RosterService extends GetxService {
     final String activityName = principalActivity.name;
     final String blockId = activityDep.blockRef;
 
-    // 2. Handle potential reassignment within the same block.
+    // 2. Handle new flag to prevent re-assignment.
+    if (preventReassignmentIfAssigned && camper.activityAssignmentRefs[blockId] != null) {
+      Debug.logInfo(
+        'Info: ${camper.fullName} is already assigned in block $blockId. Assignment to $activityName ($activityDepId) is prevented.',
+        userMessage: '${camper.fullName} is already assigned in this block. Assignment skipped.',
+      );
+      return false; // Indicate that no assignment was made.
+    }
+
+    // 3. Handle potential reassignment within the same block.
     final String? currentAssignedActivityId = camper.activityAssignmentRefs[blockId];
     if (currentAssignedActivityId != null && currentAssignedActivityId != activityDepId) {
       Debug.logInfo(
@@ -334,7 +348,6 @@ class RosterService extends GetxService {
       }
       // IMPORTANT: Re-fetch the camper object as it was just modified in the commit.
       camper = commit.getObject<Camper>(camperId)!;
-      activityDep = commit.getObject<ActivityDependent>(activityDepId)!;
     }
 
     // 3. Perform the robust assignment, ensuring state consistency.
@@ -500,5 +513,34 @@ class RosterService extends GetxService {
       }
     }
     return true;
+  }
+
+  Future<void> resetCamperPreferenceWeights(Commit commit, CamperId camperId) async {
+    final Schedule schedule = commit.getObjectOfType<Schedule>() ?? await clientContextService.schedule;
+    final Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+
+    for (final activityRef in schedule.principalActivityRefs) {
+      camper.preferenceWeightRefs[activityRef] = 1.0;
+    }
+    commit.addObjectToPush(camper);
+    commit.addObjectToPush(schedule);
+  }
+
+  Future<String> backupSelectedCampers(Set<CamperId> selectedCamperIds) async {
+    final allCampers = await registeredCampers;
+    final List<Map<String, dynamic>> backupData = [];
+
+    final selectedCampers = allCampers.where((camper) => selectedCamperIds.contains(camper.id));
+
+    for (final camper in selectedCampers) {
+      backupData.add({
+        'id': camper.id,
+        'preferenceRefs': camper.preferenceRefs,
+        'preferenceWeightRefs': camper.preferenceWeightRefs,
+        'activityAssignmentRefs': camper.activityAssignmentRefs,
+      });
+    }
+
+    return jsonEncode(backupData);
   }
 }

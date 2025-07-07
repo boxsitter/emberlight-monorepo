@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:bess_ui/src/common/services/popup_service.dart';
-import 'package:bess_ui/src/pages/rosters/controllers/roster_group.dart';
 import 'package:bess_ui/src/pages/rosters/controllers/table_widths.dart';
 import 'package:ember_core/ember_core.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +27,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   // --- Core Data ---
   List<Rosterable> roster = [];
   Set<Rosterable> selectedItems = {};
-  List<AMABlock> amas = [];
+  List<AMABlock> _amas = [];
   Map<PrincipalActivityId, PrincipalActivity> principalActivities = {};
   List<ActivityDependent> activityDependents = [];
   Map<String, bool> _isRosterGroupTitleExpanded = {};
@@ -60,6 +62,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   bool columnSeparators = false;
   bool compact = true;
   bool expandedByDefault = false;
+  bool safeAssign = true;
 
   // --- Activity Switcher State ---
   AMABlock? selectedAma;
@@ -71,6 +74,11 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   static const double _checkboxColumnWidth = 50.0;
 
   // Computed Properties (Getters)
+  List<AMABlock> get amas {
+    _amas.sort((a, b) => a.start.compareTo(b.start));
+    return _amas;
+  }
+
   List<Rosterable> get filteredRoster {
     if (searchQuery.isEmpty) {
       return roster;
@@ -158,7 +166,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     populatingActivities = true;
     update();
     final List<dynamic> activityData = (await scheduleService.getActivityData());
-    amas = (activityData[0] as Set<AMABlock>).toList();
+    _amas = (activityData[0] as Set<AMABlock>).toList();
     principalActivities = (activityData[2] as Map<PrincipalActivityId, PrincipalActivity>);
     activityDependents = (activityData[1] as Set<ActivityDependent>).toList();
     populatingActivities = false;
@@ -346,6 +354,48 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     }
   }
 
+  Future<void> exportCamperBackup() async {
+    if (selectedItems.isEmpty) {
+      Get.snackbar('No Campers Selected', 'Please select at least one camper to back up.');
+      return;
+    }
+
+    // 1. Get the JSON string from the service
+    final String jsonBackup = await rosterService.backupSelectedCampers(selectedItems.map((rosterable) => rosterable.id).toSet());
+
+    // 2. Convert the string to bytes (UTF-8)
+    final Uint8List bytes = utf8.encode(jsonBackup);
+
+    // 3. Use file_saver to open the save dialog
+    final String fileName = 'camper_backup_${DateTime.now().toIso8601String()}.json';
+    await FileSaver.instance.saveFile(name: fileName, bytes: bytes, ext: 'json', mimeType: MimeType.json);
+  }
+
+  // Updated method for RostersController
+  Future<void> exportSelectedAsCsv() async {
+    if (selectedItems.isEmpty) {
+      Get.snackbar('No Campers Selected', 'Please select campers to export.');
+      return;
+    }
+
+    final String csvData = ExportService.exportToCsv(
+      groups: rosterGroups,
+      columns: fields,
+      activityDependents: activityDependents,
+      principalActivities: principalActivities,
+      selectedItems: selectedItems, // Simply pass the selected items
+    );
+
+    final Uint8List bytes = utf8.encode(csvData);
+    final String fileName = 'roster_export_${DateTime.now().toIso8601String()}';
+    await FileSaver.instance.saveFile(
+      name: fileName,
+      bytes: bytes,
+      ext: 'csv',
+      mimeType: MimeType.csv,
+    );
+  }
+
   Future<void> deleteSelected() async {
     try {
       Commit commit = Commit(
@@ -370,7 +420,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     Commit commit = Commit(disarmRequirementsLevel: 0);
     for (Rosterable rosterable in selectedItems) {
       if (rosterable is Camper) {
-        await rosterService.assignCamperToActivity(commit, rosterable.id, selectedActivity!.id);
+        await rosterService.assignCamperToActivity(commit, rosterable.id, selectedActivity!.id, false);
       }
     }
     await commitRepo.commit(commit);
@@ -445,6 +495,24 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     }
   }
 
+  Future<void> resetSelectedCamperPreferenceWeights() async {
+    if (selectedItems.isEmpty) {
+      Debug.logWarning('Can\'t reset selected campers');
+      return;
+    }
+    Commit commit = Commit(
+        disarmRequirementsLevel: 1,
+        confirmationMessage: 'Are you sure you want to reset the campers\' weights? This action cannot be undone.');
+    for (Rosterable rosterable in selectedItems) {
+      if (rosterable is Camper) {
+        await rosterService.resetCamperPreferenceWeights(commit, rosterable.id);
+      }
+    }
+    await commitRepo.commit(commit);
+    await populateActivities();
+    update();
+  }
+
   Future<void> rankRandomSelected() async {
     if (selectedItems.isEmpty) {
       Debug.logWarning('Can\'t rank selected campers');
@@ -507,7 +575,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
         }
       }
       Debug.logInfo('Auto assignment starting', userMessage: 'This process could take some time, please wait');
-      await assignmentService.runAssignmentAlgorithm(commit: commit, assignmentPenalty: 0.5, nonAssignmentFriction: 0.5);
+      await assignmentService.runAssignmentAlgorithm(
+        commit: commit,
+        assignedActivityWeight: 0.2, // The weight is SET to this value
+        weightRecoveryRate: 0.05, // How much it recovers each round
+        preventReassignmentIfAssigned: safeAssign,
+      );
       await commitRepo.commit(commit);
       await populateActivities();
       Debug.logSuccess('Auto assignment complete', userMessage: 'Auto assignment complete!');
@@ -539,10 +612,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       }
       Debug.logInfo('Auto assignment starting', userMessage: 'This process could take some time, please wait');
       await assignmentService.runAssignmentForCampers(
-          commit: commit,
-          camperIds: selectedItems.map((rosterable) => rosterable.id).toSet(),
-          assignmentPenalty: 0.5,
-          nonAssignmentFriction: 0.5);
+        commit: commit,
+        camperIds: selectedItems.map((rosterable) => rosterable.id).toSet(),
+        assignedActivityWeight: 0.2, // The weight is SET to this value
+        weightRecoveryRate: 0.05, // How much it recovers each round
+        preventReassignmentIfAssigned: safeAssign,
+      );
       await commitRepo.commit(commit);
       await populateActivities();
       Debug.logSuccess('Auto assignment complete', userMessage: 'Auto assignment complete!');
@@ -551,6 +626,77 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     } finally {
       update();
     }
+  }
+
+  Future<void> swapCabinsOfSelected() async {
+    // 1. --- VALIDATION ---
+    // A. Ensure items are selected.
+    if (selectedItems.isEmpty) {
+      Debug.logWarning('No campers selected');
+      return;
+    }
+
+    final List<Camper> selectedCampers = [];
+    final Set<CabinId> cabinIds = {};
+
+    // B. Ensure all selected items are campers and are in a cabin.
+    for (final item in selectedItems) {
+      if (item is! Camper) {
+        Debug.logWarning('Invalid Selection');
+        return;
+      }
+      if (item.cabinRef == null) {
+        Debug.logWarning('Invalid Selection');
+        return;
+      }
+      selectedCampers.add(item);
+      cabinIds.add(item.cabinRef!);
+    }
+
+    // C. Ensure there are exactly two cabins among the selected campers.
+    if (cabinIds.length != 2) {
+      Debug.logWarning('Invalid Selection');
+      return;
+    }
+
+    // 2. --- PREPARATION ---
+    assigningCamper = true;
+    update();
+
+    // Keep track of original selection to re-select after roster refresh
+    final originalSelectedIds = selectedItems.map((e) => e.id).toSet();
+
+    // Group campers by their respective cabins.
+    final cabin1Id = cabinIds.first;
+    final cabin2Id = cabinIds.last;
+    final List<Camper> campersInCabin1 = selectedCampers.where((c) => c.cabinRef == cabin1Id).toList();
+    final List<Camper> campersInCabin2 = selectedCampers.where((c) => c.cabinRef == cabin2Id).toList();
+
+    final commit = Commit(disarmRequirementsLevel: 0);
+
+    // 3. --- EXECUTION ---
+    // Add campers from cabin 1 to cabin 2. The service handles the removal.
+    for (final camper in campersInCabin1) {
+      await cabinsService.addCamperToCabin(commit, cabin2Id, camper.id);
+    }
+    // Add campers from cabin 2 to cabin 1.
+    for (final camper in campersInCabin2) {
+      await cabinsService.addCamperToCabin(commit, cabin1Id, camper.id);
+    }
+
+    await commitRepo.commit(commit);
+    Debug.logSuccess('Swap Successful!');
+
+    // 4. --- STATE REFRESH ---
+    update();
+    selectedItems.clear();
+    for (final rosterable in roster) {
+      if (originalSelectedIds.contains(rosterable.id)) {
+        selectedItems.add(rosterable);
+      }
+    }
+    assigningCamper = false;
+    update();
   }
 
   // Helper & Utility Methods

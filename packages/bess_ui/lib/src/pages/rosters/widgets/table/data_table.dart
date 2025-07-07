@@ -7,7 +7,6 @@ import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants/colors.dart';
-import '../../controllers/roster_group.dart';
 import '../../controllers/table_widths.dart';
 
 class BessDataTable extends StatelessWidget {

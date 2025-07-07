@@ -11,13 +11,14 @@ class ModelHelperFunctions {
     // Use the 'every' method to iterate through each id in the set.
     // 'every' returns true only if the provided condition is true for ALL elements.
     return schedule.principalActivityRefs.every((id) {
+      final isTeenSkills = id == 'teen_skills_rec-principal_activity-brn-zDbCdF6'; // TODO: EW EW EW FIX THIS SHIT
       // Check 1: Key exists in preferenceRefs AND its value is not null.
       final hasNonNullPreference = camper.preferenceRefs.containsKey(
-          id) && camper.preferenceRefs[id] != null;
+          id) && camper.preferenceRefs[id] != null || isTeenSkills;
 
       // Check 2: Key exists in preferenceWeightRefs.
       // (No need to check for null value here as the map type is <PrincipalActivityId, double>)
-      final hasWeight = camper.preferenceWeightRefs.containsKey(id);
+      final hasWeight = camper.preferenceWeightRefs.containsKey(id) || isTeenSkills;
 
       // The condition for 'every' returns true only if both checks pass for the current id.
       return hasNonNullPreference && hasWeight;
