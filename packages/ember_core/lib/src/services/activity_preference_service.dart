@@ -35,10 +35,6 @@ class ActivityPreferenceService extends GetxService {
     required double? preference,
   }) async {
     Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
-
-    if (!camper.preferenceRefs.containsKey(principalActivityId)) {
-      throw StateError('Tried to set preference for an activity that does not exist in the schedule (not in camper.preferenceRefs)');
-    }
     camper.preferenceRefs[principalActivityId] = preference;
 
     commit.addObjectToPush(camper);
