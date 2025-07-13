@@ -1,9 +1,11 @@
+import 'package:bess_ui/src/common/controllers/user_controller.dart';
 import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+import '../../../controllers/user_controller.dart';
 import '../../../routes/routes.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/sizes.dart';
@@ -19,16 +21,19 @@ class BessSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sideBarController = Get.find<SidebarController>();
+    final UserController userController = Get.find<UserController>();
     final menuBarController = Get.find<MenuBarController>();
     return Drawer(
-      width: 300,
-      shape: BessDeviceUtils.isDesktopScreen(context) ? const BeveledRectangleBorder() : null,
+      shape: BoxBorder.all(color: Colors.transparent),
+      width: 265,
       child: SafeArea(
         child: Container(
           decoration: BoxDecoration(
             color: BessColors.core,
             border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
+            borderRadius: BorderRadius.zero,
           ),
+
           child: LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
@@ -45,19 +50,17 @@ class BessSidebar extends StatelessWidget {
                           children: [
                             const BessMenuItem(route: BessRoutes.rosters, icon: LucideIcons.bookUser, itemName: 'Rosters'),
                             const BessMenuItem(
-                                route: BessRoutes.activityPreferencesCabins,
+                                route: BessRoutes.activityPreferences,
                                 icon: LucideIcons.listOrdered,
                                 itemName: 'Activity Preferences'),
-                            const BessMenuItem(route: BessRoutes.schedulePage, icon: LucideIcons.columns3, itemName: 'Schedule'),
+                            // const BessMenuItem(route: BessRoutes.schedulePage, icon: LucideIcons.columns3, itemName: 'Schedule'),
                             const BessMenuItem(
                                 route: BessRoutes.sessionManager, icon: LucideIcons.calendarCog, itemName: 'Session Manager'),
                             // const BessMenuItem(
-                            //     route: BessRoutes.console,
-                            //     icon: LucideIcons.flameKindling,
-                            //     itemName: 'Branch Manager'),
+                            //     route: BessRoutes.branchManager, icon: LucideIcons.flameKindling, itemName: 'Branch Manager'),
                             const BessMenuItem(route: BessRoutes.console, icon: LucideIcons.squareTerminal, itemName: 'Console'),
-                            const BessMenuItem(
-                                route: BessRoutes.dev_testing, icon: LucideIcons.flaskConical, itemName: 'Dev Testing'),
+                            // const BessMenuItem(
+                            //     route: BessRoutes.dev_testing, icon: LucideIcons.flaskConical, itemName: 'Dev Testing'),
                           ],
                         ),
                         const Spacer(),

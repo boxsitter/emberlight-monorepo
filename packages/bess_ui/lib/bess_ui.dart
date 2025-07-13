@@ -1,6 +1,7 @@
 library;
 
 import 'package:bess_ui/src/bessie_flutter_app.dart';
+import 'package:bess_ui/src/common/controllers/user_controller.dart';
 import 'package:bess_ui/src/common/routes/navigation_observer.dart';
 import 'package:bess_ui/src/common/services/popup_service.dart';
 import 'package:bess_ui/src/common/widgets/context_switcher/controller/session_selector_controller.dart';
@@ -39,16 +40,11 @@ class BessUi implements CoreFrontend{
     Get.put(HeaderController(), permanent: true);
     Get.put(RostersController(), permanent: true);
     Get.put(SessionSelectorController(), permanent: true);
+    Get.put(UserController(), permanent: true);
   }
 
   @override
   void onNewContext() {
-    Get.delete<ConsoleController>();
-    Get.delete<SidebarController>();
-    Get.delete<RostersController>();
-    Get.delete<SessionManagerController>();
-    Get.delete<ActivityPreferencesController>();
-    Get.delete<SchedulePageController>();
   }
 
   static void launchFlutterApp() {

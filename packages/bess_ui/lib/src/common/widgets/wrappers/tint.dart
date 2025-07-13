@@ -2,6 +2,10 @@ import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:bess_ui/src/common/constants/colors.dart';
 
+/// A type definition for a tinting condition.
+/// The first element is an `isActive` flag, and the second is the `Color` to apply if active.
+typedef TintCondition = (bool, Color?);
+
 class TintInfo {
   final Color backgroundColor;
   final Color borderColor;
@@ -29,7 +33,7 @@ class _TintData extends InheritedWidget {
 
 class Tint extends StatelessWidget {
   final Widget child;
-  final Color? tint;
+  final List<TintCondition>? tintConditions;
   final bool darken;
   final Color? baseBackgroundColor;
   final Color? baseBorderColor;
@@ -38,7 +42,7 @@ class Tint extends StatelessWidget {
   const Tint({
     super.key,
     required this.child,
-    this.tint,
+    this.tintConditions,
     this.darken = false,
     this.baseBackgroundColor,
     this.baseBorderColor,
@@ -51,33 +55,44 @@ class Tint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Find the first active tint color from the conditions list.
+    Color? activeTint;
+    if (tintConditions != null) {
+      for (final condition in tintConditions!) {
+        if (condition.$1) {
+          activeTint = condition.$2;
+          break; // Use the first active tint found
+        }
+      }
+    }
+
+    // --- Calculate Background Color ---
     Color effectiveBackgroundColor = baseBackgroundColor ?? BessColors.core;
-    if (tint != null) {
-      effectiveBackgroundColor = BessHelperFunctions.blendColors(effectiveBackgroundColor, tint!, 60);
+    if (activeTint != null) {
+      effectiveBackgroundColor =
+          BessHelperFunctions.blendColors(effectiveBackgroundColor, activeTint, 60);
     }
     if (darken) {
       effectiveBackgroundColor = BessHelperFunctions.adjustHSL(effectiveBackgroundColor, luminance: -0.07, saturation: 0.2);
     }
 
-    Color effectiveBorderColor;
-    if (tint != null) {
-      effectiveBorderColor = tint!;
-    } else {
-      effectiveBorderColor = baseBorderColor ?? BessColors.borderPrimary;
-    }
+    // --- Calculate Border Color ---
+    Color effectiveBorderColor =
+        activeTint ?? baseBorderColor ?? BessColors.borderPrimary;
     if (darken) {
       effectiveBorderColor = BessHelperFunctions.adjustHSL(effectiveBorderColor, luminance: -0.07, saturation: 0.2);
     }
 
-    Color effectiveForegroundColor = baseForegroundColor ?? BessColors.textPrimary;
-    if (tint != null) {
-      effectiveForegroundColor = tint!;
-    }
+    // --- Calculate Foreground Color ---
+    Color effectiveForegroundColor =
+        activeTint ?? baseForegroundColor ?? BessColors.textPrimary;
     if (darken) {
       effectiveForegroundColor = BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: -0.07, saturation: 0.2);
     }
-    effectiveForegroundColor =
-        BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: -0.2); // Darken the foreground slightly
+    // Apply final adjustment regardless of tint or darken
+    effectiveForegroundColor = BessHelperFunctions.adjustHSL(
+        effectiveForegroundColor,
+        luminance: -0.2);
 
     final tintInfo = TintInfo(
       backgroundColor: effectiveBackgroundColor,

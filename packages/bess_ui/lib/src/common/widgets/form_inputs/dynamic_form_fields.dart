@@ -168,3 +168,46 @@ class DynamicMultiSelectFormField extends StatelessWidget {
     );
   }
 }
+
+// class DynamicDateTimeFormField extends StatelessWidget {
+//   final MultiSelectFormFieldDescriptor descriptor;
+//   final Function(List<String>?) onSaved; // Changed signature for multi-select
+//
+//   const DynamicDateTimeFormField({
+//     super.key,
+//     required this.descriptor,
+//     required this.onSaved,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = ShadTheme.of(context);
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         // Display the label similar to other Shadcn form fields
+//         Text(descriptor.label, style: theme.textTheme.small),
+//         const SizedBox(height: 8), // Consistent spacing
+//         FormField<List<String>>(
+//           onSaved: onSaved,
+//           validator: (List<String>? value) {
+//             if (descriptor.isRequired && (value == null || value.isEmpty)) {
+//               return '${descriptor.label} is required.';
+//             }
+//             // Note: descriptor.validator is (dynamic Function(dynamic)?).
+//             // It's not directly compatible with validating a List<String>.
+//             // For minimal compatibility and correctness, we only handle isRequired here.
+//             // If you need to apply the descriptor.validator, it would require
+//             // adapting it or using a specific validator for lists in your descriptor.
+//             return null;
+//           },
+//           builder: (FormFieldState<List<String>> field) {
+//             final hasError = field.errorText != null;
+//             return DatePickerDialog(firstDate: firstDate, lastDate: lastDate)
+//             );
+//           },
+//         ),
+//       ],
+//     );
+//   }
+// }

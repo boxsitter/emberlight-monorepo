@@ -70,6 +70,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
   String get formattedBirthdate => DateTimeHelpers.formatDate(birthdate, false);
   @override
   bool? get preferencesCompleted => ModelHelperFunctions.simplePreferencesCompleted(this);
+  int? get preferencesCompletedCount => preferenceRefs.entries.where((element) => element.value != null).length;
 
   @override
   int get age =>
@@ -94,7 +95,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
       case RosterField.lastName:
         return lastName;
       case RosterField.fullName:
-        return fullName;
+        return fullNamePreferred;
       case RosterField.gender:
         return gender;
       case RosterField.age:
@@ -108,9 +109,9 @@ class Camper extends CoreObject implements Rosterable, Titled {
       case RosterField.note:
         return note.toString();
       case RosterField.arrived:
-        return arrived == null ? 'N/A' : arrived! ? 'Yes' : 'No';
+        return arrived == null ? 'N/A' : arrived == true ? 'Yes' : 'No';
       case RosterField.canSwim:
-        return arrived == null ? 'N/A' : canSwim! ? 'Yes' : 'No';
+        return arrived == null ? 'N/A' : arrived == true ? 'Yes' : 'No';
       case RosterField.preferencesCompleted:
         return preferencesCompleted == null ? 'N/A' : preferencesCompleted! ? 'Yes' : 'No';
       default:
@@ -144,6 +145,8 @@ class Camper extends CoreObject implements Rosterable, Titled {
       'preferenceRefs': preferenceRefs.map((key, value) => MapEntry(key, value?.clamp(0.0, 1.0))),
       'preferenceWeightRefs': preferenceWeightRefs.map((key, value) => MapEntry(key, value.clamp(0.0, 1.0))),
       'activityAssignmentRefs': activityAssignmentRefs,
+      'arrived': arrived,
+      'canSwim': canSwim,
     });
     return json;
   }
@@ -162,6 +165,8 @@ class Camper extends CoreObject implements Rosterable, Titled {
       preferenceRefs: (json['preferenceRefs'] as Map?)?.cast<String, double?>() ?? {},
       preferenceWeightRefs: (json['preferenceWeightRefs'] as Map?)?.cast<String, double>() ?? {},
       activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String?>() ?? {},
+      arrived: json['arrived'],
+      canSwim: json['canSwim'],
     );
     camper.overwriteCoreObjectFromJson(json);
     return camper;

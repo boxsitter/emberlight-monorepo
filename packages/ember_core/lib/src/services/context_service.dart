@@ -128,7 +128,9 @@ class ContextService extends GetxService {
         clientContext.sessionId = await pullRepo.getActiveObjectId('session', 'sea');
       }
     } else {
-      clientContext.sessionId = HardcodedSessionA.sessionA.id;
+      Set<Session> sessions = (await pullRepo.getObjectsInCollection<Session>('session', 'sea')).values.toSet();
+      clientContext.sessionId = DateTimeHelpers.findClosest<Session>(items: sessions, getDateTime: (item) => item.start, roundDown: true).id;
+      // clientContext.sessionId = HardcodedSessionA.sessionA.id;
     }
   }
 

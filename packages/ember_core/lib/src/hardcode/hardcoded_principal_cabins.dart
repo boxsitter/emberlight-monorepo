@@ -6,6 +6,7 @@ class HardcodedPrincipalCabins {
     name: 'Henderson',
     capacity: 12,
     village: 'Ravens',
+    index: 1,
   );
 
   static final PrincipalCabin rotary = PrincipalCabin(
@@ -13,6 +14,7 @@ class HardcodedPrincipalCabins {
     name: 'Rotary',
     capacity: 12,
     village: 'Ravens',
+    index: 2,
   );
 
   static final PrincipalCabin kiwanis = PrincipalCabin(
@@ -20,6 +22,7 @@ class HardcodedPrincipalCabins {
     name: 'Kiwanis',
     capacity: 12,
     village: 'Ravens',
+    index: 3,
   );
 
   static final PrincipalCabin bentrott = PrincipalCabin(
@@ -27,6 +30,7 @@ class HardcodedPrincipalCabins {
     name: 'Bentrott',
     capacity: 12,
     village: 'Ravens',
+    index: 0,
   );
 
   static final PrincipalCabin sleem = PrincipalCabin(
@@ -34,6 +38,7 @@ class HardcodedPrincipalCabins {
     name: 'Sleem',
     capacity: 12,
     village: 'Seawolves',
+    index: 4,
   );
 
   static final PrincipalCabin pierce = PrincipalCabin(
@@ -41,6 +46,7 @@ class HardcodedPrincipalCabins {
     name: 'Pierce',
     capacity: 12,
     village: 'Seawolves',
+    index: 5,
   );
 
   static final PrincipalCabin beers = PrincipalCabin(
@@ -48,6 +54,7 @@ class HardcodedPrincipalCabins {
     name: 'Beers',
     capacity: 12,
     village: 'Seawolves',
+    index: 6,
   );
 
   static final PrincipalCabin leckenby = PrincipalCabin(
@@ -55,6 +62,7 @@ class HardcodedPrincipalCabins {
     name: 'Leckenby',
     capacity: 12,
     village: 'Seawolves',
+    index: 7,
   );
 
   static final PrincipalCabin yarrow = PrincipalCabin(
@@ -62,6 +70,7 @@ class HardcodedPrincipalCabins {
     name: 'Yarrow',
     capacity: 12,
     village: 'Beavers',
+    index: 8,
   );
 
   static final PrincipalCabin calvin = PrincipalCabin(
@@ -69,6 +78,7 @@ class HardcodedPrincipalCabins {
     name: 'Calvin',
     capacity: 12,
     village: 'Beavers',
+    index: 10,
   );
 
   static final PrincipalCabin christy = PrincipalCabin(
@@ -76,6 +86,7 @@ class HardcodedPrincipalCabins {
     name: 'Christy',
     capacity: 12,
     village: 'Beavers',
+    index: 9,
   );
 
   static final PrincipalCabin ebert = PrincipalCabin(
@@ -83,6 +94,7 @@ class HardcodedPrincipalCabins {
     name: 'Ebert',
     capacity: 12,
     village: 'Beavers',
+    index: 11,
   );
 
   static final PrincipalCabin markey = PrincipalCabin(
@@ -90,6 +102,7 @@ class HardcodedPrincipalCabins {
     name: 'Markey',
     capacity: 12,
     village: 'Owls',
+    index: 12,
   );
 
   static final PrincipalCabin freeman1 = PrincipalCabin(
@@ -97,6 +110,7 @@ class HardcodedPrincipalCabins {
     name: 'Freeman 1',
     capacity: 14,
     village: 'Owls',
+    index: 13,
   );
 
   static final PrincipalCabin freeman2 = PrincipalCabin(
@@ -104,6 +118,7 @@ class HardcodedPrincipalCabins {
     name: 'Freeman 2',
     capacity: 14,
     village: 'Owls',
+    index: 14,
   );
 
   static final PrincipalCabin freeman3 = PrincipalCabin(
@@ -111,6 +126,7 @@ class HardcodedPrincipalCabins {
     name: 'Freeman 3',
     capacity: 14,
     village: 'Owls',
+    index: 15,
   );
 
   static final PrincipalCabin yurt = PrincipalCabin(
@@ -118,6 +134,7 @@ class HardcodedPrincipalCabins {
     name: 'Yurt',
     capacity: 12,
     village: 'Bears',
+    index: 16,
   );
 
   static final PrincipalCabin squirt = PrincipalCabin(
@@ -125,6 +142,7 @@ class HardcodedPrincipalCabins {
     name: 'Squirt',
     capacity: 12,
     village: 'Bears',
+    index: 17,
   );
 
   static final Set<PrincipalCabin> list = <PrincipalCabin>{

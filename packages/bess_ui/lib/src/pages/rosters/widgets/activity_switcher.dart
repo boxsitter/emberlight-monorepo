@@ -9,6 +9,7 @@ import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/widgets/buttons/action_initiator.dart';
 import '../../../common/widgets/misc/card_list.dart';
+import '../../../common/widgets/wrappers/tint.dart';
 import '../controllers/rosters_controller.dart';
 
 class ActivitySwitcher extends StatelessWidget {
@@ -37,8 +38,23 @@ class ActivitySwitcher extends StatelessWidget {
                 items: controller.amas,
                 onSelectItem: controller.setSelectedAma,
                 selectedItem: controller.selectedAma,
-                maxLines: 1,
                 isHorizontal: false,
+                childBuilder: (BuildContext context, AMABlock item) {
+                  return SizedBox(
+                    height: 25,
+                    child: Center(
+                      child: Text(
+                        item.displayTitle,
+                        style: BessTextStyles.standardBold.copyWith(
+                          // This will now correctly find the foregroundColor provided by Tint.
+                          color: Tint.of(context)?.foregroundColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -66,7 +82,7 @@ class ActivitySwitcher extends StatelessWidget {
                                 // Add some vertical padding between items for better spacing
                                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                                 child: CardButton(
-                                  tintStates: atCap != null
+                                  tintConditions: atCap != null
                                       ? [
                                           (controller.selectedActivity == item, BessColors.primary),
                                           (atCap, BessColors.red),
@@ -109,7 +125,7 @@ class ActivitySwitcher extends StatelessWidget {
                                     ],
                                   ),
                                   onPressed: () => controller.setSelectedActivity(item),
-                                  height: 50,
+                                  height: 60,
                                 ),
                               );
                             },

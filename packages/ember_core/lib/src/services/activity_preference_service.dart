@@ -16,7 +16,6 @@ class ActivityPreferenceService extends GetxService {
     required List<PrincipalActivityId> orderedPrincipalActivityIds,
   }) async {
     Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
-    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await pullRepo.getObject(camper.cabinRef!);
 
     int position = 0;
     int totalPositions = orderedPrincipalActivityIds.length - 1;
@@ -26,23 +25,34 @@ class ActivityPreferenceService extends GetxService {
       position++;
     }
 
-    camperCabin.campersWithPreferences.add(camper.id);
+    commit.addObjectToPush(camper);
+  }
 
-    commit.addObjectsToPush({camper, camperCabin});
+  Future<void> setActivityPreference ({
+    required Commit commit,
+    required CamperId camperId,
+    required PrincipalActivityId principalActivityId,
+    required double? preference,
+  }) async {
+    Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
+
+    if (!camper.preferenceRefs.containsKey(principalActivityId)) {
+      throw StateError('Tried to set preference for an activity that does not exist in the schedule (not in camper.preferenceRefs)');
+    }
+    camper.preferenceRefs[principalActivityId] = preference;
+
+    commit.addObjectToPush(camper);
   }
 
   Future<void> clearPreference(Commit commit, CamperId camperId) async {
     Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
-    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await pullRepo.getObject(camper.cabinRef!);
 
     camper.preferenceRefs.forEach((key, value) {
       camper.preferenceRefs[key] = null;
       camper.preferenceWeightRefs[key] = 0;
     });
 
-    camperCabin.campersWithPreferences.remove(camperId);
-
-    commit.addObjectsToPush({camper, camperCabin});
+    commit.addObjectToPush(camper);
 
   }
 
@@ -51,7 +61,6 @@ class ActivityPreferenceService extends GetxService {
   Future<void> rankRandom(Commit commit, CamperId camperId) async {
     Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
     if(camper.cabinRef == null) return;
-    CabinDependent camperCabin = commit.getObject(camper.cabinRef!) ?? await pullRepo.getObject(camper.cabinRef!);
     final random = Random();
 
     camper.preferenceRefs.forEach((key, value) {
@@ -60,9 +69,7 @@ class ActivityPreferenceService extends GetxService {
       }
     });
 
-    camperCabin.campersWithPreferences.add(camper.id);
-
-    commit.addObjectsToPush({camper, camperCabin});
+    commit.addObjectToPush(camper);
   }
 
   Future<PrincipalActivity> getPrincipalActivity(PrincipalActivityId id) {

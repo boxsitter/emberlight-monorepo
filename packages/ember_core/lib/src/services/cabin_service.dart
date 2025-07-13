@@ -91,8 +91,8 @@ class CabinService extends GetxService {
     return stringSet;
   }
 
-  void createPrincipalCabin(Commit commit, String name, int capacity, String village) {
-    PrincipalCabin cabinToCreate = PrincipalCabin(name: name, capacity: capacity, village: village);
+  void createPrincipalCabin(Commit commit, String name, int capacity, String village, int index) {
+    PrincipalCabin cabinToCreate = PrincipalCabin(name: name, capacity: capacity, village: village, index: index);
     commit.addObjectToPush(cabinToCreate);
   }
 
@@ -132,7 +132,7 @@ class CabinService extends GetxService {
 
     // 2. Check if the camper is already in the target cabin. If so, do nothing.
     if (camperToAdd.cabinRef == cabinDependentId) {
-      Debug.logInfo('Info: ${camperToAdd.fullName} is already in cabin ${principalCabin.name}. No action needed.');
+      Debug.logInfo('Info: ${camperToAdd.fullName} is already in cabin ${principalCabin.title}. No action needed.');
       return;
     }
 
@@ -140,7 +140,7 @@ class CabinService extends GetxService {
     if (camperToAdd.cabinRef != null) {
       Debug.logInfo(
         'Info: ${camperToAdd.fullName} is being moved from another cabin. Removing from old cabin first.',
-        userMessage: '${camperToAdd.fullName} is being moved to ${principalCabin.name}.',
+        userMessage: '${camperToAdd.fullName} is being moved to ${principalCabin.title}.',
       );
       final oldCabinDependent =
           commit.getObject<CabinDependent>(camperToAdd.cabinRef!) ??
@@ -151,20 +151,20 @@ class CabinService extends GetxService {
     // // 4. Check for capacity before adding.
     // if (cabinDependent.camperRefs.length >= principalCabin.capacity) {
     //   throw StateError(
-    //     'Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.name} because it will put it over capacity.',
+    //     'Can\'t add camper: ${camperToAdd.fullName} to cabin ${principalCabin.title} because it will put it over capacity.',
     //   );
     // }
 
     // 5. Perform the assignment and update object states.
     cabinDependent.camperRefs.add(camperToAdd.id);
     camperToAdd.cabinRef = cabinDependent.id;
-    camperToAdd.cabinName = principalCabin.name;
+    camperToAdd.cabinName = principalCabin.title;
 
     // 6. Add the modified objects to the commit.
     commit.addObjectsToPush({cabinDependent, camperToAdd});
     Debug.logSuccess(
-      '${camperToAdd.fullName} successfully assigned to cabin ${principalCabin.name}.',
-      userMessage: 'Success! ${camperToAdd.fullName} has been assigned to ${principalCabin.name}.',
+      '${camperToAdd.fullName} successfully assigned to cabin ${principalCabin.title}.',
+      userMessage: 'Success! ${camperToAdd.fullName} has been assigned to ${principalCabin.title}.',
     );
   }
 

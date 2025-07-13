@@ -7,27 +7,27 @@ import 'form_field_descriptors.dart';
 /// Interface for handling user input operations.
 abstract class UserInput {
   FutureOr<String> prompt(
-      String message, {
-        String? defaultValue,
-        bool allowEmpty = false,
-        FutureOr<bool> Function(String)? validator,
-      });
+    String message, {
+    String? defaultValue,
+    bool allowEmpty = false,
+    FutureOr<bool> Function(String)? validator,
+  });
 
   FutureOr<String> promptPassword(String message);
 
   FutureOr<bool> confirm(String message, {bool defaultValue = false});
 
   FutureOr<String> select(
-      String message, {
-        required List<String> options,
-        String? defaultValue,
-      });
+    String message, {
+    required List<String> options,
+    String? defaultValue,
+  });
 
   FutureOr<List<String>> multiSelect(
-      String message, {
-        required List<String> options,
-        List<String>? defaultSelection,
-      });
+    String message, {
+    required List<String> options,
+    List<String>? defaultSelection,
+  });
 
   Future<T> withSpinner<T>({
     required String inProgressMessage,
@@ -45,9 +45,9 @@ abstract class UserInput {
   /// Returns `null` if the user cancels the form.
   /// Returns an empty map if the form is submitted with no fields (edge case).
   Future<List<dynamic>?> promptForm(
-      String formTitle,
-      List<FormFieldDescriptor> fields,
-      );
+    String formTitle,
+    List<FormFieldDescriptor> fields,
+  );
 }
 
 /// Interface for handling user output operations.

@@ -33,7 +33,7 @@ class BessCheckbox extends StatelessWidget {
       width: 19.0,
       height: 19.0,
       onPressed: onPressed,
-      tintStates: [(tinted, BessColors.primary)],
+      tintConditions: [(tinted, BessColors.primary)],
       showBorder: true,
       borderThickness: 2.0,
       radius: 5.0,

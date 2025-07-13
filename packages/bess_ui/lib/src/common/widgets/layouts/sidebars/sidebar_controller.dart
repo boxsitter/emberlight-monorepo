@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../routes/routes.dart';
 
 class SidebarController extends GetxController {
-  final activeItem = BessRoutes.home.obs;
+  final activeItem = BessRoutes.rosters.obs;
   final hoverItem = ''.obs;
   final UserService userService = Get.find<UserService>();
 

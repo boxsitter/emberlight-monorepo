@@ -5,7 +5,6 @@ class HardcodedTestSchedule {
   static final ScheduleDay day1 = ScheduleDay(
     id: '0_wednesday-schedule_day-ses-Nned9WU',
     start: DateTime.now(),
-    end: DateTime.now(),
     dayIndex: 0,
   );
 

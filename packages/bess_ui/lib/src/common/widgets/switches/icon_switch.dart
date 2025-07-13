@@ -50,7 +50,7 @@ class BessIconSwitch extends StatelessWidget {
       height: height,
       radius: 90,
       backgroundColor: BessColors.core,
-      tintStates: [(value, colorTwo), (!value, colorOne)],
+      tintConditions: [(value, colorTwo), (!value, colorOne)],
       borderThickness: 1,
       padding: EdgeInsets.zero,
       child: AnimatedAlign(

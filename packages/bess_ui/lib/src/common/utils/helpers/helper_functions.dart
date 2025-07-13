@@ -271,4 +271,35 @@ class BessHelperFunctions {
 
     return null; // No valid intervals were found
   }
+
+  /// Linearly interpolates between a list of colors.
+  ///
+  /// - [colors]: The list of colors to interpolate between.
+  /// - [t]: The interpolation factor, typically from 0.0 to 1.0.
+  ///
+  /// Returns the interpolated [Color].
+  static Color lerpColorList(List<Color> colors, double t) {
+    if (colors.isEmpty) {
+      // Return a default color if the list is empty, or you could throw an error.
+      return Colors.transparent;
+    }
+    if (colors.length == 1) {
+      return colors.first;
+    }
+
+    // Clamp t to the valid range [0.0, 1.0]
+    final double clampedT = t.clamp(0.0, 1.0);
+
+    // Calculate the overall position in the list.
+    final double position = clampedT * (colors.length - 1);
+
+    // Determine the two colors to lerp between.
+    final int startIndex = position.floor();
+    final int endIndex = position.ceil();
+
+    // The 'local' t value for the lerp between the two selected colors.
+    final double localT = position - startIndex;
+
+    return Color.lerp(colors[startIndex], colors[endIndex], localT)!;
+  }
 }

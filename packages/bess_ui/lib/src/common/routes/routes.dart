@@ -3,11 +3,12 @@ import 'package:bess_ui/src/pages/dev_testing/dev_testing.dart';
 import 'package:get/get.dart';
 
 import '../../pages/activity_preferences/controllers/activity_preferences_controller.dart';
-import '../../pages/activity_preferences/views/activity_preferences_cabins.dart';
-import '../../pages/activity_preferences/views/activity_preferences_selector.dart';
+import '../../pages/activity_preferences/views/activity_preferences.dart';
+import '../../pages/activity_preferences/views/activity_preferences_selector_ranking.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
+import '../../pages/branch_manager/branch_manager.dart';
 import '../../pages/console/view/console.dart';
 import '../../pages/home/home.dart';
 import '../../pages/rosters/controllers/rosters_controller.dart';
@@ -19,17 +20,18 @@ import '../../pages/unknown_route/unknown_route.dart';
 import '../mixins/route_aware_controller_mixin.dart';
 
 class BessRoutes {
-  static const home = '/';
+  // static const home = '/';
   static const unknown = '/unknown';
 
   static const responsiveDesignExample = '/responsive-design';
   static const console = '/console';
   static const dev_testing = '/dev_testing';
-  static const rosters = '/session-roster';
+  static const rosters = '/';
   static const schedulePage = '/schedule-page';
   static const sessionManager = '/session-manager';
+  static const branchManager = '/branch-manager';
 
-  static const activityPreferencesCabins = '/activity-preferences-cabins';
+  static const activityPreferences = '/activity-preferences';
   static const activityPreferencesCampers = '/activity-preferences-campers';
   static const activityPreferencesSelector = '/activity-preferences-selector';
 
@@ -41,8 +43,9 @@ class BessRoutes {
     console,
     dev_testing,
     rosters,
-    activityPreferencesCabins,
+    activityPreferences,
     sessionManager,
+    branchManager,
     schedulePage,
   };
 
@@ -54,11 +57,11 @@ class BessRoutes {
   };
 
   static final List<GetPage> pages = [
-    GetPage(
-      name: BessRoutes.home,
-      page: () => const HomeScreen(),
-      middlewares: [AuthMiddleware()], // PROTECTED
-    ),
+    // GetPage(
+    //   name: BessRoutes.home,
+    //   page: () => const HomeScreen(),
+    //   middlewares: [AuthMiddleware()], // PROTECTED
+    // ),
     GetPage(
       name: BessRoutes.console,
       page: () => const ConsoleScreen(),
@@ -85,13 +88,18 @@ class BessRoutes {
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
-      name: BessRoutes.activityPreferencesCabins,
-      page: () => const ActivityPreferencesCabins(),
+      name: BessRoutes.activityPreferences,
+      page: () => const ActivityPreferences(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferencesSelector,
-      page: () => const ActivityPreferencesSelector(),
+      page: () => const ActivityPreferences(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: BessRoutes.branchManager,
+      page: () => const BranchManager(),
       middlewares: [AuthMiddleware()],
     ),
 
@@ -115,7 +123,7 @@ class BessRoutes {
     if (routeName == BessRoutes.rosters && Get.isRegistered<RostersController>()) {
       return Get.find<RostersController>();
     }
-    if ((routeName == BessRoutes.activityPreferencesCabins || routeName == BessRoutes.activityPreferencesSelector) && Get.isRegistered<ActivityPreferencesController>()) {
+    if ((routeName == BessRoutes.activityPreferences || routeName == BessRoutes.activityPreferencesSelector) && Get.isRegistered<ActivityPreferencesController>()) {
       return Get.find<ActivityPreferencesController>();
     }
     if (routeName == BessRoutes.sessionManager && Get.isRegistered<SessionManagerController>()) {

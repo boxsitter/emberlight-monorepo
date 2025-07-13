@@ -27,7 +27,7 @@ class AuthMiddleware extends GetMiddleware {
       if (isTryingToAccessPublicAuthRoute) {
         // If an authenticated user tries to access login, forgot password, etc.,
         // redirect them to the home page.
-        return const RouteSettings(name: BessRoutes.home);
+        return const RouteSettings(name: BessRoutes.rosters);
       }
       // For any other route (which are effectively protected or other non-auth public pages), allow access.
       return null; // No redirection needed, proceed to the intended route.

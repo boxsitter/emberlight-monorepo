@@ -100,6 +100,22 @@ class BessTextStyles {
     letterSpacing: 2.0,
   );
 
+  static final TextStyle darkTitle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 36,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w300,
+    letterSpacing: 2.0,
+  );
+
+  static final TextStyle largeCardHeader = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 28,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 1.0,
+  );
+
   static final TextStyle tableHeader = TextStyle(
     fontFamily: 'Inter',
     fontSize: 24.0,
@@ -130,5 +146,13 @@ class BessTextStyles {
     color: BessColors.textPrimary,
     fontWeight: FontWeight.w600,
     letterSpacing: 2.0,
+  );
+
+  static final TextStyle textIcon = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    color: BessColors.textPrimary,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 1.0,
   );
 }

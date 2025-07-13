@@ -24,8 +24,7 @@ class HardcodedDomains {
   static final testSession = Session(
     name: 'Test Session',
     id: 'test_session-session-sea-y9D5nU5',
+    start: DateTime.now(),
     createdAt: DateTime.parse('2025-03-17T05:35:01.000Z').toUtc(),
-    start: DateTime(2025, 1, 1).toUtc(),
-    end: DateTime(2026, 1, 1).toUtc(),
   );
 }

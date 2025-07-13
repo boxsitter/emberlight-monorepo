@@ -73,4 +73,14 @@ class MultiSelectFormFieldDescriptor extends FormFieldDescriptor<List<String>> {
   }) : assert(options.isNotEmpty, 'Options list cannot be empty for MultiSelectFormField.');
 }
 
+/// Describes a text input field.
+class DateTimeFormFieldDescriptor extends FormFieldDescriptor<DateTime> {
+  DateTimeFormFieldDescriptor({
+    required super.label,
+    super.defaultValue,
+    super.isRequired,
+    super.validator,
+  });
+}
+
 // Add other field types as needed, e.g., DatePickerFormFieldDescriptor, NumberFormFieldDescriptor etc.

@@ -101,6 +101,7 @@ enum Role {
   director,
   admin,
   counselor,
+  nullRole,
 }
 
 enum Verbosity {

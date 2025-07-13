@@ -35,59 +35,62 @@ class BessMenuBar<T extends RouteAwareControllerMixin> extends StatelessWidget {
         // builder paths to avoid duplicating code.
         Widget buildActualMenuBar() {
           final divider = ShadSeparator.horizontal(
-            margin: const EdgeInsets.symmetric(vertical: 4),
             color: BessColors.borderPrimary,
           );
 
           List<Widget> menuItems = [];
 
           menuItems.add(
-            BessIconButton(iconData: internalController.sidebarHidden == true ? LucideIcons.arrowRightFromLine : LucideIcons.arrowLeftFromLine, radius: 0, margin: 0, onPressed: internalController.toggleHideSidebar,),
+            Expanded(child: BessIconButton(iconData: internalController.sidebarHidden == true ? LucideIcons.arrowRightFromLine : LucideIcons.arrowLeftFromLine, radius: 0, margin: 0, onPressed: internalController.toggleHideSidebar,)),
           );
           
           menuItems.add(
-            ShadMenubarItem(
-              buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
-              child: const Text('File'),
-              items: [
-                if (fileItems != null) ...fileItems!,
-              ],
+            Expanded(
+              child: ShadMenubarItem(
+                height: 55,
+                buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
+                child: Icon(
+                  LucideIcons.fileSpreadsheet,
+                  color: BessColors.textPrimary,
+                ),
+                items: [
+                  if (fileItems != null) ...fileItems!,
+                ],
+              ),
             ),
           );
 
           // Edit Menu (conditional)
           if (editItems != null && editItems!.isNotEmpty) {
             menuItems.add(
-              ShadMenubarItem(
-                buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
-                child: const Text('Edit'),
-                items: editItems!,
+              Expanded(
+                child: ShadMenubarItem(
+                  height: 55,
+                  buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
+                  child: Icon(
+                    LucideIcons.pencilRuler,
+                    color: BessColors.textPrimary,
+                  ),
+                  items: editItems!,
+                ),
               ),
             );
           }
 
           // View Menu
           menuItems.add(
-            ShadMenubarItem(
-              buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
-              child: const Text('View'),
-              items: [
-                ShadContextMenuItem(
-                  child: const Text('Hide Sidebar'),
-                  onPressed: internalController.toggleHideSidebar,
-                  leading: internalController.sidebarHidden
-                      ? Icon(
-                          LucideIcons.check,
-                          color: BessColors.textPrimary,
-                        )
-                      : const Icon(
-                          LucideIcons.check,
-                          color: Colors.transparent,
-                        ),
+            Expanded(
+              child: ShadMenubarItem(
+                height: 55,
+                buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
+                child: Icon(
+                  LucideIcons.monitorCog,
+                  color: BessColors.textPrimary,
                 ),
-                if (viewItems != null) divider,
-                if (viewItems != null) ...viewItems!,
-              ],
+                items: [
+                  if (viewItems != null) ...viewItems!,
+                ],
+              ),
             ),
           );
 
@@ -96,24 +99,8 @@ class BessMenuBar<T extends RouteAwareControllerMixin> extends StatelessWidget {
             menuItems.addAll(additionalItems!);
           }
 
-          // Help Menu
-          menuItems.add(
-            ShadMenubarItem(
-              buttonDecoration: ShadDecoration(border: ShadBorder(radius: BorderRadius.zero)),
-              child: const Text('Help'),
-              items: [
-                const ShadContextMenuItem(
-                  child: Text('Coming soon'),
-                ),
-                const ShadContextMenuItem(
-                  child: Text('For now, help yourself'),
-                ),
-                if (helpItems != null) ...helpItems!,
-              ],
-            ),
-          );
-
           return ShadMenubar(
+            padding: EdgeInsets.zero,
             selectOnHover: false,
             backgroundColor: Colors.transparent,
             radius: BorderRadius.zero,

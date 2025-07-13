@@ -10,6 +10,7 @@ class HardcodedPrincipalActivities {
     archery,
     archerySkillsRec,
     soccer,
+    soccerSkills,
     cardGames,
     yogaAndMindfulness,
     creativeWriting,
@@ -24,6 +25,7 @@ class HardcodedPrincipalActivities {
     canoeing,
     pickleball,
     volleyball,
+    volleyballSkills,
     hammockTime,
     lowRopes,
     birdWatching,
@@ -40,6 +42,23 @@ class HardcodedPrincipalActivities {
     aggressiveCompliments,
     fairyHouses,
     teenSkillsRec,
+    bugBingo,
+    badminton,
+    outdoorLivingSkills,
+    stackingAndSkipping,
+    skitShow,
+    paperCrafts,
+    stationary,
+    magicTheGathering,
+    waterTasting,
+    tagGames,
+    boxSitting,
+    nappingSpots,
+    riddlesAndGames,
+    fuseBeads,
+    safetyPatrol,
+    gagaBallTournament,
+    artInNature,
   };
 
   static final PrincipalActivity gagaBall = PrincipalActivity(
@@ -58,6 +77,7 @@ class HardcodedPrincipalActivities {
     capacity: 24,
     description: 'Grab a paddle and hop into a boat to explore the lagoon with your friends!',
     isSkillsRec: false,
+    doubleSchedule: true,
   );
 
   static final PrincipalActivity climbing = PrincipalActivity(
@@ -71,7 +91,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity artsAndCrafts = PrincipalActivity(
     id: 'arts_and_crafts-principal_activity-brn-6QeyXQW',
     name: 'Arts & Crafts',
-    capacity: 20,
+    capacity: 14,
     description: 'Get creative with paint, paper, glue, and lots of other cool supplies to make '
         'your own awesome projects! You can draw, build, or design something totally unique to '
         'take home.',
@@ -103,18 +123,26 @@ class HardcodedPrincipalActivities {
     isSkillsRec: true,
   );
 
+  static final PrincipalActivity soccerSkills = PrincipalActivity(
+    id: 'soccer_skills-principal_activity-brn-l7g5Kwm',
+    name: 'Soccer Skills',
+    capacity: 14,
+    description: 'Practice your dribbling, passing, and shooting skills in this popular team sport.',
+    isSkillsRec: true,
+  );
+
   static final PrincipalActivity soccer = PrincipalActivity(
     id: 'soccer-principal_activity-brn-l7g5Kwm',
     name: 'Soccer',
-    capacity: 20,
+    capacity: 14,
     description: 'Practice your dribbling, passing, and shooting skills in this popular team sport.',
-    isSkillsRec: true,
+    isSkillsRec: false,
   );
 
   static final PrincipalActivity cardGames = PrincipalActivity(
     id: 'card_games-principal_activity-brn-3SObvwL',
     name: 'Card Games',
-    capacity: 20,
+    capacity: 14,
     description: 'Grab a deck of cards and gather around a table with friends for some fun games!',
     isSkillsRec: true,
   );
@@ -122,7 +150,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity yogaAndMindfulness = PrincipalActivity(
     id: 'yoga_&_mindfulness-principal_activity-brn-aBcDeF1',
     name: 'Yoga & Mindfulness',
-    capacity: 20,
+    capacity: 14,
     description: 'Relax and find your center with some light stretching and mindfulness exercises.',
     isSkillsRec: true,
   );
@@ -130,7 +158,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity creativeWriting = PrincipalActivity(
     id: 'creative_writing-principal_activity-brn-bCdEfG2',
     name: 'Creative Writing',
-    capacity: 20,
+    capacity: 14,
     description: 'Let your imagination run wild and write your own stories, poems, or plays.',
     isSkillsRec: true,
   );
@@ -138,7 +166,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity music = PrincipalActivity(
     id: 'music-principal_activity-brn-cDeFgH3',
     name: 'Music',
-    capacity: 20,
+    capacity: 14,
     description: 'Learn to play an instrument, sing a song, or just jam out with your friends.',
     isSkillsRec: true,
   );
@@ -146,7 +174,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity cricket = PrincipalActivity(
     id: 'cricket-principal_activity-brn-dEfGhI4',
     name: 'Cricket',
-    capacity: 20,
+    capacity: 14,
     description: 'Learn the basics of this classic bat-and-ball game, popular in many parts of the world.',
     isSkillsRec: true,
   );
@@ -154,7 +182,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity friendshipBracelets = PrincipalActivity(
     id: 'friendship_bracelets-principal_activity-brn-eFgHiJ5',
     name: 'Friendship Bracelets',
-    capacity: 20,
+    capacity: 14,
     description: 'Weave colorful threads together to make bracelets for you and your friends.',
     isSkillsRec: false,
   );
@@ -162,7 +190,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity nineSquare = PrincipalActivity(
     id: '9_square-principal_activity-brn-fGhIjK6',
     name: '9 Square',
-    capacity: 20,
+    capacity: 14,
     description: 'A fun and fast-paced game where you try to get to the center square by hitting a ball into other players\' squares.',
     isSkillsRec: false,
   );
@@ -170,7 +198,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity beachWalk = PrincipalActivity(
     id: 'beach_walk-principal_activity-brn-gHiJkL7',
     name: 'Beach Walk',
-    capacity: 10,
+    capacity: 14,
     description: 'Take a relaxing stroll along the beach, look for shells, and enjoy the ocean breeze.',
     isSkillsRec: false,
   );
@@ -178,7 +206,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity shelterBuilding = PrincipalActivity(
     id: 'shelter_building-principal_activity-brn-hIjKlM8',
     name: 'Shelter Building',
-    capacity: 20,
+    capacity: 14,
     description: 'Work with your team to build a shelter in the woods using only natural materials.',
     isSkillsRec: false,
   );
@@ -186,7 +214,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity basketball = PrincipalActivity(
     id: 'basketball-principal_activity-brn-iJkLmN9',
     name: 'Basketball',
-    capacity: 20,
+    capacity: 14,
     description: 'Shoot some hoops with your friends and play a pickup game.',
     isSkillsRec: false,
   );
@@ -197,20 +225,23 @@ class HardcodedPrincipalActivities {
     capacity: 16,
     description: 'Get hoisted up high and then swing through the air for an exhilarating ride.',
     isSkillsRec: false,
+    isHidden: true,
+    doubleSchedule: true,
   );
 
   static final PrincipalActivity canoeing = PrincipalActivity(
     id: 'canoeing-principal_activity-brn-kLmNoP1',
     name: 'Canoeing',
-    capacity: 20,
+    capacity: 14,
     description: 'Grab a paddle and a friend and explore the water in a canoe.',
     isSkillsRec: false,
+    doubleSchedule: true,
   );
 
   static final PrincipalActivity pickleball = PrincipalActivity(
     id: 'pickleball-principal_activity-brn-lMnOqR2',
     name: 'Pickleball',
-    capacity: 20,
+    capacity: 14,
     description: 'A fun paddle sport that combines elements of tennis, badminton, and table tennis.',
     isSkillsRec: false,
   );
@@ -218,15 +249,23 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity volleyball = PrincipalActivity(
     id: 'volleyball-principal_activity-brn-mNoPrS3',
     name: 'Volleyball',
-    capacity: 16,
+    capacity: 14,
     description: 'Bump, set, and spike your way to victory in a friendly game of volleyball.',
     isSkillsRec: false,
+  );
+
+  static final PrincipalActivity volleyballSkills = PrincipalActivity(
+    id: 'volleyball_skills-principal_activity-brn-mNoPrS3',
+    name: 'Volleyball Skills',
+    capacity: 14,
+    description: 'Bump, set, and spike your way to victory in a friendly game of volleyball.',
+    isSkillsRec: true,
   );
 
   static final PrincipalActivity hammockTime = PrincipalActivity(
     id: 'hammock_time-principal_activity-brn-nOpQrT4',
     name: 'Hammock Time',
-    capacity: 20,
+    capacity: 14,
     description: 'Relax and swing in a hammock with a good book or good company.',
     isSkillsRec: false,
   );
@@ -234,7 +273,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity lowRopes = PrincipalActivity(
     id: 'low_ropes-principal_activity-brn-oPqRsU5',
     name: 'Low Ropes',
-    capacity: 20,
+    capacity: 14,
     description: 'Work with your team to navigate a series of challenges on a low ropes course.',
     isSkillsRec: false,
   );
@@ -242,7 +281,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity birdWatching = PrincipalActivity(
     id: 'bird_watching-principal_activity-brn-pQrStV6',
     name: 'Bird Watching',
-    capacity: 20,
+    capacity: 14,
     description: 'Grab some binoculars and see how many different kinds of birds you can spot.',
     isSkillsRec: false,
   );
@@ -266,7 +305,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity rockArt = PrincipalActivity(
     id: 'rock_art-principal_activity-brn-sTuVwY9',
     name: 'Rock Art',
-    capacity: 20,
+    capacity: 14,
     description: 'Find cool rocks and paint them to look like animals, characters, or anything you can imagine.',
     isSkillsRec: false,
   );
@@ -274,7 +313,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity parachuteGames = PrincipalActivity(
     id: 'parachute_games-principal_activity-brn-tUvWxZ0',
     name: 'Parachute Games',
-    capacity: 20,
+    capacity: 14,
     description: 'Work together to make waves, play games, and have fun with a giant parachute.',
     isSkillsRec: false,
   );
@@ -298,7 +337,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity natureHike = PrincipalActivity(
     id: 'nature_hike-principal_activity-brn-wXyZaC3',
     name: 'Nature Hike',
-    capacity: 20,
+    capacity: 14,
     description: 'Explore the trails, learn about local plants and animals, and enjoy the beauty of nature.',
     isSkillsRec: false,
   );
@@ -306,7 +345,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity fieldGames = PrincipalActivity(
     id: 'field_games-principal_activity-brn-xYzAbD4',
     name: 'Field Games',
-    capacity: 20,
+    capacity: 14,
     description: 'Play a variety of fun and active games out on the field with your friends.',
     isSkillsRec: false,
   );
@@ -314,7 +353,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity hidingFromAuthority = PrincipalActivity(
     id: 'hiding_from_authority-principal_activity-brn-yZaBcE5',
     name: 'Hiding From Authority',
-    capacity: 20,
+    capacity: 14,
     description: 'Camouflage yourself in ivy and sneak around camp. Try not to get spotted by any authority!',
     isSkillsRec: false,
   );
@@ -322,7 +361,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity cardGamesDND = PrincipalActivity(
     id: 'card_games_dnd-principal_activity-brn-zAbCdF6',
     name: 'Card Games & DND',
-    capacity: 20,
+    capacity: 14,
     description: 'Play a variety of card games or embark on an adventure in the world of Dungeons and Dragons.',
     isSkillsRec: false,
   );
@@ -330,7 +369,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity aggressiveCompliments = PrincipalActivity(
     id: 'aggressive_compliments-principal_activity-brn-zBbCdF6',
     name: 'Aggressive Compliments',
-    capacity: 20,
+    capacity: 14,
     description: 'YOU ARE SO GOSH DARN GOOD AT RANKING ACTIVITIES!!!',
     isSkillsRec: false,
   );
@@ -338,7 +377,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity fairyHouses = PrincipalActivity(
     id: 'fairy_houses-principal_activity-brn-zCbCdF6',
     name: 'Fairy Houses',
-    capacity: 20,
+    capacity: 14,
     description: 'Ever wondered what happens when you build tiny houses out of sticks and leaves and leave them alone in the forrest?',
     isSkillsRec: false,
   );
@@ -347,7 +386,144 @@ class HardcodedPrincipalActivities {
     id: 'teen_skills_rec-principal_activity-brn-zDbCdF6',
     name: 'Teen Skills',
     capacity: 18,
-    description: 'Ever wondered what happens when you build tiny houses out of sticks and leaves and leave them alone in the forrest?',
+    description: 'Placeholder for whatever the teens are doing.',
+    isSkillsRec: true,
+    isHidden: true,
+  );
+
+  static final PrincipalActivity bugBingo = PrincipalActivity(
+    id: 'bug_bingo-principal_activity-brn-aBcDeF7',
+    name: 'Bug Bingo',
+    capacity: 14,
+    description: 'Go on a bug hunt and see how many different kinds you can find to fill up your bingo card. The first to get five in a row wins!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity badminton = PrincipalActivity(
+    id: 'badminton-principal_activity-brn-aBcDeF7',
+    name: 'Badminton',
+    capacity: 14,
+    description: 'Badminton is a racquet sport played using racquets to hit a shuttlecock across a net',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity outdoorLivingSkills = PrincipalActivity(
+    id: 'outdoor_living_skills-principal_activity-brn-bCdEfG8',
+    name: 'Outdoor Living Skills',
+    capacity: 14,
+    description: 'Learn essential survival skills like building a shelter and finding your way in the wilderness. Get ready for an adventure!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity stackingAndSkipping = PrincipalActivity(
+    id: 'stacking_and_skipping-principal_activity-brn-cDeFgH9',
+    name: 'Stacking And Skipping',
+    capacity: 14,
+    description: 'Hang out at the beach. See who can stack rocks the highest, and who can skip rocks the furthest!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity skitShow = PrincipalActivity(
+    id: 'skit_show-principal_activity-brn-dEfGhI0',
+    name: 'Skit Show',
+    capacity: 14,
+    description: 'Let your creativity shine as you write and perform your own hilarious skits. Get ready to put on a show!',
+    isSkillsRec: true,
+  );
+
+  static final PrincipalActivity paperCrafts = PrincipalActivity(
+    id: 'paper_crafts-principal_activity-brn-eFgHiJ1',
+    name: 'Paper Crafts',
+    capacity: 14,
+    description: 'From origami to paper airplanes, learn how to fold and create amazing things with just a few pieces of paper. Let your imagination soar!',
+    isSkillsRec: true,
+  );
+
+  static final PrincipalActivity stationary = PrincipalActivity(
+    id: 'stationary-principal_activity-brn-fGhIjK2',
+    name: 'Stationary',
+    capacity: 14,
+    description: 'Design your own personalized stationery to send letters to your friends and family. Get creative and make your mail extra special!',
+    isSkillsRec: true,
+  );
+
+  static final PrincipalActivity magicTheGathering = PrincipalActivity(
+    id: 'magic_the_gathering-principal_activity-brn-gHiJkL3',
+    name: 'Magic The Gathering',
+    capacity: 14,
+    description: 'Learn to play the popular trading card game, Magic: The Gathering. Build your deck, challenge your friends, and become a master strategist!',
+    isSkillsRec: true,
+  );
+
+  static final PrincipalActivity waterTasting = PrincipalActivity(
+    id: 'water_tasting-principal_activity-brn-hIjKlM4',
+    name: 'Water Tasting',
+    capacity: 14,
+    description: 'Do you think all water tastes the same? Put your taste buds to the test and see if you can tell the difference between different types of water at camp.',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity tagGames = PrincipalActivity(
+    id: 'tag_games-principal_activity-brn-iJkLmN5',
+    name: 'Tag Games',
+    capacity: 14,
+    description: 'Get ready to run, dodge, and chase your friends in a variety of classic tag games. It\'s a great way to have fun and get some exercise!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity boxSitting = PrincipalActivity(
+    id: 'box_sitting-principal_activity-brn-jKlMnO6',
+    name: 'Box Sitting',
+    capacity: 14,
+    description: 'Grab a box, decorate it, sit in it. It might sound strange, but you\'d be surprised how fun it can be!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity nappingSpots = PrincipalActivity(
+    id: 'napping_spots-principal_activity-brn-kLmNoP7',
+    name: 'Napping Spots',
+    capacity: 14,
+    description: 'Join us on a quest to find the coziest and most peaceful napping spots around camp.',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity riddlesAndGames = PrincipalActivity(
+    id: 'riddles_and_games-principal_activity-brn-lMnOqR8',
+    name: 'Riddles And Games',
+    capacity: 14,
+    description: 'Put your thinking cap on and get ready to solve some brain-teasing riddles and play some fun games. It\'s a great way to challenge your mind!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity fuseBeads = PrincipalActivity(
+    id: 'fuse_beads-principal_activity-brn-mNoPrS9',
+    name: 'Fuse Beads',
+    capacity: 14,
+    description: 'Create colorful and unique designs with fuse beads. Arrange the beads on a pegboard, and we\'ll iron them together to create a permanent masterpiece!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity safetyPatrol = PrincipalActivity(
+    id: 'safety_patrol-principal_activity-brn-nOpQrT0',
+    name: 'Safety Patrol',
+    capacity: 14,
+    description: 'Catch all the safety violations at camp and give them a ticket!',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity gagaBallTournament = PrincipalActivity(
+    id: 'gaga_ball_tournament-principal_activity-brn-oPqRsU1',
+    name: 'Gaga Ball Tournament',
+    capacity: 14,
+    description: 'Compete against your fellow campers in an epic gaga ball tournament. Do you have what it takes to be crowned the gaga champion?',
+    isSkillsRec: false,
+  );
+
+  static final PrincipalActivity artInNature = PrincipalActivity(
+    id: 'art_in_nature-principal_activity-brn-pQrStV2',
+    name: 'Art In Nature',
+    capacity: 14,
+    description: 'Use the natural world as your inspiration and your art supply! Create beautiful works of art using leaves, flowers, twigs, and other materials you find in nature.',
     isSkillsRec: false,
   );
 }

@@ -2,7 +2,6 @@ import 'package:ember_cli_utils/ember_cli_utils.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../repositories/commit_repository.dart';
 
 class UserCommands {
   static Map<String, EmberCommand> list = {

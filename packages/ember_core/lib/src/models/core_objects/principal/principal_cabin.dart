@@ -2,15 +2,17 @@
 import '../../../../ember_core.dart';
 import '../../interfaces/elevated.dart';
 
-class PrincipalCabin extends CoreObject implements Principal, Elevated{
+class PrincipalCabin extends CoreObject implements Principal, Elevated, Titled{
   final String name;
   final String village;
+  final int index;
   final int capacity;
 
   PrincipalCabin({
     required this.name,
     required this.capacity,
     required this.village,
+    required this.index,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -32,6 +34,7 @@ class PrincipalCabin extends CoreObject implements Principal, Elevated{
       'name': name,
       'capacity': capacity,
       'village': village,
+      'index': index,
     });
     return json;
   }
@@ -41,6 +44,7 @@ class PrincipalCabin extends CoreObject implements Principal, Elevated{
       name: json['name'] as String,
       capacity: json['capacity'] as int,
       village: json['village'] as String,
+      index: json['index'] as int,
     );
     branchCabin.overwriteCoreObjectFromJson(json);
     return branchCabin;
@@ -51,4 +55,12 @@ class PrincipalCabin extends CoreObject implements Principal, Elevated{
     Debug.logInfo('Purging $id from ${this.id}');
     Debug.logInfo('unnecessary purge');
   }
+
+  @override
+  // TODO: implement displayTitle
+  String get displayTitle => name == 'Squirt' ? 'Ernie' : name;
+
+  @override
+  // TODO: implement title
+  String get title => name == 'Squirt' ? 'Ernie' : name;
 }

@@ -5,42 +5,36 @@ class HardcodedSessionA {
     id: 'session_a-session-sea-kfCmxXd',
     name: 'Session A',
     createdAt: DateTime.parse('2025-03-17T05:35:01.000Z').toUtc(),
-    start: DateTime(2025, 7, 6).toUtc(),
-    end: DateTime(2026, 7, 12).toUtc(),
+    start: DateTime.now(),
   );
 
   static final ScheduleDay monday = ScheduleDay(
     id: '0_monday-schedule_day-ses-Nne19WU',
     start: DateTime(2025, 7, 7).toUtc(),
-    end: DateTime(2025, 7, 8).toUtc(),
     dayIndex: 0,
   );
 
   static final ScheduleDay tuesday = ScheduleDay(
     id: '1_tuesday-schedule_day-ses-Nne19W3',
     start: DateTime(2025, 7, 8).toUtc(),
-    end: DateTime(2025, 7, 9).toUtc(),
     dayIndex: 1,
   );
 
   static final ScheduleDay wednesday = ScheduleDay(
     id: '2_wednesday-schedule_day-ses-Nne19W4',
     start: DateTime(2025, 7, 9).toUtc(),
-    end: DateTime(2025, 7, 10).toUtc(),
     dayIndex: 2,
   );
 
   static final ScheduleDay thursday = ScheduleDay(
     id: '3_thursday-schedule_day-ses-Nne19W5',
     start: DateTime(2025, 7, 10).toUtc(),
-    end: DateTime(2025, 7, 11).toUtc(),
     dayIndex: 3,
   );
 
   static final ScheduleDay friday = ScheduleDay(
     id: '4_friday-schedule_day-ses-Nne19W6',
     start: DateTime(2025, 7, 11).toUtc(),
-    end: DateTime(2025, 7, 12).toUtc(),
     dayIndex: 4,
   );
 

@@ -16,7 +16,7 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
+      height: 55,
       decoration: BoxDecoration(
         color: BessColors.core,
         border: Border(bottom: BorderSide(color: BessColors.semiLow, width: 1)),
@@ -28,22 +28,28 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
           // Left: Menu Bar
           Container(
             width: 300,
-            height: 40,
             decoration: BoxDecoration(
               border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
             ),
-            child: Row(
-              children: [
-                menuBar,
-              ],
-            ),
+            child: menuBar,
           ),
 
-          ...centerActions,
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Row(
+                children: [
+                  ...centerActions,
 
-          Spacer(),
+                  Spacer(),
 
-          ...trailingWidgets,
+                  ...trailingWidgets,
+                ],
+              ),
+            ),
+          )
+
+
         ],
       ),
     );

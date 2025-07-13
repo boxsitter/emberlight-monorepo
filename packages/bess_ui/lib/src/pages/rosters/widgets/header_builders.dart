@@ -1,10 +1,13 @@
 import 'package:bess_ui/src/common/widgets/buttons/checkbox.dart';
+import 'package:bess_ui/src/common/widgets/buttons/text_icon_button.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/styles/text_styles.dart';
+import '../../../common/widgets/buttons/card_button.dart';
+import '../../../common/widgets/buttons/icon_button.dart';
 import '../../../common/widgets/header/menu_bar.dart';
 import '../controllers/rosters_controller.dart';
 
@@ -12,37 +15,49 @@ List<Widget> buildRostersCenterActions({
   required RostersController controller,
 }) {
   return [
-    ShadIconButton.secondary(
-      height: 30,
-      width: 30,
-      padding: EdgeInsets.zero,
-      icon: const Icon(
-        LucideIcons.columns3Cog500,
-        size: 18,
-      ),
+    BessIconButton(
+      iconData: LucideIcons.columns3Cog500,
       onPressed: () => controller.toggleSecondaryPage(1),
-      backgroundColor: controller.columnConfigOpened ? BessColors.primary : BessColors.core,
-      foregroundColor: controller.columnConfigOpened ? BessColors.textInverted : BessColors.textPrimary,
-      hoverBackgroundColor: controller.columnConfigOpened ? BessColors.primary : BessColors.crust,
+      selected: controller.columnConfigOpened,
+      radius: 8,
+      backgroundColor: BessColors.crust,
     ),
-    ShadIconButton.secondary(
-      height: 30,
-      width: 30,
-      padding: EdgeInsets.zero,
-      icon: const Icon(
-        LucideIcons.arrowRightLeft500,
-        size: 18,
-      ),
+    SizedBox(
+      width: 16,
+    ),
+    BessIconButton(
+      iconData: LucideIcons.arrowRightLeft500,
       onPressed: () => controller.toggleSecondaryPage(2),
-      backgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.core,
-      foregroundColor: controller.activitySwitcherOpened ? BessColors.textInverted : BessColors.textPrimary,
-      hoverBackgroundColor: controller.activitySwitcherOpened ? BessColors.primary : BessColors.crust,
+      selected: controller.activitySwitcherOpened,
+      radius: 8,
+      backgroundColor: BessColors.crust,
     ),
-    SizedBox(width: 10,),
-    BessCheckbox(
-      tristate: true,
-      value: controller.selectedItems.containsAll(controller.roster) ? true : controller.selectedItems.isEmpty ? false : null,
+    SizedBox(
+      width: 64,
+    ),
+    BessTextIconButton(
+      content: controller.selectedItems.containsAll(controller.roster)
+          ? 'Unselect All'
+          : controller.selectedItems.isEmpty
+              ? 'Select All'
+              : 'Unselect All',
       onPressed: controller.toggleSelectAll,
+      selected: controller.selectedItems.containsAll(controller.roster),
+      radius: 8,
+      backgroundColor: BessColors.crust,
+      width: 100,
+    ),
+    SizedBox(
+      width: 16,
+    ),
+    BessIconButton(
+      iconData: LucideIcons.userRoundCheck500,
+      onPressed: controller.toggleArrived,
+      selected: controller.activitySwitcherOpened,
+      enabled: controller.selectedItems.isNotEmpty,
+      radius: 8,
+      backgroundColor: BessColors.crust,
+      disabledBackgroundColor: BessColors.element2,
     ),
   ];
 }
@@ -58,8 +73,15 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         margin: const EdgeInsets.symmetric(vertical: 4),
         color: BessColors.borderPrimary,
       ),
-      ShadContextMenuItem(child: const Text('Export Selected As CSV'), onPressed: controller.exportSelectedAsCsv, enabled: controller.selectedItems.isNotEmpty,),
-      ShadContextMenuItem(child: const Text('Export Activity Backup'), onPressed: controller.exportCamperBackup, enabled: controller.selectedItems.isNotEmpty,),
+      ShadContextMenuItem(
+        child: const Text('Export As CSV'),
+        onPressed: controller.exportAsCsv,
+      ),
+      ShadContextMenuItem(
+        child: const Text('Export Activity Backup'),
+        onPressed: controller.exportCamperBackup,
+        enabled: controller.selectedItems.isNotEmpty,
+      ),
       //const ShadContextMenuItem(child: Text('Print')),
     ],
     viewItems: [
@@ -221,7 +243,7 @@ List<Widget> buildRostersTrailingWidgets({
   return [
     BessSearchbar(
       onSearchChange: controller.setSearchQuery,
-      noMatches: controller.filteredRoster.isEmpty,
+      noMatches: controller.getFilteredRoster().isEmpty,
       controller: controller.searchController,
     ),
   ];

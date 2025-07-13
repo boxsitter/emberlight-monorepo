@@ -37,6 +37,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final searchController = TextEditingController();
 
   // --- UI State Flags ---
+  bool initializing = true;
   bool importingCampers = false;
   bool populatingActivities = false;
   bool assigningCamper = false;
@@ -46,7 +47,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   // --- Table Configuration ---
   final List<RosterField> fields = [
     RosterField.fullName,
-    RosterField.preferredName,
     RosterField.gender,
     RosterField.age,
     RosterField.cabinName
@@ -79,7 +79,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     return _amas;
   }
 
-  List<Rosterable> get filteredRoster {
+  List<Rosterable> getFilteredRoster() {
     if (searchQuery.isEmpty) {
       return roster;
     } else {
@@ -91,7 +91,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     }
   }
 
-  int get count => filteredRoster.length;
+  int get count => getFilteredRoster().length;
 
   List<RosterField> availableFields(bool returnAmas) {
     if (returnAmas) {
@@ -105,13 +105,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
       return [
         RosterGroup(
           title: 'All Campers',
-          items: filteredRoster,
+          items: getFilteredRoster(),
         )
       ];
     }
 
     final Map<String, List<Rosterable>> groupsMap = {};
-    for (final item in filteredRoster) {
+    for (final item in getFilteredRoster()) {
       final groupKey = item.getFieldAsString(groupByField!);
       groupsMap.putIfAbsent(groupKey, () => []).add(item);
     }
@@ -130,10 +130,12 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   // Lifecycle Methods
   @override
-  void onInit() {
+  Future<void> onInit() async {
+    initializing = true;
+    update();
     super.onInit();
     Debug.logInfo('RostersController initialized. Starting listener.');
-    rosterService.camperStream.then((stream) {
+    await rosterService.camperStream.then((stream) {
       _campersSubscription?.cancel();
       _campersSubscription = stream.listen((camperMap) {
         roster = camperMap.values.toList();
@@ -141,6 +143,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
         update();
       });
     });
+    initializing = false;
+    update();
   }
 
   @override
@@ -259,9 +263,9 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   void toggleSelectAll() {
     if (selectedItems.isEmpty) {
-      selectedItems.addAll(filteredRoster);
+      selectedItems.addAll(getFilteredRoster());
     } else {
-      selectedItems.removeAll(filteredRoster);
+      selectedItems.removeAll(getFilteredRoster());
     }
     update();
   }
@@ -372,18 +376,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   }
 
   // Updated method for RostersController
-  Future<void> exportSelectedAsCsv() async {
-    if (selectedItems.isEmpty) {
-      Get.snackbar('No Campers Selected', 'Please select campers to export.');
-      return;
-    }
-
+  Future<void> exportAsCsv() async {
     final String csvData = ExportService.exportToCsv(
       groups: rosterGroups,
       columns: fields,
       activityDependents: activityDependents,
       principalActivities: principalActivities,
-      selectedItems: selectedItems, // Simply pass the selected items
+      selectedItems: roster.toSet(),
     );
 
     final Uint8List bytes = utf8.encode(csvData);
@@ -697,6 +696,23 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
     }
     assigningCamper = false;
     update();
+  }
+
+  Future<void> toggleArrived() async {
+    if (selectedItems.isEmpty) {
+    Debug.logWarning('No campers selected to toggle arrival status.');
+      return;
+    }
+    Commit commit = Commit(disarmRequirementsLevel: 0);
+  for (final rosterable in selectedItems) {
+      if (rosterable is Camper) {
+      // Treat null as false, and toggle the boolean value.
+      rosterable.arrived = !(rosterable.arrived ?? false);
+      commit.addObjectToPush(rosterable);
+      }
+    }
+  await commitRepo.commit(commit);
+  update(); // It is good practice to call update() after a state change.
   }
 
   // Helper & Utility Methods

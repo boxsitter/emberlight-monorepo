@@ -5,6 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../constants/animation_curves.dart';
 import '../constants/colors.dart';
 import '../constants/sizes.dart';
+import '../utils/helpers/helper_functions.dart';
 
 class BessShadTheme {
   static ShadThemeData shadThemeData = ShadThemeData(
@@ -47,7 +48,7 @@ class BessShadTheme {
     menubarTheme: ShadMenubarTheme(
       buttonForegroundColor: BessColors.textPrimary,
       backgroundColor: Colors.transparent,
-      buttonHoverBackgroundColor: BessColors.crust,
+      buttonHoverBackgroundColor: BessHelperFunctions.adjustHSL(BessColors.core, luminance: -0.07, saturation: 0.2),
       buttonHoverForegroundColor: BessColors.textPrimary,
       buttonSelectedBackgroundColor: BessColors.crust,
       buttonPressedBackgroundColor: BessColors.primary,

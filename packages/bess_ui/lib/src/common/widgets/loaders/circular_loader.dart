@@ -12,24 +12,15 @@ class BessCircularLoader extends StatelessWidget {
   ///   - backgroundColor: The background color of the circular loader.
   const BessCircularLoader({
     super.key,
-    this.foregroundColor,
-    this.backgroundColor,
   });
-
-  final Color? foregroundColor;
-  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(BessSizes.lg),
-      decoration: BoxDecoration(
-          color: backgroundColor ?? BessColors.primary,
-          shape: BoxShape.circle), // Circular background
-      child: Center(
-        child: CircularProgressIndicator(
-            color: foregroundColor ?? BessColors.low,
-            backgroundColor: Colors.transparent), // Circular loader
+    return Center(
+      child: CircularProgressIndicator(
+          color: BessColors.primary,
+          backgroundColor: Colors.transparent,
+
       ),
     );
   }

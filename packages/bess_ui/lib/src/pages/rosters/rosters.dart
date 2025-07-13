@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/activity_switcher.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/column_config.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/header_builders.dart';
@@ -86,7 +87,9 @@ class RostersDesktop extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (controller.columnConfigOpened) {
+        if (controller.initializing == true) {
+          return BessCircularLoader();
+        } else if (controller.columnConfigOpened) {
           return ColumnConfig(controller: controller);
         } else if (controller.activitySwitcherOpened) {
           return ActivitySwitcher(controller: controller);

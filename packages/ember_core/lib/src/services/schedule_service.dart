@@ -1,11 +1,9 @@
 import 'dart:math';
 
 import 'package:ember_core/src/models/core_objects/schedule_day.dart';
-import 'package:ember_core/src/utils/model_helper_functions.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../repositories/pull_repository.dart';
 
 class ScheduleService extends GetxService {
   PullRepository pullRepo = Get.find<PullRepository>();
@@ -18,11 +16,15 @@ class ScheduleService extends GetxService {
   Future<Set<AMABlock>> get amas async => (await pullRepo.getObjectsInCollection<AMABlock>('ama_block', 'ses')).values.toSet();
   Future<Set<ActivityDependent>> get activityDependents async =>
       (await pullRepo.getObjectsInCollection<ActivityDependent>('activity_dependent', 'ses')).values.toSet();
-  Future<Map<PrincipalActivityId, PrincipalActivity>> get principleActivities async =>
+  Future<Map<PrincipalActivityId, PrincipalActivity>> get principalActivities async =>
       await pullRepo.getObjectsInCollection('principal_activity', 'brn');
 
+  Future<Set<Session>> getSessions() async {
+    return (await pullRepo.getObjectsInCollection('session', 'sea')).values.toSet() as Set<Session>;
+  }
+
   Future<List<dynamic>> getActivityData() async {
-    return await Future.wait([amas, activityDependents, principleActivities]);
+    return await Future.wait([amas, activityDependents, principalActivities]);
   }
 
   Future<Set<String>> getSkillsActivityIds() async {
@@ -49,6 +51,36 @@ class ScheduleService extends GetxService {
       }
     }
     return scheduledPrincipalActivityMap;
+  }
+
+  // if onlySkillsRecs is false, skills recs will not be fetched
+  Future<Set<PrincipalActivity>> getScheduledPrincipalActivities() async {
+    Schedule schedule = await clientContextService.schedule;
+    Set<String> scheduledPrincipalActivityIds = schedule.principalActivityRefs;
+    return await pullRepo.getObjects(scheduledPrincipalActivityIds);
+  }
+
+  Future<List<Map<ActivityDependent, PrincipalActivity>>> getActivities() async {
+    final results = await Future.wait([clientContextService.schedule, activityDependents, principalActivities]);
+    Schedule schedule = results[0] as Schedule;
+    Set<ActivityDependent> activityDependentList = results[1] as Set<ActivityDependent>;
+    Map<PrincipalActivityId, PrincipalActivity> principalActivityMap = results[2] as Map<PrincipalActivityId, PrincipalActivity>;
+
+    Map<ActivityDependent, PrincipalActivity> standard = {};
+    Map<ActivityDependent, PrincipalActivity> skills = {};
+
+    for (ActivityDependent activityDependent in activityDependentList) {
+      final PrincipalActivity? principal = principalActivityMap[activityDependent.principalPar];
+      if (principal != null && schedule.principalActivityRefs.contains(principal.id)) {
+        if (principal.isSkillsRec == true) {
+          skills[activityDependent] = principal;
+        } else if (principal.isSkillsRec == false) {
+          standard[activityDependent] = principal;
+        }
+      }
+    }
+
+    return [standard, skills];
   }
 
   Future<List<PrincipalActivityId>> getOrderedActivities(CamperId camperId, bool onlySkillsRecs) async {
@@ -149,6 +181,26 @@ class ScheduleService extends GetxService {
       output[block.id] = block;
     }
     return output;
+  }
+
+  Future<void> unScheduleActivity(
+    Commit commit,
+    ActivityDependentId activityDependentId,
+  ) async {
+    ActivityDependent activityToRemove = commit.getObject(activityDependentId) ?? await pullRepo.getObject(activityDependentId);
+    AMABlock blockOfActivity = commit.getObject(activityToRemove.blockRef) ?? await pullRepo.getObject(activityToRemove.blockRef);
+    blockOfActivity.activityDependentCmps.remove(activityToRemove.id);
+    commit.addObjectToPush(blockOfActivity);
+
+    Set<Camper> campers = await rosterService.registeredCampers;
+    for (Camper camper in campers) {
+      if (camper.activityAssignmentRefs.containsKey(blockOfActivity.id)) {
+        camper.activityAssignmentRefs[blockOfActivity.id] = null;
+        commit.addObjectToPush(camper);
+      }
+    }
+
+    commit.addObjectToDelete(activityToRemove);
   }
 
 }

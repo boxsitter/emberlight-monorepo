@@ -557,9 +557,6 @@ class DatabaseRepairService extends GetxService {
       }
     }
     commit.addObjectsToPush(allCampers);
-    for (CabinDependent cabin in cabins) {
-      cabin.campersWithPreferences.clear;
-    }
     commit.addObjectsToPush(cabins);
     for (ActivityDependent activity in activityDependants) {
       activity.camperRefs.clear();

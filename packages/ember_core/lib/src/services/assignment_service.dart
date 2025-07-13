@@ -46,7 +46,7 @@ class AssignmentService extends GetxService {
     final allPrincipalsFuture =
         commit.getObjectsOfType<PrincipalActivity>().isNotEmpty
             ? Future.value({for (var p in commit.getObjectsOfType<PrincipalActivity>()) p.id: p})
-            : scheduleService.principleActivities;
+            : scheduleService.principalActivities;
 
     final results = await Future.wait([
       allCampersFuture,
@@ -190,7 +190,7 @@ class AssignmentService extends GetxService {
     if (principalsInCommit.isNotEmpty) {
       allPrincipals = {for (var p in principalsInCommit) p.id: p};
     } else {
-      allPrincipals = await scheduleService.principleActivities;
+      allPrincipals = await scheduleService.principalActivities;
     }
 
     final List<ActivityDependent> activitiesInBlock =

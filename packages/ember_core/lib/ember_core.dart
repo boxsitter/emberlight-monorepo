@@ -96,10 +96,10 @@ class EmberCore {
   }
 
   static Future<void> onNewContext(DatabaseRepairService repairService, CommitRepository commitRepo) async {
-    Commit commit = Commit(disarmRequirementsLevel: 0);
-    await Get.find<DatabaseRepairService>().cleanOrphanedDependents(commit, await Get.find<ContextService>().session);
-    commit.disarm(); // not good practice but this operation needs to happen regardless if the user confirms or not since it is an extension of an already confirmed action
-    Get.find<CommitRepository>().commit(commit);
+    // Commit commit = Commit(disarmRequirementsLevel: 0);
+    // await Get.find<DatabaseRepairService>().cleanOrphanedDependents(commit, await Get.find<ContextService>().session);
+    // commit.disarm(); // not good practice but this operation needs to happen regardless if the user confirms or not since it is an extension of an already confirmed action
+    // Get.find<CommitRepository>().commit(commit);
   }
 
 }

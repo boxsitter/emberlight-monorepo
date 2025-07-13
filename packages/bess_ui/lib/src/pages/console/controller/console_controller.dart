@@ -51,17 +51,9 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
     _currentPromptText = _mainCommandPrompt; // Initialize with the main command prompt
     terminal = Terminal(
       maxLines: 10000,
-      onOutput: _handleTerminalOutput,
+      onOutput: _handleKeyInput, // Unified input handler
     );
     writePrimaryPrompt();
-  }
-
-  void _handleTerminalOutput(String data) {
-    if (_isAwaitingPromptInput) {
-      _handlePromptKeyInput(data);
-    } else {
-      _handleCommandKeyInput(data);
-    }
   }
 
   void writePrimaryPrompt() {
@@ -78,12 +70,8 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
   Future<void> _executeCommand(String command) async {
     if (command.isEmpty) return;
 
-    if (!_isAwaitingPromptInput) {
       history.add(command);
       historyIndex = history.length;
-    }
-
-    terminal.write('\r${' ' * (_currentPromptText.length + command.length)}\r');
 
     try {
       if (command == 'clear') {
@@ -107,112 +95,39 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
       }
     } catch (e) {
       error('Failed to execute command: $command', details: e.toString());
+      throw(e);
     }
   }
 
-  void _handleCommandKeyInput(String data) async {
+  // Unified Key Input Handler
+  void _handleKeyInput(String data) async {
+    // First, check for multi-character sequences that should be treated as a single command
     if (data == _AnsiCodes.cursorUp) {
-      if (history.isNotEmpty) {
-         if (historyIndex == -1) { // Not currently Browse or at the start of Browse
-            historyIndex = history.length -1;
-         } else if (historyIndex > 0) {
-        historyIndex--;
-         }
-        _replaceInputBuffer(history[historyIndex]);
-      }
-    } else if (data == _AnsiCodes.cursorDown) {
-      if (history.isNotEmpty && historyIndex < history.length - 1) {
-        historyIndex++;
-        _replaceInputBuffer(history[historyIndex]);
-      } else if (historyIndex == history.length -1 ){
-        historyIndex++;
-        _replaceInputBuffer('');
-      }
-    } else if (data == _AnsiCodes.cursorLeft || data == _AnsiCodes.cursorRight) {
-      // Left/Right arrow - could implement cursor movement within inputBuffer later
-    } else {
-      for (var charRune in data.runes) {
-        final charStr = String.fromCharCode(charRune);
-        switch (charStr) {
-          case _AnsiCodes.enter:
-            terminal.write('\r');
-            String commandToExecute = inputBuffer;
-            inputBuffer = '';
-            await _executeCommand(commandToExecute);
-            if (commandToExecute != 'clear') {
-              terminal.write('\n');
-            }
-            writePrimaryPrompt();
-            break;
-          case _AnsiCodes.backspace:
-          case _AnsiCodes.delete:
-            if (inputBuffer.isNotEmpty) {
-              inputBuffer = inputBuffer.substring(0, inputBuffer.length - 1);
-              terminal.write('\b \b');
-            }
-            break;
-          default:
-            if (charRune >= 32 && charRune != 127) { // Printable characters
-              inputBuffer += charStr;
-              terminal.write(charStr);
-            }
-        }
-      }
+      _navigateHistory(true);
+      return;
     }
-  }
+    if (data == _AnsiCodes.cursorDown) {
+      _navigateHistory(false);
+      return;
+    }
 
-  void _handlePromptKeyInput(String data) async {
+    // If not a special sequence, process character by character
     for (var charRune in data.runes) {
       final char = String.fromCharCode(charRune);
       switch (char) {
         case _AnsiCodes.enter:
-          final currentValue = inputBuffer;
-          // Use _activeInputPromptMessage for re-prompting if validation fails
-          final String messageForReprompt = _activeInputPromptMessage ?? _mainCommandPrompt;
-
-          if (!_currentPromptAllowEmpty && currentValue.trim().isEmpty) {
-            final String visualInputCleared = '\r${' ' * currentValue.length}\r';
-            terminal.write(visualInputCleared);
-            _writeWithNewlineAndPromptFix(_penError('Input cannot be empty.'));
-            _writeTemporaryPrompt(messageForReprompt); // Re-show the original prompt message
-            // inputBuffer is already empty or will be cleared
-            return;
-          }
-
-          bool isValid = true;
-          if (_currentPromptValidator != null) {
-            final validationResult = _currentPromptValidator!(currentValue);
-            if (validationResult is Future<bool>) {
-              isValid = await validationResult;
-            } else {
-              isValid = validationResult;
-            }
-          }
-
-          if (isValid) {
-            _isAwaitingPromptInput = false;
-            terminal.write('\r\n');
-            _promptCompleter?.complete(currentValue);
-            _promptCompleter = null;
-            inputBuffer = '';
-            _activeInputPromptMessage = null; // Clear active message
-            writePrimaryPrompt();
+          if (_isAwaitingPromptInput) {
+            await _handlePromptEnter();
           } else {
-            final String visualInputCleared = '\r${' ' * currentValue.length}\r';
-            terminal.write(visualInputCleared);
-            inputBuffer = ''; // Clear buffer for re-entry
-            _writeWithNewlineAndPromptFix(_penError('Invalid input. Please try again.'));
-            _writeTemporaryPrompt(messageForReprompt); // Re-show the original prompt message
+            await _handleCommandEnter();
           }
           break;
         case _AnsiCodes.backspace:
         case _AnsiCodes.delete:
-          if (inputBuffer.isNotEmpty) {
-            inputBuffer = inputBuffer.substring(0, inputBuffer.length - 1);
-            terminal.write('\b \b');
-          }
+          _handleBackspace();
           break;
         default:
+          // Handle all other characters, including space
           if (charRune >= 32 && charRune != 127) { // Printable characters
             inputBuffer += char;
             terminal.write(char);
@@ -221,6 +136,74 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
     }
   }
 
+  void _navigateHistory(bool up) {
+    if (history.isEmpty) return;
+    if (up) {
+      if (historyIndex > 0) {
+        historyIndex--;
+      } else {
+        historyIndex = 0; // Stay at the first item
+         }
+    } else { // Down
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+      } else {
+        historyIndex = history.length; // Go to the "new" line buffer
+        _replaceInputBuffer('');
+        return;
+      }
+    }
+    _replaceInputBuffer(history[historyIndex]);
+      }
+
+  Future<void> _handleCommandEnter() async {
+    terminal.write('\r\n');
+            String commandToExecute = inputBuffer;
+            inputBuffer = '';
+            await _executeCommand(commandToExecute);
+            if (commandToExecute != 'clear') {
+            writePrimaryPrompt();
+    }
+  }
+
+  Future<void> _handlePromptEnter() async {
+          final currentValue = inputBuffer;
+          final String messageForReprompt = _activeInputPromptMessage ?? _mainCommandPrompt;
+
+          if (!_currentPromptAllowEmpty && currentValue.trim().isEmpty) {
+            _writeWithNewlineAndPromptFix(_penError('Input cannot be empty.'));
+      _writeTemporaryPrompt(messageForReprompt);
+      inputBuffer = ''; // Clear buffer for re-entry
+            return;
+          }
+
+          bool isValid = true;
+          if (_currentPromptValidator != null) {
+            final validationResult = _currentPromptValidator!(currentValue);
+      isValid = (validationResult is Future<bool>) ? await validationResult : validationResult;
+          }
+
+          if (isValid) {
+            _isAwaitingPromptInput = false;
+            terminal.write('\r\n');
+            _promptCompleter?.complete(currentValue);
+            _promptCompleter = null;
+            inputBuffer = '';
+      _activeInputPromptMessage = null;
+            writePrimaryPrompt();
+          } else {
+            _writeWithNewlineAndPromptFix(_penError('Invalid input. Please try again.'));
+      _writeTemporaryPrompt(messageForReprompt);
+      inputBuffer = ''; // Clear buffer for re-entry
+          }
+  }
+
+  void _handleBackspace() {
+          if (inputBuffer.isNotEmpty) {
+            inputBuffer = inputBuffer.substring(0, inputBuffer.length - 1);
+            terminal.write('\b \b');
+          }
+      }
 
   void _replaceInputBuffer(String newInput) {
     // Visually clear current inputBuffer
@@ -241,9 +224,8 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
       _currentPromptText = _mainCommandPrompt; // Ensure current visual prompt is main prompt
     } else {
       // If awaiting input, restore the temporary input prompt and current input buffer
-      // Use _activeInputPromptMessage if available, otherwise _currentPromptText (which should be the temp prompt message)
-      final promptToDisplay = (_activeInputPromptMessage ?? _currentPromptText) + (inputBuffer.isNotEmpty ? inputBuffer : "");
-      terminal.write(promptToDisplay);
+      final promptToDisplay = (_activeInputPromptMessage ?? _currentPromptText);
+      terminal.write('$promptToDisplay$inputBuffer');
     }
   }
 
@@ -388,12 +370,6 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
       String message, {
         FutureOr<bool> Function(String)? validator,
       }) {
-    // Note: Original file had 'home❯ ' as the default _currentPromptText,
-    // this version now uses _mainCommandPrompt = '> ' as the default.
-    // The reset in prompt's whenComplete was to 'home❯ '.
-    // Changed to use _mainCommandPrompt for consistency if 'home❯ ' was an oversight.
-    // If 'home❯ ' is specifically desired after a prompt, adjust _mainCommandPrompt or the reset logic.
-    // For now, the UserInput.prompt still has its own reset.
     return prompt(message, allowEmpty: false, validator: validator);
   }
 
@@ -408,9 +384,6 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
         required List<String> options,
         String? defaultValue,
       }) async {
-    // The select method in the provided file uses .single,
-    // assuming showOptionSelectionDialog returns a List<String>
-    // and for single select, it's expected to have one item or handle empty.
     final result = await popupService.showOptionSelectionDialog(
         title: 'Select',
         message: message,
@@ -419,7 +392,6 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
         allowMultipleSelections: false,
     );
     if (result.isEmpty) {
-        // Fallback logic as provided in the latest user file for select
         if (defaultValue != null && options.contains(defaultValue)) return defaultValue;
         if (options.isNotEmpty) return options.first;
         throw StateError('Selection cancelled and no valid fallback option.');
@@ -445,15 +417,9 @@ class ConsoleController extends GetxController implements UserOutput, UserInput 
   @override
   Future<T> withSpinner<T>({
     required String inProgressMessage,
-    String? completionMessage, // completionMessage from UserInput is used by GuiInput/caller
+    String? completionMessage,
     required Future<T> Function() task,
   }) async {
-    // The popupService.executeWithSpinner might show its own toast as per previous versions.
-    // If UserInput's completionMessage is meant to be handled separately (e.g., by UserOutput),
-    // then PopupService's executeWithSpinner shouldn't show a success toast.
-    // Assuming PopupService.executeWithSpinner handles its own in-progress display and
-    // the calling layer (like a GuiInput adapter) handles completionMessage.
-    // The provided file calls popupService.executeWithSpinner which doesn't take completionMessage.
     return await popupService.executeWithSpinner(inProgressMessage: inProgressMessage, task: task);
   }
 

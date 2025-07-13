@@ -4,18 +4,14 @@ import '../interfaces/time_interval.dart';
 
 typedef ScheduleDayId = String;
 
-class ScheduleDay extends CoreObject implements TimeInterval {
+class ScheduleDay extends CoreObject {
   int dayIndex;
-  @override
   DateTime start;
-  @override
-  DateTime end;
   List<BlockId> blockCmps;
 
   ScheduleDay({
     required this.dayIndex,
     required this.start,
-    required this.end,
     List<BlockId>? blockCmps,
     super.id,
     super.createdAt,
@@ -38,7 +34,6 @@ class ScheduleDay extends CoreObject implements TimeInterval {
     json.addAll({
       'dayIndex': dayIndex,
       'start': start,
-      'end': end,
       'blockCmps': blockCmps,
     });
     return json;
@@ -48,7 +43,6 @@ class ScheduleDay extends CoreObject implements TimeInterval {
     final scheduleDay = ScheduleDay(
       dayIndex: json['dayIndex'] as int,
       start: json['start'] as DateTime,
-      end: json['end'] as DateTime,
       blockCmps: (json['blockCmps'] as List?)?.cast<BlockId>() ?? <BlockId>[],
     );
     scheduleDay.overwriteCoreObjectFromJson(json);
