@@ -27,7 +27,7 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
         children: [
           // Left: Menu Bar
           Container(
-            width: 300,
+            width: 265,
             decoration: BoxDecoration(
               border: Border(right: BorderSide(color: BessColors.semiLow, width: 1)),
             ),

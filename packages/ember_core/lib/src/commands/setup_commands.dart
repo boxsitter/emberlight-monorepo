@@ -231,7 +231,10 @@ class MakeSession extends EmberCommand {
     String date = await userInput.prompt('Date (month/day): ', allowEmpty: false);
 
     Commit commit = Commit(disarmRequirementsLevel: 0);
-    Session newSession = Session(name: name, start: DateTime.parse('2025-${date.split('/')[0].padLeft(2, '0')}-${date.split('/')[1].padLeft(2, '0')}'));
+    Session newSession = Session(
+      name: name,
+      start: DateTime.parse('2025-${date.split('/')[0].padLeft(2, '0')}-${date.split('/')[1].padLeft(2, '0')}'),
+    );
     commit.addObjectToPush(newSession);
     await commitRepo.commit(commit);
     userOutput.success('Session $name Created!');
@@ -258,7 +261,10 @@ class MakeDay extends EmberCommand {
     String date = await userInput.prompt('Date (month/day): ', allowEmpty: false);
 
     Commit commit = Commit(disarmRequirementsLevel: 0);
-    ScheduleDay newDay = ScheduleDay(dayIndex: dayIndex, start: DateTime.parse('2025-${date.split('/')[0].padLeft(2, '0')}-${date.split('/')[1].padLeft(2, '0')}'));
+    ScheduleDay newDay = ScheduleDay(
+      dayIndex: dayIndex,
+      start: DateTime.parse('2025-${date.split('/')[0].padLeft(2, '0')}-${date.split('/')[1].padLeft(2, '0')}'),
+    );
     commit.addObjectToPush(newDay);
     Schedule schedule = await scheduleService.schedule;
     schedule.scheduleDayCmps.add(newDay.id);
@@ -285,7 +291,9 @@ class MakeWeek extends EmberCommand {
   @override
   Future<void> run() async {
     String startDateString = await userInput.prompt('Start Date (month/day): ', allowEmpty: false);
-    DateTime startDate = DateTime.parse('2025-${startDateString.split('/')[0].padLeft(2, '0')}-${startDateString.split('/')[1].padLeft(2, '0')}');
+    DateTime startDate = DateTime.parse(
+      '2025-${startDateString.split('/')[0].padLeft(2, '0')}-${startDateString.split('/')[1].padLeft(2, '0')}',
+    );
     Commit commit = Commit(disarmRequirementsLevel: 0);
     Schedule ogSchedule = Schedule();
     commit.addObjectToPush(ogSchedule);
@@ -330,8 +338,6 @@ class MakeWeek extends EmberCommand {
         commit.addObjectToPush(skillsRec);
         scheduleService.addBlockToDay(commit, newDay.id, skillsRec);
       }
-
-
     }
 
     await commitRepo.commit(commit);
@@ -359,36 +365,51 @@ class AddActivities extends EmberCommand {
     blocks.sort((a, b) => a.start.compareTo(b.start));
 
     final List<FormFieldDescriptor> formFieldDescriptors1 = [
-      SelectFormFieldDescriptor(optionLabelBuilder: (value) => value, options: blocks.map((e) => e.displayTitle).toList(), isRequired: true, label: 'Activity Periods'),
+      SelectFormFieldDescriptor(
+        optionLabelBuilder: (value) => value,
+        options: blocks.map((e) => e.displayTitle).toList(),
+        isRequired: true,
+        label: 'Activity Periods',
+      ),
     ];
     final prompt1Output = (await userInput.promptForm('Select Block', formFieldDescriptors1))?.first;
     if (prompt1Output == null) {
       return;
     }
-  AMABlock block = blocks.firstWhere((element) => element.displayTitle == prompt1Output as String);
+    AMABlock block = blocks.firstWhere((element) => element.displayTitle == prompt1Output as String);
     List<PrincipalActivity> activities = (await scheduleService.principalActivities).values.toList();
     List<PrincipalActivity> nonSkills = activities.where((element) => element.isSkillsRec == false).toList();
     List<PrincipalActivity> skills = activities.where((element) => element.isSkillsRec == true).toList();
 
     final List<FormFieldDescriptor> formFieldDescriptors2 = [
-      MultiSelectFormFieldDescriptor(optionLabelBuilder: (value) => value, options: nonSkills.map((e) => e.name).toList(), isRequired: false, label: 'Standard Choice Activities'),
-      MultiSelectFormFieldDescriptor(optionLabelBuilder: (value) => value, options: skills.map((e) => e.name).toList(), isRequired: false, label: 'Skills Recs'),
+      MultiSelectFormFieldDescriptor(
+        optionLabelBuilder: (value) => value,
+        options: nonSkills.map((e) => e.name).toList(),
+        isRequired: false,
+        label: 'Standard Choice Activities',
+      ),
+      MultiSelectFormFieldDescriptor(
+        optionLabelBuilder: (value) => value,
+        options: skills.map((e) => e.name).toList(),
+        isRequired: false,
+        label: 'Skills Recs',
+      ),
     ];
     final prompt2Output = await userInput.promptForm('Select Activities', formFieldDescriptors2);
-  if (prompt2Output == null) {
+    if (prompt2Output == null) {
       return;
     }
 
     List<PrincipalActivity> selectedActivities = [];
-  final nonSkillSelections = prompt2Output[0] as List<String>?;
-  if (nonSkillSelections != null) {
-    selectedActivities.addAll(nonSkills.where((element) => nonSkillSelections.contains(element.name)));
-  }
+    final nonSkillSelections = prompt2Output[0] as List<String>?;
+    if (nonSkillSelections != null) {
+      selectedActivities.addAll(nonSkills.where((element) => nonSkillSelections.contains(element.name)));
+    }
 
-  final skillSelections = prompt2Output[1] as List<String>?;
-  if (skillSelections != null) {
-    selectedActivities.addAll(skills.where((element) => skillSelections.contains(element.name)));
-  }
+    final skillSelections = prompt2Output[1] as List<String>?;
+    if (skillSelections != null) {
+      selectedActivities.addAll(skills.where((element) => skillSelections.contains(element.name)));
+    }
 
     Commit commit = Commit(disarmRequirementsLevel: 0);
     for (PrincipalActivity activity in selectedActivities) {
@@ -420,7 +441,12 @@ class RemoveActivities extends EmberCommand {
     blocks.sort((a, b) => a.start.compareTo(b.start));
 
     final List<FormFieldDescriptor> formFieldDescriptors1 = [
-      SelectFormFieldDescriptor(optionLabelBuilder: (value) => value, options: blocks.map((e) => e.displayTitle).toList(), isRequired: true, label: 'Activity Periods'),
+      SelectFormFieldDescriptor(
+        optionLabelBuilder: (value) => value,
+        options: blocks.map((e) => e.displayTitle).toList(),
+        isRequired: true,
+        label: 'Activity Periods',
+      ),
     ];
     // We get the first (and only) item from the list returned by the prompt.
     final prompt1Output = (await userInput.promptForm('Select Block', formFieldDescriptors1))?.first;
@@ -431,10 +457,14 @@ class RemoveActivities extends EmberCommand {
     AMABlock block = blocks.firstWhere((element) => element.displayTitle == prompt1Output as String);
     Set<ActivityDependentId> activityIdsInBlock = block.activityDependentCmps;
 
-
     final List<FormFieldDescriptor> formFieldDescriptors2 = [
       // Assuming the form descriptor can handle a list of objects for its options.
-      MultiSelectFormFieldDescriptor(optionLabelBuilder: (value) => value.toString(), options: activityIdsInBlock.toList(), isRequired: true, label: 'Activities'),
+      MultiSelectFormFieldDescriptor(
+        optionLabelBuilder: (value) => value.toString(),
+        options: activityIdsInBlock.toList(),
+        isRequired: true,
+        label: 'Activities',
+      ),
     ];
     final prompt2Output = await userInput.promptForm('Select Activities To Delete', formFieldDescriptors2);
     if (prompt2Output == null) {

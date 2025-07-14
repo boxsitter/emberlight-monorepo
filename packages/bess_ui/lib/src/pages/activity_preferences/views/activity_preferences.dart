@@ -66,6 +66,7 @@ class ActivityPreferencesDesktop extends StatelessWidget {
                         onSelectCamper: (Camper camper) => controller.setSelectedCamper(camper),
                         isCampersLoaded: controller.isCabinCamperDataLoaded,
                         totalActivities: controller.totalActivityCount,
+                        relevantActivityIds: controller.principalActivities.map((e) => e.$1.id).toSet(),
                       ),
                     ),
                 ],

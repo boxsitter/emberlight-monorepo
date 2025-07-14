@@ -105,6 +105,13 @@ class RosterField implements Titled {
     defaultWidth: widthLg,
     allowGrouping: true,
   );
+  static const RosterField activitySatisfactionIndex = RosterField(
+    name: 'activitySatisfactionIndex',
+    title: 'ASI',
+    required: false,
+    defaultWidth: widthMd,
+    allowGrouping: false,
+  );
 
   /// A list of all possible RosterField values, similar to `Enum.values`.
   static const List<RosterField> values = [
@@ -122,6 +129,7 @@ class RosterField implements Titled {
     arrived,
     canSwim,
     preferencesCompleted,
+    activitySatisfactionIndex,
   ];
 
   @override

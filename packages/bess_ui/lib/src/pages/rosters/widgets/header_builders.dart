@@ -186,8 +186,8 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         onPressed: controller.smartAssignAll,
       ),
       ShadContextMenuItem(
-        child: const Text('Auto Assign'),
-        onPressed: controller.autoAssignSelected,
+        child: const Text('Smart Assign Selected'),
+        onPressed: controller.smartAssignSelected,
         enabled: controller.selectedItems.isNotEmpty,
       ),
       ShadContextMenuItem(
@@ -209,11 +209,8 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         enabled: controller.selectedItems.isNotEmpty,
       ),
       ShadContextMenuItem(
-        child: Text('Clear Selected Camper Weights',
-            style: controller.isSingleSelected() || controller.isMultiSelected()
-                ? BessTextStyles.standard.copyWith(color: BessColors.red)
-                : BessTextStyles.standardSecondary),
-        onPressed: controller.resetSelectedCamperPreferenceWeights,
+        child: const Text('Set Cabin Of Campers'),
+        onPressed: controller.setCabin,
         enabled: controller.selectedItems.isNotEmpty,
       ),
       ShadContextMenuItem(

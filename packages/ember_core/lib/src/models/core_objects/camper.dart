@@ -29,6 +29,8 @@ class Camper extends CoreObject implements Rosterable, Titled {
   bool? arrived;
   @override
   bool? canSwim;
+  @override
+  double? activitySatisfactionIndex;
   final Map<PrincipalActivityId, double?> preferenceRefs;
   final Map<PrincipalActivityId, double> preferenceWeightRefs;
   @override
@@ -46,6 +48,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
     this.ultracampId,
     this.arrived,
     this.canSwim,
+    this.activitySatisfactionIndex,
     Map<PrincipalActivityId, double?>? preferenceRefs,
     Map<PrincipalActivityId, double>? preferenceWeightRefs,
     Map<AMABlockId, ActivityDependentId?>? activityAssignmentRefs,
@@ -71,6 +74,21 @@ class Camper extends CoreObject implements Rosterable, Titled {
   @override
   bool? get preferencesCompleted => ModelHelperFunctions.simplePreferencesCompleted(this);
   int? get preferencesCompletedCount => preferenceRefs.entries.where((element) => element.value != null).length;
+
+  int? getRelevantCompletedCount(Set<PrincipalActivityId> relevantActivities) {
+    if (preferenceRefs.isEmpty) return null;
+    return preferenceRefs.entries.where((element) => element.value != null && relevantActivities.contains(element.key)).length;
+  }
+
+  bool relevantPrefsCompleted(Set<PrincipalActivityId> relevantActivities) {
+    bool output = true;
+    for (var element in relevantActivities) {
+      if (preferenceRefs[element] == null) {
+        output = false;
+      }
+    }
+    return output;
+  }
 
   @override
   int get age =>
@@ -114,6 +132,8 @@ class Camper extends CoreObject implements Rosterable, Titled {
         return arrived == null ? 'N/A' : arrived == true ? 'Yes' : 'No';
       case RosterField.preferencesCompleted:
         return preferencesCompleted == null ? 'N/A' : preferencesCompleted! ? 'Yes' : 'No';
+      case RosterField.activitySatisfactionIndex:
+        return activitySatisfactionIndex != null ? activitySatisfactionIndex.toString() : 'N/A';
       default:
         if (field is AMABlock) { // TODO: This sucks
           return activityAssignmentRefs[field.dataId] ?? '';
@@ -147,6 +167,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
       'activityAssignmentRefs': activityAssignmentRefs,
       'arrived': arrived,
       'canSwim': canSwim,
+      'activitySatisfactionIndex': activitySatisfactionIndex,
     });
     return json;
   }
@@ -167,6 +188,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
       activityAssignmentRefs: (json['activityAssignmentRefs'] as Map?)?.cast<String, String?>() ?? {},
       arrived: json['arrived'],
       canSwim: json['canSwim'],
+      activitySatisfactionIndex: json['activitySatisfactionIndex'],
     );
     camper.overwriteCoreObjectFromJson(json);
     return camper;

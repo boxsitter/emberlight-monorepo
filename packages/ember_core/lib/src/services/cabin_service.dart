@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../repositories/pull_repository.dart';
 
 class CabinService extends GetxService {
   CommitService requestService = Get.find<CommitService>();

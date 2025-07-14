@@ -45,7 +45,7 @@ class ActivityPreferencesCabins extends StatelessWidget {
                 final bool isInProgress = preferencesCount > 0 && preferencesCount < count;
 
                 return CardButton(
-                  tintConditions: [(isInProgress, BessColors.yellow), (isCompleted, BessColors.green)],
+                  // tintConditions: [(isInProgress, BessColors.yellow), (isCompleted, BessColors.green)],
                   height: 90,
                   width: 250,
                   onPressed: () => controller.setSelectedCabinData(cabinRecord),
@@ -62,7 +62,8 @@ class ActivityPreferencesCabins extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '$preferencesCount/$count campers completed',
+                        //'$preferencesCount/$count campers completed',
+                        '',
                         style: BessTextStyles.largerLabel,
                       ),
                     ],

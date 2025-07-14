@@ -45,6 +45,8 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
   @override
   void onNavigateTo(String to, String? from) {
     setCabinsOpened(true);
+    _loadActivityData(false);
+    update();
   }
 
   @override
@@ -62,7 +64,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
       rosterService.registeredCampers
     ]);
     final Map<CabinDependent, PrincipalCabin> cabinDepToPrinCabin = results[0] as Map<CabinDependent, PrincipalCabin>;
-    final Set<Camper> campers = results[1] as Set<Camper>;
+    final Set<Camper> campers = (results[1] as Map<String, Camper>).values.toSet();
 
     final List<((CabinDependent, PrincipalCabin), (List<Camper>, int))> output = [];
     for (CabinDependent cabinDependent in cabinDepToPrinCabin.keys) {
@@ -71,7 +73,7 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
       for (Camper camper in campers) {
         if (cabinDependent.camperRefs.contains(camper.id)) {
           cabinRoster.add(camper);
-          if (camper.preferencesCompleted == true) {
+          if (camper.relevantPrefsCompleted(principalActivities.map((e) => e.$1.id).toSet()) == true) {
             camperCompletedCount += 1;
           }
         }
@@ -96,17 +98,22 @@ class ActivityPreferencesController extends GetxController with RouteAwareContro
 
     Set<PrincipalActivity> principalActivities = await scheduleService.getScheduledPrincipalActivities();
     totalActivityCount = principalActivities.length;
+    int hiddenCount = 0;
+    principalActivities.forEach((element) {
+      if (element.isHidden == true) {
+        hiddenCount++;
+      }
+    });
+    totalActivityCount = totalActivityCount == null ? null : totalActivityCount! - hiddenCount;
 
     List<(PrincipalActivity, int?)> output = [];
     for (PrincipalActivity principalActivity in principalActivities) {
       if (principalActivity.isHidden) {
         continue;
       }
-      //if (principalActivity.isSkillsRec == onlySkills) {
         double? preference = selectedCamper?.preferenceRefs[principalActivity.id];
         int? preferenceAsInt = preference == null ? null : (preference * 10).round();
         output.add(((principalActivity, preferenceAsInt)));
-      //}
     }
 
     output.sort((a, b) => a.$1.displayTitle.compareTo(b.$1.displayTitle));

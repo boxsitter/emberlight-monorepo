@@ -19,8 +19,8 @@ class RosterService extends GetxService {
   ContextService clientContextService = Get.find<ContextService>();
   CommitService requestService = Get.find<CommitService>();
 
-  Future<Set<Camper>> get registeredCampers async =>
-      (await pullRepo.getObjectsInCollection<Camper>('camper', 'ses')).values.toSet();
+  Future<Map<String, Camper>> get registeredCampers async => (await pullRepo.getObjectsInCollection<Camper>('camper', 'ses'));
+
   Future<Stream<Map<String, Camper>>> get camperStream async =>
       await liveDataRepo.watchCollection(collectionName: 'camper', domain: 'ses');
 
@@ -117,20 +117,25 @@ class RosterService extends GetxService {
       final Map<RosterField, int> headerIndices = _parseHeaderIndices(headers, expectedColumns);
 
       final List<Map<RosterField, dynamic>> campersToRegisterData = [];
-      final Set<Camper> existingCampers = await registeredCampers;
+      final Set<Camper> existingCampers = (await registeredCampers).values.toSet();
       final Set<String> newCampersUniqueKeys = {}; // To track campers from the current CSV
 
       for (int i = 1; i < rows.length; i++) {
         final row = rows[i];
         // Skip empty rows
-        if (row.every((cell) => cell == null || cell.toString().trim().isEmpty)) {
+        if (row.every((cell) =>
+        cell == null || cell
+            .toString()
+            .trim()
+            .isEmpty)) {
           Debug.logInfo('Skipping empty row ${i + 1}.');
           continue;
         }
         if (row.length != headers.length) {
           throw CsvError(
             'Row ${i + 1} has ${row.length} columns, expected ${headers.length}.',
-            'Row ${i + 1} has an incorrect number of columns. Please ensure all rows have the same number of columns as the header.',
+            'Row ${i +
+                1} has an incorrect number of columns. Please ensure all rows have the same number of columns as the header.',
           );
         }
         // Pass 'i' as rowIndex for better error messages
@@ -226,12 +231,10 @@ class RosterService extends GetxService {
     return indices;
   }
 
-  Map<RosterField, dynamic> _extractCamperDataFromRow(
-    List<dynamic> row,
-    Map<RosterField, int> indices,
-    List<RosterField> expectedColumns,
-    int rowIndex,
-  ) {
+  Map<RosterField, dynamic> _extractCamperDataFromRow(List<dynamic> row,
+      Map<RosterField, int> indices,
+      List<RosterField> expectedColumns,
+      int rowIndex,) {
     final Map<RosterField, dynamic> camperData = {};
 
     for (final field in expectedColumns) {
@@ -241,7 +244,8 @@ class RosterService extends GetxService {
       if (field.required && (cellValue == null || cellValue.isEmpty)) {
         throw CsvError(
           'Missing required value for "${field.title}" in row ${rowIndex + 1}. Cell value is "$cellValue".',
-          'Row ${rowIndex + 1} is missing a required value for the "${field.title}" column. Please ensure all required cells have data.',
+          'Row ${rowIndex + 1} is missing a required value for the "${field
+              .title}" column. Please ensure all required cells have data.',
         );
       }
 
@@ -250,11 +254,11 @@ class RosterService extends GetxService {
           camperData[field] = _parseGender(cellValue);
           break;
         case 'birthdate':
-          // cellValue is guaranteed to be non-null here due to the required check above
+        // cellValue is guaranteed to be non-null here due to the required check above
           camperData[field] = _parseBirthdate(cellValue!, rowIndex);
           break;
         case 'cabinName':
-          // TODO: Implement cabinName parsing
+        // TODO: Implement cabinName parsing
           camperData[field] = cellValue;
           break;
         default:
@@ -275,8 +279,8 @@ class RosterService extends GetxService {
       case 'nonbinary':
         return 'NB';
       default:
-        // Consider if an error should be thrown for unrecognized, non-empty gender values
-        // For now, returning empty as per previous logic for unrecognized values.
+      // Consider if an error should be thrown for unrecognized, non-empty gender values
+      // For now, returning empty as per previous logic for unrecognized values.
         return '';
     }
   }
@@ -296,7 +300,8 @@ class RosterService extends GetxService {
       }
     } catch (e) {
       throw CsvError(
-        'Invalid birthdate format for "$dateString" in row ${rowIndex + 1}. Expected MM/DD/YYYY or MM/DD/YYYY HH:MM:SS AM/PM. Error: $e',
+        'Invalid birthdate format for "$dateString" in row ${rowIndex +
+            1}. Expected MM/DD/YYYY or MM/DD/YYYY HH:MM:SS AM/PM. Error: $e',
         'The birthdate "$dateString" in row ${rowIndex + 1} is not in the correct format. Please use MM/DD/YYYY.',
       );
     }
@@ -305,19 +310,17 @@ class RosterService extends GetxService {
   /// Attempts to assign a specific camper to a specific activity.
   /// This method is designed to be robust, handling re-assignment and correcting inconsistent states.
   /// Returns true if the assignment was successful.
-  Future<bool> assignCamperToActivity(
-    Commit commit,
-    String camperId,
-    String activityDepId,
-    bool preventReassignmentIfAssigned,
-  ) async {
+  Future<bool> assignCamperToActivity(Commit commit,
+      String camperId,
+      String activityDepId,
+      bool preventReassignmentIfAssigned,) async {
     // 1. Fetch all necessary objects, prioritizing the commit cache.
     Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
     ActivityDependent activityDep =
         commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
     PrincipalActivity? principalActivity =
         commit.getObject<PrincipalActivity>(activityDep.principalPar) ??
-        await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
+            await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
 
     final String activityName = principalActivity.name;
     final String blockId = activityDep.blockRef;
@@ -325,7 +328,8 @@ class RosterService extends GetxService {
     // 2. Handle new flag to prevent re-assignment.
     if (preventReassignmentIfAssigned && camper.activityAssignmentRefs[blockId] != null) {
       Debug.logInfo(
-        'Info: ${camper.fullName} is already assigned in block $blockId. Assignment to $activityName ($activityDepId) is prevented.',
+        'Info: ${camper
+            .fullName} is already assigned in block $blockId. Assignment to $activityName ($activityDepId) is prevented.',
         userMessage: '${camper.fullName} is already assigned in this block. Assignment skipped.',
       );
       return false; // Indicate that no assignment was made.
@@ -333,33 +337,35 @@ class RosterService extends GetxService {
 
     // 3. Handle potential reassignment within the same block.
     final String? currentAssignedActivityId = camper.activityAssignmentRefs[blockId];
-    if (currentAssignedActivityId != null && currentAssignedActivityId != activityDepId) {
+    if (currentAssignedActivityId != null && currentAssignedActivityId != activityDep.id) {
       Debug.logInfo(
-        'Info: ${camper.fullName} is currently in activity $currentAssignedActivityId, removing before assigning to $activityName ($activityDepId).',
+        'Info: ${camper
+            .fullName} is currently in activity $currentAssignedActivityId, removing before assigning to $activityName ($activityDep.id).',
         userMessage: '${camper.fullName} is being moved to $activityName from another activity in the same block.',
       );
       // Remove the camper from their old activity to ensure a clean slate.
       final bool removed = await removeCamperFromActivity(commit, camperId, currentAssignedActivityId);
       if (!removed) {
         Debug.logWarning(
-          'Warning: Failed to remove ${camper.fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDepId may be unstable.',
+          'Warning: Failed to remove ${camper
+              .fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDep.id may be unstable.',
         );
         // Continue, but be aware of the potential issue.
       }
       // IMPORTANT: Re-fetch the camper object as it was just modified in the commit.
-      camper = commit.getObject<Camper>(camperId)!;
+      camper = commit.getObject<Camper>(camper.id)!;
     }
 
     // 3. Perform the robust assignment, ensuring state consistency.
     bool camperChanged = false;
-    if (camper.activityAssignmentRefs[blockId] != activityDepId) {
-      camper.activityAssignmentRefs[blockId] = activityDepId;
+    if (camper.activityAssignmentRefs[blockId] != activityDep.id) {
+      camper.activityAssignmentRefs[blockId] = activityDep.id;
       camperChanged = true;
     }
 
     bool activityChanged = false;
-    if (!activityDep.camperRefs.contains(camperId)) {
-      activityDep.camperRefs.add(camperId);
+    if (!activityDep.camperRefs.contains(camper.id)) {
+      activityDep.camperRefs.add(camper.id);
       activityChanged = true;
     }
 
@@ -367,22 +373,67 @@ class RosterService extends GetxService {
     if (camperChanged || activityChanged) {
       commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
       Debug.logSuccess(
-        '${camper.fullName} successfully assigned to $activityName ($activityDepId). State synchronized.',
+        '${camper.fullName} successfully assigned to $activityName ($activityDep). State synchronized.',
         userMessage: 'Success! ${camper.fullName} has been assigned to $activityName.',
       );
     } else {
-      Debug.logInfo(
-        'Info: ${camper.fullName} is already correctly assigned to $activityName ($activityDepId). No action needed.',
-      );
+      Debug.logInfo('Info: ${camper.fullName} is already correctly assigned to $activityName ($activityDep). No action needed.');
     }
 
     return true;
   }
 
-  /// Robustly removes a camper from a specific activity. This method enforces a consistent state
-  /// by ensuring the camper is removed from the activity's roster AND the activity is removed
-  /// from the camper's assignment map, regardless of the initial state.
-  /// Returns true, as the desired state is always achieved.
+  Future<bool> assignCamperToActivityEfficient(Commit commit,
+      Camper camper,
+      ActivityDependent activityDep,
+      Set<ActivityDependent> activityDeps,
+      bool preventReassignmentIfAssigned,) async {
+    final String blockId = activityDep.blockRef;
+
+    // 2. Handle new flag to prevent re-assignment.
+    if (preventReassignmentIfAssigned && camper.activityAssignmentRefs[blockId] != null) {
+      return false; // Indicate that no assignment was made.
+    }
+
+    // 3. Handle potential reassignment within the same block.
+    final String? currentAssignedActivityId = camper.activityAssignmentRefs[blockId];
+    final ActivityDependent? currentAssignedActivity =
+    currentAssignedActivityId == null ? null : activityDeps.firstWhere((element) => element.id == currentAssignedActivityId);
+    if (currentAssignedActivity != null && currentAssignedActivityId != activityDep.id) {
+      // Remove the camper from their old activity to ensure a clean slate.
+      final bool removed = await removeCamperFromActivityEfficient(commit, camper, currentAssignedActivity);
+      if (!removed) {
+        Debug.logWarning(
+          'Warning: Failed to remove ${camper
+              .fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDep.id may be unstable.',
+        );
+        // Continue, but be aware of the potential issue.
+      }
+      // IMPORTANT: Re-fetch the camper object as it was just modified in the commit.
+      camper = commit.getObject<Camper>(camper.id)!;
+    }
+
+    // 3. Perform the robust assignment, ensuring state consistency.
+    bool camperChanged = false;
+    if (camper.activityAssignmentRefs[blockId] != activityDep.id) {
+      camper.activityAssignmentRefs[blockId] = activityDep.id;
+      camperChanged = true;
+    }
+
+    bool activityChanged = false;
+    if (!activityDep.camperRefs.contains(camper.id)) {
+      activityDep.camperRefs.add(camper.id);
+      activityChanged = true;
+    }
+
+    // 4. Add the modified objects to the commit only if their state changed.
+    if (camperChanged || activityChanged) {
+      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+    }
+
+    return true;
+  }
+
   Future<bool> removeCamperFromActivity(Commit commit, String camperId, String activityDepId) async {
     // 1. Fetch objects, prioritizing the commit cache.
     final Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
@@ -390,7 +441,7 @@ class RosterService extends GetxService {
         commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
     final PrincipalActivity principalActivity =
         commit.getObject<PrincipalActivity>(activityDep.principalPar) ??
-        await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
+            await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
     final String activityName = principalActivity.name;
     final String blockId = activityDep.blockRef;
 
@@ -427,6 +478,34 @@ class RosterService extends GetxService {
     return true;
   }
 
+  Future<bool> removeCamperFromActivityEfficient(Commit commit, Camper camper, ActivityDependent activityDep) async {
+    final String blockId = activityDep.blockRef;
+
+    bool camperChanged = false;
+    bool activityChanged = false;
+
+    // 2. Unconditionally remove the reference from the activity's roster.
+    if (activityDep.camperRefs.remove(camper.id)) {
+      activityChanged = true;
+    }
+
+    // 3. Unconditionally remove the reference from the camper's assignment map,
+    // but only if it matches the activity we are targeting. This prevents incorrectly
+    // clearing a valid assignment to a different activity in the same block.
+    if (camper.activityAssignmentRefs.containsKey(blockId) && camper.activityAssignmentRefs[blockId] == activityDep.id) {
+      camper.activityAssignmentRefs[blockId] = null;
+      camperChanged = true;
+    }
+
+    // 4. If any change occurred, add the affected objects to the commit to be pushed.
+    if (camperChanged || activityChanged) {
+      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+    }
+
+    // The goal is to ensure the camper is not in the activity; this state is now guaranteed.
+    return true;
+  }
+
   /// Safely unassigns a camper from their activity in a specific AMA block.
   ///
   /// Returns true if the unassignment was successful or if the camper was not
@@ -451,52 +530,67 @@ class RosterService extends GetxService {
     return true;
   }
 
-  /// Removes a camper from all of their assigned activities.
-  ///
-  /// Iterates through the camper's activity assignments and calls
-  /// [unassignCamperFromAmaBlock] for each one.
-  Future<bool> removeAllActivitiesFromCamper(Commit commit, String camperId) async {
-    // 1. Fetch the camper to get their list of current activities.
-    final Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
+  Future<bool> unassignCamperFromAmaBlockEfficient(Commit commit, Camper camper, AMABlock amaBlock,
+      Set<ActivityDependent> activityDependents) async {
+    final String? activityDepId = camper.activityAssignmentRefs[amaBlock.id];
 
-    // 2. Create a copy of the block IDs to prevent issues with modifying the collection while iterating.
-    final List<String> blockIds = camper.activityAssignmentRefs.keys.toList();
+  if (activityDepId == null) {
+    return true; // Already unassigned from this block.
+  }
 
-    if (blockIds.isEmpty) {
-      Debug.logInfo(
-        'Info: Camper ${camper.fullName} is not assigned to any activities. No action needed.',
-        userMessage: '${camper.fullName} has no activity assignments to remove.',
-      );
-      return true;
+  ActivityDependent? activityDep;
+  try {
+    activityDep = activityDependents.firstWhere((d) => d.id == activityDepId);
+  } catch (e) {
+    // This is the key fix: If the activity isn't in our pre-fetched list,
+    // we fall back to the robust, albeit slower, method for this single case.
+    Debug.logWarning(
+        'Data inconsistency for ${camper.fullName}. Falling back to robust unassignment for activity $activityDepId');
+    return await unassignCamperFromAmaBlock(commit, camper.id, amaBlock.id);
     }
 
-    Debug.logInfo(
-      'Info: Starting removal of all ${blockIds.length} activities for camper ${camper.fullName}.',
-      userMessage: 'Starting to remove ${camper.fullName} from all activities.',
-    );
+    return await removeCamperFromActivityEfficient(commit, camper, activityDep);
+  }
 
-    // 3. Loop through the copied list and unassign the camper from each block.
-    for (final String amaId in blockIds) {
-      final bool success = await unassignCamperFromAmaBlock(commit, camperId, amaId);
-      if (!success) {
-        // This path is less likely now with the robust `removeCamperFromActivity` method.
+  //// Removes all activities from a set of campers using pre-fetched data.
+  Future<bool> removeAllActivitiesFromCampers(Commit commit, Set<String> camperIds,
+      Set<AMABlock> amaBlocks, Set<ActivityDependent> activityDependents) async {
+    final Map<String, Camper> allCampers = await registeredCampers;
+    final Set<Camper> campersToUnassign = {
+      for (final id in camperIds)
+        if (allCampers.containsKey(id)) allCampers[id]!,
+    };
+  bool allSucceeded = true; // Track overall success
+
+    for (final Camper camper in campersToUnassign) {
+      final List<String> blockIds = camper.activityAssignmentRefs.keys.toList();
+
+      if (blockIds.isEmpty) {
         Debug.logInfo(
-          'Error: Failed to unassign ${camper.fullName} from block $amaId. Aborting removal of all activities.',
-          userMessage: 'An error occurred while removing ${camper.fullName} from an activity. The process was not completed.',
-        );
-        return false;
+            'Info: Camper ${camper.fullName} is not assigned to any activities. Skipping.');
+      continue;
+      }
+
+      final Set<AMABlock> blocksToUnassign =
+      amaBlocks.where((b) => blockIds.contains(b.id)).toSet();
+
+      for (final AMABlock ama in blocksToUnassign) {
+        final bool success = await unassignCamperFromAmaBlockEfficient(
+            commit, camper, ama, activityDependents);
+        if (!success) {
+        allSucceeded = false; // Log failure but continue processing others
+          Debug.logWarning(
+          'Failed to unassign ${camper.fullName} from block ${ama.id}.',
+          );
+        }
       }
     }
 
-    Debug.logSuccess(
-      'Success: ${camper.fullName} has been removed from all activities.',
-      userMessage: 'Success! ${camper.fullName} has been removed from all activities.',
-    );
-    return true;
+  return allSucceeded;
   }
 
   Future<bool> allCampersRanked() async {
-    final Set<Camper> campers = await registeredCampers;
+    final Set<Camper> campers = (await registeredCampers).values.toSet();
     for (Camper camper in campers) {
       if (camper.preferencesCompleted == false) {
         return false;
@@ -506,7 +600,7 @@ class RosterService extends GetxService {
   }
 
   Future<bool> selectedCampersRanked(Set<CamperId> selectedCampers) async {
-    final Set<Camper> campers = await registeredCampers;
+    final Set<Camper> campers = (await registeredCampers).values.toSet();
     for (Camper camper in campers) {
       if (camper.preferencesCompleted == false && selectedCampers.contains(camper.id)) {
         return false;
@@ -530,7 +624,7 @@ class RosterService extends GetxService {
     final allCampers = await registeredCampers;
     final List<Map<String, dynamic>> backupData = [];
 
-    final selectedCampers = allCampers.where((camper) => selectedCamperIds.contains(camper.id));
+    final selectedCampers = allCampers.values.where((camper) => selectedCamperIds.contains(camper.id));
 
     for (final camper in selectedCampers) {
       backupData.add({

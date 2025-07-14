@@ -18,6 +18,7 @@ abstract class Rosterable implements Titled, CoreObject {
   bool? get arrived;
   bool? get canSwim;
   bool? get preferencesCompleted;
+  double? get activitySatisfactionIndex;
 
   String getFieldAsString(RosterField field);
 }

@@ -16,6 +16,7 @@ class CamperSelector extends StatelessWidget {
     required this.isCampersLoaded,
     this.cabinName,
     this.totalActivities,
+    this.relevantActivityIds = const {},
   });
 
   final String? cabinName;
@@ -24,6 +25,7 @@ class CamperSelector extends StatelessWidget {
   final void Function(Camper)? onSelectCamper;
   final bool isCampersLoaded;
   final int? totalActivities;
+  final Set<PrincipalActivityId> relevantActivityIds;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +45,8 @@ class CamperSelector extends StatelessWidget {
             cardWidth: double.infinity,
             maxLines: 2,
             items: campers,
-            itemCompleted: (Camper camper) => camper.preferencesCompleted == true,
-            itemInProgress: (Camper camper) => camper.preferencesCompletedCount != 0,
+            itemCompleted: (Camper camper) => camper.relevantPrefsCompleted(relevantActivityIds) == true,
+            itemInProgress: (Camper camper) => camper.relevantPrefsCompleted(relevantActivityIds) != 0,
             selectedItem: selectedCamper,
             onSelectItem: onSelectCamper ?? (Camper) => {},
             isHorizontal: false,
@@ -63,7 +65,7 @@ class CamperSelector extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${item.preferencesCompletedCount}/${totalActivities == null ? 'loading...' : totalActivities}',
+                  '${item.getRelevantCompletedCount(relevantActivityIds)}/${totalActivities == null ? 'loading...' : totalActivities}',
                   style: BessTextStyles.standard.copyWith(
                     // This will now correctly find the foregroundColor provided by Tint.
                     color: Tint.of(context)?.foregroundColor,

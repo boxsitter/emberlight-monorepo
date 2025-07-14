@@ -192,7 +192,7 @@ class ScheduleService extends GetxService {
     blockOfActivity.activityDependentCmps.remove(activityToRemove.id);
     commit.addObjectToPush(blockOfActivity);
 
-    Set<Camper> campers = await rosterService.registeredCampers;
+    Set<Camper> campers = (await rosterService.registeredCampers).values.toSet();
     for (Camper camper in campers) {
       if (camper.activityAssignmentRefs.containsKey(blockOfActivity.id)) {
         camper.activityAssignmentRefs[blockOfActivity.id] = null;
