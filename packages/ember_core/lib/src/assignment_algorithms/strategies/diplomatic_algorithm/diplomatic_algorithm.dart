@@ -7,7 +7,6 @@ import 'package:ember_core/src/assignment_algorithms/strategies/greedy_scoring_a
 
 import '../../data_models/interfaces/algorithm_step.dart';
 import '../../data_models/interfaces/assignment_algorithm.dart';
-import 'constraints.dart';
 
 class DiplomaticAlgorithm implements AssignmentAlgorithm {
   @override

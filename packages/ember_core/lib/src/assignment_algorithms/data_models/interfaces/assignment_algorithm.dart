@@ -1,4 +1,3 @@
-import 'Constraint.dart';
 import 'algorithm_step.dart';
 
 /// Defines the contract for the main assignment algorithm.
