@@ -643,10 +643,10 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity highV = PrincipalActivity(
     id: 'high_v-principal_activity-brn-pQes4V3',
     name: 'High V',
-    capacity: 24,
+    capacity: 12,
     description: 'Support your friends and work together to traverse the high V.',
     isSkillsRec: false,
-    category: ActivityCategory.hidden,
+    category: ActivityCategory.campClassics,
   );
 
   static final PrincipalActivity decoupageTiles = PrincipalActivity(

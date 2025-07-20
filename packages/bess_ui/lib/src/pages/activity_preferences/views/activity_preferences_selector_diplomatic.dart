@@ -34,7 +34,7 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
               onAcceptWithDetails: (data) => controller.addToNeutral(data.data),
               builder: (context, candidateData, rejectedData) {
                 return TitledContainer(
-                  title: 'Activity Library (I\'d be open to trying it)',
+                  title: 'Activity Library (I\'d Be Open To Trying It)',
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                     child: Column(

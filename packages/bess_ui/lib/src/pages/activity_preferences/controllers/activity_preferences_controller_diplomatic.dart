@@ -219,10 +219,10 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
       return;
     }
 
-    if (activity.isSkillsRec && requestedActivities.firstWhereOrNull((element) => element.isSkillsRec) != null) {
+    if (activity.isSkillsRec && requestedActivities.where((element) => element.isSkillsRec).length == 2) {
       pickedUpActivity = null;
       update();
-      Debug.logWarning('Attempted to request more than one skills rec.', userMessage: 'You can only request one skills rec. Remove the currently requested skills rec first.');
+      Debug.logWarning('Attempted to request more than two skills recs.', userMessage: 'You can only request two skills recs. Remove a requested skills rec first.');
       return;
     }
     if (requestedActivities.length >= maxRequests!) {
