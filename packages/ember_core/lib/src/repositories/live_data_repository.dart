@@ -71,7 +71,7 @@ class LiveDataRepository {
           if (doc.exists) {
             try {
               // Pass the document ID and data to the provided fromJson function
-              final parsedObject = CoreObject.fromJson(convertToDateTime(doc.data()));
+              final parsedObject = CoreObject.fromJson(doc.data());
               resultMap[doc.id] = parsedObject;
             } catch (e) {
               print("Error parsing document ${doc.id} (realtime) in collection $collectionName ($domain): $e");
@@ -102,7 +102,7 @@ class LiveDataRepository {
           if (doc.exists) {
             try {
               // Pass the document ID and data to the provided fromJson function
-              final parsedObject = CoreObject.fromJson(convertToDateTime(doc.data()));
+              final parsedObject = CoreObject.fromJson(doc.data());
               resultMap[doc.id] = parsedObject;
             } catch (e) {
               print("Error parsing document ${doc.id} (snapshot fetch) in collection $collectionName ($domain): $e");
@@ -115,40 +115,5 @@ class LiveDataRepository {
         return resultMap;
       });
     }
-  }
-
-  Map<String, dynamic> convertToDateTime(Map<String, dynamic> data) {
-    data.forEach((key, value) {
-      if (value is Timestamp) {
-        // Convert Firestore Timestamp to local DateTime.
-        data[key] = value.toDate().toLocal();
-      } else if (value is DateTime) {
-        // Optionally, ensure it's in local time.
-        data[key] = value.toLocal();
-      } else if (value is String) {
-        // Try parsing and leave as DateTime if successful.
-        DateTime? parsed = DateTime.tryParse(value);
-        if (parsed != null) {
-          data[key] = parsed.toLocal();
-        }
-      } else if (value is Map<String, dynamic>) {
-        data[key] = convertToDateTime(value);
-      } else if (value is List) {
-        data[key] = value.map((item) {
-          if (item is Timestamp) {
-            return item.toDate().toLocal();
-          } else if (item is DateTime) {
-            return item.toLocal();
-          } else if (item is String) {
-            DateTime? parsed = DateTime.tryParse(item);
-            return parsed != null ? parsed.toLocal() : item;
-          } else if (item is Map<String, dynamic>) {
-            return convertToDateTime(item);
-          }
-          return item;
-        }).toList();
-      }
-    });
-    return data;
   }
 }

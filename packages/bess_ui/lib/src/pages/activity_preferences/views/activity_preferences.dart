@@ -1,5 +1,5 @@
 import 'package:bess_ui/src/pages/activity_preferences/views/activity_preferences_cabins.dart';
-import 'package:bess_ui/src/pages/activity_preferences/views/activity_preferences_selector_absolute.dart';
+import 'package:bess_ui/src/pages/activity_preferences/views/activity_preferences_selector_diplomatic.dart';
 import 'package:bess_ui/src/pages/activity_preferences/views/camper_selector.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,8 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 import '../../../common/constants/colors.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
-import '../controllers/activity_preferences_controller.dart';
+import '../controllers/activity_preferences_controller_absolute.dart';
+import '../controllers/activity_preferences_controller_diplomatic.dart';
 import '../widgets/header_builders.dart';
 
 class ActivityPreferences extends StatelessWidget {
@@ -18,7 +19,7 @@ class ActivityPreferences extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ActivityPreferencesController>(builder: (controller) {
+    return GetBuilder<ActivityPreferencesControllerDiplomatic>(builder: (controller) {
       return BessSiteTemplate(
         desktop: ActivityPreferencesDesktop(
           controller: controller,
@@ -35,7 +36,7 @@ class ActivityPreferences extends StatelessWidget {
 class ActivityPreferencesDesktop extends StatelessWidget {
   const ActivityPreferencesDesktop({super.key, required this.controller});
 
-  final ActivityPreferencesController controller;
+  final ActivityPreferencesControllerDiplomatic controller;
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +62,13 @@ class ActivityPreferencesDesktop extends StatelessWidget {
                   if (controller.campersOpened)
                     Expanded(
                       child: CamperSelector(
-                        campers: controller.selectedCabinData!.$2.$1,
+                        campers: controller.campersInSelectedCabin,
                         selectedCamper: controller.selectedCamper,
                         onSelectCamper: (Camper camper) => controller.setSelectedCamper(camper),
-                        isCampersLoaded: controller.isCabinCamperDataLoaded,
-                        totalActivities: controller.totalActivityCount,
-                        relevantActivityIds: controller.principalActivities.map((e) => e.$1.id).toSet(),
+                        isCampersLoaded: controller.isCamperDataLoaded,
+                        cabinName: controller.selectedCabin?.$2.displayTitle,
+                        entriesSaving: controller.entriesSaving.keys.toSet(),
+                        isLoading: controller.isSaving,
                       ),
                     ),
                 ],
@@ -75,7 +77,7 @@ class ActivityPreferencesDesktop extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Expanded(child: ActivityPreferencesSelectorAbsolute(controller: controller)),
+                Expanded(child: ActivityPreferencesSelectorDiplomatic(controller: controller)),
               ],
             ),
           ),

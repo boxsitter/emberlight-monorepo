@@ -9,7 +9,7 @@ import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/buttons/card_button.dart';
 import '../../../common/widgets/buttons/icon_button.dart';
 import '../../../common/widgets/containers/titled_container.dart';
-import '../../../common/widgets/misc/card_list.dart';
+import '../../../common/widgets/misc/widget_list.dart';
 import '../../../common/widgets/misc/list_reorderer.dart';
 import '../../../common/widgets/switches/icon_switch.dart';
 import '../controllers/rosters_controller.dart';
@@ -68,83 +68,65 @@ class ColumnConfig extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Expanded(
-                  child: TitledContainer(
-                    title: 'Hidden Columns',
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    child: CardList(
-                      items: controller.availableFields(false),
-                      leadingBuilder: (Titled item) {
-                        final field = item as RosterField;
-                        return IconButton(
-                          icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
-                          onPressed: () => controller.addVisibleColumn(field),
-                          splashRadius: 20,
-                        );
-                      },
-                      trailingBuilder: (Titled item) {
-                        final field = item as RosterField;
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (field.allowGrouping)
-                              BessIconButton(
-                                iconData: LucideIcons.group,
-                                onPressed: () => controller.setGroupBy(field),
-                                selected: controller.groupByField == field,
-                              ),
-                            BessIconButton(
-                              iconData: controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
-                              onPressed: () => controller.setSortBy(field),
-                              selected: controller.sortByField == field,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-
-                Expanded(
-                  child: TitledContainer(
-                    title: 'Hidden Activity Periods',
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    child: CardList(
-                      items: controller.availableFields(true),
-                      leadingBuilder: (Titled item) {
-                        final field = item as RosterField;
-                        return IconButton(
-                          icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
-                          onPressed: () => controller.addVisibleColumn(field),
-                          splashRadius: 20,
-                        );
-                      },
-                      trailingBuilder: (Titled item) {
-                        final field = item as RosterField;
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (field.allowGrouping)
-                              BessIconButton(
-                                iconData: LucideIcons.group,
-                                onPressed: () => controller.setGroupBy(field),
-                                selected: controller.groupByField == field,
-                              ),
-                            BessIconButton(
-                              iconData: controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
-                              onPressed: () => controller.setSortBy(field),
-                              selected: controller.sortByField == field,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                ColumnManager(controller: controller, title: 'Hidden Camper Data', items: controller.availableFields(false),),
+                ColumnManager(controller: controller, title: 'Hidden Activity Periods', items: controller.availableFields(true),),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ColumnManager extends StatelessWidget {
+  const ColumnManager({
+    super.key,
+    required this.controller,
+    required this.title,
+    required this.items,
+  });
+
+  final RostersController controller;
+  final String title;
+  final List<RosterField> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: TitledContainer(
+        title: title,
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: WidgetList(
+          items: items,
+          itemBuilder: (context, item) {
+            return Container(
+              height: 48,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(LucideIcons.circleChevronLeft, size: 20),
+                    onPressed: () => controller.addVisibleColumn(item),
+                    splashRadius: 20,
+                  ),
+                  Text(item.displayTitle, style: BessTextStyles.standard),
+                  Spacer(),
+                  if (item.allowGrouping)
+                    BessIconButton(
+                      iconData: LucideIcons.group,
+                      onPressed: () => controller.setGroupBy(item),
+                      selected: controller.groupByField == item,
+                    ),
+                  BessIconButton(
+                    iconData: controller.sortDirection == SortDirection.asc ? LucideIcons.arrowUpAZ : LucideIcons.arrowDownZA,
+                    onPressed: () => controller.setSortBy(item),
+                    selected: controller.sortByField == item,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

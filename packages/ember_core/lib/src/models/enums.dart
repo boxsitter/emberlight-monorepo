@@ -1,3 +1,5 @@
+import 'package:pdf/widgets.dart';
+
 import 'interfaces/titled.dart';
 
 enum AnsiColor {
@@ -29,54 +31,19 @@ enum AnsiColor {
 }
 
 enum LogType {
-  failure(
-    'Failure',
-    'Oops',
-    AnsiColor.yellow,
-    Duration(milliseconds: 3500),
-  ),
+  failure('Failure', 'Oops', AnsiColor.yellow, Duration(milliseconds: 3500)),
 
-  unknownError(
-    'Undefined Error',
-    'Something went wrong',
-    AnsiColor.brightRed,
-    Duration(milliseconds: 4000),
-  ),
+  unknownError('Undefined Error', 'Something went wrong', AnsiColor.brightRed, Duration(milliseconds: 4000)),
 
-  error(
-    'Error',
-    'Error',
-    AnsiColor.brightRed,
-    Duration(milliseconds: 4000),
-  ),
+  error('Error', 'Error', AnsiColor.brightRed, Duration(milliseconds: 4000)),
 
-  critical(
-    'Critical Error',
-    'Critical error',
-    AnsiColor.red,
-    Duration(milliseconds: 5000),
-  ),
+  critical('Critical Error', 'Critical error', AnsiColor.red, Duration(milliseconds: 5000)),
 
-  info(
-    'Info',
-    'Info',
-    AnsiColor.none,
-    Duration(milliseconds: 2000),
-  ),
+  info('Info', 'Info', AnsiColor.none, Duration(milliseconds: 2000)),
 
-  success(
-    'Success',
-    'Success!',
-    AnsiColor.brightGreen,
-    Duration(milliseconds: 2000),
-  ),
+  success('Success', 'Success!', AnsiColor.brightGreen, Duration(milliseconds: 2000)),
 
-  warning(
-    'Warning',
-    'Warning',
-    AnsiColor.brightYellow,
-    Duration(milliseconds: 3000),
-  );
+  warning('Warning', 'Warning', AnsiColor.brightYellow, Duration(milliseconds: 3000));
 
   final String devString;
   final String userString;
@@ -96,13 +63,7 @@ enum Module {
   const Module(this.name);
 }
 
-enum Role {
-  root,
-  director,
-  admin,
-  counselor,
-  nullRole,
-}
+enum Role { root, director, admin, counselor, nullRole }
 
 enum Verbosity {
   none(0, 'None'),
@@ -115,4 +76,21 @@ enum Verbosity {
   const Verbosity(this.level, this.name);
 }
 
-enum SortDirection { asc, desc, }
+enum SortDirection { asc, desc }
+
+enum ActivityCategory implements Titled{
+  creative('Creative'),
+  sportsAndAthletics('Sports & Athletics'),
+  waterfront('Waterfront'),
+  campClassics('Camp Classics'),
+  silly('Silly & Unconventional'),
+  skills('Skills Recs'),
+  hidden('Hidden');
+
+  @override
+  final String title;
+  const ActivityCategory(this.title);
+
+  @override
+  String get displayTitle => title;
+}

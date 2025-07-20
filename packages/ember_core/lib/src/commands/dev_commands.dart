@@ -1,13 +1,15 @@
+import 'dart:convert';
+
 import 'package:ember_cli_utils/ember_cli_utils.dart';
 import 'package:ember_core/src/hardcode/hardcoded_principal_activites.dart';
 import 'package:ember_core/src/hardcode/hardcoded_principal_cabins.dart';
 import 'package:ember_core/src/hardcode/hardcoded_test_schedule.dart';
 import 'package:ember_core/src/hardcode/session_a/hardcoded_session_a.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-import '../models/core_objects/schedule_day.dart';
 
 class DevCommands {
   static Map<String, EmberCommand> list = {
@@ -15,11 +17,12 @@ class DevCommands {
       userInput: FrontendManager.instance.getUserInputImplementation(),
       userOutput: FrontendManager.instance.getUserOutputImplementation(),
     ),
-    'initsesha': InitSessionA(
+    'rstact': ResetActivityAssignments(
       userInput: FrontendManager.instance.getUserInputImplementation(),
       userOutput: FrontendManager.instance.getUserOutputImplementation(),
     ),
-    'rstact': ResetActivityAssignments(
+    // This line was missing and has now been added.
+    'bka': BackupActivityAssignments(
       userInput: FrontendManager.instance.getUserInputImplementation(),
       userOutput: FrontendManager.instance.getUserOutputImplementation(),
     ),
@@ -88,7 +91,7 @@ class RepairHardCode extends EmberCommand {
       );
       scheduleService.scheduleActivity(
         commit,
-        HardcodedPrincipalActivities.artsAndCrafts.id,
+        HardcodedPrincipalActivities.artsAndCraftsSkills.id,
         commit.getObjectOfType<ScheduleBlock>()!.id,
       );
       scheduleService.scheduleActivity(
@@ -103,7 +106,7 @@ class RepairHardCode extends EmberCommand {
       );
       scheduleService.scheduleActivity(
         commit,
-        HardcodedPrincipalActivities.cardGames.id,
+        HardcodedPrincipalActivities.cardGamesSkills.id,
         commit.getObjectOfType<ScheduleBlock>()!.id,
       );
       scheduleService.scheduleActivity(
@@ -117,192 +120,6 @@ class RepairHardCode extends EmberCommand {
       await commitRepo.commit(commit);
       userOutput.log('Repair process completed!');
     }
-  }
-}
-
-class InitSessionA extends EmberCommand {
-  final UserService userService = Get.find<UserService>();
-  final ClientContext clientContext = Get.find<ClientContext>();
-  final CommitRepository commitRepo = Get.find<CommitRepository>();
-
-  @override
-  final String name = 'initsesha';
-  @override
-  final String description = 'Initializes session A';
-  @override
-  String get invocationDetails => 'initsesha';
-  @override
-  List<String> get examples => ['initsesha'];
-
-  InitSessionA({required super.userInput, required super.userOutput});
-
-  @override
-  Future<dynamic> run() async {
-    final List<FormFieldDescriptor> formFieldDescriptors = [
-      BooleanFormFieldDescriptor(label: 'Initial Domain Setup'),
-    ];
-    final promptOutput = await userInput.promptForm('Options', formFieldDescriptors);
-
-    Commit commit = Commit(disarmRequirementsLevel: 0);
-
-    if (promptOutput != null && promptOutput[0] is bool && promptOutput[0] == true) {
-      commit.addObjectToPush(HardcodedSessionA.sessionA);
-      await commitRepo.commit(commit);
-      userOutput.log('Init process completed!');
-      return;
-    }
-
-    ScheduleService scheduleService = Get.find<ScheduleService>();
-    Schedule schedule = HardcodedSessionA.sessionASchedule;
-
-    commit.addObjectToPush(HardcodedSessionA.monday);
-    commit.addObjectToPush(HardcodedSessionA.tuesday);
-    commit.addObjectToPush(HardcodedSessionA.wednesday);
-    commit.addObjectToPush(HardcodedSessionA.thursday);
-    commit.addObjectToPush(HardcodedSessionA.friday);
-
-    schedule.scheduleDayCmps.add(HardcodedSessionA.monday.id);
-    schedule.scheduleDayCmps.add(HardcodedSessionA.tuesday.id);
-    schedule.scheduleDayCmps.add(HardcodedSessionA.wednesday.id);
-    schedule.scheduleDayCmps.add(HardcodedSessionA.thursday.id);
-    schedule.scheduleDayCmps.add(HardcodedSessionA.friday.id);
-
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.monday.id, HardcodedSessionA.choiceActivity1Mon);
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.monday.id, HardcodedSessionA.choiceActivity2Mon);
-
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.tuesday.id, HardcodedSessionA.skillsRec);
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.tuesday.id, HardcodedSessionA.choiceActivity1Tue);
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.tuesday.id, HardcodedSessionA.choiceActivity2Tue);
-
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.wednesday.id, HardcodedSessionA.choiceActivity1Wed);
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.wednesday.id, HardcodedSessionA.choiceActivity2Wed);
-
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.thursday.id, HardcodedSessionA.choiceActivity1Thu);
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.thursday.id, HardcodedSessionA.choiceActivity2Thu);
-
-    scheduleService.addBlockToDay(commit, HardcodedSessionA.friday.id, HardcodedSessionA.choiceActivityFri);
-
-    commit.addObjectToPush(schedule);
-
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.friendshipBracelets.id,
-      HardcodedSessionA.choiceActivity1Mon.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity1Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.nineSquare.id, HardcodedSessionA.choiceActivity1Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivity1Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.beachWalk.id, HardcodedSessionA.choiceActivity1Mon.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.shelterBuilding.id,
-      HardcodedSessionA.choiceActivity1Mon.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.basketball.id, HardcodedSessionA.choiceActivity1Mon.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivity2Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.lowRopes.id, HardcodedSessionA.choiceActivity2Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity2Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.soccer.id, HardcodedSessionA.choiceActivity2Mon.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.rockArt.id, HardcodedSessionA.choiceActivity2Mon.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.parachuteGames.id,
-      HardcodedSessionA.choiceActivity2Mon.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.beachWalk.id, HardcodedSessionA.choiceActivity2Mon.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.artsAndCrafts.id, HardcodedSessionA.skillsRec.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.yogaAndMindfulness.id, HardcodedSessionA.skillsRec.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archerySkillsRec.id, HardcodedSessionA.skillsRec.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.creativeWriting.id, HardcodedSessionA.skillsRec.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.soccer.id, HardcodedSessionA.skillsRec.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.music.id, HardcodedSessionA.skillsRec.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.cricket.id, HardcodedSessionA.skillsRec.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.canoeing.id, HardcodedSessionA.choiceActivity1Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity1Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.pickleball.id, HardcodedSessionA.choiceActivity1Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.beachWalk.id, HardcodedSessionA.choiceActivity1Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity1Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.volleyball.id, HardcodedSessionA.choiceActivity1Tue.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.hammockTime.id,
-      HardcodedSessionA.choiceActivity1Tue.id,
-    );
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivity2Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.canoeing.id, HardcodedSessionA.choiceActivity2Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity2Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.painting.id, HardcodedSessionA.choiceActivity2Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.bingo.id, HardcodedSessionA.choiceActivity2Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.natureHike.id, HardcodedSessionA.choiceActivity2Tue.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity2Tue.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.canoeing.id, HardcodedSessionA.choiceActivity1Wed.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity1Wed.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.shelterBuilding.id,
-      HardcodedSessionA.choiceActivity1Wed.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.beachWalk.id, HardcodedSessionA.choiceActivity1Wed.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity1Wed.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.hammockTime.id,
-      HardcodedSessionA.choiceActivity1Wed.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.lowRopes.id, HardcodedSessionA.choiceActivity1Wed.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivity2Wed.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.canoeing.id, HardcodedSessionA.choiceActivity2Wed.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity2Wed.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.fieldGames.id, HardcodedSessionA.choiceActivity2Wed.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.hidingFromAuthority.id,
-      HardcodedSessionA.choiceActivity2Wed.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.soccer.id, HardcodedSessionA.choiceActivity2Wed.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity2Wed.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.canoeing.id, HardcodedSessionA.choiceActivity1Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity1Thu.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.birdWatching.id,
-      HardcodedSessionA.choiceActivity1Thu.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.beachWalk.id, HardcodedSessionA.choiceActivity1Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity1Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.volleyball.id, HardcodedSessionA.choiceActivity1Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.gagaBall.id, HardcodedSessionA.choiceActivity1Thu.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivity2Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.canoeing.id, HardcodedSessionA.choiceActivity2Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.archery.id, HardcodedSessionA.choiceActivity2Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.volleyball.id, HardcodedSessionA.choiceActivity2Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.cardGames.id, HardcodedSessionA.choiceActivity2Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.natureHike.id, HardcodedSessionA.choiceActivity2Thu.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivity2Thu.id);
-
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.aggressiveCompliments.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.hidingFromAuthority.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(
-      commit,
-      HardcodedPrincipalActivities.archery.id,
-      HardcodedSessionA.choiceActivityFri.id,
-    );
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.fairyHouses.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.tieDye.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.volleyball.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.climbing.id, HardcodedSessionA.choiceActivityFri.id);
-    scheduleService.scheduleActivity(commit, HardcodedPrincipalActivities.planes.id, HardcodedSessionA.choiceActivityFri.id);
-
-    await commitRepo.commit(commit);
-    userOutput.log('Init process completed!');
   }
 }
 
@@ -331,5 +148,86 @@ class ResetActivityAssignments extends EmberCommand {
       Error.throwWithStackTrace(Debug.parseException(e), st);
     }
     userOutput.log('Activity assignments have been reset!');
+  }
+}
+
+class BackupActivityAssignments extends EmberCommand {
+  final ScheduleService scheduleService = Get.find<ScheduleService>();
+  final RosterService rosterService = Get.find<RosterService>();
+  final IOService exportService = Get.find<IOService>();
+
+  @override
+  final String name = 'bka';
+  @override
+  final String description = 'Backs up activity assignments to a JSON file.';
+  @override
+  String get invocationDetails => 'bka';
+  @override
+  List<String> get examples => ['bka'];
+
+  BackupActivityAssignments({required super.userInput, required super.userOutput});
+
+  @override
+  Future<void> run() async {
+    // FIX: Filter out any potential null values from the list of blocks.
+    final allBlocks = (await scheduleService.amas).whereType<AMABlock>().toList();
+
+    if (allBlocks.isEmpty) {
+      userOutput.error('No AMA blocks found to back up.');
+      return;
+    }
+
+    final List<FormFieldDescriptor> formFields = [
+      MultiSelectFormFieldDescriptor<AMABlock>(
+        label: 'Select AMA Blocks to Backup',
+        options: allBlocks,
+        optionLabelBuilder: (value) => value == null ? '' : (value as AMABlock).displayTitle,
+        isRequired: true,
+      ),
+      BooleanFormFieldDescriptor(label: 'Separate file for each block?'),
+    ];
+
+    final promptOutput = await userInput.promptForm('Backup Activity Assignments', formFields);
+    if (promptOutput == null) {
+      userOutput.info('Backup cancelled.');
+      return;
+    }
+
+    final List<AMABlock> selectedBlocks = (promptOutput[0] as List?)?.cast<AMABlock>() ?? [];
+    final bool separateFiles = promptOutput[1] as bool;
+
+    if (selectedBlocks.isEmpty) {
+      userOutput.info('No blocks selected. Nothing to back up.');
+      return;
+    }
+
+    final allCampers = (await rosterService.registeredCampers).values;
+    final Map<String, Map<String, String>> backupData = {};
+
+    for (final block in selectedBlocks) {
+      final Map<String, String> blockAssignments = {};
+      for (final camper in allCampers) {
+        final assignedActivityId = camper.activityAssignmentRefs[block.id];
+        if (assignedActivityId != null) {
+          blockAssignments[camper.id] = assignedActivityId;
+        }
+      }
+      backupData[block.id] = blockAssignments;
+    }
+
+    final savedFiles = await exportService.backupAssignments(
+      backupData: backupData,
+      selectedBlocks: selectedBlocks,
+      separateFiles: separateFiles,
+    );
+
+    if (savedFiles.isNotEmpty) {
+      userOutput.success('Successfully created ${savedFiles.length} backup file(s).');
+      for (final path in savedFiles) {
+        userOutput.log('  - $path');
+      }
+    } else {
+      userOutput.info('Backup operation was cancelled. No files were saved.');
+    }
   }
 }

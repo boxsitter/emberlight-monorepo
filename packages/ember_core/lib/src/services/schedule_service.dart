@@ -145,13 +145,14 @@ class ScheduleService extends GetxService {
     addBlockToDay(commit, schedule.scheduleDayCmps.first, amaBlockToCreate);
   }
 
-  void createPrincipalActivity(Commit commit, String name, int capacity, String description, bool isSkillsRec) {
+  void createPrincipalActivity(Commit commit, String name, int capacity, String description, bool isSkillsRec, ActivityCategory category) {
     // TODO: Check with a query to make sure name is unique
     PrincipalActivity activityToCreate = PrincipalActivity(
       name: name,
       capacity: capacity,
       description: description,
       isSkillsRec: isSkillsRec,
+      category: category,
     );
     commit.addObjectToPush(activityToCreate);
   }
@@ -191,6 +192,7 @@ class ScheduleService extends GetxService {
     AMABlock blockOfActivity = commit.getObject(activityToRemove.blockRef) ?? await pullRepo.getObject(activityToRemove.blockRef);
     blockOfActivity.activityDependentCmps.remove(activityToRemove.id);
     commit.addObjectToPush(blockOfActivity);
+
 
     Set<Camper> campers = (await rosterService.registeredCampers).values.toSet();
     for (Camper camper in campers) {

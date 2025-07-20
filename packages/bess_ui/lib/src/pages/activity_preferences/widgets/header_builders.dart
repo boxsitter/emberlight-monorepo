@@ -1,21 +1,22 @@
 import 'package:bess_ui/src/common/widgets/buttons/icon_button.dart';
-import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/header/menu_bar.dart';
+import '../controllers/activity_preferences_controller_diplomatic.dart';
 
 List<Widget> buildActivityPreferencesCenterActions({
-  required ActivityPreferencesController controller,
+  required ActivityPreferencesControllerDiplomatic controller,
 }) {
   return [
     BessIconButton(
       iconData: LucideIcons.house,
       onPressed: () => controller.setCabinsOpened(!controller.cabinsOpened),
       selected: controller.cabinsOpened,
-      enabled: controller.selectedCabinData != null,
+      enabled: controller.selectedCabin != null,
       radius: 8,
     ),
 
@@ -28,13 +29,23 @@ List<Widget> buildActivityPreferencesCenterActions({
       enabled: !controller.cabinsOpened,
       radius: 8,
     ),
+
+    SizedBox(width: 16,),
+
+    BessIconButton(
+      iconData: LucideIcons.save,
+      onPressed: controller.save,
+      enabled: controller.entriesToSave.isNotEmpty && controller.isSaving == false,
+      isLoading: controller.isSaving == true,
+      radius: 8,
+    ),
   ];
 }
 
-BessMenuBar<ActivityPreferencesController> buildActivityPreferencesMenuBar({
-  required ActivityPreferencesController controller,
+BessMenuBar<ActivityPreferencesControllerDiplomatic> buildActivityPreferencesMenuBar({
+  required ActivityPreferencesControllerDiplomatic controller,
 }) {
-  return BessMenuBar<ActivityPreferencesController>(
+  return BessMenuBar<ActivityPreferencesControllerDiplomatic>(
     externalPageController: controller,
   );
 }

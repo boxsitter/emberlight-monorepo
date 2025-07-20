@@ -15,29 +15,17 @@ typedef SessionId = String;
 
 class ClientContext extends GetxService {
   // Replace Completers with simple, late-initialized fields
-  late OrganizationId _organizationId;
-  late BranchId _branchId;
-  late SeasonId _seasonId;
-  late SessionId _sessionId;
-
-  // Provide simple getters
-  OrganizationId get organizationId => _organizationId;
-  BranchId get branchId => _branchId;
-  SeasonId get seasonId => _seasonId;
-  SessionId get sessionId => _sessionId;
-
-  // Provide simple setters that allow overwriting the values
-  set organizationId(OrganizationId id) => _organizationId = id;
-  set branchId(BranchId id) => _branchId = id;
-  set seasonId(SeasonId id) => _seasonId = id;
-  set sessionId(SessionId id) => _sessionId = id;
+  late OrganizationId organizationId;
+  late BranchId branchId;
+  late SeasonId seasonId;
+  late SessionId sessionId;
 
   // For any services that relied on the Future, you can keep
   // these methods for compatibility. They now return an already-completed Future.
-  Future<OrganizationId> getOrganizationId() => Future.value(_organizationId);
-  Future<BranchId> getBranchId() => Future.value(_branchId);
-  Future<SeasonId> getSeasonId() => Future.value(_seasonId);
-  Future<SessionId> getSessionId() => Future.value(_sessionId);
+  Future<OrganizationId> getOrganizationId() => Future.value(organizationId);
+  Future<BranchId> getBranchId() => Future.value(branchId);
+  Future<SeasonId> getSeasonId() => Future.value(seasonId);
+  Future<SessionId> getSessionId() => Future.value(sessionId);
 
   bool justMigrated = false;
 }

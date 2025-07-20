@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
+import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
@@ -15,6 +16,9 @@ class BessIconButton extends StatelessWidget {
   final Color? backgroundColor;
   final double? iconSize;
   final Color? disabledBackgroundColor;
+  final Color? baseIconColor;
+  final Color? baseTint;
+  final bool isLoading;
 
   const BessIconButton({
     super.key,
@@ -28,6 +32,9 @@ class BessIconButton extends StatelessWidget {
     this.backgroundColor,
     this.iconSize,
     this.disabledBackgroundColor,
+    this.baseIconColor,
+    this.baseTint,
+    this.isLoading = false,
   });
 
   @override
@@ -38,7 +45,7 @@ class BessIconButton extends StatelessWidget {
         width: size,
         height: size,
         onPressed: onPressed,
-        tintConditions: [(selected == true, BessColors.primary)],
+        tintConditions: [(baseTint != null, baseTint), (selected == true, BessColors.primary)],
         showBorder: selected == true,
         borderThickness: 2,
         radius: radius,
@@ -49,7 +56,18 @@ class BessIconButton extends StatelessWidget {
         disabledBackgroundColor: disabledBackgroundColor,
         child: Center(
           child: Builder(builder: (context) {
-            return Icon(iconData, color: Tint.of(context) != null ? Tint.of(context)?.foregroundColor : BessColors.textPrimary, size: iconSize,);
+            if (isLoading) {
+              return SizedBox(child: BessCircularLoader(), width: 24, height: 24,);
+            }
+            return Icon(
+              iconData,
+              color: baseIconColor != null
+                  ? baseIconColor
+                  : Tint.of(context) != null
+                      ? Tint.of(context)?.foregroundColor
+                      : BessColors.textPrimary,
+              size: iconSize,
+            );
           }),
         ),
       ),

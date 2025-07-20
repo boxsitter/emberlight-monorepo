@@ -1,16 +1,17 @@
+import 'dart:collection';
 import 'dart:math';
 
+import 'package:ember_core/src/models/preference_choice.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';
-
 
 class ActivityPreferenceService extends GetxService {
   RosterService rosterService = Get.find<RosterService>();
   PullRepository pullRepo = Get.find<PullRepository>();
 
   // follows the rules of the simple assignment algorithm
-  Future<void> setRanking ({
+  Future<void> setRanking({
     required Commit commit,
     required CamperId camperId,
     required List<PrincipalActivityId> orderedPrincipalActivityIds,
@@ -28,7 +29,7 @@ class ActivityPreferenceService extends GetxService {
     commit.addObjectToPush(camper);
   }
 
-  Future<void> setActivityPreference ({
+  Future<void> setActivityPreference({
     required Commit commit,
     required CamperId camperId,
     required PrincipalActivityId principalActivityId,
@@ -40,6 +41,18 @@ class ActivityPreferenceService extends GetxService {
     commit.addObjectToPush(camper);
   }
 
+  Future<void> setMultipleActivityPreferences({
+    required Commit commit,
+    required Map<CamperId, Map<PrincipalActivityId, double?>> preferences,
+  }) async {
+    final Set<Camper> campers = await pullRepo.getObjects(preferences.keys.toSet());
+    for (Camper camper in campers) {
+      camper.preferenceRefs.clear();
+      camper.preferenceRefs.addEntries(preferences[camper.id]!.entries);
+      commit.addObjectToPush(camper);
+    }
+  }
+
   Future<void> clearPreference(Commit commit, CamperId camperId) async {
     Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
 
@@ -49,14 +62,13 @@ class ActivityPreferenceService extends GetxService {
     });
 
     commit.addObjectToPush(camper);
-
   }
 
   // assigns all campers a random preference for each activity
   // for testing
   Future<void> rankRandom(Commit commit, CamperId camperId) async {
     Camper camper = commit.getObject(camperId) ?? await pullRepo.getObject(camperId);
-    if(camper.cabinRef == null) return;
+    if (camper.cabinRef == null) return;
     final random = Random();
 
     camper.preferenceRefs.forEach((key, value) {

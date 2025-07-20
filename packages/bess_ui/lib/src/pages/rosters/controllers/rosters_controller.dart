@@ -24,6 +24,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   final PullRepository pullRepo = Get.find<PullRepository>();
   final ScheduleService scheduleService = Get.find<ScheduleService>();
   final PopupService popupService = Get.find<PopupService>();
+  final IOService exportService = Get.find<IOService>();
 
   // State Variables
   // --- Core Data ---
@@ -128,10 +129,24 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   // Lifecycle Methods
   @override
   Future<void> onInit() async {
-    initializing = true;
     update();
     super.onInit();
     Debug.logInfo('RostersController initialized. Starting listener.');
+
+
+    update();
+  }
+
+  @override
+  void onClose() {
+    _debounce?.cancel();
+    super.onClose();
+  }
+
+  @override
+  Future<void> onNavigateTo(String to, String? from) async {
+    Debug.logInfo('RostersController navigated to.');
+    initializing = true;
     await rosterService.camperStream.then((stream) {
       _campersSubscription?.cancel();
       _campersSubscription = stream.listen((camperMap) {
@@ -140,25 +155,13 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
         update();
       });
     });
+    await populateActivities();
     initializing = false;
-    update();
-  }
-
-  @override
-  void onClose() {
-    _debounce?.cancel();
-    _campersSubscription?.cancel();
-    super.onClose();
-  }
-
-  @override
-  void onNavigateTo(String to, String? from) {
-    Debug.logInfo('RostersController navigated to.');
-    populateActivities();
   }
 
   @override
   void onNavigateFrom(String to, String? from) {
+    _campersSubscription?.cancel();
     Debug.logInfo('RostersController navigated from.');
   }
 
@@ -374,7 +377,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   // Updated method for RostersController
   Future<void> exportAsCsv() async {
-    final String csvData = ExportService.exportToCsv(
+    final String csvData = exportService.exportToCsv(
       groups: rosterGroups,
       columns: fields,
       activityDependents: activityDependents,
@@ -554,7 +557,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
         commit,
         roster.map((e) => e.id).toSet(),
         _amas.map((e) => e.id).toSet(),
-        true,
       );
       await commitRepo.commit(commit);
       await populateActivities();
@@ -608,7 +610,6 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
         commit,
         selectedItems.map((e) => e.id).toSet(),
         selectedBlocks.map((e) => e.id).toSet(),
-        true,
       );
       await commitRepo.commit(commit);
       await populateActivities();

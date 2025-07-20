@@ -1,6 +1,7 @@
 library;
 
 import 'package:bess_ui/src/bessie_flutter_app.dart';
+import 'package:bess_ui/src/common/controllers/save_controller.dart';
 import 'package:bess_ui/src/common/controllers/user_controller.dart';
 import 'package:bess_ui/src/common/routes/navigation_observer.dart';
 import 'package:bess_ui/src/common/services/popup_service.dart';
@@ -8,7 +9,8 @@ import 'package:bess_ui/src/common/widgets/context_switcher/controller/session_s
 import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/header/header_controller.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
-import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
+import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_diplomatic.dart';
 import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';
 import 'package:bess_ui/src/pages/console/controller/console_controller.dart';
 import 'package:bess_ui/src/pages/rosters/controllers/rosters_controller.dart';
@@ -33,9 +35,10 @@ class BessUi implements CoreFrontend{
 
   @override
   void onLogin() {
+    // Get.put(SaveController(), permanent: true);
     Get.put(ConsoleController(), permanent: true);
     Get.put(SessionManagerController(), permanent: true);
-    Get.put(ActivityPreferencesController(), permanent: true);
+    Get.put(ActivityPreferencesControllerDiplomatic(), permanent: true);
     Get.put(SchedulePageController(), permanent: true);
     Get.put(HeaderController(), permanent: true);
     Get.put(RostersController(), permanent: true);
@@ -44,7 +47,15 @@ class BessUi implements CoreFrontend{
   }
 
   @override
-  void onNewContext() {
+  Future<void> onNewContext() async {
+    await Get.delete<SessionManagerController>(force: true);
+    await Get.delete<ActivityPreferencesControllerDiplomatic>(force: true);
+    await Get.delete<SchedulePageController>(force: true);
+    await Get.delete<HeaderController>(force: true);
+    await Get.delete<RostersController>(force: true);
+    await Get.delete<SessionSelectorController>(force: true);
+    await Get.delete<UserController>(force: true);
+    onLogin();
   }
 
   static void launchFlutterApp() {

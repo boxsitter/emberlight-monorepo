@@ -16,7 +16,8 @@ class CamperSelector extends StatelessWidget {
     required this.isCampersLoaded,
     this.cabinName,
     this.totalActivities,
-    this.relevantActivityIds = const {},
+    required this.entriesSaving,
+    required this.isLoading,
   });
 
   final String? cabinName;
@@ -25,7 +26,8 @@ class CamperSelector extends StatelessWidget {
   final void Function(Camper)? onSelectCamper;
   final bool isCampersLoaded;
   final int? totalActivities;
-  final Set<PrincipalActivityId> relevantActivityIds;
+  final Set<CamperId> entriesSaving;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -39,39 +41,42 @@ class CamperSelector extends StatelessWidget {
           cabinName != null ? cabinName! : 'Campers',
           style: BessTextStyles.boldCardTitle,
         ),
+        SizedBox(
+          height: 8,
+        ),
         Expanded(
           child: CardSelector(
-            cardHeight: 60,
+            cardHeight: 50,
             cardWidth: double.infinity,
             maxLines: 2,
             items: campers,
-            itemCompleted: (Camper camper) => camper.relevantPrefsCompleted(relevantActivityIds) == true,
-            itemInProgress: (Camper camper) => camper.relevantPrefsCompleted(relevantActivityIds) != 0,
+            itemCompleted: (Camper camper) => camper.preferencesStarted == true,
             selectedItem: selectedCamper,
             onSelectItem: onSelectCamper ?? (Camper) => {},
             isHorizontal: false,
             childBuilder: (BuildContext context, Camper item) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(
-                    '${item.displayTitle}',
-                    style: BessTextStyles.standard.copyWith(
-                      // This will now correctly find the foregroundColor provided by Tint.
-                      color: Tint.of(context)?.foregroundColor,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Center(
+                    child: Builder(builder: (context) {
+                      if (entriesSaving.contains(item.id) && isLoading) {
+                        return Container(
+                          width: 24,
+                          height: 24,
+                          child: BessCircularLoader(),
+                        );
+                      }
+                      return Text(
+                        '${item.displayTitle}',
+                        style: BessTextStyles.standard.copyWith(
+                          // This will now correctly find the foregroundColor provided by Tint.
+                          color: Tint.of(context)?.foregroundColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      );
+                    }),
                   ),
-                ),
-                Text(
-                  '${item.getRelevantCompletedCount(relevantActivityIds)}/${totalActivities == null ? 'loading...' : totalActivities}',
-                  style: BessTextStyles.standard.copyWith(
-                    // This will now correctly find the foregroundColor provided by Tint.
-                    color: Tint.of(context)?.foregroundColor,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

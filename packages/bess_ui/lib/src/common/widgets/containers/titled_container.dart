@@ -12,6 +12,7 @@ class TitledContainer extends StatelessWidget {
     required this.child,
     this.trailing,
     this.padding = const EdgeInsets.all(8),
+    this.baseTint,
   });
 
   final String title;
@@ -20,6 +21,7 @@ class TitledContainer extends StatelessWidget {
   final Widget child;
   final Widget? trailing;
   final EdgeInsets? padding;
+  final Color? baseTint;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,7 @@ class TitledContainer extends StatelessWidget {
           Container(
             child: Row(
               children: [
-                Expanded(child: Text(title, style: BessTextStyles.tableHeaderSecondary, overflow: TextOverflow.clip, maxLines: 1,)),
-                if (trailing != null)
-                  Spacer(),
+                Expanded(child: Text(title, style: BessTextStyles.tableHeaderSecondary, overflow: TextOverflow.ellipsis, maxLines: 1,)),
                 if (trailing != null)
                   trailing!,
               ],
@@ -48,6 +48,7 @@ class TitledContainer extends StatelessWidget {
               clipContent: true,
               showBorder: true,
               child: child,
+              tintConditions: [(baseTint != null, baseTint)],
             ),
           ),
         ],

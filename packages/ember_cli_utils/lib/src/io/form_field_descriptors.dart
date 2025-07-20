@@ -44,9 +44,10 @@ class BooleanFormFieldDescriptor extends FormFieldDescriptor<bool> {
 }
 
 /// Describes a single-choice selection field (dropdown/radio).
-class SelectFormFieldDescriptor extends FormFieldDescriptor<String> {
-  final List<String> options;
-  final String Function(String value) optionLabelBuilder;
+class SelectFormFieldDescriptor<T> extends FormFieldDescriptor<T> {
+  final List<T> options;
+  // FIX: Changed from `String Function(T value)` to `String Function(dynamic value)`.
+  final String Function(dynamic value) optionLabelBuilder;
 
   SelectFormFieldDescriptor({
     required super.label,
@@ -59,9 +60,10 @@ class SelectFormFieldDescriptor extends FormFieldDescriptor<String> {
 }
 
 /// Describes a multiple-choice selection field (checkboxes list).
-class MultiSelectFormFieldDescriptor extends FormFieldDescriptor<List<String>> {
-  final List<String> options;
-  final String Function(String value) optionLabelBuilder;
+class MultiSelectFormFieldDescriptor<T> extends FormFieldDescriptor<List<T>> {
+  final List<T> options;
+  // FIX: Changed from `String Function(T value)` to `String Function(dynamic value)`.
+  final String Function(dynamic value) optionLabelBuilder;
 
   MultiSelectFormFieldDescriptor({
     required super.label,

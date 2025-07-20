@@ -57,7 +57,6 @@ List<Widget> buildRostersCenterActions({
       enabled: controller.selectedItems.isNotEmpty,
       radius: 8,
       backgroundColor: BessColors.crust,
-      disabledBackgroundColor: BessColors.element2,
     ),
   ];
 }

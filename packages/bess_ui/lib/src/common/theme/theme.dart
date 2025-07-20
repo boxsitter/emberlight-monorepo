@@ -1,6 +1,7 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:bess_ui/src/common/theme/widget_themes/data_table_theme.dart';
 import 'package:bess_ui/src/common/theme/widget_themes/progress_indicator_theme.dart';
+import 'package:bess_ui/src/common/theme/widget_themes/scrollbar_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
@@ -55,6 +56,7 @@ class BessieAppTheme {
     progressIndicatorTheme: BessieProgressIndicatorTheme.progressIndicatorTheme,
     dataTableTheme: BessieDataTableTheme.dataTableTheme,
     iconTheme: IconThemeData(color: BessColors.semiHigh, size: BessSizes.bg),
+    scrollbarTheme: BessieScrollbarTheme.scrollbarTheme,
   );
 
   // static ThemeData darkTheme = ThemeData(

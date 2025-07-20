@@ -42,7 +42,9 @@ class ScheduleDay extends CoreObject {
   factory ScheduleDay.fromJson(Map<String, dynamic> json) {
     final scheduleDay = ScheduleDay(
       dayIndex: json['dayIndex'] as int,
-      start: json['start'] as DateTime,
+      // --- CHANGED LINE ---
+      start: safeParseDateTime(json['start']) ?? (throw ArgumentError('ScheduleDay.fromJson: "start" is required.')),
+      // --- END CHANGED LINE ---
       blockCmps: (json['blockCmps'] as List?)?.cast<BlockId>() ?? <BlockId>[],
     );
     scheduleDay.overwriteCoreObjectFromJson(json);

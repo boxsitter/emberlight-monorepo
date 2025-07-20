@@ -1,9 +1,25 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../ember_core.dart';
-import '../core_objects/schedule_day.dart';
 
 typedef CoreObjectObjId = String;
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
+
+// ADD THIS HELPER FUNCTION
+/// Safely parses a dynamic value into a UTC DateTime.
+///
+/// Handles Firestore Timestamps, existing DateTime objects, and nulls.
+DateTime? safeParseDateTime(dynamic value) {
+  if (value is Timestamp) {
+    return value.toDate().toUtc();
+  }
+  if (value is DateTime) {
+    return value.toUtc();
+  }
+  return null;
+}
+
 
 abstract class CoreObject{
   CoreObjectObjId id;
@@ -48,8 +64,8 @@ abstract class CoreObject{
 
   void overwriteCoreObjectFromJson(Map<String, dynamic> json) {
     id = json['id'] as String;
-    createdAt = (json['createdAt'] as DateTime?)?.toUtc() ?? DateTime.now().toUtc();
-    updatedAt = (json['updatedAt'] as DateTime?)?.toUtc() ?? DateTime.now().toUtc();
+    createdAt = safeParseDateTime(json['createdAt']) ?? DateTime.now().toUtc();
+    updatedAt = safeParseDateTime(json['updatedAt']) ?? DateTime.now().toUtc();
   }
 
   String toStringSuper() {

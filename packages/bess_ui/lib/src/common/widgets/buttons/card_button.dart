@@ -114,7 +114,7 @@ class _CardButtonState extends State<CardButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enabled) {
+    if (widget.enabled == false) {
       // Render the disabled state
       return BessRoundedContainer(
         height: widget.height,
@@ -123,10 +123,10 @@ class _CardButtonState extends State<CardButton> {
         padding: widget.padding,
         radius: widget.radius,
         showBorder: widget.showBorder,
+        borderColor: widget.disabledBackgroundColor ?? BessColors.overlay1,
         clipContent: false,
-        darken: true, // Darken when disabled
         child: widget.child,
-        backgroundColor: widget.disabledBackgroundColor,
+        backgroundColor: widget.disabledBackgroundColor ?? BessColors.overlay1,
       );
     }
 
@@ -156,7 +156,13 @@ class _CardButtonState extends State<CardButton> {
           backgroundColor: widget.backgroundColor,
           borderColor: widget.borderColor,
           // Pass the final, resolved values to the container.
-          tintConditions: widget.tintConditions,
+          tintConditions: [
+            // 1. Spread all the existing conditions into the new list
+            ...?widget.tintConditions,
+
+            // 2. Conditionally add the new item if baseTint is not null
+            if (widget.baseTint != null) (true, widget.baseTint),
+          ],
           darken: finalDarken,
           child: widget.child,
           showShadow: widget.showShadow,

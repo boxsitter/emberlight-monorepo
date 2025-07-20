@@ -1,5 +1,4 @@
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
-import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +6,8 @@ import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/buttons/card_button.dart';
+import '../../../common/widgets/misc/widget_grid.dart';
+import '../controllers/activity_preferences_controller_diplomatic.dart';
 
 class ActivityPreferencesCabins extends StatelessWidget {
   const ActivityPreferencesCabins({
@@ -14,12 +15,12 @@ class ActivityPreferencesCabins extends StatelessWidget {
     required this.controller,
   });
 
-  final ActivityPreferencesController controller;
+  final ActivityPreferencesControllerDiplomatic controller;
 
   @override
   Widget build(BuildContext context) {
-    if (controller.isCabinCamperDataLoaded == false) {
-      return BessCircularLoader();
+    if (controller.isCabinDataLoaded == false || controller.isCamperDataLoaded == false) {
+      return const BessCircularLoader();
     }
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -32,47 +33,55 @@ class ActivityPreferencesCabins extends StatelessWidget {
         ),
         const SizedBox(height: BessSizes.spaceBtwSections),
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(right: 24),
-            child: Wrap(
-              spacing: 24,
-              runSpacing: 24,
-              children: controller.cabinCamperData.map((cabinRecord) {
-                final name = cabinRecord.$1.$2.displayTitle;
-                final count = cabinRecord.$1.$1.camperRefs.length;
-                final preferencesCount = cabinRecord.$2.$2;
-                final bool isCompleted = preferencesCount >= count;
-                final bool isInProgress = preferencesCount > 0 && preferencesCount < count;
+          // Here is the corrected usage of WidgetGrid
+          child: WidgetGrid<MapEntry<CabinDependantId, PrincipalCabin>>(
+            // 1. Pass the data to the 'items' property.
+            // We convert the 'entries' Iterable to a List.
+            items: controller.cabins.entries.toList(),
 
-                return CardButton(
-                  // tintConditions: [(isInProgress, BessColors.yellow), (isCompleted, BessColors.green)],
-                  height: 90,
-                  width: 250,
-                  onPressed: () => controller.setSelectedCabinData(cabinRecord),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        name,
-                        style: BessTextStyles.boldCardTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        //'$preferencesCount/$count campers completed',
-                        '',
-                        style: BessTextStyles.largerLabel,
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
+            // 2. Define the builder function to create a widget for each item.
+            itemBuilder: (context, item) {
+              // 'item' is our MapEntry. Its 'value' is the cabin object.
+              final cabin = item.value;
+              final name = cabin.displayTitle;
+
+              // Get completion data for this specific cabin using its key.
+              final completionRatio = controller.startedOutOfCount(item.key);
+              final preferencesCount = completionRatio.$1;
+              final count = completionRatio.$2;
+
+              // Calculate the button's visual state.
+              final bool isCompleted = preferencesCount >= count;
+              final bool isInProgress = preferencesCount > 0 && !isCompleted;
+
+              return CardButton(
+                tintConditions: [(isInProgress, BessColors.yellow), (isCompleted, BessColors.green)],
+                height: 90,
+                width: 250,
+                // Pass the entire 'item' (MapEntry) to the controller on press.
+                onPressed: () => controller.setSelectedCabin((item.key, item.value)),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      name,
+                      style: BessTextStyles.boldCardTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '$preferencesCount/$count campers completed',
+                      style: BessTextStyles.largerLabel,
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-        )
+        ),
       ]),
     );
   }

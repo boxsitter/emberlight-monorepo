@@ -1,10 +1,10 @@
 import 'package:bess_ui/src/common/routes/routes_middleware.dart';
+import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_diplomatic.dart';
 import 'package:bess_ui/src/pages/dev_testing/dev_testing.dart';
 import 'package:get/get.dart';
 
-import '../../pages/activity_preferences/controllers/activity_preferences_controller.dart';
+import '../../pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
 import '../../pages/activity_preferences/views/activity_preferences.dart';
-import '../../pages/activity_preferences/views/activity_preferences_selector_ranking.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
@@ -123,8 +123,8 @@ class BessRoutes {
     if (routeName == BessRoutes.rosters && Get.isRegistered<RostersController>()) {
       return Get.find<RostersController>();
     }
-    if ((routeName == BessRoutes.activityPreferences || routeName == BessRoutes.activityPreferencesSelector) && Get.isRegistered<ActivityPreferencesController>()) {
-      return Get.find<ActivityPreferencesController>();
+    if ((routeName == BessRoutes.activityPreferences || routeName == BessRoutes.activityPreferencesSelector) && Get.isRegistered<ActivityPreferencesControllerDiplomatic>()) {
+      return Get.find<ActivityPreferencesControllerDiplomatic>();
     }
     if (routeName == BessRoutes.sessionManager && Get.isRegistered<SessionManagerController>()) {
       return Get.find<SessionManagerController>();

@@ -49,9 +49,10 @@ class Season extends CoreObject implements Domain, TimeInterval{
   factory Season.fromJson(Map<String, dynamic> json) {
     final season = Season(
       name: json['name'] ?? '',
-      // Just cast the values as DateTime now:
-      start: json['start'] as DateTime,
-      end: json['end'] as DateTime,
+      // --- CHANGED LINES ---
+      start: safeParseDateTime(json['start']) ?? (throw ArgumentError('Season.fromJson: "start" is required.')),
+      end: safeParseDateTime(json['end']) ?? (throw ArgumentError('Season.fromJson: "end" is required.')),
+      // --- END CHANGED LINES ---
     );
     season.overwriteCoreObjectFromJson(json);
     return season;

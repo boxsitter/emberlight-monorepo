@@ -8,8 +8,8 @@ class CabinService extends GetxService {
 
   Future<Set<CabinDependent>> get cabinDependents async =>
       (await pullRepo.getObjectsInCollection<CabinDependent>('cabin_dependent', 'ses')).values.toSet();
-  Future<Set<PrincipalCabin>> get principalCabins async =>
-      (await pullRepo.getObjectsInCollection<PrincipalCabin>('principal_cabin', 'brn')).values.toSet();
+  Future<Map<String, PrincipalCabin>> get principalCabins async =>
+      await pullRepo.getObjectsInCollection<PrincipalCabin>('principal_cabin', 'brn');
 
   Future<String?> getCabinDependentIdByName(String name, Commit commit) async {
     String? principalId = commit.queryFieldByType(PrincipalCabin, 'name', name);
@@ -63,7 +63,7 @@ class CabinService extends GetxService {
     final results = await Future.wait([this.cabinDependents, this.principalCabins]);
 
     Set<CabinDependent> cabinDependents = results[0] as Set<CabinDependent>;
-    Set<PrincipalCabin> principalCabins = results[1] as Set<PrincipalCabin>;
+    Set<PrincipalCabin> principalCabins = (results[1] as Map<String, PrincipalCabin>).values.toSet();
     Map<CabinDependent, PrincipalCabin> output = {};
 
     Map<String, PrincipalCabin> principalCabinsById = {for (var principal in principalCabins) principal.id: principal};

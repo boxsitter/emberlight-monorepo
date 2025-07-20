@@ -4,11 +4,12 @@ import 'package:bess_ui/src/common/widgets/containers/titled_container.dart';
 import 'package:bess_ui/src/common/widgets/misc/card_selector.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/widgets/buttons/action_initiator.dart';
-import '../../../common/widgets/misc/card_list.dart';
+import '../../../common/widgets/misc/widget_list.dart';
 import '../../../common/widgets/wrappers/tint.dart';
 import '../controllers/rosters_controller.dart';
 
@@ -137,34 +138,60 @@ class ActivitySwitcher extends StatelessWidget {
                   child: TitledContainer(
                     title: 'Summary',
                     child: controller.selectedItems.isNotEmpty
-                        ? CardList<Rosterable>(
+                        ? WidgetList<Rosterable>(
                             items: controller.selectedItems.toList(),
-                            trailingBuilder: (item) {
+                            itemBuilder: (context, item) {
                               String? selectedAmaId = controller.selectedAma?.id;
                               String? selectedActivityTitle =
                                   controller.principalActivities[controller.selectedActivity?.principalPar]?.displayTitle;
+                              Widget trailing;
                               if (selectedAmaId == null || selectedActivityTitle == null) {
-                                return Text('No change', style: BessTextStyles.standardBold);
-                              }
-                              String? oldActivityId = item.activityAssignmentRefs[selectedAmaId];
-                              String? oldActivityTitle;
-                              if (oldActivityId != null) {
-                                ActivityDependent? oldActivity;
-                                for (ActivityDependent activityDep in controller.activityDependents) {
-                                  if (activityDep.id == oldActivityId) {
-                                    oldActivity = activityDep;
+                                trailing = Text('No change', style: BessTextStyles.standardBold);
+                              } else {
+                                String? oldActivityId = item.activityAssignmentRefs[selectedAmaId];
+                                String? oldActivityTitle;
+                                if (oldActivityId != null) {
+                                  ActivityDependent? oldActivity;
+                                  for (ActivityDependent activityDep in controller.activityDependents) {
+                                    if (activityDep.id == oldActivityId) {
+                                      oldActivity = activityDep;
+                                    }
                                   }
+                                  oldActivityTitle = controller.principalActivities[oldActivity?.principalPar]?.displayTitle;
                                 }
-                                oldActivityTitle = controller.principalActivities[oldActivity?.principalPar]?.displayTitle;
-                              }
-                              if (oldActivityId == null || oldActivityTitle == null) {
-                                return Text('Assign to $selectedActivityTitle', style: BessTextStyles.standardBold);
-                              }
-                              if (oldActivityId == controller.selectedActivity!.id) {
-                                return Text('No change', style: BessTextStyles.standardBold);
+                                if (oldActivityId == null || oldActivityTitle == null) {
+                                  trailing = Text('Assign to $selectedActivityTitle', style: BessTextStyles.standardBold);
+                                } else if (oldActivityId == controller.selectedActivity!.id) {
+                                  trailing = Text('No change', style: BessTextStyles.standardBold);
+                                } else {
+                                  trailing =
+                                      Text('$oldActivityTitle to $selectedActivityTitle', style: BessTextStyles.standardBold);
+                                  trailing = Row(
+                                    children: [
+                                      Text(oldActivityTitle, style: BessTextStyles.standardBold),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Icon(LucideIcons.arrowRight600),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(selectedActivityTitle, style: BessTextStyles.standardBold),
+                                    ],
+                                  );
+                                }
                               }
 
-                              return Text('$oldActivityTitle ➔ $selectedActivityTitle', style: BessTextStyles.standardBold);
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(child: Text(item.displayTitle, style: BessTextStyles.standard)),
+                                    trailing,
+                                  ],
+                                ),
+                              );
                             },
                           )
                         : Center(child: Text('Select some campers first!', style: BessTextStyles.tableHeaderSecondary)),

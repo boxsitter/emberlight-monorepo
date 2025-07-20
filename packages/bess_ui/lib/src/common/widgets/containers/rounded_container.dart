@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/common/styles/shadows.dart';
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
@@ -91,11 +92,7 @@ class BessRoundedContainer extends StatelessWidget {
                   : null,
               boxShadow: showShadow
                   ? [
-                      BoxShadow(
-                        color: BessColors.shadow,
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
+                      BessShadowStyle.defaultBoxShadow,
                     ]
                   : null,
             ),

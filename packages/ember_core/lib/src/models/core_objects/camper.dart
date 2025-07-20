@@ -74,11 +74,12 @@ class Camper extends CoreObject implements Rosterable, Titled {
   @override
   bool? get preferencesCompleted => ModelHelperFunctions.simplePreferencesCompleted(this);
   int? get preferencesCompletedCount => preferenceRefs.entries.where((element) => element.value != null).length;
+  bool get preferencesStarted => preferenceRefs.values.where((element) => element != null).isNotEmpty;
 
-  int? getRelevantCompletedCount(Set<PrincipalActivityId> relevantActivities) {
-    if (preferenceRefs.isEmpty) return null;
-    return preferenceRefs.entries.where((element) => element.value != null && relevantActivities.contains(element.key)).length;
-  }
+    int? getRelevantCompletedCount(Set<PrincipalActivityId> relevantActivities) {
+      if (preferenceRefs.isEmpty) return null;
+      return preferenceRefs.entries.where((element) => element.value != null && relevantActivities.contains(element.key)).length;
+    }
 
   bool relevantPrefsCompleted(Set<PrincipalActivityId> relevantActivities) {
     bool output = true;
@@ -178,7 +179,9 @@ class Camper extends CoreObject implements Rosterable, Titled {
       lastName: json['lastName'] ?? '',
       preferredName: json['preferredName'] ?? '',
       gender: json['gender'] ?? '',
-      birthdate: (json['birthdate'] as DateTime?)!.toUtc(),
+      // --- CHANGED LINE ---
+      birthdate: safeParseDateTime(json['birthdate']) ?? (throw ArgumentError('Camper.fromJson: "birthdate" is required.')),
+      // --- END CHANGED LINE ---
       note: json['note'] ?? '',
       cabinRef: json['cabinRef'],
       cabinName: json['cabinName'],

@@ -50,7 +50,8 @@ class PullRepository {
 
       // Convert timestamps in the final data map
       final data = docSnapshot.data()!;
-      convertToDateTime(data);
+      // REMOVE THE LINE BELOW
+      // convertToDateTime(data);
       return data;
     } on FirebaseException catch (e) {
       Debug.logInfo('Error fetching document at $resolvedPath: ${e.message}');
@@ -98,7 +99,8 @@ class PullRepository {
         final batchMap = <String, Map<String, dynamic>>{};
         for (final doc in querySnapshot.docs) {
           final data = doc.data();
-          convertToDateTime(data);
+          // REMOVE THE LINE BELOW
+          // convertToDateTime(data);
           batchMap[doc.id] = data;
         }
         return batchMap;
@@ -137,7 +139,6 @@ class PullRepository {
       final results = <String, Map<String, dynamic>>{};
       for (final doc in querySnapshot.docs) {
         final data = doc.data();
-        convertToDateTime(data);
         results[doc.id] = data;
       }
       return results;
@@ -150,43 +151,6 @@ class PullRepository {
       rethrow;
     }
   }
-
-  // Helper method
-  Map<String, dynamic> convertToDateTime(Map<String, dynamic> data) {
-    data.forEach((key, value) {
-      if (value is Timestamp) {
-        // Convert Firestore Timestamp to local DateTime.
-        data[key] = value.toDate().toLocal();
-      } else if (value is DateTime) {
-        // Optionally, ensure it's in local time.
-        data[key] = value.toLocal();
-      } else if (value is String) {
-        // Try parsing and leave as DateTime if successful.
-        DateTime? parsed = DateTime.tryParse(value);
-        if (parsed != null) {
-          data[key] = parsed.toLocal();
-        }
-      } else if (value is Map<String, dynamic>) {
-        data[key] = convertToDateTime(value);
-      } else if (value is List) {
-        data[key] = value.map((item) {
-          if (item is Timestamp) {
-            return item.toDate().toLocal();
-          } else if (item is DateTime) {
-            return item.toLocal();
-          } else if (item is String) {
-            DateTime? parsed = DateTime.tryParse(item);
-            return parsed != null ? parsed.toLocal() : item;
-          } else if (item is Map<String, dynamic>) {
-            return convertToDateTime(item);
-          }
-          return item;
-        }).toList();
-      }
-    });
-    return data;
-  }
-
 
   /// Retrieves the specific [field] from a document identified by [id].
   /// Throws an error if the document or the field is not found.

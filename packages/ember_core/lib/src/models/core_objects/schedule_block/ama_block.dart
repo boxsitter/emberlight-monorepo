@@ -55,8 +55,10 @@ class AMABlock extends CoreObject implements ScheduleBlock, Titled, RosterField 
     final block = AMABlock(
       title: json['title'] as String,
       isTemplate: json['isTemplate'],
-      start: json['start'] as DateTime,
-      end: json['end'] as DateTime,
+      // --- CHANGED LINES ---
+      start: safeParseDateTime(json['start']) ?? (throw ArgumentError('AMABlock.fromJson: "start" is required.')),
+      end: safeParseDateTime(json['end']) ?? (throw ArgumentError('AMABlock.fromJson: "end" is required.')),
+      // --- END CHANGED LINES ---
       activityDependentCmps: (json['activityDependentCmps'] as List?)?.cast<String>().toSet() ?? <String>{},
       isSkillsRec: json['isSkillsRec'] as bool,
     );

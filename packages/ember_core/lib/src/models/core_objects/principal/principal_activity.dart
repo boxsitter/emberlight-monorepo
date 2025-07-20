@@ -1,35 +1,29 @@
-
-
 import '../../../../ember_core.dart';
 import '../../interfaces/elevated.dart';
 
 typedef PrincipalActivityId = String;
 
-class PrincipalActivity extends CoreObject implements Principal, Elevated, Titled{
+class PrincipalActivity extends CoreObject implements Principal, Elevated, Titled {
   final String name;
   final int capacity;
   final String description;
   final bool isSkillsRec;
-  final bool isHidden;
   final bool doubleSchedule;
   final int? maxAssignments;
+  final ActivityCategory category;
 
   PrincipalActivity({
     required this.name,
     required this.capacity,
     required this.description,
     required this.isSkillsRec,
-    this.isHidden = false,
     this.doubleSchedule = false,
     this.maxAssignments,
+    required this.category,
     super.id,
     super.createdAt,
     super.updatedAt,
-  })  : super(
-          domain: 'brn',
-          type: 'principal_activity',
-          idTag: name,
-        );
+  }) : super(domain: 'brn', type: 'principal_activity', idTag: name);
 
   @override
   String coreToString() {
@@ -44,9 +38,9 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated, Title
       'capacity': capacity,
       'description': description,
       'isSkillsRec': isSkillsRec,
-      'isHidden': isHidden,
       'doubleSchedule': doubleSchedule,
       'maxAssignments': maxAssignments,
+      'category': category.name,
     });
     return json;
   }
@@ -57,9 +51,9 @@ class PrincipalActivity extends CoreObject implements Principal, Elevated, Title
       capacity: json['capacity'] as int,
       description: json['description'] as String,
       isSkillsRec: json['isSkillsRec'] as bool,
-      isHidden: json['isHidden'] != null ? json['isHidden'] as bool : false,
       doubleSchedule: json['doubleSchedule'] != null ? json['doubleSchedule'] as bool : false,
       maxAssignments: json['maxAssignments'],
+      category: ActivityCategory.values.byName(json['category'] as String),
     );
     activity.overwriteCoreObjectFromJson(json);
     return activity;

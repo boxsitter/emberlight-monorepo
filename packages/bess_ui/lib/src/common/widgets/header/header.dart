@@ -1,12 +1,17 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
+import 'package:bess_ui/src/common/controllers/save_controller.dart';
 import 'package:bess_ui/src/common/widgets/header/menu_bar.dart';
 import 'package:bess_ui/src/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../../pages/rosters/controllers/rosters_controller.dart';
 import '../../constants/image_strings.dart';
+import '../buttons/text_icon_button.dart';
 
 class BessHeader extends StatelessWidget implements PreferredSizeWidget {
-  const BessHeader({super.key, required this.menuBar, this.scaffoldKey, this.centerActions = const [], this.trailingWidgets = const []});
+  const BessHeader(
+      {super.key, required this.menuBar, this.scaffoldKey, this.centerActions = const [], this.trailingWidgets = const []});
 
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final BessMenuBar menuBar;
@@ -39,17 +44,29 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Row(
                 children: [
+                  // GetBuilder<SaveController>(builder: (controller) {
+                  //   return BessTextIconButton(
+                  //     content: controller.isSaving
+                  //         ? 'Saving...'
+                  //         : controller.isAutoSaving
+                  //             ? 'Auto Saving...'
+                  //             : 'Save',
+                  //     onPressed: controller.save,
+                  //     enabled: controller.isSaving == false && controller.isAutoSaving == false && !controller.queueIsEmpty,
+                  //     radius: 8,
+                  //     backgroundColor: BessColors.crust,
+                  //   );
+                  // }),
+                  // SizedBox(
+                  //   width: 16,
+                  // ),
                   ...centerActions,
-
                   Spacer(),
-
                   ...trailingWidgets,
                 ],
               ),
             ),
           )
-
-
         ],
       ),
     );
@@ -58,5 +75,3 @@ class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(40);
 }
-
-// onPressed: () => scaffoldKey?.currentState?.openDrawer(),

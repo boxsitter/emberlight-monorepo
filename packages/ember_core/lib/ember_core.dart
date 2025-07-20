@@ -44,7 +44,7 @@ export 'src/services/activity_preference_service.dart';
 export 'src/services/cabin_service.dart';
 export 'src/services/context_service.dart';
 export 'src/services/console_service.dart';
-export 'src/services/export_service.dart';
+export 'src/services/io_service.dart';
 export 'src/services/assignment_service.dart';
 export 'src/services/commit_service.dart';
 export 'src/services/schedule_service.dart';
@@ -63,6 +63,7 @@ export 'src/repositories/pull_repository.dart';
 
 
 export 'src/models/commit.dart';
+export 'src/models/preference_choice.dart';
 export 'src/models/roster_group.dart';
 export 'src/models/roster_field.dart';
 
@@ -88,6 +89,7 @@ class EmberCore {
     Get.put(ContextlessRepository(), permanent: true);
     Get.put(CabinService(), permanent: true);
     Get.put(LiveDataRepository(), permanent: true);
+    Get.put(IOService(), permanent: true);
     Get.put(RosterService(), permanent: true);
     Get.put(ActivityPreferenceService(), permanent: true);
     Get.put(ScheduleService(), permanent: true);
