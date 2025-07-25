@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 
 import '../../ember_core.dart';
+import '../assignment_algorithms/evaluation/participant_evaluation_report.dart';
 
 class IOService extends GetxService {
   final _jsonEncoder = const JsonEncoder.withIndent('  ');
@@ -82,6 +83,34 @@ class IOService extends GetxService {
       }
     }
     return savedFiles;
+  }
+
+  /// Exports a list of participant evaluation reports to a CSV file.
+  ///
+  /// Returns the path of the saved file, or `null` if the user cancels.
+  Future<String?> exportEvaluationReportAsCsv({
+    required List<ParticipantEvaluationReport> reports,
+    required String fileName,
+  }) async {
+    final StringBuffer csvBuffer = StringBuffer();
+
+    // Add the header row
+    csvBuffer.writeln(ParticipantEvaluationReport.getCsvHeader().map(_escapeCsvField).join(','));
+
+    // Add the data rows
+    for (final report in reports) {
+      csvBuffer.writeln(report.toCsvRow().map(_escapeCsvField).join(','));
+    }
+
+    final Uint8List bytes = utf8.encode(csvBuffer.toString());
+
+    return await FilePicker.platform.saveFile(
+      dialogTitle: 'Save Evaluation Report',
+      fileName: fileName,
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+      bytes: bytes,
+    );
   }
 
   /// Exports a list of roster groups to a CSV formatted string.

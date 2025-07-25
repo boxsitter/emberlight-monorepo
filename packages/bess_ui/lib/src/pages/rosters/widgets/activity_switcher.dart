@@ -79,17 +79,26 @@ class ActivitySwitcher extends StatelessWidget {
                                   ? item.camperRefs.length + countAdded > principalActivity.capacity
                                   : null;
 
+            // Determine the background color based on preference or capacity
+            final Color? preferenceColor = controller.getActivityPreferenceColor(item);
+
+            List<(bool, Color)>? tintConditions;
+            if (preferenceColor != null) {
+              tintConditions = [(true, preferenceColor)];
+            } else if (atCap != null) {
+              tintConditions = [
+                (controller.selectedActivity == item, BessColors.primary),
+                (atCap, BessColors.red),
+                (!atCap, BessColors.green),
+              ];
+            }
+
+
                               return Padding(
                                 // Add some vertical padding between items for better spacing
                                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                                 child: CardButton(
-                                  tintConditions: atCap != null
-                                      ? [
-                                          (controller.selectedActivity == item, BessColors.primary),
-                                          (atCap, BessColors.red),
-                                          (!atCap, BessColors.green)
-                                        ]
-                                      : null,
+                tintConditions: tintConditions,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -132,7 +141,7 @@ class ActivitySwitcher extends StatelessWidget {
                             },
                           )
                         : Center(child: Text('Select an activity period first!', style: BessTextStyles.tableHeaderSecondary)),
-                  ),
+)
                 ),
                 Expanded(
                   child: TitledContainer(

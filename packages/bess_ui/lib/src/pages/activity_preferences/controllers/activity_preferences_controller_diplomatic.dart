@@ -1,15 +1,8 @@
-import 'dart:collection';
-
-import 'package:bess_ui/src/common/controllers/save_controller.dart';
 import 'package:bess_ui/src/common/services/popup_service.dart';
-import 'package:bess_ui/src/common/widgets/header/header_controller.dart';
-import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
 import 'package:ember_core/ember_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../common/mixins/route_aware_controller_mixin.dart';
-import '../../../common/routes/routes.dart';
 import '../../../common/widgets/header/controllers/menu_bar_controller.dart';
 
 typedef CabinDependantId = String;
@@ -22,7 +15,6 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
   final PopupService popupService = Get.find<PopupService>();
   final ActivityPreferenceService activityPreferenceService = Get.find<ActivityPreferenceService>();
   final CommitRepository commitRepo = Get.find<CommitRepository>();
-  // final SaveController saveController = Get.find<SaveController>();
   final MenuBarController menuBarController = Get.find<MenuBarController>();
 
   Map<CabinDependantId, PrincipalCabin> cabins = {};
@@ -37,8 +29,10 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
   List<PrincipalActivity> requestedActivities = [];
   List<PrincipalActivity> vetoedActivities = [];
   PrincipalActivity? pickedUpActivity;
-  int? maxRequests;
-  int? maxVetoes;
+  int? maxRequestsStandard;
+  int? maxVetoesStandard;
+  int? maxRequestsSkills;
+  int? maxVetoesSkills;
 
   Map<CamperId, Map<PrincipalActivityId, double?>> entriesToSave = {};
   Map<CamperId, Map<PrincipalActivityId, double?>> entriesSaving = {};
@@ -53,11 +47,10 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
 
   final List<ActivityCategory> categories = [
     ActivityCategory.creative,
-    //ActivityCategory.silly,
+    ActivityCategory.silly,
     ActivityCategory.waterfront,
     ActivityCategory.campClassics,
     ActivityCategory.sportsAndAthletics,
-    ActivityCategory.skills,
   ];
   ActivityCategory? selectedCategory;
 
@@ -133,8 +126,8 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
     final results = await Future.wait([scheduleService.getScheduledPrincipalActivities(), clientContextService.session]);
     Set<PrincipalActivity> scheduledPrincipalActivities = results[0] as Set<PrincipalActivity>;
     Session session = results[1] as Session;
-    maxRequests = session.maxRequests;
-    maxVetoes = session.maxVetoes;
+    maxRequestsStandard = session.maxRequests;
+    maxVetoesStandard = session.maxVetoes;
     separateActivities();
     isActivityDataLoaded = true;
     update();
@@ -225,10 +218,10 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
       Debug.logWarning('Attempted to request more than two skills recs.', userMessage: 'You can only request two skills recs. Remove a requested skills rec first.');
       return;
     }
-    if (requestedActivities.length >= maxRequests!) {
+    if (requestedActivities.length >= maxRequestsStandard!) {
       pickedUpActivity = null;
       update();
-      Debug.logWarning('Attempted to exceed requests', userMessage: 'You have reached the maximum of $maxRequests requests');
+      Debug.logWarning('Attempted to exceed requests', userMessage: 'You have reached the maximum of $maxRequestsStandard requests');
       return;
     }
     if (neutralActivities.contains(activity)) {
@@ -249,10 +242,10 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
       update();
       return;
     }
-    if (vetoedActivities.length >= maxVetoes!) {
+    if (vetoedActivities.length >= maxVetoesStandard!) {
       pickedUpActivity = null;
       update();
-      Debug.logWarning('Attempted to exceed vetoes', userMessage: 'You have reached the maximum of $maxVetoes vetoes');
+      Debug.logWarning('Attempted to exceed vetoes', userMessage: 'You have reached the maximum of $maxVetoesStandard vetoes');
       return;
     }
     if (neutralActivities.contains(activity)) {

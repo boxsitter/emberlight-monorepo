@@ -47,7 +47,7 @@ class ActivityPreferencesDesktop extends StatelessWidget {
         children: [
           if (controller.campersOpened)
             BessRoundedContainer(
-              width: 250,
+              width: 200,
               height: double.infinity,
               backgroundColor: BessColors.crust,
               showBorder: true,

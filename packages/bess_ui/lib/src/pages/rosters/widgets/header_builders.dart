@@ -1,7 +1,9 @@
 import 'package:bess_ui/src/common/widgets/buttons/checkbox.dart';
 import 'package:bess_ui/src/common/widgets/buttons/text_icon_button.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/searchbar.dart';
+import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/colors.dart';
@@ -58,6 +60,34 @@ List<Widget> buildRostersCenterActions({
       radius: 8,
       backgroundColor: BessColors.crust,
     ),
+    if (controller.columnConfigOpened == false &&
+        controller.activitySwitcherOpened == false &&
+        controller.fields.firstWhereOrNull((element) => element is AMABlock) != null)
+      SizedBox(
+        width: 16,
+      ),
+    if (controller.columnConfigOpened == false &&
+        controller.activitySwitcherOpened == false &&
+        controller.fields.firstWhereOrNull((element) => element is AMABlock) != null)
+      BessIconButton(
+        iconData: LucideIcons.squareStack500,
+        onPressed: controller.toggleAssignmentRepetition,
+        selected: controller.showAssignmentRepetition,
+        radius: 8,
+        backgroundColor: BessColors.crust,
+      ),
+    if (controller.activitySwitcherOpened == true)
+      SizedBox(
+        width: 16,
+      ),
+    if (controller.activitySwitcherOpened == true)
+      BessIconButton(
+        iconData: LucideIcons.laugh500,
+        onPressed: controller.togglePreferenceColors,
+        selected: controller.showPreferenceColors,
+        radius: 8,
+        backgroundColor: BessColors.crust,
+      ),
   ];
 }
 
@@ -141,6 +171,32 @@ BessMenuBar<RostersController> buildRostersMenuBar({
         child: const Text('Compact'),
         onPressed: controller.toggleCompact,
         leading: controller.compact
+            ? Icon(
+                LucideIcons.check,
+                color: BessColors.textPrimary,
+              )
+            : const Icon(
+                LucideIcons.check,
+                color: Colors.transparent,
+              ),
+      ),
+      ShadContextMenuItem(
+        child: const Text('Repetition View'),
+        onPressed: controller.toggleAssignmentRepetition,
+        leading: controller.showAssignmentRepetition
+            ? Icon(
+                LucideIcons.check,
+                color: BessColors.textPrimary,
+              )
+            : const Icon(
+                LucideIcons.check,
+                color: Colors.transparent,
+              ),
+      ),
+      ShadContextMenuItem(
+        child: const Text('Preference Colors'),
+        onPressed: controller.togglePreferenceColors,
+        leading: controller.showPreferenceColors
             ? Icon(
                 LucideIcons.check,
                 color: BessColors.textPrimary,

@@ -7,6 +7,7 @@ import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/constants/colors.dart';
+import '../../controllers/rosters_controller.dart';
 import '../../controllers/table_widths.dart';
 
 class BessDataTable extends StatelessWidget {
@@ -23,6 +24,7 @@ class BessDataTable extends StatelessWidget {
     required this.onToggleGroupExpanded,
     required this.isExpanded,
     required this.headerTitle,
+    required this.controller,
     this.isGrouped = false,
     this.alternateRowColors = true,
     this.highContrast = false,
@@ -50,6 +52,7 @@ class BessDataTable extends StatelessWidget {
   final bool compact;
 
   // Callbacks & State
+  final RostersController controller;
   final void Function(Rosterable) onToggleRowSelection;
   final void Function(RosterGroup) onToggleGroupSelection;
   final void Function(RosterGroup) onToggleGroupExpanded;
@@ -74,6 +77,7 @@ class BessDataTable extends StatelessWidget {
           : BessColors.core;
       final rowColor =
           selectedItems.contains(rosterItem) ? BessHelperFunctions.blendColors(baseColor, BessColors.primary, 30) : baseColor;
+      final backgroundColors = controller.getRepetitionColors(rosterItem);
       return BessTableRow(
         height: compact ? 40 : 80,
         data: getRowDataFromItem(rosterItem),
@@ -87,6 +91,7 @@ class BessDataTable extends StatelessWidget {
         showHorizontalSeparator: rowSeparators,
         showVerticalSeparators: columnSeparators,
         separatorsColor: outlineColor,
+        backgroundColors: backgroundColors,
       );
     };
 

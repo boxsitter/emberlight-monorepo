@@ -10,6 +10,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/constants/colors.dart';
 import '../../../common/mixins/route_aware_controller_mixin.dart';
 import '../../console/controller/console_controller.dart';
 
@@ -61,6 +62,8 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   bool compact = true;
   bool expandedByDefault = false;
   bool safeAssign = true;
+  bool showAssignmentRepetition = false;
+  bool showPreferenceColors = false;
 
   // --- Activity Switcher State ---
   AMABlock? selectedAma;
@@ -323,6 +326,16 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   void toggleCompact() {
     compact = !compact;
+    update();
+  }
+
+  void toggleAssignmentRepetition() {
+    showAssignmentRepetition = !showAssignmentRepetition;
+    update();
+  }
+
+  void togglePreferenceColors() {
+    showPreferenceColors = !showPreferenceColors;
     update();
   }
 
@@ -784,6 +797,92 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
     final principalActivity = principalActivities[activityDependent.principalPar];
     return principalActivity?.name ?? 'Error (no principal)';
+  }
+
+  List<Color?> getRepetitionColors(Rosterable rosterItem) {
+    if (!showAssignmentRepetition || rosterItem is! Camper) {
+      return List.filled(fields.length, null);
+    }
+
+    final camper = rosterItem;
+    final Map<PrincipalActivityId, int> counts = {};
+
+    // Count principal activities
+    for (final activityDependentId in camper.activityAssignmentRefs.values) {
+      if (activityDependentId != null) {
+        final dependent = activityDependents.firstWhereOrNull((d) => d.id == activityDependentId);
+        if (dependent != null) {
+          counts[dependent.principalPar] = (counts[dependent.principalPar] ?? 0) + 1;
+        }
+      }
+    }
+
+    final List<Color?> colors = [];
+    for (final field in fields) {
+      if (field is AMABlock) {
+        final activityDependentId = camper.activityAssignmentRefs[field.dataId];
+        if (activityDependentId != null) {
+          final dependent = activityDependents.firstWhereOrNull((d) => d.id == activityDependentId);
+          if (dependent != null) {
+            final count = counts[dependent.principalPar] ?? 0;
+            if (count == 1) {
+              colors.add(BessColors.green.withOpacity(0.5));
+            } else if (count == 2) {
+              colors.add(BessColors.yellow.withOpacity(0.5));
+            } else if (count >= 3) {
+              colors.add(BessColors.red.withOpacity(0.5));
+            } else {
+              colors.add(null);
+            }
+          } else {
+            colors.add(null);
+          }
+        } else {
+          colors.add(null);
+        }
+      } else {
+        colors.add(null);
+      }
+    }
+    return colors;
+  }
+
+  Color? getActivityPreferenceColor(ActivityDependent activity) {
+    if (!showPreferenceColors || !isSingleSelected()) {
+      return null;
+    }
+
+    final camper = selectedItems.first as Camper;
+
+    // --- CHANGED LINES ---
+    final principalActivityId = activity.principalPar;
+    int assignmentCount = 0;
+
+    for (final assignedActivityId in camper.activityAssignmentRefs.values) {
+      if (assignedActivityId != null) {
+        final dependent = activityDependents.firstWhereOrNull((d) => d.id == assignedActivityId);
+        if (dependent != null && dependent.principalPar == principalActivityId) {
+          assignmentCount++;
+        }
+      }
+    }
+
+    if (assignmentCount >= 2) {
+      return BessColors.red;
+    }
+    // --- END CHANGED LINES ---
+
+    final preference = camper.preferenceRefs[activity.principalPar];
+
+    if (preference == 1.0) {
+      return BessColors.green;
+    } else if (preference == 0.0) {
+      return BessColors.red;
+    } else if (preference == 0.5 || preference == null) {
+      return BessColors.yellow;
+    }
+
+    return null;
   }
 
   List<String> getRowDataFromItem(Rosterable rosterItem) {

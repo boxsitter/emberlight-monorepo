@@ -21,8 +21,11 @@ class DevCommands {
       userInput: FrontendManager.instance.getUserInputImplementation(),
       userOutput: FrontendManager.instance.getUserOutputImplementation(),
     ),
-    // This line was missing and has now been added.
     'bka': BackupActivityAssignments(
+      userInput: FrontendManager.instance.getUserInputImplementation(),
+      userOutput: FrontendManager.instance.getUserOutputImplementation(),
+    ),
+    'clractdep': ClearActivityDependents(
       userInput: FrontendManager.instance.getUserInputImplementation(),
       userOutput: FrontendManager.instance.getUserOutputImplementation(),
     ),
@@ -228,6 +231,38 @@ class BackupActivityAssignments extends EmberCommand {
       }
     } else {
       userOutput.info('Backup operation was cancelled. No files were saved.');
+    }
+  }
+}
+
+class ClearActivityDependents extends EmberCommand {
+  final ScheduleService scheduleService = Get.find<ScheduleService>();
+  final CommitRepository commitRepo = Get.find<CommitRepository>();
+
+  @override
+  final String name = 'clractdep';
+  @override
+  final String description = 'Clears camper references from all activity dependents.';
+  @override
+  String get invocationDetails => 'clractdep';
+  @override
+  List<String> get examples => ['clractdep'];
+
+  ClearActivityDependents({required super.userInput, required super.userOutput});
+
+  @override
+  Future<dynamic> run() async {
+    Commit commit = Commit(disarmRequirementsLevel: 0);
+    try {
+      final Set<ActivityDependent> allActivityDependents = await scheduleService.activityDependents;
+      for (var dependent in allActivityDependents) {
+        dependent.camperRefs.clear();
+        commit.addObjectToPush(dependent);
+      }
+      await commitRepo.commit(commit);
+      userOutput.log('All activity dependents have been cleared.');
+    } on Exception catch (e, st) {
+      Error.throwWithStackTrace(Debug.parseException(e), st);
     }
   }
 }

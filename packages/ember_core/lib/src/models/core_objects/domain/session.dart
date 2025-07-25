@@ -14,6 +14,9 @@ class Session extends CoreObject implements Domain, Elevated {
   principalDependentLinkTracker; //TODO: On init, check the integrity of all principals. If one is missing, call delete on all its dependents and purge references to it
   final int maxRequests;
   final int maxVetoes;
+  final int maxSkillsRequests;
+  final int maxSkillsVetoes;
+
 
   Session({
     required this.name,
@@ -22,6 +25,8 @@ class Session extends CoreObject implements Domain, Elevated {
     Map<String, Set<String>>? principalDependentLinkTracker,
     this.maxRequests = 0,
     this.maxVetoes = 0,
+    this.maxSkillsRequests = 0,
+    this.maxSkillsVetoes = 0,
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -44,6 +49,8 @@ class Session extends CoreObject implements Domain, Elevated {
       'principalDependentLinkTracker': principalDependentLinkTracker.map((key, value) => MapEntry(key, value.toList())),
       'maxRequests': maxRequests,
       'maxVetoes': maxVetoes,
+      'maxSkillsRequests': maxSkillsRequests,
+      'maxSkillsVetoes': maxSkillsVetoes,
     });
     return json;
   }
@@ -61,8 +68,10 @@ class Session extends CoreObject implements Domain, Elevated {
             (key, value) => MapEntry(key, Set<String>.from(value ?? [])),
           ) ??
           {},
-      maxRequests: json['maxRequests'] as int,
-      maxVetoes: json['maxVetoes'] as int,
+      maxRequests: (json['maxRequests'] ?? 0) as int,
+      maxVetoes: (json['maxVetoes'] ?? 0) as int,
+      maxSkillsRequests: (json['maxSkillsRequests'] ?? 0) as int,
+      maxSkillsVetoes: (json['maxSkillsVetoes'] ?? 0) as int,
     );
     session.overwriteCoreObjectFromJson(json);
     return session;

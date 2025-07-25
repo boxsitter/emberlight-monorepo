@@ -90,7 +90,7 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                         baseTint: BessColors.green,
                         padding: EdgeInsets.zero,
                         trailing: Text(
-                          '${controller.maxRequests! - controller.requestedActivities.length > 0 ? controller.maxRequests! - controller.requestedActivities.length : 'no'} available requests',
+                          '${controller.maxRequestsStandard! - controller.requestedActivities.length > 0 ? controller.maxRequestsStandard! - controller.requestedActivities.length : 'no'} available requests',
                           style: BessTextStyles.standard.copyWith(color: BessColors.green),
                         ),
                         child: Builder(builder: (context) {
@@ -146,7 +146,7 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                         baseTint: BessColors.red,
                         padding: EdgeInsets.zero,
                         trailing: Text(
-                          '${controller.maxVetoes! - controller.vetoedActivities.length > 0 ? controller.maxVetoes! - controller.vetoedActivities.length : 'no'} available vetoes',
+                          '${controller.maxVetoesStandard! - controller.vetoedActivities.length > 0 ? controller.maxVetoesStandard! - controller.vetoedActivities.length : 'no'} available vetoes',
                           style: BessTextStyles.standard.copyWith(color: BessColors.red),
                         ),
                         child: Builder(builder: (context) {

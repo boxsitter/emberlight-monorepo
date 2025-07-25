@@ -21,6 +21,7 @@ class BessTableRow extends StatelessWidget {
   final bool toggleableRow;
   final double indentWidth;
   final bool showCheckbox;
+  final List<Color?>? backgroundColors;
 
   final Set<String> makeRed = const {
     'Unassigned',
@@ -46,6 +47,7 @@ class BessTableRow extends StatelessWidget {
     this.toggleableRow = true,
     this.indentWidth = 0,
     this.showCheckbox = true,
+    this.backgroundColors,
   });
 
   @override
@@ -72,6 +74,7 @@ class BessTableRow extends StatelessWidget {
             width: widths?[index] ?? 100,
             showVerticalSeparator: showVerticalSeparators,
             separatorColor: separatorsColor,
+            backgroundColor: backgroundColors?[index],
             child: StringCellContent(
               content: content,
               textStyle: textStyle,

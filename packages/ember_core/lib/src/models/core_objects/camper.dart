@@ -67,7 +67,7 @@ class Camper extends CoreObject implements Rosterable, Titled {
   @override
   String get title => fullName;
   @override
-  String get displayTitle => fullName;
+  String get displayTitle => '$name $lastInitial';
   String get fullNamePreferred => '$name $lastName';
   String get lastInitial => lastName[0];
   String get formattedBirthdate => DateTimeHelpers.formatDate(birthdate, false);

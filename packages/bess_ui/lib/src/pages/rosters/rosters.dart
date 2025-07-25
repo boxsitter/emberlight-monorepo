@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/activity_switcher.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/column_config.dart';
@@ -82,6 +83,7 @@ class RostersDesktop extends StatelessWidget {
         isGrouped: isGrouped,
         isExpanded: isExpanded(index),
         headerTitle: headerTitle,
+        controller: controller,
       );
     };
 

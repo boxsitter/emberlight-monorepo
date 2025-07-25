@@ -11,6 +11,7 @@ class BessTableCell extends StatelessWidget {
   final bool? showVerticalSeparator;
   final Color? separatorColor;
   final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
 
   const BessTableCell({
     super.key,
@@ -19,6 +20,7 @@ class BessTableCell extends StatelessWidget {
     this.showVerticalSeparator,
     this.separatorColor,
     this.padding,
+    this.backgroundColor,
   });
 
   @override
@@ -26,9 +28,12 @@ class BessTableCell extends StatelessWidget {
     return Container(
       width: width,
       padding: padding ?? const EdgeInsets.symmetric(horizontal: BessSizes.md, vertical: BessSizes.sm),
-      decoration: showVerticalSeparator == true
-          ? BoxDecoration(border: BorderDirectional(end: BorderSide(color: separatorColor ?? BessColors.borderPrimary, width: 1)))
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: showVerticalSeparator == true
+            ? BorderDirectional(end: BorderSide(color: separatorColor ?? BessColors.borderPrimary, width: 1))
           : null,
+      ),
       child: SizedBox(
         child: child,
       ),
