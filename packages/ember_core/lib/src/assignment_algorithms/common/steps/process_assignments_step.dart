@@ -3,7 +3,7 @@ import 'dart:math';
 
 import '../../data_models/assignment_result.dart';
 import '../../data_models/enums.dart';
-import '../../data_models/interfaces/Constraint.dart';
+import '../../data_models/interfaces/constraint.dart';
 import '../../data_models/interfaces/algorithm_step.dart';
 import '../../data_models/pipeline_state.dart';
 import '../../data_models/potential_assignment.dart';

@@ -1,6 +1,6 @@
 import '../../data_models/assignment_context.dart';
 import '../../data_models/assignment_result.dart';
-import '../../data_models/interfaces/Constraint.dart';
+import '../../data_models/interfaces/constraint.dart';
 import '../../data_models/potential_assignment.dart';
 
 /// A constraint that checks if a participant has been assigned to an activity
