@@ -47,6 +47,7 @@ class HardcodedPrincipalActivities {
     bugBingo,
     badminton,
     outdoorLivingSkills,
+    outdoorLivingSkillsSkills,
     stackingAndSkipping,
     skitShow,
     paperCrafts,
@@ -75,6 +76,8 @@ class HardcodedPrincipalActivities {
     chess,
     languageLearning,
     rugby,
+    dance,
+    comicBookCreation,
   };
 
   static final PrincipalActivity gagaBall = PrincipalActivity(
@@ -493,6 +496,15 @@ class HardcodedPrincipalActivities {
     category: ActivityCategory.campClassics,
   );
 
+  static final PrincipalActivity outdoorLivingSkillsSkills = PrincipalActivity(
+    id: 'outdoor_living_skills-principal_activity-brn-bCwEfG8',
+    name: 'Outdoor Living Skills',
+    capacity: 16,
+    description: 'Learn essential survival skills like building a shelter and finding your way in the wilderness. Get ready for an adventure!',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
   static final PrincipalActivity stackingAndSkipping = PrincipalActivity(
     id: 'stacking_and_skipping-principal_activity-brn-cDeFgH9',
     name: 'Stacking And Skipping',
@@ -721,7 +733,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity chess = PrincipalActivity(
     id: 'chess-principal_activity-brn-cH3sSa1',
     name: 'Chess',
-    capacity: 15,
+    capacity: 16,
     description: 'Learn the classic game of strategy and tactics. Challenge your friends to a match and work on your checkmate!',
     isSkillsRec: true,
     category: ActivityCategory.skills,
@@ -730,7 +742,7 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity languageLearning = PrincipalActivity(
     id: 'language_learning-principal_activity-brn-lnGu4G3',
     name: 'Language Learning',
-    capacity: 15,
+    capacity: 16,
     description: 'Learn the basics of a new language through fun games and activities. ¡Vamos!',
     isSkillsRec: true,
     category: ActivityCategory.skills,
@@ -739,8 +751,26 @@ class HardcodedPrincipalActivities {
   static final PrincipalActivity rugby = PrincipalActivity(
     id: 'rugby-principal_activity-brn-oPqRst1',
     name: 'Rugby',
-    capacity: 15,
+    capacity: 16,
     description: 'Learn the fundamentals of rugby, including passing, tackling, and the rules of the game, in a safe and fun environment.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity dance = PrincipalActivity(
+    id: 'dance-principal_activity-brn-o2qRst1',
+    name: 'Dance',
+    capacity: 16,
+    description: 'Learn new moves, choreograph routines, and express yourself through movement. All skill levels are welcome!',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity comicBookCreation = PrincipalActivity(
+    id: 'comic_book_creation-principal_activity-brn-o2ERst1',
+    name: 'Comic Book Creation',
+    capacity: 16,
+    description: 'Create your own characters, write a storyline, and learn to draw and panel your very own comic book. Bring your ideas to life!',
     isSkillsRec: true,
     category: ActivityCategory.skills,
   );

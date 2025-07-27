@@ -37,6 +37,7 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
   Map<CamperId, Map<PrincipalActivityId, double?>> entriesToSave = {};
   Map<CamperId, Map<PrincipalActivityId, double?>> entriesSaving = {};
   bool isSaving = false;
+  bool isLoading = false;
 
   bool isCabinDataLoaded = false;
   bool isCamperDataLoaded = false;
@@ -52,10 +53,19 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
     ActivityCategory.campClassics,
     ActivityCategory.sportsAndAthletics,
   ];
+
   ActivityCategory? selectedCategory;
 
   List<PrincipalActivity> getActivitiesInCategory(ActivityCategory category) {
     return neutralActivities.where((element) => element.category == category).toList();
+  }
+
+  List<PrincipalActivity> getFilteredActivities(bool onlyRequested, bool skillsOnly) {
+    if (onlyRequested) {
+      return requestedActivities.where((element) => element.isSkillsRec == skillsOnly).toList();
+    } else {
+      return vetoedActivities.where((element) => element.isSkillsRec == skillsOnly).toList();
+    }
   }
 
   List<Camper> getCampersInCabin(CabinDependantId cabinDependantId, bool shouldSort) {
@@ -77,11 +87,43 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
 
   @override
   Future<void> onNavigateTo(String to, String? from) async {
+    isLoading = true;
+    update();
     cabinsOpened = true;
     campersOpened = false;
     await _loadCabinData();
     await _loadCamperData();
     await _loadActivityData();
+    isLoading = false;
+    update();
+  }
+
+  Future<void> reload() async {
+    isLoading = true;
+    update();
+
+    bool aSaveOccurred = false;
+    if (entriesToSave.isNotEmpty) {
+      // Capture the result of the save operation
+      aSaveOccurred = await save();
+    }
+    await _loadCabinData();
+
+    // Only load camper data if a save did NOT just happen.
+    // If a save occurred, our local `campers` object is the most up-to-date
+    // source of truth, and reloading it could introduce stale data.
+    if (!aSaveOccurred) {
+      await _loadCamperData();
+    }
+
+    if (cabinsOpened == true) {
+      isLoading = false;
+      update();
+      return;
+    }
+    await _loadActivityData();
+    isLoading = false;
+    update();
   }
 
   @override
@@ -116,18 +158,17 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
     neutralActivities = [];
     isActivityDataLoaded = false;
     update();
-
+    final results = await Future.wait([scheduleService.getScheduledPrincipalActivities(), clientContextService.session]);
     _allPrincipalActivities = Map.fromEntries(
-      (await scheduleService.getScheduledPrincipalActivities())
+      (results[0] as Set<PrincipalActivity>)
           .where((element) => element.category != ActivityCategory.hidden) // Correction is here
           .map((e) => MapEntry(e.id, e)),
     );
-
-    final results = await Future.wait([scheduleService.getScheduledPrincipalActivities(), clientContextService.session]);
-    Set<PrincipalActivity> scheduledPrincipalActivities = results[0] as Set<PrincipalActivity>;
     Session session = results[1] as Session;
     maxRequestsStandard = session.maxRequests;
     maxVetoesStandard = session.maxVetoes;
+    maxRequestsSkills = session.maxSkillsRequests;
+    maxVetoesSkills = session.maxSkillsVetoes;
     separateActivities();
     isActivityDataLoaded = true;
     update();
@@ -176,6 +217,7 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
     cabinsOpened = false;
     campersInSelectedCabin = getCampersInCabin(value.$1, true);
     campersOpened = true;
+    selectedCategory = categories.first;
     selectedCamper = campersInSelectedCabin.first;
     separateActivities();
     menuBarController.setHideSidebar(true);
@@ -184,6 +226,7 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
 
   Future<void> setSelectedCamper(Camper? value) async {
     selectedCamper = value;
+    selectedCategory = categories.first;
     separateActivities();
     save();
     update();
@@ -212,16 +255,18 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
       return;
     }
 
-    if (activity.isSkillsRec && requestedActivities.where((element) => element.isSkillsRec).length == 2) {
+    if (activity.isSkillsRec && getFilteredActivities(true, true).length == maxRequestsSkills) {
       pickedUpActivity = null;
       update();
-      Debug.logWarning('Attempted to request more than two skills recs.', userMessage: 'You can only request two skills recs. Remove a requested skills rec first.');
+      Debug.logWarning('Attempted to request more than two skills recs.',
+          userMessage: 'You can only request $maxRequestsSkills skills recs. Remove a requested skills rec first.');
       return;
     }
-    if (requestedActivities.length >= maxRequestsStandard!) {
+    if (activity.isSkillsRec == false && getFilteredActivities(true, false).length == maxRequestsStandard) {
       pickedUpActivity = null;
       update();
-      Debug.logWarning('Attempted to exceed requests', userMessage: 'You have reached the maximum of $maxRequestsStandard requests');
+      Debug.logWarning('Attempted to exceed requests',
+          userMessage: 'You have reached the maximum of $maxRequestsStandard requests');
       return;
     }
     if (neutralActivities.contains(activity)) {
@@ -242,7 +287,14 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
       update();
       return;
     }
-    if (vetoedActivities.length >= maxVetoesStandard!) {
+    if (activity.isSkillsRec && getFilteredActivities(false, true).length == maxVetoesSkills) {
+      pickedUpActivity = null;
+      update();
+      Debug.logWarning('Attempted to veto more than two skills recs.',
+          userMessage: 'You can only veto $maxVetoesSkills skills recs. Remove a vetoed skills rec first.');
+      return;
+    }
+    if (activity.isSkillsRec == false && getFilteredActivities(false, false).length == maxVetoesStandard) {
       pickedUpActivity = null;
       update();
       Debug.logWarning('Attempted to exceed vetoes', userMessage: 'You have reached the maximum of $maxVetoesStandard vetoes');
@@ -298,9 +350,9 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
     entriesToSave[selectedCamper!.id] = newRefs;
   }
 
-  Future<void> save() async {
+  Future<bool> save() async {
     if (entriesToSave.isEmpty || isSaving) {
-      return;
+      return false;
     }
     isSaving = true;
     final Map<CamperId, Map<PrincipalActivityId, double?>> entriesForThisSave = Map.from(entriesToSave);
@@ -317,6 +369,7 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
       });
       await activityPreferenceService.setMultipleActivityPreferences(commit: commit, preferences: entriesForThisSave);
       await commitRepo.commit(commit);
+      return true; // Return true on a successful save
     } finally {
       entriesSaving.removeWhere((key, _) => entriesForThisSave.containsKey(key));
       isSaving = false;
@@ -325,5 +378,21 @@ class ActivityPreferencesControllerDiplomatic extends GetxController with RouteA
         save();
       }
     }
+  }
+
+  String getRemaining(bool forRequests, bool skillsOnly) {
+    // 1. Determine the correct maximum value based on the context.
+    final int maxAllowed = forRequests
+        ? (skillsOnly ? maxRequestsSkills! : maxRequestsStandard!)
+        : (skillsOnly ? maxVetoesSkills! : maxVetoesStandard!);
+
+    // 2. Get the filtered activities.
+    final filteredActivities = getFilteredActivities(forRequests, skillsOnly);
+
+    // 3. Calculate the remaining count.
+    final int remaining = maxAllowed - filteredActivities.length;
+
+    // 4. Return the remaining count if it's greater than zero, otherwise 'no'.
+    return remaining > 0 ? remaining.toString() : 'no';
   }
 }

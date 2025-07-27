@@ -13,7 +13,7 @@ List<Widget> buildActivityPreferencesCenterActions({
 }) {
   return [
     BessIconButton(
-      iconData: LucideIcons.house,
+      iconData: LucideIcons.house500,
       onPressed: () => controller.setCabinsOpened(!controller.cabinsOpened),
       selected: controller.cabinsOpened,
       enabled: controller.selectedCabin != null,
@@ -23,7 +23,7 @@ List<Widget> buildActivityPreferencesCenterActions({
     SizedBox(width: 16,),
 
     BessIconButton(
-      iconData: LucideIcons.usersRound,
+      iconData: LucideIcons.usersRound500,
       onPressed: () => controller.setCampersOpened(!controller.campersOpened),
       selected: controller.campersOpened,
       enabled: !controller.cabinsOpened,
@@ -33,10 +33,22 @@ List<Widget> buildActivityPreferencesCenterActions({
     SizedBox(width: 16,),
 
     BessIconButton(
-      iconData: LucideIcons.save,
+      iconData: LucideIcons.save500,
       onPressed: controller.save,
       enabled: controller.entriesToSave.isNotEmpty && controller.isSaving == false,
       isLoading: controller.isSaving == true,
+      radius: 8,
+    ),
+
+    //if (controller.cabinsOpened == true)
+    SizedBox(width: 16,),
+
+    //if (controller.cabinsOpened == true)
+    BessIconButton(
+      iconData: LucideIcons.rotateCw500,
+      onPressed: controller.reload,
+      enabled: controller.isLoading == false,
+      isLoading: controller.isLoading,
       radius: 8,
     ),
   ];

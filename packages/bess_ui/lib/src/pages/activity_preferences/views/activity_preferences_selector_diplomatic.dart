@@ -1,4 +1,5 @@
 import 'package:bess_ui/src/common/styles/text_styles.dart';
+import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/containers/titled_container.dart';
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
@@ -30,45 +31,91 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
-            child: DragTarget<PrincipalActivity>(
-              onAcceptWithDetails: (data) => controller.addToNeutral(data.data),
-              builder: (context, candidateData, rejectedData) {
-                return TitledContainer(
-                  title: 'Activity Library (I\'d Be Open To Trying It)',
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: TabSwitcher<ActivityCategory>(
-                            items: controller.categories,
-                            selectedItem: controller.selectedCategory ?? controller.categories[0],
-                            onItemSelected: (item) => controller.setSelectedCategory(item),
+            child: Column(
+              children: [
+                Expanded(
+                  child: DragTarget<PrincipalActivity>(
+                    onAcceptWithDetails: (data) => controller.addToNeutral(data.data),
+                    builder: (context, candidateData, rejectedData) {
+                      return TitledContainer(
+                        title: 'Activity Library (I\'d Be Open To Trying It)',
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (controller.selectedCategory != ActivityCategory.skills)
+                                Container(
+                                  child: TabSwitcher<ActivityCategory>(
+                                    items: controller.categories,
+                                    selectedItem: controller.selectedCategory ?? controller.categories[0],
+                                    onItemSelected: (item) => controller.setSelectedCategory(item),
+                                  ),
+                                  width: double.infinity,
+                                ),
+                              if (controller.selectedCategory != ActivityCategory.skills)
+                                SizedBox(
+                                  height: 32,
+                                ),
+                              SizedBox(
+                                child: WidgetGrid(
+                                  items:
+                                      controller.getActivitiesInCategory(controller.selectedCategory ?? controller.categories[0]),
+                                  runSpacing: 4,
+                                  spacing: 2,
+                                  itemBuilder: (context, item) {
+                                    return BessDraggableContainer<PrincipalActivity>(
+                                      item: item,
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                                      onDragStarted: () => controller.onDragStarted(item),
+                                      onDragEnd: (_) => controller.onDragEnd(),
+                                    );
+                                  },
+                                ),
+                                width: double.infinity,
+                              ),
+                            ],
                           ),
-                          width: double.infinity,
                         ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                        WidgetGrid(
-                          items: controller.getActivitiesInCategory(controller.selectedCategory ?? controller.categories[0]),
-                          runSpacing: 4,
-                          spacing: 2,
-                          itemBuilder: (context, item) {
-                            return BessDraggableContainer<PrincipalActivity>(
-                              item: item,
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                              onDragStarted: () => controller.onDragStarted(item),
-                              onDragEnd: (_) => controller.onDragEnd(),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CardButton(
+                        tintConditions: [(controller.selectedCategory != ActivityCategory.skills, BessColors.primary)],
+                        onPressed: () => controller.setSelectedCategory(controller.categories.first),
+                        child: Center(
+                          child: Text(
+                            'Standard Activities',
+                            style: BessTextStyles.standard,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                      child: CardButton(
+                        tintConditions: [(controller.selectedCategory == ActivityCategory.skills, BessColors.yellow)],
+                        onPressed: () => controller.setSelectedCategory(ActivityCategory.skills),
+                        child: Center(
+                          child: Text(
+                            'Skills Recs',
+                            style: BessTextStyles.standard,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
 
@@ -90,8 +137,10 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                         baseTint: BessColors.green,
                         padding: EdgeInsets.zero,
                         trailing: Text(
-                          '${controller.maxRequestsStandard! - controller.requestedActivities.length > 0 ? controller.maxRequestsStandard! - controller.requestedActivities.length : 'no'} available requests',
-                          style: BessTextStyles.standard.copyWith(color: BessColors.green),
+                          '${controller.getRemaining(true, controller.selectedCategory == ActivityCategory.skills)} available requests',
+                          style: BessTextStyles.standard.copyWith(
+                              color:
+                                  controller.selectedCategory == ActivityCategory.skills ? BessColors.yellow : BessColors.green),
                         ),
                         child: Builder(builder: (context) {
                           if (controller.requestedActivities.isEmpty) {
@@ -114,7 +163,7 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                             ));
                           }
                           return WidgetList(
-                            items: controller.requestedActivities,
+                            items: controller.getFilteredActivities(true, controller.selectedCategory == ActivityCategory.skills),
                             itemBuilder: (context, item) {
                               return BessDraggableContainer<PrincipalActivity>(
                                 item: item,
@@ -146,8 +195,9 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                         baseTint: BessColors.red,
                         padding: EdgeInsets.zero,
                         trailing: Text(
-                          '${controller.maxVetoesStandard! - controller.vetoedActivities.length > 0 ? controller.maxVetoesStandard! - controller.vetoedActivities.length : 'no'} available vetoes',
-                          style: BessTextStyles.standard.copyWith(color: BessColors.red),
+                          '${controller.getRemaining(false, controller.selectedCategory == ActivityCategory.skills)} available vetoes',
+                          style: BessTextStyles.standard.copyWith(
+                              color: controller.selectedCategory == ActivityCategory.skills ? BessColors.yellow : BessColors.red),
                         ),
                         child: Builder(builder: (context) {
                           if (controller.vetoedActivities.isEmpty) {
@@ -170,7 +220,7 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                             ));
                           }
                           return WidgetList(
-                            items: controller.vetoedActivities,
+                            items: controller.getFilteredActivities(false, controller.selectedCategory == ActivityCategory.skills),
                             itemBuilder: (context, item) {
                               return BessDraggableContainer<PrincipalActivity>(
                                 item: item,
