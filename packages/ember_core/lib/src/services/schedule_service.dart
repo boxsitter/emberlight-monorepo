@@ -158,9 +158,14 @@ class ScheduleService extends GetxService {
   }
 
   Future<void> scheduleActivity(Commit commit, String principalActivityId, String blockToAddToId) async {
-    PrincipalActivity principalActivity =
-        commit.getObject(principalActivityId) ?? (await pullRepo.getObject(principalActivityId));
-    AMABlock blockToAddTo = commit.getObject(blockToAddToId) ?? (await pullRepo.getObject(blockToAddToId));
+    PrincipalActivity? principalActivity = commit.getObject<PrincipalActivity>(principalActivityId);
+    AMABlock? blockToAddTo = commit.getObject<AMABlock>(blockToAddToId);
+    final missing = <String>{if (principalActivity == null) principalActivityId, if (blockToAddTo == null) blockToAddToId};
+    if (missing.isNotEmpty) {
+      final fetched = await pullRepo.getObjectsMulti(missing);
+      principalActivity = (principalActivity ?? fetched[principalActivityId]) as PrincipalActivity?;
+      blockToAddTo = (blockToAddTo ?? fetched[blockToAddToId]) as AMABlock?;
+    }
     ActivityDependent activityToSchedule = ActivityDependent(principalPar: principalActivity.id, blockRef: blockToAddTo.id);
     blockToAddTo.activityDependentCmps.add(activityToSchedule.id);
 
@@ -188,8 +193,16 @@ class ScheduleService extends GetxService {
     Commit commit,
     ActivityDependentId activityDependentId,
   ) async {
-    ActivityDependent activityToRemove = commit.getObject(activityDependentId) ?? await pullRepo.getObject(activityDependentId);
-    AMABlock blockOfActivity = commit.getObject(activityToRemove.blockRef) ?? await pullRepo.getObject(activityToRemove.blockRef);
+    ActivityDependent? activityToRemove = commit.getObject<ActivityDependent>(activityDependentId);
+    if (activityToRemove == null) {
+      final fetched = await pullRepo.getObjectsMulti({activityDependentId});
+      activityToRemove = fetched[activityDependentId] as ActivityDependent?;
+    }
+    AMABlock? blockOfActivity = commit.getObject<AMABlock>(activityToRemove!.blockRef);
+    if (blockOfActivity == null) {
+      final fetched = await pullRepo.getObjectsMulti({activityToRemove.blockRef});
+      blockOfActivity = fetched[activityToRemove.blockRef] as AMABlock?;
+    }
     blockOfActivity.activityDependentCmps.remove(activityToRemove.id);
     commit.addObjectToPush(blockOfActivity);
 
