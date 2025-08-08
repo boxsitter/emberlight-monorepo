@@ -47,7 +47,7 @@ jobs:
         run: flutter pub get
 
       - name: Flutter build web
-        run: flutter build web --release --dart-define=SENTRY_RELEASE_VERSION=${{ env.SENTRY_RELEASE_VERSION }}
+        run: flutter build web --release --source-maps --pwa-strategy=auto --tree-shake-icons --web-renderer=html --dart-define=SENTRY_RELEASE_VERSION=${{ env.SENTRY_RELEASE_VERSION }}
 
       - name: Prepare public folder
         run: |
@@ -66,6 +66,9 @@ jobs:
           release: ${{ env.SENTRY_RELEASE_VERSION }} # Uses the corrected version from env
           environment: production
           finalize: true
+
+      - name: Remove source maps before deploy
+        run: find public -type f -name "*.map" -delete
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0

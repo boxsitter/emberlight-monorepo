@@ -1,20 +1,21 @@
 import 'package:bess_ui/src/common/routes/routes_middleware.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_diplomatic.dart';
-import 'package:bess_ui/src/pages/dev_testing/dev_testing.dart';
+import 'package:bess_ui/src/pages/dev_testing/dev_testing.dart' deferred as dev_testing_page;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
-import '../../pages/activity_preferences/views/activity_preferences.dart';
+import '../../pages/activity_preferences/views/activity_preferences.dart' deferred as activity_preferences_page;
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
-import '../../pages/branch_manager/branch_manager.dart';
-import '../../pages/console/view/console.dart';
+import '../../pages/branch_manager/branch_manager.dart' deferred as branch_manager_page;
+import '../../pages/console/view/console.dart' deferred as console_page;
 import '../../pages/home/home.dart';
 import '../../pages/rosters/controllers/rosters_controller.dart';
-import '../../pages/rosters/rosters.dart';
-import '../../pages/schedule/schedule_page.dart';
-import '../../pages/session_manager/session_manager.dart';
+import '../../pages/rosters/rosters.dart' deferred as rosters_page;
+import '../../pages/schedule/schedule_page.dart' deferred as schedule_page;
+import '../../pages/session_manager/session_manager.dart' deferred as session_manager_page;
 import '../../pages/session_manager/session_manager_controller.dart';
 import '../../pages/unknown_route/unknown_route.dart';
 import '../mixins/route_aware_controller_mixin.dart';
@@ -64,42 +65,66 @@ class BessRoutes {
     // ),
     GetPage(
       name: BessRoutes.console,
-      page: () => const ConsoleScreen(),
+      page: () => DeferredPageLoader(
+        libLoader: console_page.loadLibrary,
+        builder: () => const console_page.ConsoleScreen(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.dev_testing,
-      page: () => const DevTesting(),
+      page: () => DeferredPageLoader(
+        libLoader: dev_testing_page.loadLibrary,
+        builder: () => const dev_testing_page.DevTesting(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.rosters,
-      page: () => const Rosters(),
+      page: () => DeferredPageLoader(
+        libLoader: rosters_page.loadLibrary,
+        builder: () => const rosters_page.Rosters(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.schedulePage,
-      page: () => const SchedulePage(),
+      page: () => DeferredPageLoader(
+        libLoader: schedule_page.loadLibrary,
+        builder: () => const schedule_page.SchedulePage(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.sessionManager,
-      page: () => const SessionManager(),
+      page: () => DeferredPageLoader(
+        libLoader: session_manager_page.loadLibrary,
+        builder: () => const session_manager_page.SessionManager(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferences,
-      page: () => const ActivityPreferences(),
+      page: () => DeferredPageLoader(
+        libLoader: activity_preferences_page.loadLibrary,
+        builder: () => const activity_preferences_page.ActivityPreferences(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.activityPreferencesSelector,
-      page: () => const ActivityPreferences(),
+      page: () => DeferredPageLoader(
+        libLoader: activity_preferences_page.loadLibrary,
+        builder: () => const activity_preferences_page.ActivityPreferences(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: BessRoutes.branchManager,
-      page: () => const BranchManager(),
+      page: () => DeferredPageLoader(
+        libLoader: branch_manager_page.loadLibrary,
+        builder: () => const branch_manager_page.BranchManager(),
+      ),
       middlewares: [AuthMiddleware()],
     ),
 
@@ -131,5 +156,25 @@ class BessRoutes {
     }
     // Add other route-to-controller mappings here
     return null;
+  }
+}
+
+class DeferredPageLoader<T extends Widget> extends StatelessWidget {
+  const DeferredPageLoader({super.key, required this.libLoader, required this.builder});
+
+  final Future<void> Function() libLoader;
+  final T Function() builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: libLoader(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return builder();
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
   }
 }
