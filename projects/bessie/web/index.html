@@ -30,6 +30,15 @@
   <title>bessie</title>
   <link rel="manifest" href="manifest.json">
   
+  <!-- Performance: preconnect to Firebase endpoints used at startup -->
+  <link rel="preconnect" href="https://www.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+  
+  <!-- Preload primary font to reduce FOIT; ensure it matches pubspec path -->
+  <link rel="preload" as="font" href="assets/fonts/inter/Inter_18pt-Regular.ttf" type="font/ttf" crossorigin>
 
   <style id="splash-screen-style">
     html {

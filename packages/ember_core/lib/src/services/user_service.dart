@@ -35,6 +35,10 @@ class UserService extends GetxService {
   Future<bool> login(String email, String password, bool rememberMe, bool isWeb) async {
     await authRepo.loginWithEmailAndPassword(email, password, rememberMe,  isWeb);
     if (isAuthenticated) {
+      // Ensure Firebase is initialized after login on web if it was deferred
+      if (isWeb && !FireStarter.isInitialized) {
+        await FireStarter.initialize();
+      }
       await EmberCore.onLogin();
       FrontendManager.instance.onLogin();
     }

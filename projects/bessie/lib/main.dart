@@ -61,14 +61,23 @@ Future<void> initializeApp() async {
     return false;
   };
 
+  // Initialize core services and UI registration first
+  EmberCore.init(BessUi());
+
   try {
-    await FireStarter.initialize();
+    // On web, defer Firebase initialization until after login to reduce initial load time.
+    // If already authenticated (e.g., returning user), we still need Firebase.
+    final bool isAuthenticated = Get.find<UserService>().isAuthenticated;
+    if (!kIsWeb || isAuthenticated) {
+      await FireStarter.initialize();
+    }
+    if (isAuthenticated) {
+      await EmberCore.onLogin();
+      FrontendManager.instance.onLogin();
+    }
   } catch (e) {
     throw Exception('Firebase not initialized!');
   }
-
-
-  EmberCore.init(BessUi());
 
   // Initialize window manager if on desktop
   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
@@ -81,11 +90,6 @@ Future<void> initializeApp() async {
     await windowManager.waitUntilReadyToShow(windowOptions);
     await windowManager.show();
     await windowManager.focus();
-  }
-
-  if (Get.find<UserService>().isAuthenticated) {
-    await EmberCore.onLogin();
-    FrontendManager.instance.onLogin();
   }
 
   FlutterNativeSplash.remove();

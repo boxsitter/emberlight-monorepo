@@ -130,12 +130,13 @@ class BessDataTable extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             fieldRow,
-            if (isGrouped)
-              if (isExpanded)
-                ...List.generate(
-                  group.items.length,
-                  (index) => row(index),
-                ),
+            if (isGrouped && isExpanded)
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: group.items.length,
+                itemBuilder: (context, index) => row(index),
+              ),
             if (!isGrouped)
               Expanded(
                 child: ListView.builder(
