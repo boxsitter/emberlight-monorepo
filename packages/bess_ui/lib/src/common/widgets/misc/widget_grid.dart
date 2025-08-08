@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/sizes.dart';
 
 /// A generic widget that displays a list of items in a wrap-around grid layout.
 ///
@@ -9,8 +10,8 @@ class WidgetGrid<T> extends StatelessWidget {
     super.key,
     required this.items,
     required this.itemBuilder,
-    this.spacing = 16.0,
-    this.runSpacing = 16.0,
+    this.spacing = BessSizes.gridViewSpacing,
+    this.runSpacing = BessSizes.gridViewSpacing,
   });
 
   /// The list of data items to display in the grid.

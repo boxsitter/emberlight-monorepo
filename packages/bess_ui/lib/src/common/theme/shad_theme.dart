@@ -5,6 +5,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../constants/animation_curves.dart';
 import '../constants/colors.dart';
 import '../constants/sizes.dart';
+import '../constants/durations.dart';
+import '../constants/motion.dart';
 import '../utils/helpers/helper_functions.dart';
 
 class BessShadTheme {
@@ -17,13 +19,13 @@ class BessShadTheme {
       effects: [
 
         SlideEffect(
-          duration: Duration(milliseconds: 200),
+          duration: BessDurations.animTooltip,
           curve: BessAnimationCurves.easeOut,
-          begin: Offset(0, 0.8),
+          begin: const Offset(0, BessMotion.tooltipSlideBeginY),
         ),
 
         FadeEffect(
-          duration: Duration(milliseconds: 200),
+          duration: BessDurations.animTooltip,
           begin: 0.0,
           end: 1.0,
           curve: Curves.easeOut,
@@ -55,11 +57,11 @@ class BessShadTheme {
       buttonPressedForegroundColor: BessColors.textInverted,
       buttonBackgroundColor: Colors.transparent,
       buttonSize: ShadButtonSize.sm,
-      buttonPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      buttonPadding: EdgeInsets.symmetric(vertical: BessSizes.buttonPaddingVerticalXs, horizontal: BessSizes.buttonPaddingHorizontalSm),
       border: ShadBorder.none,
       padding: EdgeInsets.zero,
       radius: BorderRadius.all(Radius.zero),
-      buttonHeight: 40,
+      buttonHeight: BessSizes.buttonHeightMd,
     ),
 
     contextMenuTheme: ShadContextMenuTheme(

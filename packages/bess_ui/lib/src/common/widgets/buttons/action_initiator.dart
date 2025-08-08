@@ -3,6 +3,7 @@ import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
 import 'package:bess_ui/src/common/widgets/shimmers/shimmer.dart';
 import 'package:flutter/material.dart';
 
+import '../../constants/sizes.dart';
 import '../../styles/text_styles.dart';
 import '../wrappers/tint.dart';
 
@@ -43,7 +44,7 @@ class ActionInitiator extends StatelessWidget {
         children: <Widget>[
           Positioned.fill(
             child: BessShimmerWrapper(
-              period: Duration(milliseconds: 800),
+              period: const Duration(milliseconds: 800),
               child: CardButton(
                 child: Center(
                   child: Builder(
@@ -73,7 +74,7 @@ class ActionInitiator extends StatelessWidget {
                 child: Text(
                   awaitingText ?? enabledText,
                   style: BessTextStyles.standardInverted.copyWith(
-                    color: BessColors.textInverted.withAlpha(150),
+                    color: BessColors.textInverted.withAlpha(BessSizes.alphaScrollbarThumb),
                   ),
                 ),
               ),

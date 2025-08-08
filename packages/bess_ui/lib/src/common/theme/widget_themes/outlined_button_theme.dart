@@ -14,11 +14,11 @@ class BessieOutlinedButtonTheme {
       foregroundColor: BessColors.high,
       side: BorderSide(color: BessColors.borderPrimary),
       padding: const EdgeInsets.symmetric(
-          vertical: BessSizes.buttonHeight, horizontal: 20),
+          vertical: BessSizes.buttonHeight, horizontal: BessSizes.bg),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BessSizes.buttonRadius)),
       textStyle: TextStyle(
-          fontSize: 16,
+          fontSize: BessSizes.fontSizeMd,
           color: BessColors.textPrimary,
           fontWeight: FontWeight.w600,
           fontFamily: 'Inter'),

@@ -9,6 +9,8 @@ import 'package:bess_ui/src/common/widgets/context_switcher/controller/session_s
 import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/header/header_controller.dart';
 import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar_controller.dart';
+
+export 'src/common/constants/sizes.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_diplomatic.dart';
 import 'package:bess_ui/src/pages/authentication/authentication_controller.dart';

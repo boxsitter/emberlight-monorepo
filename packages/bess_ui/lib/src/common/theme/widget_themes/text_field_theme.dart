@@ -25,23 +25,23 @@ class BessieTextFormFieldTheme {
         .copyWith(color: BessColors.textSecondary, fontFamily: 'Inter'),
     border: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
-      borderSide: BorderSide(width: 1, color: BessColors.borderPrimary),
+      borderSide: BorderSide(width: BessSizes.borderThicknessSm, color: BessColors.borderPrimary),
     ),
     enabledBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
-      borderSide: BorderSide(width: 1, color: BessColors.borderPrimary),
+      borderSide: BorderSide(width: BessSizes.borderThicknessSm, color: BessColors.borderPrimary),
     ),
     focusedBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
-      borderSide: BorderSide(width: 1, color: BessColors.borderSecondary),
+      borderSide: BorderSide(width: BessSizes.borderThicknessSm, color: BessColors.borderSecondary),
     ),
     errorBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
-      borderSide: BorderSide(width: 1, color: BessColors.error),
+      borderSide: BorderSide(width: BessSizes.borderThicknessSm, color: BessColors.error),
     ),
     focusedErrorBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(BessSizes.inputFieldRadius),
-      borderSide: BorderSide(width: 2, color: BessColors.error),
+      borderSide: BorderSide(width: BessSizes.borderThicknessEmphasis, color: BessColors.error),
     ),
   );
 }

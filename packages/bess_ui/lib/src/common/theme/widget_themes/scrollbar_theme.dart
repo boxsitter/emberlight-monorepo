@@ -12,9 +12,9 @@ class BessieScrollbarTheme {
   static final scrollbarTheme = ScrollbarThemeData(
     thumbVisibility: WidgetStateProperty.all(true),
     interactive: true,
-    thickness: WidgetStateProperty.all(8),
-    thumbColor: WidgetStateProperty.all(BessColors.textInverted.withAlpha(160)),
-    trackColor: WidgetStateProperty.all(BessColors.textInverted.withAlpha(50)),
-    radius: const Radius.circular(4),
+    thickness: WidgetStateProperty.all(BessSizes.scrollbarThicknessMd),
+    thumbColor: WidgetStateProperty.all(BessColors.textInverted.withAlpha(BessSizes.alphaScrollbarThumb)),
+    trackColor: WidgetStateProperty.all(BessColors.textInverted.withAlpha(BessSizes.alphaScrollbarTrack)),
+    radius: const Radius.circular(BessSizes.scrollbarRadius),
   );
 }

@@ -75,7 +75,7 @@ Future<void> initializeApp() async {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
       title: 'Bessie',
-      minimumSize: Size(770, 500),
+      minimumSize: Size(BessSizes.desktopWindowMinWidth, BessSizes.desktopWindowMinHeight),
 
     );
     await windowManager.waitUntilReadyToShow(windowOptions);

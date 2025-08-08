@@ -17,7 +17,7 @@ class BessieAppBarTheme {
     actionsIconTheme:
         IconThemeData(color: BessColors.icon, size: BessSizes.iconMd),
     titleTextStyle: TextStyle(
-        fontSize: 18.0,
+        fontSize: BessSizes.fontSizeLg,
         fontWeight: FontWeight.w600,
         color: BessColors.high,
         fontFamily: 'Inter'),
