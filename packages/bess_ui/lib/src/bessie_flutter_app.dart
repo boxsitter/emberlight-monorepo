@@ -26,7 +26,7 @@ class BessieFlutterApp extends StatelessWidget {
           theme: BessieAppTheme.theme,
           debugShowCheckedModeBanner: false,
           scrollBehavior: MyCustomScrollBehavior(),
-          initialRoute: BessRoutes.rosters,
+          initialRoute: BessRoutes.login,
           unknownRoute: BessRoutes.pages.last,
           navigatorObservers: [_navObserver],
           defaultTransition: Transition.noTransition,
