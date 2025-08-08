@@ -27,8 +27,8 @@ class WidgetList<T> extends StatelessWidget {
     return Scrollbar(
       thumbVisibility: true, // Make the scrollbar thumb always visible
       controller: scrollController, // Connect the controller to the Scrollbar
-      thickness: 14.0, // Make the scrollbar thicker
-      radius: const Radius.circular(4.0), // Round the corners of the scrollbar
+      thickness: BessSizes.scrollbarThicknessLg, // Make the scrollbar thicker
+      radius: const Radius.circular(BessSizes.scrollbarRadius), // Round the corners of the scrollbar
       interactive: true,
       child: ListView.builder(
         controller: scrollController, // Connect the controller to the ListView

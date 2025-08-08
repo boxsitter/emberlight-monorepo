@@ -1,6 +1,7 @@
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:bess_ui/src/common/constants/colors.dart';
+import 'package:bess_ui/src/common/constants/tints.dart';
 
 /// A type definition for a tinting condition.
 /// The first element is an `isActive` flag, and the second is the `Color` to apply if active.
@@ -70,29 +71,29 @@ class Tint extends StatelessWidget {
     Color effectiveBackgroundColor = baseBackgroundColor ?? BessColors.core;
     if (activeTint != null) {
       effectiveBackgroundColor =
-          BessHelperFunctions.blendColors(effectiveBackgroundColor, activeTint, 60);
+          BessHelperFunctions.blendColors(effectiveBackgroundColor, activeTint, BessTints.blendPercentStrong);
     }
     if (darken) {
-      effectiveBackgroundColor = BessHelperFunctions.adjustHSL(effectiveBackgroundColor, luminance: -0.07, saturation: 0.2);
+      effectiveBackgroundColor = BessHelperFunctions.adjustHSL(effectiveBackgroundColor, luminance: BessTints.darkenLuminance, saturation: BessTints.darkenSaturation);
     }
 
     // --- Calculate Border Color ---
     Color effectiveBorderColor =
         activeTint ?? baseBorderColor ?? BessColors.borderPrimary;
     if (darken) {
-      effectiveBorderColor = BessHelperFunctions.adjustHSL(effectiveBorderColor, luminance: -0.07, saturation: 0.2);
+      effectiveBorderColor = BessHelperFunctions.adjustHSL(effectiveBorderColor, luminance: BessTints.darkenLuminance, saturation: BessTints.darkenSaturation);
     }
 
     // --- Calculate Foreground Color ---
     Color effectiveForegroundColor =
         activeTint ?? baseForegroundColor ?? BessColors.textPrimary;
     if (darken) {
-      effectiveForegroundColor = BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: -0.07, saturation: 0.2);
+      effectiveForegroundColor = BessHelperFunctions.adjustHSL(effectiveForegroundColor, luminance: BessTints.darkenLuminance, saturation: BessTints.darkenSaturation);
     }
     // Apply final adjustment regardless of tint or darken
     effectiveForegroundColor = BessHelperFunctions.adjustHSL(
         effectiveForegroundColor,
-        luminance: -0.2);
+        luminance: BessTints.foregroundFinalLuminance);
 
     final tintInfo = TintInfo(
       backgroundColor: effectiveBackgroundColor,

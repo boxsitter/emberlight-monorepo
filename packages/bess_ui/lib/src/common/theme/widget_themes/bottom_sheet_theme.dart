@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/sizes.dart';
 
 class BessieBottomSheetTheme {
   BessieBottomSheetTheme._();
@@ -10,6 +11,6 @@ class BessieBottomSheetTheme {
     backgroundColor: BessColors.low,
     modalBackgroundColor: BessColors.low,
     constraints: const BoxConstraints(minWidth: double.infinity),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BessSizes.cardRadiusLg)),
   );
 }

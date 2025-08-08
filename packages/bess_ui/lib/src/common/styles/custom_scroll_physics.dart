@@ -1,3 +1,4 @@
+import 'package:bess_ui/src/common/constants/motion.dart';
 import 'package:flutter/material.dart';
 
 /// A custom scroll physics that allows for snapping and less momentum.
@@ -17,9 +18,9 @@ class CustomScrollPhysics extends ScrollPhysics {
     final tolerance = toleranceFor(position);
     if (velocity.abs() > tolerance.velocity) {
       if (velocity < -tolerance.velocity) {
-        page -= 0.5;
+        page -= BessMotion.pageSnapDelta;
       } else {
-        page += 0.5;
+        page += BessMotion.pageSnapDelta;
       }
     }
 
@@ -42,12 +43,12 @@ class CustomScrollPhysics extends ScrollPhysics {
       return null;
     }
 
-    return ScrollSpringSimulation(
-      SpringDescription.withDampingRatio(
-        mass: 1.0,
-        stiffness: 70.0,
-        ratio: 1.0,
-      ),
+          return ScrollSpringSimulation(
+        SpringDescription.withDampingRatio(
+          mass: BessMotion.springMass,
+          stiffness: BessMotion.springStiffness,
+          ratio: BessMotion.springDampingRatio,
+        ),
       position.pixels,
       target,
       velocity,

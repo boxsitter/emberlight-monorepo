@@ -35,8 +35,8 @@ class DevTestingDesktop extends StatelessWidget {
           children: [
             CardButton(
               child: Center(child: Text('BIG BUTTON')),
-              width: 600,
-              height: 400,
+              width: 600, // demo only
+              height: 400, // demo only
               baseTint: BessColors.green,
               onPressed: () => {},
             ),

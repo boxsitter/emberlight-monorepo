@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../constants/colors.dart';
+import '../constants/durations.dart';
 import '../styles/text_styles.dart';
 import '../widgets/form_inputs/dynamic_form_fields.dart';
 
@@ -28,7 +29,7 @@ class PopupService extends GetxService {
         actions: actions ?? [],
         child: child,
       ),
-      transitionDuration: const Duration(milliseconds: 200),
+      transitionDuration: BessDurations.animTooltip,
     ) ??
     false;
   }

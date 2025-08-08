@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/sizes.dart';
 
 class BessieChipTheme {
   BessieChipTheme._();
@@ -9,7 +10,7 @@ class BessieChipTheme {
     checkmarkColor: BessColors.low,
     selectedColor: BessColors.primary,
     disabledColor: BessColors.middle.withValues(alpha: 0.4),
-    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+    padding: EdgeInsets.symmetric(horizontal: BessSizes.ms, vertical: BessSizes.ms),
     labelStyle:
         TextStyle(color: BessColors.high, fontFamily: 'Inter'),
   );

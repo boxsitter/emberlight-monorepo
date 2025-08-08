@@ -39,19 +39,19 @@ class BessIconSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = 50;
-    final double height = 27;
-    final double iconSize = height - 9;
+    final double width = BessSizes.switchWidthSm;
+    final double height = BessSizes.switchHeightSm;
+    final double iconSize = height - BessSizes.switchIconInset;
     final double padding = (height - iconSize) / 2;
 
     return CardButton(
       onPressed: onToggle,
       width: width,
       height: height,
-      radius: 90,
+      radius: BessSizes.pillRadius,
       backgroundColor: BessColors.core,
       tintConditions: [(value, colorTwo), (!value, colorOne)],
-      borderThickness: 1,
+      borderThickness: BessSizes.borderThicknessSm,
       padding: EdgeInsets.zero,
       child: AnimatedAlign(
         duration: BessDurations.animShort,

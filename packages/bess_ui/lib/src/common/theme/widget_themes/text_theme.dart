@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/sizes.dart';
 
 /// Custom Class for Light & Dark Text Themes
 class BessTextTheme {
@@ -8,83 +9,83 @@ class BessTextTheme {
 
   static TextTheme textTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(
-      fontSize: 28.0,
+      fontSize: BessSizes.fontSizeXxl,
       fontWeight: FontWeight.w900, // Black weight
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     headlineMedium: const TextStyle().copyWith(
-      fontSize: 24.0,
+      fontSize: BessSizes.fontSizeXl,
       fontWeight: FontWeight.w600, // SemiBold
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     headlineSmall: const TextStyle().copyWith(
-      fontSize: 18.0,
+      fontSize: BessSizes.fontSizeLg,
       fontWeight: FontWeight.w500, // Medium
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     titleLarge: const TextStyle().copyWith(
-      fontSize: 16.0,
+      fontSize: BessSizes.fontSizeMd,
       fontWeight: FontWeight.w600, // SemiBold
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     titleMedium: const TextStyle().copyWith(
-      fontSize: 16.0,
+      fontSize: BessSizes.fontSizeMd,
       fontWeight: FontWeight.w400, // Regular
       fontStyle: FontStyle.italic, // Uses Inter_24pt-Italic.ttf
       color: BessColors.textSecondary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     titleSmall: const TextStyle().copyWith(
-      fontSize: 16.0,
+      fontSize: BessSizes.fontSizeMd,
       fontWeight: FontWeight.w400, // Regular
       color: BessColors.textSecondary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     bodyLarge: const TextStyle().copyWith(
-      fontSize: 14.0,
+      fontSize: BessSizes.fontSizeSm,
       fontWeight: FontWeight.w500, // Medium
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     bodyMedium: const TextStyle().copyWith(
-      fontSize: 14.0,
+      fontSize: BessSizes.fontSizeSm,
       fontWeight: FontWeight.w400, // Regular
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
 
     ),
     bodySmall: const TextStyle().copyWith(
-      fontSize: 14.0,
+      fontSize: BessSizes.fontSizeSm,
       fontWeight: FontWeight.w400, // Regular
       fontStyle: FontStyle.italic, // Uses Inter_24pt-Italic.ttf
       color: BessColors.textSecondary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     labelLarge: const TextStyle().copyWith(
-      fontSize: 14.0,
+      fontSize: BessSizes.fontSizeSm,
       fontWeight: FontWeight.w400, // Regular
       color: BessColors.textPrimary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
     labelMedium: const TextStyle().copyWith(
-      fontSize: 12.0,
+      fontSize: BessSizes.fontSizeXs,
       fontWeight: FontWeight.w300, // Light
       color: BessColors.textSecondary,
-      letterSpacing: 1.0,
+      letterSpacing: BessSizes.letterSpacingNarrow,
       fontFamily: 'Inter',
     ),
   );

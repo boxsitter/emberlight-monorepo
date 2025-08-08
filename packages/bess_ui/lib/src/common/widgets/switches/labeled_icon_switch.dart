@@ -48,9 +48,9 @@ class BessIconSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Define the dimensions of the switch and its components
-    const double height = 36;
+    const double height = BessSizes.switchHeightMd;
     const double iconContainerSize = height;
-    const double iconSize = 22;
+    const double iconSize = BessSizes.switchIconSizeMd;
     // This is the width of the space dedicated to the label.
     final double labelSpaceWidth = width - iconContainerSize;
 

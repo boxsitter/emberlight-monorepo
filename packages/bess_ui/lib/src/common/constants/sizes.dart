@@ -18,12 +18,30 @@ class BessSizes {
   static const double fontSizeSm = 14.0;
   static const double fontSizeMd = 16.0;
   static const double fontSizeLg = 18.0;
+  // Extended font sizes
+  static const double fontSizeXs = 12.0; // 12
+  static const double fontSizeTiny = 10.0; // 10
+  static const double fontSizeSsm = 11.0; // 11
+  static const double fontSizeXl = 24.0; // 24
+  static const double fontSizeXxl = 28.0; // 28
+  static const double fontSizeDisplay = 36.0; // 36
+
+  // Letter spacing
+  static const double letterSpacingNarrow = 1.0;
+  static const double letterSpacingWide = 2.0;
+
+  // Line heights
+  static const double lineHeightTight = 1.2;
 
   // Button sizes
   static const double buttonHeight = 18.0;
   static const double buttonRadius = 16.0;
   static const double buttonWidth = 130.0;
   static const double buttonElevation = 4.0;
+  // Extended button sizes
+  static const double buttonHeightMd = 40.0;
+  static const double buttonPaddingVerticalXs = 4.0;
+  static const double buttonPaddingHorizontalSm = 8.0;
 
   // AppBar height
   static const double appBarHeight = 56.0;
@@ -41,6 +59,7 @@ class BessSizes {
   static const double borderThicknessSm = 1.0;
   static const double borderThicknessMd = 3.0;
   static const double borderThicknessLg = 4.0;
+  static const double borderThicknessEmphasis = 2.0; // prominent borders (errors, focus)
 
   // Divider height
   static const double dividerHeight = 1.0;
@@ -60,6 +79,8 @@ class BessSizes {
   static const double cardRadiusSm = 10.0;
   static const double cardRadiusXs = 6.0;
   static const double cardElevation = 2.0;
+  // Generic pill radius used for capsule shapes
+  static const double pillRadius = 90.0;
 
   // Image carousel height
   static const double imageCarouselHeight = 200.0;
@@ -69,6 +90,29 @@ class BessSizes {
 
   // Grid view spacing
   static const double gridViewSpacing = 16.0;
+
+  // Scrollbar
+  static const double scrollbarThicknessMd = 8.0;
+  static const double scrollbarThicknessLg = 14.0;
+  static const double scrollbarRadius = 4.0;
+  static const int alphaScrollbarThumb = 160;
+  static const int alphaScrollbarTrack = 50;
+
+  // Shadows
+  static const int alphaShadowWeak = 20;
+  static const double shadowBlurDefault = 10.0;
+  static const double shadowOffsetYDefault = 10.0;
+
+  // Switches
+  static const double switchWidthSm = 50.0;
+  static const double switchHeightSm = 27.0;
+  static const double switchIconInset = 9.0; // height - iconSize
+  static const double switchHeightMd = 36.0;
+  static const double switchIconSizeMd = 22.0;
+
+  // Desktop window minimum
+  static const double desktopWindowMinWidth = 770.0;
+  static const double desktopWindowMinHeight = 500.0;
 
   // Responsive Screen Sizes
   static const int desktopScreenSize = 1366;

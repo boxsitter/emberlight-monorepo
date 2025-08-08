@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
+import '../../constants/durations.dart';
 import '../../styles/text_styles.dart';
 import '../containers/rounded_container.dart';
 import '../wrappers/tint.dart';
@@ -101,13 +102,13 @@ class _CardButtonState extends State<CardButton> {
   }
 
   void _onPressUp(_) {
-    _pressReleaseTimer = Timer(const Duration(milliseconds: 30), () {
+    _pressReleaseTimer = Timer(BessDurations.pressReleaseDebounce, () {
       if (mounted) setState(() => _isPressed = false);
     });
   }
 
   void _onPressCancel() {
-    _pressReleaseTimer = Timer(const Duration(milliseconds: 30), () {
+    _pressReleaseTimer = Timer(BessDurations.pressReleaseDebounce, () {
       if (mounted) setState(() => _isPressed = false);
     });
   }

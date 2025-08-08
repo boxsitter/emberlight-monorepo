@@ -9,6 +9,8 @@ import 'package:ember_core/ember_core.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../common/constants/sizes.dart';
+import '../../../common/constants/durations.dart';
 
 import '../../../common/constants/colors.dart';
 import '../../../common/mixins/route_aware_controller_mixin.dart';
@@ -72,7 +74,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
   // Private Internal State
   Timer? _debounce;
   StreamSubscription<Map<String, Camper>>? _campersSubscription;
-  static const double _checkboxColumnWidth = 50.0;
+  static const double _checkboxColumnWidth = BessSizes.switchWidthSm;
 
   // Computed Properties (Getters)
   List<AMABlock> get amas {
@@ -184,7 +186,7 @@ class RostersController extends GetxController with RouteAwareControllerMixin {
 
   void setSearchQuery(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 50), () {
+    _debounce = Timer(BessDurations.animVeryShort, () {
       searchQuery = query;
       update();
     });
