@@ -1,5 +1,4 @@
 
-import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 
 import '../../../ember_core.dart';
 

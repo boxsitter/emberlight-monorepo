@@ -265,7 +265,7 @@ packages:
     source: hosted
     version: "2.1.1"
   ember_cli_utils:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../../packages/ember_cli_utils"
       relative: true

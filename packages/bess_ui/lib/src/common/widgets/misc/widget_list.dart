@@ -1,9 +1,5 @@
-import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/sizes.dart';
-import '../../styles/text_styles.dart';
 
 class WidgetList<T> extends StatelessWidget {
   const WidgetList({

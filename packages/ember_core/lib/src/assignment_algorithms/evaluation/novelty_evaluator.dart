@@ -1,4 +1,3 @@
-import '../data_models/assignment_context.dart';
 import '../data_models/assignment_result.dart';
 
 /// A tool to evaluate the novelty or variety of a participant's schedule.

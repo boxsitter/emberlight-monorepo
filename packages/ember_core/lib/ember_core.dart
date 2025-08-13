@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ember_core/src/repositories/authentication_repository.dart';
-import 'package:ember_core/src/repositories/commit_repository.dart';
 import 'package:ember_core/src/repositories/contextless_repository.dart';
 import 'package:ember_core/src/repositories/live_data_repository.dart';
-import 'package:ember_core/src/repositories/pull_repository.dart';
-import 'package:ember_core/src/services/assignment_service.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:ember_core/src/services/path_service.dart';
 import 'package:firebase_core/firebase_core.dart';

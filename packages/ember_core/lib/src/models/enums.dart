@@ -1,4 +1,3 @@
-import 'package:pdf/widgets.dart';
 
 import 'interfaces/titled.dart';
 

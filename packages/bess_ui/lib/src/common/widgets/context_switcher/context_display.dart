@@ -1,7 +1,6 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
 import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/context_switcher/context_switcher.dart';
 import 'package:bess_ui/src/common/widgets/context_switcher/controller/session_selector_controller.dart';
 import 'package:flutter/material.dart';

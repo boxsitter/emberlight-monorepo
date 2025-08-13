@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import '../../../controllers/user_controller.dart';
 import '../../../routes/routes.dart';
 import '../../../constants/colors.dart';
 import '../../../constants/sizes.dart';
-import '../../../utils/device/device_utility.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../../buttons/card_button.dart';
 import '../../context_switcher/context_display.dart';
@@ -21,8 +19,8 @@ class BessSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sideBarController = Get.find<SidebarController>();
-    final UserController userController = Get.find<UserController>();
-    final menuBarController = Get.find<MenuBarController>();
+    Get.find<UserController>();
+    Get.find<MenuBarController>();
     return Drawer(
       shape: BoxBorder.all(color: Colors.transparent),
       width: 265,

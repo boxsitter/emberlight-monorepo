@@ -32,10 +32,8 @@ class BessTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? fieldTitle = null;
     if (group.groupByField != null) {
       if (group.groupByField is AMABlock) {}
-      fieldTitle = group.groupByField?.displayTitle;
     }
     return Container(
       height: 70,

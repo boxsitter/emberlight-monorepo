@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../common/constants/colors.dart';
 import '../../controllers/rosters_controller.dart';
-import '../../controllers/table_widths.dart';
 
 class BessDataTable extends StatelessWidget {
   const BessDataTable({

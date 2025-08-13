@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/constants/animation_curves.dart';
 import 'package:bess_ui/src/common/constants/durations.dart';
-import 'package:bess_ui/src/common/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';

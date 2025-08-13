@@ -179,8 +179,7 @@ class RosterService extends GetxService {
       // To make the userMessage accessible to the UI, the UI's error handling
       // would need to check if the caught error is a CsvError and then access e.userMessage.
       // For now, rethrowing like this is fine for GetX to handle.
-      rethrow;
-    } catch (e, st) {
+    } catch (e) {
       // Catch any other unexpected errors
       throw CsvError(
         'An unexpected error occurred during the CSV import process: $e',

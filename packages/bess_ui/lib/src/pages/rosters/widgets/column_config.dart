@@ -1,4 +1,3 @@
-import 'package:bess_ui/src/common/widgets/misc/card_grid_selector.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -6,12 +5,10 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../common/constants/colors.dart';
 import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
-import '../../../common/widgets/buttons/card_button.dart';
 import '../../../common/widgets/buttons/icon_button.dart';
 import '../../../common/widgets/containers/titled_container.dart';
 import '../../../common/widgets/misc/widget_list.dart';
 import '../../../common/widgets/misc/list_reorderer.dart';
-import '../../../common/widgets/switches/icon_switch.dart';
 import '../controllers/rosters_controller.dart';
 
 class ColumnConfig extends StatelessWidget {

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';

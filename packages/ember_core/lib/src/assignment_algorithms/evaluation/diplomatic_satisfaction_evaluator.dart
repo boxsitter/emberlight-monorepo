@@ -1,6 +1,5 @@
 import '../data_models/assignment_context.dart';
 import '../data_models/assignment_result.dart';
-import '../data_models/enums.dart';
 
 /// A tool to evaluate if a participant's schedule meets their explicit requests and avoids their vetoes.
 class DiplomaticSatisfactionEvaluator {

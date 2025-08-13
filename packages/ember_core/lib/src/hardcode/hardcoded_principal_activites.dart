@@ -78,12 +78,26 @@ class HardcodedPrincipalActivities {
     rugby,
     dance,
     comicBookCreation,
+    graffitiWall,
+    snorkeling,
+    aussieAussieAussie,
+    journaling,
+    magicBehindAirplanes,
+    cardAndBoardGames,
+    singingChoir,
+    kickball,
+    drawing,
+    selfCare,
+    fashionDesign,
+    calisthenics,
+    livingLikeFarcus,
+    carWashClub,
   };
 
   static final PrincipalActivity gagaBall = PrincipalActivity(
     id: 'gaga_ball-principal_activity-brn-Cs4UhTi',
     name: 'Gaga Ball',
-    capacity: 22,
+    capacity: 20,
     description: 'Gaga Ball is a super fast-paced game played in a walled pit where everyone tries to hit a '
         'soft ball at other players\' legs, below the knees. If the ball touches you below the knees, you\'re'
         'out, and the last player left in the pit wins the round!',
@@ -773,5 +787,131 @@ class HardcodedPrincipalActivities {
     description: 'Create your own characters, write a storyline, and learn to draw and panel your very own comic book. Bring your ideas to life!',
     isSkillsRec: true,
     category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity graffitiWall = PrincipalActivity(
+    id: 'graffiti_wall-principal_activity-brn-gWa1lA1',
+    name: 'Graffiti Wall',
+    capacity: 16,
+    description: 'Express yourself on our designated graffiti wall. Grab some paint and unleash your inner street artist!',
+    isSkillsRec: false,
+    category: ActivityCategory.creative,
+  );
+
+  static final PrincipalActivity snorkeling = PrincipalActivity(
+    id: 'snorkeling-principal_activity-brn-sN0rKe1',
+    name: 'Snorkeling',
+    capacity: 12,
+    description: 'Explore the underwater world of the Puget Sound. See fish and other marine life up close!',
+    isSkillsRec: false,
+    category: ActivityCategory.waterfront,
+  );
+
+  static final PrincipalActivity aussieAussieAussie = PrincipalActivity(
+    id: 'aussie_aussie_aussie-principal_activity-brn-aUs1eA1',
+    name: 'Aussie Aussie Aussie',
+    capacity: 16,
+    description: 'Learn about Australian culture, from slang to sports, with our counselors from down under!',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity journaling = PrincipalActivity(
+    id: 'journaling-principal_activity-brn-j0uRnA1',
+    name: 'Journaling',
+    capacity: 16,
+    description: 'Take some time for quiet reflection. We\'ll provide the journals and pens, you provide the thoughts.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity magicBehindAirplanes = PrincipalActivity(
+    id: 'magic_behind_airplanes-principal_activity-brn-mAg1cB3',
+    name: 'The Magic Behind Airplanes',
+    capacity: 16,
+    description: 'Learn about the science of flight and build your own model airplane.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity cardAndBoardGames = PrincipalActivity(
+    id: 'card_and_board_games-principal_activity-brn-c4rDb04',
+    name: 'Card & Board Games',
+    capacity: 16,
+    description: 'Learn to play a variety of card and board games, from classics to modern hits.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity singingChoir = PrincipalActivity(
+    id: 'singing_choir-principal_activity-brn-s1nGcH0',
+    name: 'Singing / Choir',
+    capacity: 16,
+    description: 'Learn to sing in a group and perform a song together.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity kickball = PrincipalActivity(
+    id: 'kickball-principal_activity-brn-k1cKb41',
+    name: 'Kickball',
+    capacity: 16,
+    description: 'Play a game of kickball with your friends.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity drawing = PrincipalActivity(
+    id: 'drawing-principal_activity-brn-d4w1nG4',
+    name: 'Drawing',
+    capacity: 16,
+    description: 'Learn the fundamentals of drawing and create your own works of art.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity selfCare = PrincipalActivity(
+    id: 'self_care-principal_activity-brn-s31Fc4r',
+    name: 'Self-Care',
+    capacity: 16,
+    description: 'Learn about the importance of self-care and practice techniques to help you relax and de-stress.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity fashionDesign = PrincipalActivity(
+    id: 'fashion_design-principal_activity-brn-f4sh10n',
+    name: 'Fashion Design',
+    capacity: 16,
+    description: 'Design and create your own fashion pieces. Learn about color, patterns, and style.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity calisthenics = PrincipalActivity(
+    id: 'calisthenics-principal_activity-brn-c4l1sth',
+    name: 'Calisthenics',
+    capacity: 16,
+    description: 'Build strength and fitness using your own body weight through exercises like push-ups, pull-ups, and squats.',
+    isSkillsRec: true,
+    category: ActivityCategory.skills,
+  );
+
+  static final PrincipalActivity livingLikeFarcus = PrincipalActivity(
+    id: 'living_like_farcus-principal_activity-brn-f4rcUs1',
+    name: 'Living like Farcus',
+    capacity: 16,
+    description: '',
+    isSkillsRec: false,
+    category: ActivityCategory.silly,
+  );
+
+  static final PrincipalActivity carWashClub = PrincipalActivity(
+    id: 'car_wash_club-principal_activity-brn-c4rW4sh',
+    name: 'Car Wash Club',
+    capacity: 16,
+    description: 'Help clean the camp vehicles while having fun with soap, water, and your friends.',
+    isSkillsRec: false,
+    category: ActivityCategory.campClassics,
   );
 }

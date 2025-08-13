@@ -6,7 +6,7 @@ import '../../ember_core.dart';
 
 class ContextlessRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  get db => _db;
+  FirebaseFirestore get db => _db;
 
   // Don't use this unless debugging or database repair
   Future<void> push(String path, CoreObject object) async {

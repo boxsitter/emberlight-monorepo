@@ -1,7 +1,5 @@
 import 'package:bess_ui/src/common/constants/sizes.dart';
-import 'package:bess_ui/src/pages/home/widgets/home_screen_nav_card.dart';
 import 'package:flutter/material.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../common/styles/text_styles.dart';
 import '../../common/widgets/header/menu_bar.dart';

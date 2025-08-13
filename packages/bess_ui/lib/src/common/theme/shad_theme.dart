@@ -4,7 +4,6 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../constants/animation_curves.dart';
 import '../constants/colors.dart';
-import '../constants/sizes.dart';
 import '../utils/helpers/helper_functions.dart';
 
 class BessShadTheme {

@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:flutter/material.dart';
-import '../../constants/sizes.dart';
 import '../../styles/text_styles.dart';
 
 class TitledContainer extends StatelessWidget {

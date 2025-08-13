@@ -1,10 +1,6 @@
-import 'package:bess_ui/src/common/widgets/header/controllers/menu_bar_controller.dart';
 import 'package:bess_ui/src/common/widgets/responsive/responsive_design.dart';
 import 'package:bess_ui/src/common/widgets/responsive/screens/mobile_layout.dart';
-import 'package:bess_ui/src/common/widgets/responsive/screens/tablet_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../header/menu_bar.dart';
 import '../../responsive/screens/desktop_layout.dart';

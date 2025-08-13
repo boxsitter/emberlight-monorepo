@@ -1,13 +1,7 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
-import 'package:bess_ui/src/common/controllers/save_controller.dart';
 import 'package:bess_ui/src/common/widgets/header/menu_bar.dart';
-import 'package:bess_ui/src/common/widgets/images/bess_circular_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import '../../../pages/rosters/controllers/rosters_controller.dart';
-import '../../constants/image_strings.dart';
-import '../buttons/text_icon_button.dart';
 
 class BessHeader extends StatelessWidget implements PreferredSizeWidget {
   const BessHeader(

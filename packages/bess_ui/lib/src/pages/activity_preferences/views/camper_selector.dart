@@ -3,7 +3,6 @@ import 'package:bess_ui/src/common/widgets/misc/card_selector.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/sizes.dart';
 import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/wrappers/tint.dart';
 

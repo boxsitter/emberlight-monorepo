@@ -1,5 +1,4 @@
 import '../../ember_core.dart';
-import '../models/core_objects/schedule_day.dart';
 
 class HardcodedTestSchedule {
   static final ScheduleDay day1 = ScheduleDay(

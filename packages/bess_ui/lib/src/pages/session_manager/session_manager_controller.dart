@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:bess_ui/src/common/mixins/route_aware_controller_mixin.dart';
 import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:ember_core/ember_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SessionManagerController extends GetxController with RouteAwareControllerMixin {

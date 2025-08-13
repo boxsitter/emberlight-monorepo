@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
 import 'package:flutter/material.dart';
 

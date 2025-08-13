@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/sizes.dart';
 
 /// A circular loader widget with customizable foreground and background colors.
 class BessCircularLoader extends StatelessWidget {

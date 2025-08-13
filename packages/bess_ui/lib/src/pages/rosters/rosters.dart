@@ -1,4 +1,3 @@
-import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/activity_switcher.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/column_config.dart';
@@ -8,7 +7,6 @@ import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/constants/colors.dart';
 import '../../common/widgets/layouts/templates/site_layout.dart';
 import 'controllers/rosters_controller.dart';
 

@@ -1,9 +1,6 @@
 import 'package:bess_ui/src/common/constants/animation_curves.dart';
 import 'package:bess_ui/src/common/constants/durations.dart';
-import 'package:bess_ui/src/common/constants/sizes.dart';
-import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';

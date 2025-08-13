@@ -1,12 +1,9 @@
-import 'dart:convert';
 
 import 'package:ember_cli_utils/ember_cli_utils.dart';
 import 'package:ember_core/src/hardcode/hardcoded_principal_activites.dart';
 import 'package:ember_core/src/hardcode/hardcoded_principal_cabins.dart';
 import 'package:ember_core/src/hardcode/hardcoded_test_schedule.dart';
-import 'package:ember_core/src/hardcode/session_a/hardcoded_session_a.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
 import '../../ember_core.dart';

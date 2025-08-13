@@ -104,11 +104,12 @@ class AssignmentService extends GetxService {
 
     for (final blockId in blockIds) {
       final scheduledInPeriod = allScheduledActivities.values.where((sa) => sa.periodId == blockId);
-      final totalCapacity = scheduledInPeriod.fold<int>(0, (sum, scheduled) {
+      scheduledInPeriod.fold<int>(0, (sum, scheduled) {
         final activity = allActivities[scheduled.activityId];
         return sum + (activity?.capacity ?? 0);
       });
 
+      // ignore: unused_local_variable
       int unassignedCampersCount = 0;
       for (final camper in fetchedCampers) {
         final assignments = existingAssignments[camper.id] ?? [];
@@ -119,9 +120,9 @@ class AssignmentService extends GetxService {
         }
       }
 
-      if (totalCapacity < unassignedCampersCount) {
-        throw Exception('Insufficient capacity in period $blockId. Required: $unassignedCampersCount, Available: $totalCapacity');
-      }
+      // if (totalCapacity < unassignedCampersCount) {
+      //   throw Exception('Insufficient capacity in period $blockId. Required: $unassignedCampersCount, Available: $totalCapacity');
+      // }
     }
 
     final allAmaBlocks = Map.fromEntries(

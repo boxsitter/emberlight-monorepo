@@ -1,12 +1,9 @@
 import 'dart:async';
 
-import 'package:bess_ui/src/common/utils/helpers/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/sizes.dart';
-import '../../styles/text_styles.dart';
 import '../containers/rounded_container.dart';
 import '../wrappers/tint.dart';
 

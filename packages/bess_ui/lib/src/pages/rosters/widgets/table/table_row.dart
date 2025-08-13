@@ -1,4 +1,3 @@
-import 'package:bess_ui/src/pages/rosters/widgets/table/rosters_table_legacy.dart';
 import 'package:bess_ui/src/pages/rosters/widgets/table/table_cell.dart';
 import 'package:flutter/material.dart';
 

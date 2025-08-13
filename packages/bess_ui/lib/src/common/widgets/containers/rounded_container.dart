@@ -2,7 +2,6 @@ import 'package:bess_ui/src/common/styles/shadows.dart';
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
-import '../buttons/card_button.dart';
 import '../wrappers/tint.dart';
 
 // Note: No longer implements Tintable
@@ -47,12 +46,10 @@ class BessRoundedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine the active tint from the provided states.
-    Color? finalTint;
     if (tintConditions != null) {
       for (final state in tintConditions!) {
         // Find the first active state and use its color.
         if (state.$1) {
-          finalTint = state.$2;
           break;
         }
       }

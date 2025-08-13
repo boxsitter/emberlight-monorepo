@@ -1,8 +1,6 @@
-import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/sizes.dart';
 
 /* -- Light & Dark Elevated Button Themes -- */
 class BessieScrollbarTheme {

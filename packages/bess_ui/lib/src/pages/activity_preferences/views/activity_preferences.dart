@@ -8,7 +8,6 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 import '../../../common/constants/colors.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
 import '../../../common/widgets/layouts/templates/site_layout.dart';
-import '../controllers/activity_preferences_controller_absolute.dart';
 import '../controllers/activity_preferences_controller_diplomatic.dart';
 import '../widgets/header_builders.dart';
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../buttons/card_button.dart';
 
 class CardGridSelector<T> extends StatelessWidget {
   const CardGridSelector({

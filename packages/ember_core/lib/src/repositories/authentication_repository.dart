@@ -1,6 +1,5 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 
 import '../../ember_core.dart';
 import '../debug/auth_exceptions.dart';
@@ -54,7 +53,6 @@ class AuthenticationRepository {
       );
 
       // Log successful login
-      final userId = userCredential.user?.uid ?? 'N/A';
 
       Debug.logSuccess('${CoreFormatter.maskEmail(email)} successfully authenticated by Firebase');
 
@@ -110,7 +108,7 @@ class AuthenticationRepository {
       Debug.logInfo(
         'Firebase registration successful. User ID: $userId',
         verbosity: Verbosity.verbose,
-        metadata: {'userId': userId ?? 'N/A', 'email': CoreFormatter.maskEmail(email)},
+        metadata: {'userId': userId, 'email': CoreFormatter.maskEmail(email)},
       );
       return userId;
     } on FirebaseAuthException catch (e, st) {

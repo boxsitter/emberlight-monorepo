@@ -11,8 +11,6 @@ import 'package:xterm/core.dart';
 class _AnsiCodes {
   static const String cursorUp = '\x1B[A';
   static const String cursorDown = '\x1B[B';
-  static const String cursorRight = '\x1B[C';
-  static const String cursorLeft = '\x1B[D';
   static const String clearScreen = '\x1B[2J\x1B[H';
   static const String backspace = '\b';
   static const String delete = '\u007F';

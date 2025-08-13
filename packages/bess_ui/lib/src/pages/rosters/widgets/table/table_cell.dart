@@ -1,5 +1,4 @@
 import 'package:bess_ui/src/common/constants/colors.dart';
-import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/buttons/checkbox.dart';
 import 'package:flutter/material.dart';
 

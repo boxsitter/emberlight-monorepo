@@ -34,9 +34,6 @@ class BessMenuBar<T extends RouteAwareControllerMixin> extends StatelessWidget {
         // A function to construct the menu bar. This can be called from different
         // builder paths to avoid duplicating code.
         Widget buildActualMenuBar() {
-          final divider = ShadSeparator.horizontal(
-            color: BessColors.borderPrimary,
-          );
 
           List<Widget> menuItems = [];
 

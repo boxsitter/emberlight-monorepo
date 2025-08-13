@@ -3,14 +3,12 @@ import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_pref
 import 'package:bess_ui/src/pages/dev_testing/dev_testing.dart';
 import 'package:get/get.dart';
 
-import '../../pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
 import '../../pages/activity_preferences/views/activity_preferences.dart';
 import '../../pages/authentication/view/forgot_password/forgot_password.dart';
 import '../../pages/authentication/view/login/login.dart';
 import '../../pages/authentication/view/reset_password/reset_password.dart';
 import '../../pages/branch_manager/branch_manager.dart';
 import '../../pages/console/view/console.dart';
-import '../../pages/home/home.dart';
 import '../../pages/rosters/controllers/rosters_controller.dart';
 import '../../pages/rosters/rosters.dart';
 import '../../pages/schedule/schedule_page.dart';

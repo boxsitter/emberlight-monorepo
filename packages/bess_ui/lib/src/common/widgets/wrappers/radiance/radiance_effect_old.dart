@@ -3,7 +3,6 @@ import 'package:bess_ui/src/common/widgets/wrappers/radiance/radiance_consts_old
 import 'package:bess_ui/src/common/widgets/wrappers/radiance/radiance_painter_old.dart';
 import 'package:flutter/material.dart';
 
-import '../../effects/radiance/radiance.dart';
 
 enum _ExitDirection { top, right, bottom, left }
 

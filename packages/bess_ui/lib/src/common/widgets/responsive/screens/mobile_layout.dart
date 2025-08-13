@@ -1,9 +1,7 @@
 import 'package:bess_ui/src/common/styles/text_styles.dart';
-import 'package:bess_ui/src/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/sizes.dart';
-import '../../header/header.dart';
 
 class MobileLayout extends StatelessWidget {
   MobileLayout({super.key, this.body});

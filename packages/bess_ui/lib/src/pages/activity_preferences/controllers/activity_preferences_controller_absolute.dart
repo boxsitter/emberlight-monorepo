@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../common/mixins/route_aware_controller_mixin.dart';
-import '../../../common/routes/routes.dart';
 
 typedef CabinDependantId = String;
 

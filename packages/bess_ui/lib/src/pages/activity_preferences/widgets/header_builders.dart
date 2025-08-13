@@ -1,10 +1,7 @@
 import 'package:bess_ui/src/common/widgets/buttons/icon_button.dart';
-import 'package:bess_ui/src/pages/activity_preferences/controllers/activity_preferences_controller_absolute.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import '../../../common/constants/colors.dart';
-import '../../../common/styles/text_styles.dart';
 import '../../../common/widgets/header/menu_bar.dart';
 import '../controllers/activity_preferences_controller_diplomatic.dart';
 

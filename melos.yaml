@@ -1,5 +1,0 @@
-name: emberlight_monorepo
-
-packages:
-  - apps/* # For your Bessie app and any other apps
-  - packages/* # For your shared packages like ember_core, ember_fire, bess_ui

@@ -1,7 +1,8 @@
+// ignore_for_file: dead_code
+
 import 'dart:async';
 
 import 'package:ember_core/src/hardcode/hardcoded_domains.dart';
-import 'package:ember_core/src/hardcode/session_a/hardcoded_session_a.dart';
 import 'package:ember_core/src/services/database_repair_service.dart';
 import 'package:get/get.dart';
 

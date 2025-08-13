@@ -1,5 +1,4 @@
 import '../../../ember_core.dart';
-import '../../models/core_objects/schedule_day.dart';
 class HardcodedSessionA {
   static final sessionA = Session(
     id: 'session_a-session-sea-kfCmxXd',

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 
@@ -128,7 +130,7 @@ class DatabaseRepairService extends GetxService {
       CoreObject deserializedObject;
       try {
         deserializedObject = CoreObject.fromJson(docData); //
-      } catch (e, s) {
+      } catch (e) {
         throw RepairSerializationIssue(stage: "deserialization", errorMessage: e.toString(), documentKey: documentKeyFromSource);
       }
 
@@ -154,7 +156,7 @@ class DatabaseRepairService extends GetxService {
             documentKey: documentKeyFromSource,
           );
         }
-      } catch (e, s) {
+      } catch (e) {
         throw RepairSerializationIssue(stage: "serialization", errorMessage: e.toString(), documentKey: documentKeyFromSource);
       }
 
@@ -280,7 +282,7 @@ class DatabaseRepairService extends GetxService {
     }
 
     // If there's a known doc ID from B, we keep that. Otherwise, fallback to A's ID.
-    mergedJson['id'] = (jsonB != null && jsonB.containsKey('id')) ? jsonB['id'] : idA;
+    mergedJson['id'] = (jsonB.containsKey('id')) ? jsonB['id'] : idA;
 
     dynamic mergedObject = CoreObject.fromJson(mergedJson);
     commit.addObjectToPush(mergedObject as CoreObject);
@@ -325,27 +327,23 @@ class DatabaseRepairService extends GetxService {
   double computeJsonSimilarity(Map<String, dynamic> jsonA, Map<String, dynamic> jsonB) {
     if (specialFields == null && fieldPresenceWeight + valueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of fieldPresenceWeight and valueEqualityWeight must be 1.0');
-    } else if (specialFields != null && (specialFieldPresenceWeight == null || specialValueEqualityWeight == null)) {
+    } else if ((specialValueEqualityWeight == null)) {
       throw ArgumentError(
         'specialFieldPresenceWeight and specialValueEqualityWeight cannot be null if specialFields is not null',
       );
-    } else if (specialFields != null &&
-        fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight + specialValueEqualityWeight != 1.0) {
+    } else if (fieldPresenceWeight + valueEqualityWeight + specialFieldPresenceWeight + specialValueEqualityWeight != 1.0) {
       throw ArgumentError('The sum of all weights must be 1.0');
     }
 
     bool specialFieldsPresent =
-        specialFields != null && specialFields.any((field) => jsonA.containsKey(field) || jsonB.containsKey(field));
+        specialFields.any((field) => jsonA.containsKey(field) || jsonB.containsKey(field));
 
     double effectiveFieldPresenceWeight;
     double effectiveValueEqualityWeight;
     double effectiveSpecialFieldPresenceWeight = 0;
     double effectiveSpecialValueEqualityWeight = 0;
 
-    if (specialFieldsPresent &&
-        specialFields != null &&
-        specialFieldPresenceWeight != null &&
-        specialValueEqualityWeight != null) {
+    if (specialFieldsPresent) {
       effectiveFieldPresenceWeight = fieldPresenceWeight;
       effectiveValueEqualityWeight = valueEqualityWeight;
       effectiveSpecialFieldPresenceWeight = specialFieldPresenceWeight;
@@ -367,10 +365,8 @@ class DatabaseRepairService extends GetxService {
 
     double sum = fieldPresenceIndex * effectiveFieldPresenceWeight + valueEqualityIndex * effectiveValueEqualityWeight;
 
-    double specialFieldPresenceIndex = 0;
-    double specialValueEqualityIndex = 0;
 
-    if (specialFieldsPresent && specialFields != null) {
+    if (specialFieldsPresent) {
       double specialFieldPresenceIndex = compareFieldPresence(
         jsonA: jsonA,
         jsonB: jsonB,

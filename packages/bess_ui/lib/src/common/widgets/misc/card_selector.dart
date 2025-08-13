@@ -1,11 +1,8 @@
-import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
-import '../../styles/text_styles.dart';
 import '../buttons/card_button.dart';
-import '../wrappers/tint.dart';
 
 class CardSelector<T> extends StatelessWidget {
   const CardSelector({

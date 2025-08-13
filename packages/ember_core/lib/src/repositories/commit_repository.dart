@@ -14,7 +14,7 @@ class CommitRepository {
   final PathService pathService = Get.find<PathService>();
   CommitService requestService = Get.find<CommitService>();
 
-  get db => _db;
+  FirebaseFirestore get db => _db;
 
   /// Efficiently applies create/update (push) and delete operations to Firestore
   /// using batched writes, processing directly from the input Sets.
@@ -86,7 +86,7 @@ class CommitRepository {
           await batch.commit();
           totalOpsCommitted += (pushesInBatch + deletesInBatch);
           batchesCommitted++;
-          Debug.logInfo('Bulk Apply: Batch #${batchesCommitted} committed successfully.');
+          Debug.logInfo('Bulk Apply: Batch #$batchesCommitted committed successfully.');
         } catch (e) {
           Debug.logInfo('Error committing Firestore batch #$batchNum: $e');
           rethrow;

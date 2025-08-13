@@ -1,13 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:ember_cli_utils/ember_cli_utils.dart';
-import 'package:ember_core/src/models/core_objects/schedule_day.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../ember_core.dart';
-import '../hardcode/session_a/hardcoded_session_a.dart';
 
 class SetupCommands {
   static Map<String, EmberCommand> list = {
