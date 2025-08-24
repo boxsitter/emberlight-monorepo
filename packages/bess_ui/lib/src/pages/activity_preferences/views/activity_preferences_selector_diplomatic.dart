@@ -1,6 +1,5 @@
 import 'package:bess_ui/src/common/styles/text_styles.dart';
 import 'package:bess_ui/src/common/widgets/buttons/card_button.dart';
-import 'package:bess_ui/src/common/widgets/containers/rounded_container.dart';
 import 'package:bess_ui/src/common/widgets/containers/titled_container.dart';
 import 'package:bess_ui/src/common/widgets/loaders/circular_loader.dart';
 import 'package:bess_ui/src/common/widgets/misc/tab_switcher.dart';
@@ -8,11 +7,9 @@ import 'package:bess_ui/src/common/widgets/misc/widget_list.dart';
 import 'package:bess_ui/src/pages/activity_preferences/widgets/draggable_container.dart';
 import 'package:ember_core/ember_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../common/constants/colors.dart';
-import '../../../common/constants/sizes.dart';
 import '../../../common/widgets/misc/widget_grid.dart';
 import '../controllers/activity_preferences_controller_diplomatic.dart';
 
@@ -81,40 +78,40 @@ class ActivityPreferencesSelectorDiplomatic extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CardButton(
-                        tintConditions: [(controller.selectedCategory != ActivityCategory.skills, BessColors.primary)],
-                        onPressed: () => controller.setSelectedCategory(controller.categories.first),
-                        child: Center(
-                          child: Text(
-                            'Standard Activities',
-                            style: BessTextStyles.standard,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                      child: CardButton(
-                        tintConditions: [(controller.selectedCategory == ActivityCategory.skills, BessColors.yellow)],
-                        onPressed: () => controller.setSelectedCategory(ActivityCategory.skills),
-                        child: Center(
-                          child: Text(
-                            'Skills Recs',
-                            style: BessTextStyles.standard,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // SizedBox(
+                //   height: 16,
+                // ),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: CardButton(
+                //         tintConditions: [(controller.selectedCategory != ActivityCategory.skills, BessColors.primary)],
+                //         onPressed: () => controller.setSelectedCategory(controller.categories.first),
+                //         child: Center(
+                //           child: Text(
+                //             'Standard Activities',
+                //             style: BessTextStyles.standard,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                    // SizedBox(
+                    //   width: 16,
+                    // ),
+                    // Expanded(
+                    //   child: CardButton(
+                    //     tintConditions: [(controller.selectedCategory == ActivityCategory.skills, BessColors.yellow)],
+                    //     onPressed: () => controller.setSelectedCategory(ActivityCategory.skills),
+                    //     child: Center(
+                    //       child: Text(
+                    //         'Skills Recs',
+                    //         style: BessTextStyles.standard,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                //   ],
+                // ),
               ],
             ),
           ),
