@@ -26,9 +26,14 @@ class DatabaseRepairService extends GetxService {
   Future<void> cleanOrphanedDependents(Commit commit, Session session) async {
     final Map<String, Set<String>> principalDependentLinkTracker = session.principalDependentLinkTracker;
     Set<String> deletedPrincipalIds = await pullRepo.findMissingKeys(principalDependentLinkTracker.keys.toSet());
-    for (String principalId in deletedPrincipalIds) {
-      commit.addObjectsToDelete(await pullRepo.getObjects(principalDependentLinkTracker[principalId]!));
-    }
+    // Batch all dependent IDs linked to deleted principals and fetch once
+    final Set<String> dependentsToDeleteIds = {
+      for (final principalId in deletedPrincipalIds)
+        ...?principalDependentLinkTracker[principalId]
+    };
+    if (dependentsToDeleteIds.isEmpty) return;
+    final fetched = await pullRepo.getObjectsMulti(dependentsToDeleteIds);
+    commit.addObjectsToDelete(fetched.values.map((e) => e as CoreObject).toSet());
   }
 
   /// Checks a document for various corruption conditions.

@@ -250,6 +250,62 @@ class PullRepository {
     return output;
   }
 
+  /// Mixed-collection batched pull: accepts IDs from different collections,
+  /// groups them by collection, and executes minimal `whereIn` queries in parallel.
+  /// Returns a map of `id -> document data` for all found documents.
+  Future<Map<String, Map<String, dynamic>>> getDocsMulti(Set<String> ids) async {
+    if (ids.isEmpty) return {};
+
+    // Resolve collection paths for all ids in parallel
+    final List<Future<MapEntry<String, String>>> resolutions = ids
+        .map((id) async => MapEntry(id, await pathService.getCollectionPathFromId(id)))
+        .toList();
+    final List<MapEntry<String, String>> idToCollectionEntries = await Future.wait(resolutions);
+
+    // Group ids by collection
+    final Map<String, List<String>> collectionToIds = {};
+    for (final entry in idToCollectionEntries) {
+      (collectionToIds[entry.value] ??= <String>[]).add(entry.key);
+    }
+
+    // Query each collection in batches of 10 ids (Firestore whereIn limit)
+    final List<Future<Map<String, Map<String, dynamic>>>> futures = [];
+    collectionToIds.forEach((collectionPath, idList) {
+      for (int i = 0; i < idList.length; i += 10) {
+        final List<String> batch = idList.sublist(i, (i + 10 <= idList.length) ? i + 10 : idList.length);
+        futures.add(() async {
+          final snapshot = await _db
+              .collection(collectionPath)
+              .where(FieldPath.documentId, whereIn: batch)
+              .get();
+          final Map<String, Map<String, dynamic>> map = {};
+          for (final doc in snapshot.docs) {
+            map[doc.id] = doc.data();
+          }
+          return map;
+        }());
+      }
+    });
+
+    final List<Map<String, Map<String, dynamic>>> parts = await Future.wait(futures);
+    final Map<String, Map<String, dynamic>> results = {};
+    for (final part in parts) {
+      results.addAll(part);
+    }
+    return results;
+  }
+
+  /// Mixed-collection batched pull with deserialization to `CoreObject`.
+  /// Returns a map of `id -> CoreObject` for all found documents.
+  Future<Map<String, CoreObject>> getObjectsMulti(Set<String> ids) async {
+    final docs = await getDocsMulti(ids);
+    final Map<String, CoreObject> result = {};
+    for (final entry in docs.entries) {
+      result[entry.key] = CoreObject.fromJson(entry.value);
+    }
+    return result;
+  }
+
   /// Queries the collection (determined by [collectionName] and [domain]) with the provided [conditions].
   /// Conditions may include equality filters as well as inequality operators ('isLessThanOrEqualTo', 'isGreaterThanOrEqualTo').
   /// Limits the query to one result and returns the ID of the first matching document.

@@ -312,38 +312,51 @@ class RosterService extends GetxService {
     String activityDepId,
     bool preventReassignmentIfAssigned,
   ) async {
-    // 1. Fetch all necessary objects, prioritizing the commit cache.
-    Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
-    ActivityDependent activityDep =
-        commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
-    PrincipalActivity? principalActivity =
-        commit.getObject<PrincipalActivity>(activityDep.principalPar) ??
-        await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
+    // 1. Fetch all necessary objects, prioritizing the commit cache and batching missing ones.
+    Camper? camper = commit.getObject<Camper>(camperId);
+    ActivityDependent? activityDep = commit.getObject<ActivityDependent>(activityDepId);
+    String? principalId = activityDep?.principalPar;
+
+    final Set<String> missing = {
+      if (camper == null) camperId,
+      if (activityDep == null) activityDepId,
+    };
+    if (missing.isNotEmpty) {
+      final fetched = await pullRepo.getObjectsMulti(missing);
+      camper = (camper ?? fetched[camperId]) as Camper?;
+      activityDep = (activityDep ?? fetched[activityDepId]) as ActivityDependent?;
+      principalId ??= activityDep?.principalPar;
+    }
+    PrincipalActivity? principalActivity = principalId != null ? commit.getObject<PrincipalActivity>(principalId!) : null;
+    if (principalActivity == null && principalId != null) {
+      final fetchedPrincipal = await pullRepo.getObjectsMulti({principalId!});
+      principalActivity = fetchedPrincipal[principalId!] as PrincipalActivity?;
+    }
 
     final String activityName = principalActivity.name;
-    final String blockId = activityDep.blockRef;
+    final String blockId = activityDep!.blockRef;
 
     // 2. Handle new flag to prevent re-assignment.
-    if (preventReassignmentIfAssigned && camper.activityAssignmentRefs[blockId] != null) {
+    if (preventReassignmentIfAssigned && camper!.activityAssignmentRefs[blockId] != null) {
       Debug.logInfo(
-        'Info: ${camper.fullName} is already assigned in block $blockId. Assignment to $activityName ($activityDepId) is prevented.',
-        userMessage: '${camper.fullName} is already assigned in this block. Assignment skipped.',
+        'Info: ${camper!.fullName} is already assigned in block $blockId. Assignment to $activityName ($activityDepId) is prevented.',
+        userMessage: '${camper!.fullName} is already assigned in this block. Assignment skipped.',
       );
       return false; // Indicate that no assignment was made.
     }
 
     // 3. Handle potential reassignment within the same block.
-    final String? currentAssignedActivityId = camper.activityAssignmentRefs[blockId];
+    final String? currentAssignedActivityId = camper!.activityAssignmentRefs[blockId];
     if (currentAssignedActivityId != null && currentAssignedActivityId != activityDep.id) {
       Debug.logInfo(
-        'Info: ${camper.fullName} is currently in activity $currentAssignedActivityId, removing before assigning to $activityName ($activityDep.id).',
-        userMessage: '${camper.fullName} is being moved to $activityName from another activity in the same block.',
+        'Info: ${camper!.fullName} is currently in activity $currentAssignedActivityId, removing before assigning to $activityName (${activityDep.id}).',
+        userMessage: '${camper!.fullName} is being moved to $activityName from another activity in the same block.',
       );
       // Remove the camper from their old activity to ensure a clean slate.
       final bool removed = await removeCamperFromActivity(commit, camperId, currentAssignedActivityId);
       if (!removed) {
         Debug.logWarning(
-          'Warning: Failed to remove ${camper.fullName} from previous activity $currentAssignedActivityId. Assignment to $activityDep.id may be unstable.',
+          'Warning: Failed to remove ${camper!.fullName} from previous activity $currentAssignedActivityId. Assignment to ${activityDep.id} may be unstable.',
         );
         // Continue, but be aware of the potential issue.
       }
@@ -353,26 +366,26 @@ class RosterService extends GetxService {
 
     // 3. Perform the robust assignment, ensuring state consistency.
     bool camperChanged = false;
-    if (camper.activityAssignmentRefs[blockId] != activityDep.id) {
-      camper.activityAssignmentRefs[blockId] = activityDep.id;
+    if (camper!.activityAssignmentRefs[blockId] != activityDep.id) {
+      camper!.activityAssignmentRefs[blockId] = activityDep.id;
       camperChanged = true;
     }
 
     bool activityChanged = false;
-    if (!activityDep.camperRefs.contains(camper.id)) {
-      activityDep.camperRefs.add(camper.id);
+    if (!activityDep.camperRefs.contains(camper!.id)) {
+      activityDep.camperRefs.add(camper!.id);
       activityChanged = true;
     }
 
     // 4. Add the modified objects to the commit only if their state changed.
     if (camperChanged || activityChanged) {
-      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+      commit.addObjectsToPush({if (camperChanged) camper!, if (activityChanged) activityDep});
       Debug.logSuccess(
-        '${camper.fullName} successfully assigned to $activityName ($activityDep). State synchronized.',
-        userMessage: 'Success! ${camper.fullName} has been assigned to $activityName.',
+        '${camper!.fullName} successfully assigned to $activityName ($activityDep). State synchronized.',
+        userMessage: 'Success! ${camper!.fullName} has been assigned to $activityName.',
       );
     } else {
-      Debug.logInfo('Info: ${camper.fullName} is already correctly assigned to $activityName ($activityDep). No action needed.');
+      Debug.logInfo('Info: ${camper!.fullName} is already correctly assigned to $activityName ($activityDep). No action needed.');
     }
 
     return true;
@@ -424,22 +437,28 @@ class RosterService extends GetxService {
 
     // 5. Add the modified objects to the commit only if their state changed.
     if (camperChanged || activityChanged) {
-      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+      commit.addObjectsToPush(<CoreObject>{if (camperChanged) camper, if (activityChanged) activityDep});
     }
 
     return true;
   }
 
   Future<bool> removeCamperFromActivity(Commit commit, String camperId, String activityDepId) async {
-    // 1. Fetch objects, prioritizing the commit cache.
-    final Camper camper = commit.getObject<Camper>(camperId) ?? await pullRepo.getObject<Camper>(camperId);
-    final ActivityDependent activityDep =
-        commit.getObject<ActivityDependent>(activityDepId) ?? await pullRepo.getObject<ActivityDependent>(activityDepId);
+    // 1. Fetch objects, prioritizing the commit cache and batching missing ones.
+    Camper? camper = commit.getObject<Camper>(camperId);
+    ActivityDependent? activityDep = commit.getObject<ActivityDependent>(activityDepId);
+    String? principalId = activityDep?.principalPar;
+    final missing = <String>{if (camper == null) camperId, if (activityDep == null) activityDepId};
+    if (missing.isNotEmpty) {
+      final fetched = await pullRepo.getObjectsMulti(missing);
+      camper = (camper ?? fetched[camperId]) as Camper?;
+      activityDep = (activityDep ?? fetched[activityDepId]) as ActivityDependent?;
+      principalId ??= activityDep?.principalPar;
+    }
     final PrincipalActivity principalActivity =
-        commit.getObject<PrincipalActivity>(activityDep.principalPar) ??
-        await pullRepo.getObject<PrincipalActivity>(activityDep.principalPar);
+        commit.getObject<PrincipalActivity>(principalId!) ?? (await pullRepo.getObjectsMulti({principalId!}))[principalId!] as PrincipalActivity;
     final String activityName = principalActivity.name;
-    final String blockId = activityDep.blockRef;
+    final String blockId = activityDep!.blockRef;
 
     bool camperChanged = false;
     bool activityChanged = false;
@@ -452,22 +471,20 @@ class RosterService extends GetxService {
     // 3. Unconditionally remove the reference from the camper's assignment map,
     // but only if it matches the activity we are targeting. This prevents incorrectly
     // clearing a valid assignment to a different activity in the same block.
-    if (camper.activityAssignmentRefs.containsKey(blockId) && camper.activityAssignmentRefs[blockId] == activityDepId) {
-      camper.activityAssignmentRefs[blockId] = null;
+    if (camper!.activityAssignmentRefs.containsKey(blockId) && camper!.activityAssignmentRefs[blockId] == activityDepId) {
+      camper!.activityAssignmentRefs[blockId] = null;
       camperChanged = true;
     }
 
     // 4. If any change occurred, add the affected objects to the commit to be pushed.
     if (camperChanged || activityChanged) {
-      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+      commit.addObjectsToPush(<CoreObject>{if (camperChanged) camper!, if (activityChanged) activityDep});
       Debug.logSuccess(
-        '${camper.fullName} removed from $activityName ($activityDepId). State synchronized.',
-        userMessage: 'Success! ${camper.fullName} has been removed from $activityName.',
+        '${camper!.fullName} removed from $activityName ($activityDepId). State synchronized.',
+        userMessage: 'Success! ${camper!.fullName} has been removed from $activityName.',
       );
     } else {
-      Debug.logInfo(
-        'Info: Attempted to remove ${camper.fullName} from $activityName ($activityDepId), but no assignment links were found.',
-      );
+      Debug.logInfo('Info: Attempted to remove ${camper!.fullName} from $activityName ($activityDepId), but no assignment links were found.');
     }
 
     // The goal is to ensure the camper is not in the activity; this state is now guaranteed.
@@ -495,7 +512,7 @@ class RosterService extends GetxService {
 
     // 4. If any change occurred, add the affected objects to the commit to be pushed.
     if (camperChanged || activityChanged) {
-      commit.addObjectsToPush({if (camperChanged) camper, if (activityChanged) activityDep});
+      commit.addObjectsToPush(<CoreObject>{if (camperChanged) camper, if (activityChanged) activityDep});
     }
 
     // The goal is to ensure the camper is not in the activity; this state is now guaranteed.
